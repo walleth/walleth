@@ -6,10 +6,10 @@ android {
     buildToolsVersion "25.0.2"
     defaultConfig {
         applicationId "org.ligi.walleth"
-        minSdkVersion 10
+        minSdkVersion 15
         targetSdkVersion 25
         versionCode 1
-        versionName "1.0"
+        versionName "0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -25,6 +25,13 @@ android {
 
 dependencies {
     compile  "org.ethereum:geth:1.5.8"
+
+
+    compile "com.android.support:appcompat-v7:$support_version"
+    compile "com.android.support:design:$support_version"
+    compile "com.android.support:cardview-v7:$support_version"
+    compile "com.android.support:recyclerview-v7:$support_version"
+    compile "com.android.support:preference-v14:$support_version"
 
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
