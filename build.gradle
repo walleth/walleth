@@ -13,12 +13,18 @@ buildscript {
     }
 }
 
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+
 allprojects {
     repositories {
         jcenter()
+        flatDir {
+            dirs 'libs'
+        }
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        maven { url 'https://jitpack.io' }
     }
-}
-
-task clean(type: Delete) {
-    delete rootProject.buildDir
 }
