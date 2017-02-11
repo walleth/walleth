@@ -21,7 +21,7 @@ class CreateAccountActivity : AppCompatActivity() {
             finish()
         }
 
-        new_account_qrcode.setImageBitmap(QRCode.from(App.accountManager.accounts[0].address.hex).bitmap())
+        new_account_qrcode.setImageBitmap(QRCode.from(App.accountManager.accounts[0].address.toERC67String()).bitmap())
 
     }
 }
