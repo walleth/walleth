@@ -3,6 +3,7 @@ package org.ligi.walleth
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_account_creation.*
+import net.glxn.qrgen.android.QRCode
 import org.ligi.kaxt.startActivityFromClass
 
 class CreateAccountActivity : AppCompatActivity() {
@@ -11,7 +12,7 @@ class CreateAccountActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_account_creation)
-        supportActionBar?.subtitle = "Account Creation"
+        supportActionBar?.subtitle = getString(R.string.account_creation_subtitle)
 
         App.accountManager.newAccount("default")
 
@@ -19,5 +20,8 @@ class CreateAccountActivity : AppCompatActivity() {
             startActivityFromClass(MainActivity::class.java)
             finish()
         }
+
+        new_account_qrcode.setImageBitmap(QRCode.from(App.accountManager.accounts[0].address.hex).bitmap())
+
     }
 }

@@ -27,11 +27,13 @@ android {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile  "org.ethereum:geth:1.5.8"
+    compile "org.ethereum:geth:1.5.8"
 
     compile 'com.chibatching:kotpref:1.4.0'
     compile 'org.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.7'
+
+    compile 'com.github.kenglxn.QRGen:android:2.2.0'
 
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:design:$support_version"
