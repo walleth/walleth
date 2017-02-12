@@ -12,6 +12,7 @@ android {
         versionCode 1
         versionName "0.1"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
         release {
@@ -34,6 +35,9 @@ dependencies {
     compile 'com.github.ligi:KAXT:0.7'
 
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
+
+    compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
 
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:design:$support_version"

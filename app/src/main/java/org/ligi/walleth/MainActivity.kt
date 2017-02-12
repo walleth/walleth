@@ -1,10 +1,19 @@
 package org.ligi.walleth
 
+import android.content.res.Configuration
 import android.os.Bundle
+import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
+import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import org.ligi.kaxt.startActivityFromClass
 
 class MainActivity : AppCompatActivity() {
+
+
+    val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -13,9 +22,41 @@ class MainActivity : AppCompatActivity() {
             startActivityFromClass(CreateAccountActivity::class.java)
             finish()
         } else {
-            setContentView(R.layout.activity_main)
+            onCreateAfterPreChecks()
         }
     }
 
+    private fun onCreateAfterPreChecks() {
+        setContentView(R.layout.activity_main_in_drawer_container)
+
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        drawer_layout.addDrawerListener(actionBarDrawerToggle)
+    }
+
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        actionBarDrawerToggle.syncState()
+    }
+
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        super.onConfigurationChanged(newConfig)
+        actionBarDrawerToggle.onConfigurationChanged(newConfig)
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.menu_main, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.menu_info -> {
+            AlertDialog.Builder(this).setMessage("not yet implemented").show()
+            true
+        }
+        else -> actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
+    }
 
 }

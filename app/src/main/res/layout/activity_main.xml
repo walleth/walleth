@@ -1,18 +1,105 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
-        android:paddingBottom="@dimen/activity_vertical_margin"
-        tools:context="org.ligi.walleth.MainActivity">
+        android:orientation="vertical"
+        android:padding="@dimen/rythm2"
+        tools:context=".MainActivity">
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!"/>
-</RelativeLayout>
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_horizontal"
+                  android:orientation="horizontal">
+        <TextView
+                android:id="@+id/current_eth"
+                android:fontFamily="sans-serif"
+                android:textSize="48dp"
+                tools:text="\?"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+        <TextView
+                android:fontFamily="sans-serif-thin"
+                android:textSize="48dp"
+                android:text="ETH"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:layout_gravity="center_horizontal"
+                  android:orientation="horizontal">
+        <TextView
+                android:id="@+id/current_fiat"
+                android:fontFamily="sans-serif-condensed"
+                android:textSize="24dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:id="@+id/current_fiat_symbol"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="24dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+
+            android:layout_height="wrap_content">
+        <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/receive_image"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@drawable/ic_send_up"/>
+
+        <TextView android:layout_width="0dp"
+                  android:layout_weight="1"
+                  android:layout_height="wrap_content"
+                  android:padding="8dp"
+                  android:textSize="18dp"
+                  android:text="RECEIVE"
+                  android:id="@+id/receive_text"
+                  android:clickable="true"
+                  android:fontFamily="sans-serif"
+                  android:layout_gravity="center_vertical"
+        />
+
+        <TextView android:layout_width="0dp"
+                  android:layout_weight="1"
+                  android:gravity="right"
+                  android:padding="8dp"
+                  android:textSize="18dp"
+                  android:clickable="true"
+                  android:layout_height="wrap_content"
+                  android:fontFamily="sans-serif"
+                  android:text="SEND"
+                  android:id="@+id/sendText"
+                  android:layout_gravity="center"
+        />
+        <android.support.v7.widget.AppCompatImageView
+                android:layout_width="wrap_content"
+                android:id="@+id/sendIcon"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                app:srcCompat="@drawable/ic_send_down"/>
+
+
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+            android:id="@+id/transactionRecycler"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp"/>
+
+</LinearLayout>
