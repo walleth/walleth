@@ -9,8 +9,10 @@
             android:name=".App"
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
-        <activity android:name=".CreateAccountActivity"/>
-        <activity android:name=".MainActivity">
+        <activity android:name=".activities.RequestFundsActivity"/>
+        <activity android:name=".activities.CreateAccountActivity"/>
+        <activity android:name=".activities.MainActivity"
+                  android:theme="@style/AppThemeNoActionbar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

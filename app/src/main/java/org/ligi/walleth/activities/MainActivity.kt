@@ -1,4 +1,4 @@
-package org.ligi.walleth
+package org.ligi.walleth.activities
 
 import android.content.res.Configuration
 import android.os.Bundle
@@ -7,8 +7,11 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import org.ligi.kaxt.startActivityFromClass
+import org.ligi.walleth.App
+import org.ligi.walleth.R
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +35,10 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         drawer_layout.addDrawerListener(actionBarDrawerToggle)
+
+        receive_container.setOnClickListener{
+            startActivityFromClass(RequestFundsActivity::class.java)
+        }
     }
 
 

@@ -13,10 +13,10 @@
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:fontFamily="sans-serif"
-            android:text="@string/welcome"/>
+            android:text="You can use this Barcode to transfer funds:"/>
 
     <ImageView
-            android:id="@+id/new_account_qrcode"
+            android:id="@+id/receive_qrcode"
             android:layout_width="@dimen/qrcode_size"
             android:layout_height="@dimen/qrcode_size"
             android:padding="16dp"
@@ -24,12 +24,4 @@
             android:layout_below="@id/welcome_text"/>
 
 
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_margin="16dp"
-            app:srcCompat="@drawable/ic_action_done"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 </RelativeLayout>
