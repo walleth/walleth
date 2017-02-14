@@ -37,8 +37,10 @@ class MainActivity : AppCompatActivity() {
         drawer_layout.addDrawerListener(actionBarDrawerToggle)
 
         receive_container.setOnClickListener{
-            startActivityFromClass(RequestFundsActivity::class.java)
+            startActivityFromClass(RequestActivity::class.java)
         }
+
+
     }
 
 

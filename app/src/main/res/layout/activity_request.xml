@@ -5,13 +5,14 @@
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="org.ligi.walleth.activities.MainActivity">
+        android:padding="16dp"
+        tools:context="org.ligi.walleth.activities.RequestActivity">
 
     <TextView
             android:id="@+id/welcome_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+
             android:fontFamily="sans-serif"
             android:text="You can use this Barcode to transfer funds:"/>
 
@@ -23,5 +24,10 @@
             android:layout_centerHorizontal="true"
             android:layout_below="@id/welcome_text"/>
 
-
+    <Button
+            android:layout_below="@id/receive_qrcode"
+            android:id="@+id/requestTestnetEther"
+            android:text="request testnet ether on testnet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 </RelativeLayout>
