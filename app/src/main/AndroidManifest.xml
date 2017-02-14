@@ -11,6 +11,16 @@
             android:theme="@style/AppTheme">
         <activity android:name=".activities.RequestFundsActivity"/>
         <activity android:name=".activities.CreateAccountActivity"/>
+        <activity android:name=".activities.TransferActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data
+                        android:scheme="ethereum"/>
+            </intent-filter>
+        </activity>
         <activity android:name=".activities.MainActivity"
                   android:theme="@style/AppThemeNoActionbar">
             <intent-filter>
