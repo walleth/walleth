@@ -21,7 +21,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (App.accountManager.accounts.size() == 0L) {
+        if (App.keyStore.accounts.size() == 0L) {
             startActivityFromClass(CreateAccountActivity::class.java)
             finish()
         } else {

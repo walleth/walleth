@@ -17,14 +17,14 @@ class CreateAccountActivity : AppCompatActivity() {
         setContentView(R.layout.activity_account_creation)
         supportActionBar?.subtitle = getString(R.string.account_creation_subtitle)
 
-        App.accountManager.newAccount("default")
+        App.keyStore.newAccount("default")
 
         fab.setOnClickListener {
             startActivityFromClass(MainActivity::class.java)
             finish()
         }
 
-        new_account_qrcode.setImageBitmap(QRCode.from(App.accountManager.accounts[0].address.toERC67String()).bitmap())
+        new_account_qrcode.setImageBitmap(QRCode.from(App.keyStore.accounts[0].address.toERC67String()).bitmap())
 
     }
 }

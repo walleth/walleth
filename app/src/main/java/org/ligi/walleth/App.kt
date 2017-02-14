@@ -1,8 +1,8 @@
 package org.ligi.walleth
 
 import android.app.Application
-import org.ethereum.geth.AccountManager
 import org.ethereum.geth.Geth
+import org.ethereum.geth.KeyStore
 import java.io.File
 
 
@@ -13,10 +13,10 @@ class App : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        accountManager = AccountManager(keyStoreFile.absolutePath, Geth.LightScryptN, Geth.LightScryptP)
+        keyStore = KeyStore(keyStoreFile.absolutePath, Geth.LightScryptN, Geth.LightScryptP)
     }
 
     companion object {
-        lateinit var accountManager: AccountManager
+        lateinit var keyStore: KeyStore
     }
 }

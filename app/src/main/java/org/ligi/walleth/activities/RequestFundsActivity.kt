@@ -19,7 +19,7 @@ class RequestFundsActivity : AppCompatActivity() {
         supportActionBar?.subtitle = getString(R.string.account_creation_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        receive_qrcode.setImageBitmap(QRCode.from(App.accountManager.accounts[0].address.toERC67String()).bitmap())
+        receive_qrcode.setImageBitmap(QRCode.from(App.keyStore.accounts[0].address.toERC67String()).bitmap())
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
