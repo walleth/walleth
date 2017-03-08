@@ -21,9 +21,6 @@ task clean(type: Delete) {
 allprojects {
     repositories {
         jcenter()
-        flatDir {
-            dirs 'libs'
-        }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://jitpack.io' }
     }
