@@ -32,7 +32,7 @@ dependencies {
 
     compile 'com.chibatching:kotpref:1.4.0'
     compile 'org.ligi:tracedroid:1.4'
-    compile 'com.github.ligi:KAXT:0.7'
+    compile 'com.github.ligi:KAXT:0.15'
 
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
 
