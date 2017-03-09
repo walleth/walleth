@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:android.support.v7.cardview="http://schemas.android.com/apk/res-auto" xmlns:app="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="4dp"
-        android.support.v7.cardview:cardMaxElevation="8dp"
+        app:cardMaxElevation="8dp"
         android:orientation="vertical">
 
 
