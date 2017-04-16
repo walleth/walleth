@@ -4,7 +4,10 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import com.github.salomonbrys.kodein.instance
+import com.github.salomonbrys.kodein.lazy
 import kotlinx.android.synthetic.main.activity_transfer.*
+import org.greenrobot.eventbus.EventBus
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxtui.alert
 import org.ligi.walleth.App
@@ -21,6 +24,8 @@ class TransferActivity : AppCompatActivity() {
 
     var currentERC67: ERC67? = null
     var currentAmount: BigInteger? = null
+
+    val bus: EventBus by App.kodein.lazy.instance()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null && data.hasExtra("SCAN_RESULT")) {
@@ -57,7 +62,7 @@ class TransferActivity : AppCompatActivity() {
                 alert("amount must be specified")
             } else {
                 TransactionProvider.addTransaction(Transaction(currentAmount!!, to = currentERC67!!.address, from = App.keyStore.accounts[0].address.toWallethAddress()))
-                App.bus.post(TransactionEvent)
+                bus.post(TransactionEvent)
                 finish()
             }
         }

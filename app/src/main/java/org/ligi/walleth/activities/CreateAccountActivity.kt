@@ -7,6 +7,7 @@ import net.glxn.qrgen.android.QRCode
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.walleth.App
 import org.ligi.walleth.R
+import org.ligi.walleth.data.toWallethAddress
 import org.ligi.walleth.iac.toERC67String
 
 class CreateAccountActivity : AppCompatActivity() {
@@ -17,7 +18,7 @@ class CreateAccountActivity : AppCompatActivity() {
         setContentView(R.layout.activity_account_creation)
         supportActionBar?.subtitle = getString(R.string.account_creation_subtitle)
 
-        App.keyStore.newAccount("default")
+        App.currentAddress = App.keyStore.newAccount("default").address.toWallethAddress()
 
         fab.setOnClickListener {
             startActivityFromClass(MainActivity::class.java)

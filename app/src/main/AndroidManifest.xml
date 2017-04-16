@@ -16,6 +16,7 @@
         <service android:name="org.ligi.walleth.core.EthereumService"/>
 
         <activity android:name=".activities.RequestActivity"/>
+        <activity android:name=".activities.EditAccountActivity"/>
         <activity android:name=".activities.CreateAccountActivity"/>
         <activity android:name=".activities.TransferActivity">
             <intent-filter>

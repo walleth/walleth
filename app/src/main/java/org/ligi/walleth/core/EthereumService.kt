@@ -4,15 +4,15 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.SystemClock
+import com.github.salomonbrys.kodein.instance
 import okhttp3.*
-import org.ethereum.geth.BigInt
-import org.ethereum.geth.Geth
-import org.ethereum.geth.Header
-import org.ethereum.geth.NewHeadHandler
+import org.ethereum.geth.*
+import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 import org.ligi.walleth.App
 import org.ligi.walleth.R.id.address
 import org.ligi.walleth.data.*
+import org.ligi.walleth.data.Transaction
 import java.io.IOException
 import java.math.BigInteger
 
@@ -23,17 +23,8 @@ class EthereumService : Service() {
     override fun onBind(intent: Intent) = binder
     val okHttpClient = OkHttpClient.Builder().build()!!
 
-    object newHeadHandler : NewHeadHandler {
-        override fun onNewHead(p0: Header) {
-            App.lastSeenBlock = p0.number
-            val address = App.keyStore.accounts[0].address
-            val balance = App.ethereumNode.ethereumClient.getBalanceAt(App.ethereumContext, address, App.lastSeenBlock)
-            BalanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
-        }
+    val ethereumContext = Context()
 
-        override fun onError(p0: String?) {}
-
-    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
@@ -43,13 +34,26 @@ class EthereumService : Service() {
             // TODO better handling - unfortunately ethereumNode does not have one isStarted method which would come handy here
         }
 
-        App.ethereumNode.ethereumClient.subscribeNewHead(App.ethereumContext, newHeadHandler, 16)
+        App.ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
+            override fun onNewHead(p0: Header) {
+                App.lastSeenBlock = p0.number
+                val address = App.keyStore.accounts[0].address
+                val balance = App.ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, App.lastSeenBlock)
+                BalanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
+            }
+
+            override fun onError(p0: String?) {}
+
+        }, 16)
+
         Thread({
+
+            val bus: EventBus =App.kodein.instance()
 
             while (true) {
                 tryFetchFromEtherScan(App.keyStore.accounts[0].address.hex)
-                App.syncProgress = App.ethereumNode.ethereumClient.syncProgress(App.ethereumContext)
-                App.bus.post(newBlock)
+                App.syncProgress = App.ethereumNode.ethereumClient.syncProgress(ethereumContext)
+                bus.post(newBlock)
 
                 TransactionProvider.transactionList.forEach {
                     if (it.ref == Source.WALLETH) {
@@ -69,9 +73,9 @@ class EthereumService : Service() {
         it.ref = Source.WALLETH_PROCESSED
 
         val client = App.ethereumNode.ethereumClient
-        val nonceAt = client.getNonceAt(App.ethereumContext, it.from.toGethAddr(), -1)
+        val nonceAt = client.getNonceAt(ethereumContext, it.from.toGethAddr(), -1)
 
-        val gasPrice = client.suggestGasPrice(App.ethereumContext)
+        val gasPrice = client.suggestGasPrice(ethereumContext)
 
         val gasLimit = BigInt(21_000)
 
@@ -86,7 +90,7 @@ class EthereumService : Service() {
         transactionWithSignature.hash.hex
         it.sigHash = newTransaction.sigHash.hex
 
-        client.sendTransaction(App.ethereumContext, transactionWithSignature)
+        client.sendTransaction(ethereumContext, transactionWithSignature)
     }
 
     fun tryFetchFromEtherScan(addressHex: String) {

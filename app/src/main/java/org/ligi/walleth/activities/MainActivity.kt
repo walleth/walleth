@@ -8,14 +8,18 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import com.github.salomonbrys.kodein.instance
+import com.github.salomonbrys.kodein.lazy
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
+import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.ligi.walleth.App
+import org.ligi.walleth.App.Companion.currentAddress
 import org.ligi.walleth.R
 import org.ligi.walleth.data.*
 import org.ligi.walleth.ui.TransactionRecyclerAdapter
@@ -27,7 +31,7 @@ import java.math.RoundingMode
 class MainActivity : AppCompatActivity() {
 
     val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
-    val currentAddress by lazy { App.keyStore.accounts.get(0).address!! }
+    val bus: EventBus by App.kodein.lazy.instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,11 +48,11 @@ class MainActivity : AppCompatActivity() {
             onCreateAfterPreChecks()
         }
 
-        App.bus.register(this)
+        bus.register(this)
     }
 
     override fun onDestroy() {
-        App.bus.unregister(this)
+        bus.unregister(this)
 
         super.onDestroy()
     }
@@ -107,8 +111,10 @@ class MainActivity : AppCompatActivity() {
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     fun onEvent(balanceUpdate: BalanceUpdate) {
-        val balanceForAddress = BalanceProvider.getBalanceForAddress(WallethAddress(currentAddress.hex))
-        current_eth.text = balanceForAddress?.balance?.toEtherValueString() ?: "0"
+        currentAddress?.let {
+            val balanceForAddress = BalanceProvider.getBalanceForAddress(it)
+            current_eth.text = balanceForAddress?.balance?.toEtherValueString() ?: "0"
+        }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
