@@ -48,6 +48,8 @@ dependencies {
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
 
+    compile 'com.github.salomonbrys.kodein:kodein:3.3.0'
+
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:design:$support_version"
     compile "com.android.support:cardview-v7:$support_version"
