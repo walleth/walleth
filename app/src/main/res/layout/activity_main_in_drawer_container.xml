@@ -35,7 +35,7 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <org.ligi.ewallet.ui.WalletNavigationView
+    <org.ligi.walleth.ui.WalletNavigationView
             android:id="@+id/navigationView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

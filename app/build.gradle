@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'de.mobilej.unmock'
 
 android {
     compileSdkVersion 25
@@ -33,11 +34,14 @@ android {
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile "org.ethereum:geth:1.5.9"
+    compile "org.ethereum:geth:1.6.0"
 
     compile 'com.chibatching:kotpref:1.4.0'
     compile 'org.ligi:tracedroid:1.4'
-    compile 'com.github.ligi:KAXT:0.15'
+    compile 'com.github.ligi:KAXT:0.16'
+    compile 'com.github.ligi:KAXTUI:0.2'
+
+    compile 'org.greenrobot:eventbus:3.0.0'
 
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
 

@@ -1,4 +1,4 @@
-package org.ligi.ewallet.data
+package org.ligi.walleth.data
 
 data class Currency(val name: String, val symbol: String? = null) {
     override fun toString(): String {

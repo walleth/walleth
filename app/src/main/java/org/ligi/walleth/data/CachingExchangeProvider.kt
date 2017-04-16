@@ -1,4 +1,4 @@
-package org.ligi.ewallet.data
+package org.ligi.walleth.data
 
 import android.content.Context
 import android.content.SharedPreferences

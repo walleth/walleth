@@ -1,25 +1,45 @@
 package org.ligi.walleth.activities
 
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 import org.ligi.kaxt.startActivityFromClass
+import org.ligi.tracedroid.TraceDroid
+import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.ligi.walleth.App
 import org.ligi.walleth.R
+import org.ligi.walleth.data.*
+import org.ligi.walleth.ui.TransactionRecyclerAdapter
+import java.math.BigDecimal
+import java.math.BigInteger
+import java.math.MathContext
+import java.math.RoundingMode
+import kotlin.reflect.KClass
 
 class MainActivity : AppCompatActivity() {
 
-
     val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
+    val currentAddress by lazy { App.keyStore.accounts.get(0).address!! }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // don't want too many windows in worst case - so check for errors first
+        if (TraceDroid.getStackTraceFiles().isNotEmpty()) {
+            TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", this)
+        }
 
         if (App.keyStore.accounts.size() == 0L) {
             startActivityFromClass(CreateAccountActivity::class.java)
@@ -27,6 +47,14 @@ class MainActivity : AppCompatActivity() {
         } else {
             onCreateAfterPreChecks()
         }
+
+        App.bus.register(this)
+    }
+
+    override fun onDestroy() {
+        App.bus.unregister(this)
+
+        super.onDestroy()
     }
 
     private fun onCreateAfterPreChecks() {
@@ -36,11 +64,24 @@ class MainActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         drawer_layout.addDrawerListener(actionBarDrawerToggle)
 
-        receive_container.setOnClickListener{
+        receive_container.setOnClickListener {
             startActivityFromClass(RequestActivity::class.java)
         }
 
+        onEvent(BalanceUpdate)
 
+        send_container.setOnClickListener {
+            startActivityFromClass(TransferActivity::class)
+        }
+
+        transactionRecycler.adapter = TransactionRecyclerAdapter()
+        transactionRecycler.layoutManager = LinearLayoutManager(this)
+
+    }
+
+    fun BigInteger.toEtherValueString(): String {
+        val inEther = BigDecimal(this).divide(BigDecimal(ETH_IN_WEI))
+        return inEther.round(MathContext(4, RoundingMode.FLOOR)).stripTrailingZeros().toString()
     }
 
 
@@ -68,4 +109,30 @@ class MainActivity : AppCompatActivity() {
         else -> actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(balanceUpdate: BalanceUpdate) {
+        val balanceForAddress = BalanceProvider.getBalanceForAddress(WallethAddress(currentAddress.hex))
+        current_eth.text = balanceForAddress?.balance?.toEtherValueString() ?: "0"
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(event: newBlock) {
+        val progress = App.syncProgress
+        supportActionBar?.subtitle = if (progress != null) {
+            val percent = ((progress.currentBlock.toDouble() / progress.highestBlock) * 100).toInt()
+            "Block ${progress.currentBlock}/${progress.highestBlock} ($percent%)"
+        } else {
+            "Block " + App.lastSeenBlock
+        }
+
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun onEvent(event: TransactionEvent) {
+        transactionRecycler.adapter = TransactionRecyclerAdapter()
+    }
+
+
 }
+
+fun Context.startActivityFromClass(activityClass: KClass<out Activity>) = startActivity(Intent(this, activityClass.java))

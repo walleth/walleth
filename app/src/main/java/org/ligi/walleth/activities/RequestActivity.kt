@@ -8,7 +8,7 @@ import net.glxn.qrgen.android.QRCode
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.walleth.App
 import org.ligi.walleth.R
-import org.ligi.walleth.toERC67String
+import org.ligi.walleth.iac.toERC67String
 
 class RequestActivity : AppCompatActivity() {
 

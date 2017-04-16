@@ -1,12 +1,12 @@
-package org.ligi.ewallet.ui
+package org.ligi.walleth.ui
 
 import android.content.Context
 import android.support.annotation.LayoutRes
 import android.support.design.widget.NavigationView
 import android.support.v7.app.AlertDialog
 import android.util.AttributeSet
-import android.view.View
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
+import org.ligi.kaxt.applyIf
 import org.ligi.walleth.App
 import org.ligi.walleth.R
 
@@ -24,14 +24,8 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
         }
     }
 
-    override fun inflateHeaderView(@LayoutRes res: Int): View {
-        val view = super.inflateHeaderView(res)
-
-        if (App.keyStore.accounts.size() > 0) {
-            view.accountHash.text = App.keyStore.accounts[0].address.hex
-        }
-        return view
+    override fun inflateHeaderView(@LayoutRes res: Int) = super.inflateHeaderView(res)!!.applyIf(App.keyStore.accounts.size() > 0) {
+        accountHash.text = App.keyStore.accounts[0].address.hex
     }
-
 
 }

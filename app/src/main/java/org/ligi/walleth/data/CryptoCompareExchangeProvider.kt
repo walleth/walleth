@@ -1,4 +1,4 @@
-package org.ligi.ewallet.data
+package org.ligi.walleth.data
 
 import okhttp3.OkHttpClient
 import okhttp3.Request
