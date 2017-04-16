@@ -1,8 +1,5 @@
 package org.ligi.walleth.activities
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.support.v7.app.ActionBarDrawerToggle
@@ -26,7 +23,6 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.MathContext
 import java.math.RoundingMode
-import kotlin.reflect.KClass
 
 class MainActivity : AppCompatActivity() {
 
@@ -134,5 +130,3 @@ class MainActivity : AppCompatActivity() {
 
 
 }
-
-fun Context.startActivityFromClass(activityClass: KClass<out Activity>) = startActivity(Intent(this, activityClass.java))
