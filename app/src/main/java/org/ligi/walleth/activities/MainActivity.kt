@@ -1,10 +1,8 @@
 package org.ligi.walleth.activities
 
 import android.content.res.Configuration
-import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
@@ -150,7 +148,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_info -> {
-            AlertDialog.Builder(this).setMessage("not yet implemented").show()
+            startActivityFromClass(InfoActivity::class.java)
             true
         }
         else -> actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)

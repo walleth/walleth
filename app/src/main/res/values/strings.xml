@@ -6,4 +6,19 @@
     <string name="request_subtitle">Request</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
+    <string name="info_text"><![CDATA[
+
+This is a native Android <a href="http://ethereum.org">Ethereum</a> wallet.
+<br/><br/>
+It uses the in process node as ethereum light client from the <a href="https://github.com/ethereum/go-ethereum">go-ethereum</a> project.
+<br/><br/>
+Big shout out to <a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/fjl">fjl</a> and  <a href="https://github.com/obscuren">obscuren</a> here - awesome work guys!
+<br/><br/>
+This alpha uses the <a href="http://www.rinkeby.io">rinkeby</a> testnet.
+<br/><br/>
+Our wonderful Icon is from <a href="https://cookicons.co">Michael Cook</a>.
+<br/><br/>
+Be aware that this is an alpha and there will be bugs. There are also some known issues like <a href="https://github.com/ethereum/go-ethereum/issues/14367">this one</a>
+ and <a href="https://github.com/ethereum/go-ethereum/issues/14340">this one</a>
+]]></string>
 </resources>

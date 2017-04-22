@@ -2,6 +2,7 @@ package org.ligi.walleth
 
 import android.app.Application
 import android.content.Intent
+import android.support.v7.app.AppCompatDelegate
 import com.github.salomonbrys.kodein.*
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.ethereum.geth.Geth
@@ -46,7 +47,7 @@ open class App : Application(), KodeinAware {
             currentAddress = keyStore.accounts[0].address.toWallethAddress()
         }
 
-        //AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         executeCodeWeWillIgnoreInTests()
     }
 
