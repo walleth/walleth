@@ -71,11 +71,18 @@ class MainActivity : AppCompatActivity() {
                         balanceForAddress = it
                     }
                 }
+                val balanceIsZero = balanceForAddress.balance == BigInteger.ZERO
+
                 runOnUiThread {
                     current_eth.text = balanceForAddress.balance.toEtherValueString()
                     current_fiat.text = "0"
 
-                    send_container.setVisibility(balanceForAddress.balance != BigInteger.ZERO, INVISIBLE)
+                    send_container.setVisibility(!balanceIsZero, INVISIBLE)
+                    empty_view.setVisibility(balanceIsZero)
+
+                    transactionRecyclerIn.setVisibility(!balanceIsZero)
+                    transactionRecyclerOut.setVisibility(!balanceIsZero)
+
                     if (!syncProgressProvider.currentSyncProgress.isSyncing) {
                         supportActionBar?.subtitle = "Block " + balanceForAddress.block
                     }

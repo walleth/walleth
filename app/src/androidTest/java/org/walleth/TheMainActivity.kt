@@ -1,10 +1,16 @@
 package org.walleth
 
+import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.matcher.ViewMatchers.*
+import android.support.test.espresso.matcher.ViewMatchers.Visibility.*
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.ligi.walleth.App
+import org.ligi.walleth.R
 import org.ligi.walleth.activities.MainActivity
+import org.ligi.walleth.data.ETH_IN_WEI
 import java.math.BigInteger
 
 class TheMainActivity {
@@ -13,20 +19,34 @@ class TheMainActivity {
     var rule = TruleskActivityRule(MainActivity::class.java)
 
     @Test
-    fun weCanEnterMainActivity() {
-        rule.screenShot("main")
-    }
-
-    @Test
-    fun exchangeRateIs() {
-        TestApp.fixedValueExchangeProvider.exchangeRateMap["EUR"] = 10.0
-        rule.screenShot("main")
-    }
-
-    @Test
-    fun noSendIsVisibleAtBalanceZero() {
+    fun behavesCorrectlyWhenBalanceIsZero() {
         TestApp.balanceProvider.setBalance(App.currentAddress!!,42,BigInteger("0"))
-        rule.screenShot("main")
+
+        onView(withId(R.id.current_eth)).check(matches(withText("0")))
+
+        onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(INVISIBLE)))
+        onView(withId(R.id.empty_view)).check(matches(withEffectiveVisibility(VISIBLE)))
+
+        onView(withId(R.id.transactionRecyclerIn)).check(matches(withEffectiveVisibility(GONE)))
+        onView(withId(R.id.transactionRecyclerOut)).check(matches(withEffectiveVisibility(GONE)))
+
+        rule.screenShot("balance_zero")
+    }
+
+    @Test
+    fun behavesCorrectlyWhenBalanceIsOne() {
+        TestApp.balanceProvider.setBalance(App.currentAddress!!,42, ETH_IN_WEI)
+
+        onView(withId(R.id.current_eth)).check(matches(withText("1")))
+
+        onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(VISIBLE)))
+        onView(withId(R.id.empty_view)).check(matches(withEffectiveVisibility(GONE)))
+
+        onView(withId(R.id.transactionRecyclerIn)).check(matches(withEffectiveVisibility(VISIBLE)))
+        onView(withId(R.id.transactionRecyclerOut)).check(matches(withEffectiveVisibility(VISIBLE)))
+
+
+        rule.screenShot("balance_one")
     }
 
 

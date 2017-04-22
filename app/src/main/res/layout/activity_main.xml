@@ -48,7 +48,7 @@
     >
 
         <TextView
-                android:id="@+id/emptyView"
+                android:id="@+id/empty_view"
                 android:padding="16dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -63,7 +63,6 @@ You can find functions like these in the drawer to your left"
                 android:layout_height="match_parent"/>
 
         <android.support.v7.widget.RecyclerView
-                android:visibility="gone"
                 android:id="@+id/transactionRecyclerIn"
                 android:paddingRight="8dp"
                 android:layout_width="0dp"
@@ -71,7 +70,6 @@ You can find functions like these in the drawer to your left"
                 android:layout_height="match_parent"/>
 
         <android.support.v7.widget.RecyclerView
-                android:visibility="gone"
                 android:id="@+id/transactionRecyclerOut"
                 android:paddingLeft="8dp"
                 android:layout_width="0dp"
