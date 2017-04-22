@@ -31,7 +31,8 @@ import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
 import org.ligi.walleth.functions.toEtherValueString
 import org.ligi.walleth.ui.ChangeObserver
-import org.ligi.walleth.ui.TransactionRecyclerAdapter
+import org.ligi.walleth.ui.IncommingTransactionRecyclerAdapter
+import org.ligi.walleth.ui.OutgoingTransactionRecyclerAdapter
 import java.math.BigInteger
 
 
@@ -131,10 +132,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         transactionRecyclerOut.layoutManager = LinearLayoutManager(this)
-        transactionRecyclerOut.adapter = TransactionRecyclerAdapter(transactionProvider)
+        transactionRecyclerOut.adapter = OutgoingTransactionRecyclerAdapter(transactionProvider)
         transactionRecyclerIn.layoutManager = LinearLayoutManager(this)
 
-        transactionRecyclerIn.adapter = TransactionRecyclerAdapter(transactionProvider)
+        transactionRecyclerIn.adapter = IncommingTransactionRecyclerAdapter(transactionProvider)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

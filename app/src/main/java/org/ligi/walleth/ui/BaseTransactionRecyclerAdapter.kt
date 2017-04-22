@@ -7,13 +7,13 @@ import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
 import org.ligi.walleth.R
+import org.ligi.walleth.data.Transaction
 import org.ligi.walleth.data.TransactionProvider
-import org.ligi.walleth.data.WallethAddress
 
-class TransactionRecyclerAdapter(val transactionProvider: TransactionProvider) : RecyclerView.Adapter<TransactionViewHolder>() {
+abstract class BaseTransactionRecyclerAdapter() : RecyclerView.Adapter<TransactionViewHolder>() {
 
 
-    val transactionList by lazy { transactionProvider.getTransactionsForAddress(WallethAddress("FOO")) }
+    abstract val transactionList: List<Transaction>
 
     override fun getItemCount() = transactionList.size
 
