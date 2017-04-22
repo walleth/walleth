@@ -1,14 +1,12 @@
 package org.walleth
 
-import org.greenrobot.eventbus.EventBus
 import org.ligi.walleth.data.Transaction
-import org.ligi.walleth.data.TransactionEvent
 import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.WallethAddress
 import org.threeten.bp.LocalDateTime
 import java.math.BigInteger
 
-class TransactionProviderWithTestData(val bus: EventBus) : TransactionProvider {
+class TransactionProviderWithTestData() : TransactionProvider {
 
     val transactionList = mutableListOf<Transaction>()
 
@@ -25,7 +23,6 @@ class TransactionProviderWithTestData(val bus: EventBus) : TransactionProvider {
 
     override fun addTransaction(transaction: Transaction) {
         transactionList.add(transaction)
-        bus.post(TransactionEvent)
     }
 
     override fun getAllTransactions() = transactionList

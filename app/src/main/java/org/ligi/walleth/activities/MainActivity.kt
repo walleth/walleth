@@ -14,9 +14,6 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
-import org.greenrobot.eventbus.EventBus
-import org.greenrobot.eventbus.Subscribe
-import org.greenrobot.eventbus.ThreadMode
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.tracedroid.TraceDroid
@@ -25,7 +22,6 @@ import org.ligi.walleth.App.Companion.currentAddress
 import org.ligi.walleth.R
 import org.ligi.walleth.data.BalanceAtBlock
 import org.ligi.walleth.data.BalanceProvider
-import org.ligi.walleth.data.TransactionEvent
 import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
 import org.ligi.walleth.functions.toEtherValueString
@@ -40,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     val lazyKodein = LazyKodein(appKodein)
 
     val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
-    val bus: EventBus by lazyKodein.instance()
     val balanceProvider: BalanceProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
 
@@ -119,13 +114,6 @@ class MainActivity : AppCompatActivity() {
 
         transactionRecyclerIn.adapter = IncommingTransactionRecyclerAdapter(transactionProvider)
 
-        bus.register(this)
-    }
-
-    override fun onDestroy() {
-        bus.unregister(this)
-
-        super.onDestroy()
     }
 
 
@@ -151,12 +139,6 @@ class MainActivity : AppCompatActivity() {
             true
         }
         else -> actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    fun onEvent(event: TransactionEvent) {
-
-        //transactionRecyclerIn.adapter = TransactionRecyclerAdapter(transactionProvider)
     }
 
 }

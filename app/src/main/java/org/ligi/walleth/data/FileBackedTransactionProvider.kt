@@ -1,8 +1,6 @@
 package org.ligi.walleth.data
 
-import org.greenrobot.eventbus.EventBus
-
-class FileBackedTransactionProvider(val bus: EventBus) : TransactionProvider {
+class FileBackedTransactionProvider() : TransactionProvider {
 
     val transactionList = mutableListOf<Transaction>()
 
@@ -10,7 +8,6 @@ class FileBackedTransactionProvider(val bus: EventBus) : TransactionProvider {
 
     override fun addTransaction(transaction: Transaction) {
         transactionList.add(transaction)
-        bus.post(TransactionEvent)
     }
 
     override fun getAllTransactions() = transactionList

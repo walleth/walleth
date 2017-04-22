@@ -42,8 +42,6 @@ dependencies {
     compile 'com.github.ligi:KAXT:0.16'
     compile 'com.github.ligi:KAXTUI:0.2'
 
-    compile 'org.greenrobot:eventbus:3.0.0'
-
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
 
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'

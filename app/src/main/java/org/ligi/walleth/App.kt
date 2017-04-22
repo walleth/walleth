@@ -7,7 +7,6 @@ import com.github.salomonbrys.kodein.*
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
-import org.greenrobot.eventbus.EventBus
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.walleth.core.GethLightEthereumService
 import org.ligi.walleth.data.*
@@ -21,14 +20,13 @@ import java.io.File
 open class App : Application(), KodeinAware {
 
     override val kodein by Kodein.lazy {
-        bind<EventBus>() with singleton { EventBus.getDefault() }
         import(createKodein())
     }
 
     open fun createKodein() = Kodein.Module {
         bind<AddressBook>() with singleton { FileBackedAddressBook() }
         bind<BalanceProvider>() with singleton { BalanceProvider() }
-        bind<TransactionProvider>() with singleton { FileBackedTransactionProvider(instance()) }
+        bind<TransactionProvider>() with singleton { FileBackedTransactionProvider() }
         bind<ExchangeRateProvider>() with singleton { CachingExchangeProvider(FixedValueExchangeProvider(), instance()) }
         bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
     }

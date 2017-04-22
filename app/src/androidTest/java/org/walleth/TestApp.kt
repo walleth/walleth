@@ -2,7 +2,6 @@ package org.walleth
 
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
 import org.ligi.walleth.App
 import org.ligi.walleth.data.BalanceProvider
@@ -18,7 +17,7 @@ class TestApp : App() {
     override fun createKodein() = Kodein.Module {
         bind<AddressBook>() with singleton { AddressBookWithTestEntries() }
         bind<BalanceProvider>() with singleton { balanceProvider }
-        bind<TransactionProvider>() with singleton { TransactionProviderWithTestData(instance()) }
+        bind<TransactionProvider>() with singleton { TransactionProviderWithTestData() }
         bind<ExchangeRateProvider>() with singleton { fixedValueExchangeProvider }
         bind<SyncProgressProvider>() with singleton {
             SyncProgressProvider().apply {
