@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'de.mobilej.unmock'
+apply plugin: 'spoon'
 
 android {
     compileSdkVersion 25
@@ -61,4 +62,9 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
 
+}
+
+spoon {
+    debug = true
+    grantAllPermissions = true
 }
