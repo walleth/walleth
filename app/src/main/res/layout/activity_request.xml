@@ -14,20 +14,15 @@
             android:layout_height="wrap_content"
 
             android:fontFamily="sans-serif"
-            android:text="You can use this Barcode to transfer funds:"/>
+            android:text="@string/text_extract_funds"/>
 
     <ImageView
             android:id="@+id/receive_qrcode"
             android:layout_width="@dimen/qrcode_size"
             android:layout_height="@dimen/qrcode_size"
             android:padding="16dp"
+            android:contentDescription="@string/qr_code"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/welcome_text"/>
 
-    <Button
-            android:layout_below="@id/receive_qrcode"
-            android:id="@+id/requestTestnetEther"
-            android:text="request testnet ether on testnet"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 </RelativeLayout>

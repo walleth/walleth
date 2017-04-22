@@ -1,13 +1,12 @@
 <resources>
     <string name="app_name">WALLΞTH</string>
     <string name="welcome">Welcome,\n\n there was no account for you yet - so one was created. Note - this one is not secured with any password for easy use - so only use it as a hot walleth for a few beverages.</string>
-    <string name="account_creation_subtitle">Create Account</string>
+    <string name="request_transaction_subtitle">Request Transaction</string>
     <string name="edit_account_subtitle">Edit Account</string>
     <string name="request_subtitle">Request</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
     <string name="info_text"><![CDATA[
-
 This is a native Android <a href="http://ethereum.org">Ethereum</a> wallet.
 <br/><br/>
 It uses the in process node as ethereum light client from the <a href="https://github.com/ethereum/go-ethereum">go-ethereum</a> project.
@@ -21,4 +20,6 @@ Our wonderful Icon is from <a href="https://cookicons.co">Michael Cook</a>.
 Be aware that this is an alpha and there will be bugs. There are also some known issues like <a href="https://github.com/ethereum/go-ethereum/issues/14367">this one</a>
  and <a href="https://github.com/ethereum/go-ethereum/issues/14340">this one</a>
 ]]></string>
+    <string name="qr_code">QR-Code</string>
+    <string name="text_extract_funds">You can use this QR-Code request a transaction:</string>
 </resources>

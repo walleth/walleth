@@ -21,7 +21,6 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
-import org.ligi.walleth.App
 import org.ligi.walleth.App.Companion.currentAddress
 import org.ligi.walleth.R
 import org.ligi.walleth.data.BalanceAtBlock
@@ -100,23 +99,6 @@ class MainActivity : AppCompatActivity() {
             TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", this)
         }
 
-        if (App.keyStore.accounts.size() == 0L) {
-            startActivityFromClass(CreateAccountActivity::class.java)
-            finish()
-        } else {
-            onCreateAfterPreChecks()
-        }
-
-        bus.register(this)
-    }
-
-    override fun onDestroy() {
-        bus.unregister(this)
-
-        super.onDestroy()
-    }
-
-    private fun onCreateAfterPreChecks() {
         setContentView(R.layout.activity_main_in_drawer_container)
 
         setSupportActionBar(toolbar)
@@ -136,7 +118,16 @@ class MainActivity : AppCompatActivity() {
         transactionRecyclerIn.layoutManager = LinearLayoutManager(this)
 
         transactionRecyclerIn.adapter = IncommingTransactionRecyclerAdapter(transactionProvider)
+
+        bus.register(this)
     }
+
+    override fun onDestroy() {
+        bus.unregister(this)
+
+        super.onDestroy()
+    }
+
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
