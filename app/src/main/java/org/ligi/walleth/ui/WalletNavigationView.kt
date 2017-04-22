@@ -46,6 +46,12 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
 
         setNavigationItemSelectedListener {
             when (it.itemId) {
+                R.id.menu_save -> {
+                    val keyJSON = String(App.keyStore.exportKey(App.keyStore.accounts[0], "default", "default"))
+                    AlertDialog.Builder(context).setMessage(keyJSON).show()
+                    true
+                }
+
                 R.id.menu_settings -> {
                     AlertDialog.Builder(context).setMessage("TODO").show()
                     true
