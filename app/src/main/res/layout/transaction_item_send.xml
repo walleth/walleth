@@ -16,15 +16,6 @@
             android:layout_height="wrap_content">
 
 
-        <android.support.v7.widget.AppCompatImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/icon"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="center_vertical"
-                android:padding="@dimen/rythm"
-                app:srcCompat="@drawable/ic_send_down"/>
-
 
         <TextView
                 android:id="@+id/difference"

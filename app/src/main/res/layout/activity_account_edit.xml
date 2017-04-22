@@ -26,7 +26,7 @@
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputEditText
                 android:hint="notes"
-                android:id="@+id/notesInput"
+                android:id="@+id/noteInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
     </android.support.design.widget.TextInputLayout>

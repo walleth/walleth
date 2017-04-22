@@ -12,7 +12,7 @@ android {
         targetSdkVersion 25
         versionCode 1
         versionName "0.1"
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "org.walleth.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true
     }
     buildTypes {
@@ -49,6 +49,7 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
 
     compile 'com.github.salomonbrys.kodein:kodein:3.3.0'
+    compile 'com.github.salomonbrys.kodein:kodein-android:3.3.0'
 
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:design:$support_version"
@@ -56,9 +57,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:preference-v14:$support_version"
 
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
-        exclude group: 'com.android.support', module: 'support-annotations'
-    })
+    androidTestCompile 'com.github.ligi:trulesk:0.19'
 
     testCompile 'junit:junit:4.12'
 

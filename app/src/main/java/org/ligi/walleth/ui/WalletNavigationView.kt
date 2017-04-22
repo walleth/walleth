@@ -1,20 +1,49 @@
 package org.ligi.walleth.ui
 
 import android.content.Context
-import android.support.annotation.LayoutRes
 import android.support.design.widget.NavigationView
 import android.support.v7.app.AlertDialog
 import android.util.AttributeSet
+import android.view.View
+import com.github.salomonbrys.kodein.LazyKodein
+import com.github.salomonbrys.kodein.android.appKodein
+import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
-import org.ligi.kaxt.applyIf
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.walleth.App
 import org.ligi.walleth.R
 import org.ligi.walleth.activities.EditAccountActivity
+import org.ligi.walleth.data.addressbook.AddressBook
 
-class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationView(context, attrs) {
+class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationView(context, attrs), ChangeObserver {
 
-    init {
+    var headerView: View? = null
+    val addressBook: AddressBook by LazyKodein(appKodein).instance()
+
+    override fun observeChange() {
+
+        headerView?.let { header ->
+            addressBook.getEntryForName(App.currentAddress!!)?.let {
+                header.accountHash.text = it.address.hex
+                header.accountName.text = it.name
+            }
+
+            header.editAccountActivity.setOnClickListener {
+                context.startActivityFromClass(EditAccountActivity::class.java)
+            }
+        }
+    }
+
+
+    override fun inflateHeaderView(res: Int): View {
+        headerView = super.inflateHeaderView(res)
+
+        return headerView!!
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
         setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_settings -> {
@@ -24,13 +53,14 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
                 else -> false
             }
         }
+
+        addressBook.registerChangeObserverWithInitialObservation(this)
     }
 
-    override fun inflateHeaderView(@LayoutRes res: Int) = super.inflateHeaderView(res)!!.applyIf(App.keyStore.accounts.size() > 0) {
-        accountHash.text = App.keyStore.accounts[0].address.hex
-        editAccountActivity.setOnClickListener {
-            context.startActivityFromClass(EditAccountActivity::class.java)
-        }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+        addressBook.unRegisterChangeObserver(this)
     }
 
 }

@@ -9,22 +9,18 @@ import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
 import org.ligi.walleth.R
 import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.WallethAddress
-import java.math.BigInteger
 
-class TransactionRecyclerAdapter : RecyclerView.Adapter<TransactionViewHolder>() {
+class TransactionRecyclerAdapter(val transactionProvider: TransactionProvider) : RecyclerView.Adapter<TransactionViewHolder>() {
 
-    val transactionList = TransactionProvider.getTransactionsForAddress(WallethAddress(""))
+
+    val transactionList by lazy { transactionProvider.getTransactionsForAddress(WallethAddress("FOO")) }
 
     override fun getItemCount() = transactionList.size
 
-    override fun getItemViewType(position: Int) = if (transactionList[position].value >= BigInteger.ZERO) 0 else 1
-
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) {
-        holder.bind(transactionList[position])
-    }
+    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(transactionList[position])
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(if (viewType == 0) R.layout.transaction_item else R.layout.transaction_item_send, null)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.transaction_item , null)
         val layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         val margin = parent.context.resources.getDimension(R.dimen.rythm).toInt()
         layoutParams.setMargins(0, margin, 0, margin)

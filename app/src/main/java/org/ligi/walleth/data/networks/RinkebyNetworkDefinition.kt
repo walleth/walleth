@@ -1,15 +1,8 @@
 package org.ligi.walleth.data.networks
 
-import org.ligi.walleth.data.blockexplorer.BlockExplorer
 import org.ligi.walleth.data.blockexplorer.EtherscanRinkebyBlockExplorer
 
-interface NetworkDefinition {
-    fun getBlockExplorer(): BlockExplorer
-    val genesis: String
-    val bootNodes: List<String>
-}
-
-class RinkebyNetworkDefinition : NetworkDefinition{
+class RinkebyNetworkDefinition : NetworkDefinition {
 
     override fun getBlockExplorer() = EtherscanRinkebyBlockExplorer()
 

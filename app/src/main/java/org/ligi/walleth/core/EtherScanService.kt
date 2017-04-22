@@ -4,20 +4,25 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.SystemClock
+import com.github.salomonbrys.kodein.LazyKodein
+import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import okhttp3.*
 import org.ethereum.geth.*
-import org.greenrobot.eventbus.EventBus
 import org.json.JSONObject
 import org.ligi.walleth.App
+import org.ligi.walleth.App.Companion.networḱ
 import org.ligi.walleth.R.id.address
 import org.ligi.walleth.data.*
 import org.ligi.walleth.data.Transaction
+import org.ligi.walleth.data.syncprogress.SyncProgressProvider
+import org.ligi.walleth.data.syncprogress.WallethSyncProgress
+import java.io.File
 import java.io.IOException
 import java.math.BigInteger
 
 
-class EthereumService : Service() {
+class EtherScanService : Service() {
 
     val binder by lazy { Binder() }
     override fun onBind(intent: Intent) = binder
@@ -25,21 +30,40 @@ class EthereumService : Service() {
 
     val ethereumContext = Context()
 
+    val balanceProvider: BalanceProvider by LazyKodein(appKodein).instance()
+    val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
+    val syncProgress: SyncProgressProvider by LazyKodein(appKodein).instance()
+
+    private val path by lazy { File(baseContext.filesDir, ".ethereum_rb").absolutePath }
+
+    val ethereumNode by lazy {
+        Geth.newNode(path, NodeConfig().apply {
+            val bootNodes = Enodes()
+
+            networḱ.bootNodes.forEach {
+                bootNodes.append(Enode(it))
+            }
+
+            bootstrapNodes = bootNodes
+            ethereumGenesis = networḱ.genesis
+            ethereumNetworkID = 4
+            ethereumNetStats = "ligi:Respect my authoritah!@stats.rinkeby.io"
+        })
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         try {
-            App.ethereumNode.start()
+            ethereumNode.start()
         } catch (e: Exception) {
             // TODO better handling - unfortunately ethereumNode does not have one isStarted method which would come handy here
         }
 
-        App.ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
+        ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
             override fun onNewHead(p0: Header) {
-                App.lastSeenBlock = p0.number
                 val address = App.keyStore.accounts[0].address
-                val balance = App.ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, App.lastSeenBlock)
-                BalanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
+                val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
+                balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
             }
 
             override fun onError(p0: String?) {}
@@ -48,14 +72,19 @@ class EthereumService : Service() {
 
         Thread({
 
-            val bus: EventBus =App.kodein.instance()
-
             while (true) {
                 tryFetchFromEtherScan(App.keyStore.accounts[0].address.hex)
-                App.syncProgress = App.ethereumNode.ethereumClient.syncProgress(ethereumContext)
-                bus.post(newBlock)
+                val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
 
-                TransactionProvider.transactionList.forEach {
+                if (ethereumSyncProgress != null) {
+                    val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
+                    syncProgress.setSyncProgress(newSyncProgress)
+                } else {
+                    syncProgress.setSyncProgress(WallethSyncProgress())
+                }
+
+
+                transactionProvider.getAllTransactions().forEach {
                     if (it.ref == Source.WALLETH) {
                         executeTransaction(it)
                     }
@@ -72,7 +101,7 @@ class EthereumService : Service() {
     private fun executeTransaction(it: Transaction) {
         it.ref = Source.WALLETH_PROCESSED
 
-        val client = App.ethereumNode.ethereumClient
+        val client = ethereumNode.ethereumClient
         val nonceAt = client.getNonceAt(ethereumContext, it.from.toGethAddr(), -1)
 
         val gasPrice = client.suggestGasPrice(ethereumContext)

@@ -3,9 +3,14 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:background="@color/colorPrimary"
-                android:theme="@style/ActionBarTheme"
+
                 android:layout_height="96dp">
 
+    <android.support.v7.widget.AppCompatImageView
+            app:srcCompat="@drawable/ic_social_person_outline"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+    />
     <android.support.v7.widget.AppCompatImageView
             android:padding="@dimen/rythm"
             android:id="@+id/editAccountActivity"
@@ -21,6 +26,16 @@
             android:fontFamily="sans-serif"
             android:lines="1"
             android:ellipsize="middle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <android.support.v7.widget.AppCompatTextView
+            android:layout_alignParentRight="true"
+            android:id="@+id/accountName"
+            android:layout_above="@id/accountHash"
+            android:paddingRight="8dp"
+            android:fontFamily="sans-serif"
+            android:lines="1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 </RelativeLayout>
