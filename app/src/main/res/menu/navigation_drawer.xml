@@ -1,21 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <item
+            android:id="@+id/menu_switch"
+            android:title="Switch account"
+            android:icon="@drawable/ic_swap_horiz_black_24dp"/>
 
     <item
             android:id="@+id/menu_save"
-            android:title="Save account key"
-            android:icon="@drawable/ic_save_black_24dp"
-    />
+            android:title="Save account"
+            android:icon="@drawable/ic_save_black_24dp"/>
 
     <item
             android:id="@+id/menu_load"
-            android:title="Import account key"
-            android:icon="@drawable/ic_input_black_24dp"
-    />
+            android:title="Import account"
+            android:icon="@drawable/ic_system_update_black_24dp"/>
     <item
             android:id="@+id/menu_settings"
             android:title="Settings"
-            android:icon="@drawable/ic_action_settings"
-    />
+            android:icon="@drawable/ic_action_settings"/>
 </menu>
