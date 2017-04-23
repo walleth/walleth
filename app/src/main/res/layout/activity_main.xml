@@ -20,6 +20,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:duplicateParentState="true"
                     android:id="@+id/rec"
                     app:srcCompat="@drawable/ic_rec"/>
@@ -35,6 +36,7 @@
                     android:layout_width="48dp"
                     android:layout_height="48dp"
                     android:layout_gravity="center"
+                    android:background="?selectableItemBackgroundBorderless"
                     android:duplicateParentState="true"
                     android:id="@+id/send"
                     app:srcCompat="@drawable/ic_send"/>
