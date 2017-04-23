@@ -2,8 +2,11 @@ package org.walleth
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.contrib.DrawerActions.open
+
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.espresso.matcher.ViewMatchers.Visibility.*
+import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
@@ -45,11 +48,21 @@ class TheMainActivity {
         onView(withId(R.id.transactionRecyclerIn)).check(matches(withEffectiveVisibility(VISIBLE)))
         onView(withId(R.id.transactionRecyclerOut)).check(matches(withEffectiveVisibility(VISIBLE)))
 
-
         rule.screenShot("balance_one")
     }
 
+    @Test
+    fun navigationDrawerIsUsuallyNotShown() {
+        onView(withId(R.id.navigationView)).check(matches(not(isDisplayed())))
+    }
 
+    @Test
+    fun navigationDrawerOpensWhenRequested() {
+        onView(withId(R.id.drawer_layout)).perform(open())
+        onView(withId(R.id.navigationView)).check(matches(isDisplayed()))
+
+        rule.screenShot("drawer_opened")
+    }
 
 
 }

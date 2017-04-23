@@ -32,6 +32,18 @@ android {
 
 }
 
+configurations {
+
+    // http://stackoverflow.com/questions/30578243/why-would-adding-espresso-contrib-cause-an-inflateexception
+    androidTestCompile.exclude group: 'com.android.support', module: 'appcompat-v7'
+    androidTestCompile.exclude group: 'com.android.support', module: 'design'
+    androidTestCompile.exclude group: 'com.android.support', module: 'support-v4'
+    androidTestCompile.exclude group: 'com.android.support', module: 'support-annotations'
+    androidTestCompile.exclude group: 'com.android.support', module: 'preference-v7'
+    androidTestCompile.exclude module: 'recyclerview-v7'
+    androidTestCompile.exclude module: 'kotlin-stdlib'
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
@@ -56,6 +68,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:preference-v14:$support_version"
 
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2'
     androidTestCompile 'com.github.ligi:trulesk:0.19'
 
     testCompile 'junit:junit:4.12'
