@@ -1,6 +1,7 @@
 package org.ligi.walleth.ui
 
 import android.content.Context
+import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.support.v7.app.AlertDialog
 import android.util.AttributeSet
@@ -47,8 +48,17 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
         setNavigationItemSelectedListener {
             when (it.itemId) {
                 R.id.menu_save -> {
+
                     val keyJSON = String(App.keyStore.exportKey(App.keyStore.accounts[0], "default", "default"))
-                    AlertDialog.Builder(context).setMessage(keyJSON).show()
+
+                    val sendIntent = Intent().apply {
+                        action = Intent.ACTION_SEND
+                        putExtra(Intent.EXTRA_TEXT, keyJSON)
+                        type = "text/plain"
+                    }
+
+                    context.startActivity(sendIntent)
+
                     true
                 }
 
