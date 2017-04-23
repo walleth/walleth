@@ -44,6 +44,7 @@ class TransferActivity : AppCompatActivity() {
         currentERC67 = savedInstanceState?.getString("ERC67")?.let(::ERC67)
 
         supportActionBar?.subtitle = "Transfer"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         setToFromURL(intent.data?.toString(), false)
 
