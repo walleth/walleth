@@ -15,8 +15,8 @@
             app:srcCompat="@mipmap/ic_launcher"
             android:layout_gravity="center_horizontal"
             android:layout_margin="48dp"
-            android:layout_width="96dp"
-            android:layout_height="96dp"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content">
 
