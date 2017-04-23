@@ -21,5 +21,6 @@ Be aware that this is an alpha and there will be bugs. There are also some known
  and <a href="https://github.com/ethereum/go-ethereum/issues/14340">this one</a>
 ]]></string>
     <string name="qr_code">QR-Code</string>
-    <string name="text_extract_funds">You can use this QR-Code request a transaction:</string>
+    <string name="text_extract_funds">You can use this QR-Code to request a transaction:</string>
+    <string name="import_json_title">Import Account</string>
 </resources>

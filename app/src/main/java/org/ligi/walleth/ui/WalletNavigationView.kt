@@ -14,6 +14,7 @@ import org.ligi.kaxt.startActivityFromClass
 import org.ligi.walleth.App
 import org.ligi.walleth.R
 import org.ligi.walleth.activities.EditAccountActivity
+import org.ligi.walleth.activities.ImportActivity
 import org.ligi.walleth.data.addressbook.AddressBook
 
 class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationView(context, attrs), ChangeObserver {
@@ -59,6 +60,11 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
 
                     context.startActivity(sendIntent)
 
+                    true
+                }
+
+                R.id.menu_load -> {
+                    context.startActivityFromClass(ImportActivity::class.java)
                     true
                 }
 

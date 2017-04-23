@@ -61,7 +61,7 @@ class EtherScanService : Service() {
 
         ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
             override fun onNewHead(p0: Header) {
-                val address = App.keyStore.accounts[0].address
+                val address = App.currentAddress!!.toGethAddr()
                 val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
                 balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
             }
@@ -73,7 +73,7 @@ class EtherScanService : Service() {
         Thread({
 
             while (true) {
-                tryFetchFromEtherScan(App.keyStore.accounts[0].address.hex)
+                tryFetchFromEtherScan( App.currentAddress!!.hex)
                 val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
 
                 if (ethereumSyncProgress != null) {

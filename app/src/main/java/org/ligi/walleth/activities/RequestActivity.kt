@@ -23,7 +23,7 @@ class RequestActivity : AppCompatActivity() {
         supportActionBar?.subtitle = getString(R.string.request_transaction_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val relevantAddress = App.keyStore.accounts[0].address
+        val relevantAddress = App.currentAddress!!
         receive_qrcode.setImageBitmap(QRCode.from(relevantAddress.toERC67String()).bitmap())
 
     }

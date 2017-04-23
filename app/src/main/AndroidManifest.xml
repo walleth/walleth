@@ -16,13 +16,13 @@
 
         <activity android:name=".activities.RequestActivity"/>
         <activity android:name=".activities.InfoActivity"/>
+        <activity android:name=".activities.ImportActivity"/>
         <activity android:name=".activities.EditAccountActivity"/>
         <activity android:name=".activities.TransferActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>
-
 
                 <data
                         android:scheme="ethereum"/>
