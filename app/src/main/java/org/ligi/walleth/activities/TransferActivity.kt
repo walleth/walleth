@@ -41,6 +41,8 @@ class TransferActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_transfer)
 
+        currentERC67 = savedInstanceState?.getString("ERC67")?.let(::ERC67)
+
         supportActionBar?.subtitle = "Transfer"
 
         setToFromURL(intent.data?.toString(), false)
@@ -70,8 +72,15 @@ class TransferActivity : AppCompatActivity() {
         }
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putString("ERC67", currentERC67?.url)
+        super.onSaveInstanceState(outState)
+    }
+
     private fun setToFromURL(uri: String?, fromUser: Boolean) {
-        currentERC67 = uri?.let { ERC67(if (it.startsWith("0x")) "ethereum:$it" else uri) }
+        uri?.let {
+            currentERC67 = ERC67(if (it.startsWith("0x")) "ethereum:$it" else uri)
+        }
 
         if (currentERC67 != null && currentERC67!!.isValid()) {
             to_address.text = currentERC67!!.getHex()
