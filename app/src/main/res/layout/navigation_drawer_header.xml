@@ -1,41 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:orientation="vertical"
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:background="@color/colorPrimary"
+        android:layout_height="96dp">
+
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="0dp">
+        <android.support.v7.widget.AppCompatImageView
+                app:srcCompat="@drawable/ic_social_person_outline"
+                android:layout_width="64dp"
+                android:layout_height="64dp"
+        />
+
+        <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/accountName"
+                android:paddingRight="8dp"
+                android:fontFamily="sans-serif"
+                android:textSize="24sp"
+                android:textColor="@android:color/black"
+                android:lines="1"
+                android:gravity="center"
                 android:layout_width="match_parent"
-                android:background="@color/colorPrimary"
+                android:layout_height="match_parent"/>
 
-                android:layout_height="96dp">
-
-    <android.support.v7.widget.AppCompatImageView
-            app:srcCompat="@drawable/ic_social_person_outline"
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-    />
-    <android.support.v7.widget.AppCompatImageView
-            android:padding="@dimen/rythm"
-            android:id="@+id/editAccountActivity"
-            app:srcCompat="@drawable/ic_editor_mode_edit"
-            android:layout_alignParentRight="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <android.support.v7.widget.AppCompatTextView
-            android:layout_alignParentBottom="true"
             android:id="@+id/accountHash"
             android:padding="8dp"
             android:fontFamily="sans-serif"
+            android:textColor="@android:color/black"
             android:lines="1"
             android:ellipsize="middle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
-    <android.support.v7.widget.AppCompatTextView
-            android:layout_alignParentRight="true"
-            android:id="@+id/accountName"
-            android:layout_above="@id/accountHash"
-            android:paddingRight="8dp"
-            android:fontFamily="sans-serif"
-            android:lines="1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-</RelativeLayout>
+</LinearLayout>

@@ -29,10 +29,6 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
                 header.accountHash.text = it.address.hex
                 header.accountName.text = it.name
             }
-
-            header.editAccountActivity.setOnClickListener {
-                context.startActivityFromClass(EditAccountActivity::class.java)
-            }
         }
     }
 
@@ -48,6 +44,11 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
 
         setNavigationItemSelectedListener {
             when (it.itemId) {
+                R.id.menu_edit -> {
+                    context.startActivityFromClass(EditAccountActivity::class.java)
+                    true
+                }
+
                 R.id.menu_save -> {
 
                     val keyJSON = String(App.keyStore.exportKey(App.keyStore.accounts[0], "default", "default"))

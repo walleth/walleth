@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+            android:id="@+id/menu_edit"
+            android:title="Edit account"
+            android:icon="@drawable/ic_editor_mode_edit"/>
+
+    <item
             android:id="@+id/menu_switch"
             android:title="Switch account"
             android:icon="@drawable/ic_swap_horiz_black_24dp"/>
