@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
                     current_fiat.text = "0"
 
                     send_container.setVisibility(!balanceIsZero, INVISIBLE)
-                    empty_view.setVisibility(balanceIsZero)
+                    empty_view_container.setVisibility(balanceIsZero)
 
                     transactionRecyclerIn.setVisibility(!balanceIsZero)
                     transactionRecyclerOut.setVisibility(!balanceIsZero)
