@@ -36,9 +36,9 @@ class MainActivity : AppCompatActivity() {
     val lazyKodein = LazyKodein(appKodein)
 
     val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
+
     val balanceProvider: BalanceProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
-
     val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
 
     override fun onResume() {
@@ -89,7 +89,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // don't want too many windows in worst case - so check for errors first
         if (TraceDroid.getStackTraceFiles().isNotEmpty()) {
             TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", this)
         }
@@ -116,7 +115,6 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
         actionBarDrawerToggle.syncState()
@@ -126,7 +124,6 @@ class MainActivity : AppCompatActivity() {
         super.onConfigurationChanged(newConfig)
         actionBarDrawerToggle.onConfigurationChanged(newConfig)
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
