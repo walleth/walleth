@@ -1,18 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
+        android:animateLayoutChanges="true"
         tools:context="org.ligi.walleth.activities.RequestActivity">
 
     <TextView
             android:id="@+id/welcome_text"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
+            android:gravity="center"
             android:fontFamily="sans-serif"
             android:textSize="16sp"
             android:padding="16dp"
@@ -26,5 +27,35 @@
             android:contentDescription="@string/qr_code"
             android:layout_centerHorizontal="true"
             android:layout_below="@id/welcome_text"/>
+
+    <CheckBox
+            android:text="Add Value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/receive_qrcode"
+            android:id="@+id/add_value_checkbox"/>
+
+    <android.support.design.widget.TextInputLayout
+            android:layout_below="@+id/add_value_checkbox"
+            android:id="@+id/value_inputlayout"
+            android:visibility="gone"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/value_input_edittext"
+                android:inputType="numberDecimal"
+                android:hint="Value"
+        />
+    </android.support.design.widget.TextInputLayout>
+    <TextView
+            android:id="@+id/request_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif"
+            android:paddingTop="16dp"
+            android:layout_below="@id/value_inputlayout"/>
 
 </RelativeLayout>

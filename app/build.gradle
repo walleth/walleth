@@ -72,6 +72,7 @@ dependencies {
     androidTestCompile 'com.github.ligi:trulesk:0.19'
 
     testCompile 'junit:junit:4.12'
+    testCompile 'com.google.truth:truth:0.32'
 
 }
 

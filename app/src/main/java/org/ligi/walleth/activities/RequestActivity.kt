@@ -3,17 +3,23 @@ package org.ligi.walleth.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_request.*
 import net.glxn.qrgen.android.QRCode
+import org.ligi.kaxt.doAfterEdit
+import org.ligi.kaxt.setVisibility
 import org.ligi.walleth.App
 import org.ligi.walleth.R
 import org.ligi.walleth.iac.toERC67String
-
+import java.math.BigDecimal
 
 
 class RequestActivity : AppCompatActivity() {
+
+    lateinit var currentERC67String: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,9 +29,33 @@ class RequestActivity : AppCompatActivity() {
         supportActionBar?.subtitle = getString(R.string.request_transaction_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        val relevantAddress = App.currentAddress!!
-        receive_qrcode.setImageBitmap(QRCode.from(relevantAddress.toERC67String()).bitmap())
+        refreshQR()
 
+        request_hint.text = Html.fromHtml(getString(R.string.request_hint))
+        request_hint.movementMethod = LinkMovementMethod()
+
+        add_value_checkbox.setOnCheckedChangeListener { _, isChecked ->
+            value_inputlayout.setVisibility(isChecked)
+            refreshQR()
+        }
+
+        value_input_edittext.doAfterEdit {
+            refreshQR()
+        }
+    }
+
+    private fun refreshQR() {
+        val relevantAddress = App.currentAddress!!
+        currentERC67String = relevantAddress.toERC67String()
+
+        if (add_value_checkbox.isChecked) {
+            try {
+                currentERC67String = relevantAddress.toERC67String(BigDecimal(value_input_edittext.text.toString()))
+            } catch (e: NumberFormatException) {
+            }
+        }
+
+        receive_qrcode.setImageBitmap(QRCode.from(currentERC67String).bitmap())
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -37,7 +67,7 @@ class RequestActivity : AppCompatActivity() {
         R.id.menu_share -> {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, App.currentAddress!!.toERC67String())
+                putExtra(Intent.EXTRA_TEXT, currentERC67String)
                 type = "text/plain"
             }
 

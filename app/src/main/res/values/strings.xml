@@ -23,4 +23,10 @@ Be aware that this is an alpha and there will be bugs. There are also some known
     <string name="qr_code">QR-Code</string>
     <string name="text_extract_funds">You can use this QR-Code to request a transaction:</string>
     <string name="import_json_title">Import Account</string>
+    <string name="request_hint"><![CDATA[
+You might share this address with the hashtag <a href="https://twitter.com/search?q=%23walleth">#walleth</a> on social media to get test ether.
+<br/><a href="http://ligi.de">LIGI</a> will monitor twitter and has some test-ether collected since the launch of <a href="http://www.rinkeby.io">rinkeby</a>.
+<br/>Also you can pass on the test ether you got to users you see using this hashtag and exercise transactions this way.
+]]>
+</string>
 </resources>
