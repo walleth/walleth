@@ -1,9 +1,12 @@
 package org.walleth
 
+import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.action.ViewActions.click
+import android.support.test.espresso.action.ViewActions.typeText
 import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.isDisplayed
-import android.support.test.espresso.matcher.ViewMatchers.withId
+import android.support.test.espresso.matcher.ViewMatchers.*
+import android.support.test.espresso.matcher.ViewMatchers.Visibility.GONE
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
@@ -16,9 +19,27 @@ class TheRequestActivity {
     var rule = TruleskActivityRule(RequestActivity::class.java)
 
     @Test
-    fun requestIsThereAndHasQRCode() {
-        rule.screenShot("balance_zero")
+    fun requestIsThereAndHasQRCodeAndNoValue() {
         onView(withId(R.id.receive_qrcode)).check(matches(isDisplayed()))
+        onView(withId(R.id.add_value_checkbox)).check(matches(isNotChecked()))
+        onView(withId(R.id.value_inputlayout)).check(matches(withEffectiveVisibility(GONE)))
+
+        rule.screenShot("transaction_no_value")
+    }
+
+    @Test
+    fun thereIsNoValueEditShownWhenCheckboxUnchecked() {
+
+        onView(withId(R.id.add_value_checkbox)).perform(click())
+        onView(withId(R.id.add_value_checkbox)).check(matches(isChecked()))
+
+        onView(withId(R.id.value_inputlayout)).check(matches(isDisplayed()))
+
+        onView(withId(R.id.value_input_edittext)).perform(typeText("0.42"))
+
+        Espresso.closeSoftKeyboard()
+
+        rule.screenShot("transaction_with_value")
     }
 
 }
