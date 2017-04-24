@@ -25,7 +25,7 @@ import java.math.BigInteger.ZERO
 
 class TransferActivity : AppCompatActivity() {
 
-    var currentERC67: ERC67? = null
+    var currentERC67String: String? = null
     var currentAmount: BigInteger? = null
 
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
@@ -41,50 +41,63 @@ class TransferActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_transfer)
 
-        currentERC67 = savedInstanceState?.getString("ERC67")?.let(::ERC67)
+        currentERC67String = if (savedInstanceState != null && savedInstanceState.containsKey("ERC67")) {
+            savedInstanceState.getString("ERC67")
+        } else {
+            intent.data?.toString()
+        }
 
         supportActionBar?.subtitle = "Transfer"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        setToFromURL(intent.data?.toString(), false)
+        setToFromURL(currentERC67String, false)
 
         scan_button.setOnClickListener {
             BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
         }
 
         amount_input.doAfterEdit {
-            currentAmount = try {
-                (BigDecimal(it.toString()) * BigDecimal(ETH_IN_WEI)).toBigInteger()
-            } catch (e: NumberFormatException) {
-                ZERO
-            }
-
+            setAmountFromETHString(it.toString())
         }
 
         fab.setOnClickListener {
-            if (currentERC67 == null) {
+            if (currentERC67String == null) {
                 alert("address must be specified")
             } else if (currentAmount == null) {
                 alert("amount must be specified")
             } else {
-                transactionProvider.addTransaction(Transaction(currentAmount!!, to = currentERC67!!.address, from = App.keyStore.accounts[0].address.toWallethAddress()))
+                transactionProvider.addTransaction(Transaction(currentAmount!!, to = ERC67(currentERC67String!!).address, from = App.keyStore.accounts[0].address.toWallethAddress()))
                 finish()
             }
         }
     }
 
+    private fun setAmountFromETHString(it: String) {
+        currentAmount = try {
+            (BigDecimal(it) * BigDecimal(ETH_IN_WEI)).toBigInteger()
+        } catch (e: NumberFormatException) {
+            ZERO
+        }
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString("ERC67", currentERC67?.url)
+        outState.putString("ERC67", currentERC67String)
         super.onSaveInstanceState(outState)
     }
 
     private fun setToFromURL(uri: String?, fromUser: Boolean) {
         uri?.let {
-            currentERC67 = ERC67(if (it.startsWith("0x")) "ethereum:$it" else uri)
+            currentERC67String = if (it.startsWith("0x")) "ethereum:$it" else uri
         }
 
-        if (currentERC67 != null && currentERC67!!.isValid()) {
-            to_address.text = currentERC67!!.getHex()
+        if (currentERC67String != null && ERC67(currentERC67String!!).isValid()) {
+            val erc67 = ERC67(currentERC67String!!)
+            to_address.text = erc67.getHex()
+            erc67.getValue()?.let {
+                amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal(ETH_IN_WEI)).toString())
+                setAmountFromETHString(it)
+                currentAmount = currentERC67String?.let { BigInteger(ERC67(it).getValue()) }
+            }
         } else {
             to_address.text = "no address selected"
 

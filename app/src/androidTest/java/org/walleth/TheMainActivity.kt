@@ -33,6 +33,8 @@ class TheMainActivity {
         onView(withId(R.id.transactionRecyclerIn)).check(matches(withEffectiveVisibility(GONE)))
         onView(withId(R.id.transactionRecyclerOut)).check(matches(withEffectiveVisibility(GONE)))
 
+        onView(withId(R.id.fab)).check(matches(withEffectiveVisibility(GONE)))
+
         rule.screenShot("balance_zero")
     }
 
@@ -47,6 +49,8 @@ class TheMainActivity {
 
         onView(withId(R.id.transactionRecyclerIn)).check(matches(withEffectiveVisibility(VISIBLE)))
         onView(withId(R.id.transactionRecyclerOut)).check(matches(withEffectiveVisibility(VISIBLE)))
+
+        onView(withId(R.id.fab)).check(matches(withEffectiveVisibility(VISIBLE)))
 
         rule.screenShot("balance_one")
     }

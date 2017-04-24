@@ -1,8 +1,11 @@
 package org.ligi.walleth.activities
 
+import android.content.Intent
 import android.content.res.Configuration
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.ActionBarDrawerToggle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
@@ -25,6 +28,9 @@ import org.ligi.walleth.data.BalanceProvider
 import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
 import org.ligi.walleth.functions.toEtherValueString
+import org.ligi.walleth.iac.BarCodeIntentIntegrator
+import org.ligi.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
+import org.ligi.walleth.iac.isERC67String
 import org.ligi.walleth.ui.ChangeObserver
 import org.ligi.walleth.ui.IncommingTransactionRecyclerAdapter
 import org.ligi.walleth.ui.OutgoingTransactionRecyclerAdapter
@@ -78,6 +84,8 @@ class MainActivity : AppCompatActivity() {
                     transactionRecyclerIn.setVisibility(!balanceIsZero)
                     transactionRecyclerOut.setVisibility(!balanceIsZero)
 
+                    fab.setVisibility(!balanceIsZero)
+
                     if (!syncProgressProvider.currentSyncProgress.isSyncing) {
                         supportActionBar?.subtitle = "Block " + balanceForAddress.block
                     }
@@ -85,6 +93,23 @@ class MainActivity : AppCompatActivity() {
             }
         })
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (data != null && data.hasExtra("SCAN_RESULT")) {
+            if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
+                AlertDialog.Builder(this)
+                        .setMessage("Only ERC67 supported currently")
+                        .setPositiveButton("OK", null)
+                        .show()
+            } else {
+                val intent=Intent(this,TransferActivity::class.java).apply {
+                    setData(Uri.parse(data.getStringExtra("SCAN_RESULT")))
+                }
+                startActivity(intent)
+            }
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -105,6 +130,10 @@ class MainActivity : AppCompatActivity() {
 
         send_container.setOnClickListener {
             startActivityFromClass(TransferActivity::class)
+        }
+
+        fab.setOnClickListener {
+            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
         }
 
         transactionRecyclerOut.layoutManager = LinearLayoutManager(this)
