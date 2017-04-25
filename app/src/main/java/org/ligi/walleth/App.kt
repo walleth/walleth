@@ -7,9 +7,14 @@ import com.github.salomonbrys.kodein.*
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.walleth.core.GethLightEthereumService
-import org.ligi.walleth.data.*
+import org.ligi.walleth.data.BalanceProvider
+import org.ligi.walleth.data.FileBackedTransactionProvider
+import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.addressbook.FileBackedAddressBook
+import org.ligi.walleth.data.exchangerate.CachingExchangeProvider
+import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
+import org.ligi.walleth.data.exchangerate.FixedValueExchangeProvider
 import org.ligi.walleth.data.keystore.GethBackedWallethKeyStore
 import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.data.networks.NetworkDefinition

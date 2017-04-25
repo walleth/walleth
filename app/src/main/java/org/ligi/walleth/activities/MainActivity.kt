@@ -24,7 +24,9 @@ import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.ligi.walleth.R
 import org.ligi.walleth.data.BalanceAtBlock
 import org.ligi.walleth.data.BalanceProvider
+import org.ligi.walleth.data.ETH_IN_WEI
 import org.ligi.walleth.data.TransactionProvider
+import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
 import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
 import org.ligi.walleth.functions.toEtherValueString
@@ -34,6 +36,7 @@ import org.ligi.walleth.iac.isERC67String
 import org.ligi.walleth.ui.ChangeObserver
 import org.ligi.walleth.ui.IncommingTransactionRecyclerAdapter
 import org.ligi.walleth.ui.OutgoingTransactionRecyclerAdapter
+import java.math.BigDecimal
 import java.math.BigInteger
 
 
@@ -44,6 +47,7 @@ class MainActivity : AppCompatActivity() {
     val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
     val balanceProvider: BalanceProvider by lazyKodein.instance()
+    val exchangeRateProvider: ExchangeRateProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
     val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
@@ -75,7 +79,12 @@ class MainActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     current_eth.text = balanceForAddress.balance.toEtherValueString()
-                    current_fiat.text = "0"
+                    val exChangeRate = exchangeRateProvider.getExChangeRate("EUR")
+                    if (exChangeRate !=null) {
+                        current_fiat.text = (exChangeRate.multiply(BigDecimal(balanceForAddress.balance))/ BigDecimal(ETH_IN_WEI)).toString()
+                    } else {
+                        current_fiat.text = "?"
+                    }
 
                     send_container.setVisibility(!balanceIsZero, INVISIBLE)
                     empty_view_container.setVisibility(balanceIsZero)

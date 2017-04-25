@@ -8,10 +8,10 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.transaction_item.view.*
 import org.ligi.kaxt.startActivityFromURL
-import org.ligi.walleth.functions.toEtherValueString
 import org.ligi.walleth.data.ETH_IN_WEI
-import org.ligi.walleth.data.ExchangeRateProvider
 import org.ligi.walleth.data.Transaction
+import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
+import org.ligi.walleth.functions.toEtherValueString
 import org.threeten.bp.ZoneOffset
 import java.math.BigDecimal
 
@@ -25,9 +25,10 @@ class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
         exchangeRateProvider.getExChangeRate("EUR")?.let {
             val divided = BigDecimal(transaction.value).divide(BigDecimal(ETH_IN_WEI))
-            val times = BigDecimal(it).times(divided)
+            val times = it.times(divided)
             differenceText += String.format(" (%.2f EUR)", times)
         }
+
 
         itemView.difference.text = differenceText
 
