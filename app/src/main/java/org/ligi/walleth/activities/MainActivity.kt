@@ -21,11 +21,11 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
-import org.ligi.walleth.App.Companion.currentAddress
 import org.ligi.walleth.R
 import org.ligi.walleth.data.BalanceAtBlock
 import org.ligi.walleth.data.BalanceProvider
 import org.ligi.walleth.data.TransactionProvider
+import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
 import org.ligi.walleth.functions.toEtherValueString
 import org.ligi.walleth.iac.BarCodeIntentIntegrator
@@ -46,6 +46,7 @@ class MainActivity : AppCompatActivity() {
     val balanceProvider: BalanceProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
     val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
+    val keyStore: WallethKeyStore by lazyKodein.instance()
 
     override fun onResume() {
         super.onResume()
@@ -67,10 +68,8 @@ class MainActivity : AppCompatActivity() {
         balanceProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
             override fun observeChange() {
                 var balanceForAddress = BalanceAtBlock(balance = BigInteger("0"), block = 0)
-                currentAddress?.let {
-                    balanceProvider.getBalanceForAddress(it)?.let {
-                        balanceForAddress = it
-                    }
+                balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress())?.let {
+                    balanceForAddress = it
                 }
                 val balanceIsZero = balanceForAddress.balance == BigInteger.ZERO
 
@@ -102,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                         .setPositiveButton("OK", null)
                         .show()
             } else {
-                val intent=Intent(this,TransferActivity::class.java).apply {
+                val intent = Intent(this, TransferActivity::class.java).apply {
                     setData(Uri.parse(data.getStringExtra("SCAN_RESULT")))
                 }
                 startActivity(intent)
@@ -137,10 +136,10 @@ class MainActivity : AppCompatActivity() {
         }
 
         transactionRecyclerOut.layoutManager = LinearLayoutManager(this)
-        transactionRecyclerOut.adapter = OutgoingTransactionRecyclerAdapter(transactionProvider)
+        transactionRecyclerOut.adapter = OutgoingTransactionRecyclerAdapter(transactionProvider,keyStore.getCurrentAddress())
         transactionRecyclerIn.layoutManager = LinearLayoutManager(this)
 
-        transactionRecyclerIn.adapter = IncommingTransactionRecyclerAdapter(transactionProvider)
+        transactionRecyclerIn.adapter = IncommingTransactionRecyclerAdapter(transactionProvider,keyStore.getCurrentAddress())
 
     }
 

@@ -7,12 +7,12 @@ import android.os.SystemClock
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import okhttp3.OkHttpClient
 import org.ethereum.geth.*
-import org.ligi.walleth.App
 import org.ligi.walleth.App.Companion.networḱ
 import org.ligi.walleth.data.*
 import org.ligi.walleth.data.Transaction
+import org.ligi.walleth.data.keystore.GethBackedWallethKeyStore
+import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
 import org.ligi.walleth.data.syncprogress.WallethSyncProgress
 import java.io.File
@@ -23,13 +23,13 @@ class GethLightEthereumService : Service() {
 
     val binder by lazy { Binder() }
     override fun onBind(intent: Intent) = binder
-    val okHttpClient = OkHttpClient.Builder().build()!!
 
     val ethereumContext = Context()
 
     val balanceProvider: BalanceProvider by LazyKodein(appKodein).instance()
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val syncProgress: SyncProgressProvider by LazyKodein(appKodein).instance()
+    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
 
     private val path by lazy { File(baseContext.filesDir, ".ethereum_rb").absolutePath }
 
@@ -58,7 +58,7 @@ class GethLightEthereumService : Service() {
 
         ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
             override fun onNewHead(p0: Header) {
-                val address = App.currentAddress!!.toGethAddr()
+                val address = keyStore.getCurrentAddress().toGethAddr()
                 val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
                 balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
             }
@@ -108,9 +108,12 @@ class GethLightEthereumService : Service() {
         val newTransaction = Geth.newTransaction(nonceAt, it.to.toGethAddr(), BigInt(it.value.toLong()), gasLimit, gasPrice, ByteArray(0))
 
         newTransaction.hashCode()
-        val accounts = App.keyStore.accounts
-        App.keyStore.unlock(accounts.get(0), "default")
-        val signHash = App.keyStore.signHash(it.from.toGethAddr(), newTransaction.sigHash.bytes)
+
+        val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
+        val accounts = gethKeystore.accounts
+        gethKeystore.unlock(accounts.get(0), "default")
+
+        val signHash = gethKeystore.signHash(it.from.toGethAddr(), newTransaction.sigHash.bytes)
         val transactionWithSignature = newTransaction.withSignature(signHash)
 
         transactionWithSignature.hash.hex

@@ -10,12 +10,11 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_transfer.*
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxtui.alert
-import org.ligi.walleth.App
 import org.ligi.walleth.R
 import org.ligi.walleth.data.ETH_IN_WEI
 import org.ligi.walleth.data.Transaction
 import org.ligi.walleth.data.TransactionProvider
-import org.ligi.walleth.data.toWallethAddress
+import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.iac.BarCodeIntentIntegrator
 import org.ligi.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.ligi.walleth.iac.ERC67
@@ -29,6 +28,7 @@ class TransferActivity : AppCompatActivity() {
     var currentAmount: BigInteger? = null
 
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
+    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null && data.hasExtra("SCAN_RESULT")) {
@@ -66,7 +66,7 @@ class TransferActivity : AppCompatActivity() {
             } else if (currentAmount == null) {
                 alert("amount must be specified")
             } else {
-                transactionProvider.addTransaction(Transaction(currentAmount!!, to = ERC67(currentERC67String!!).address, from = App.keyStore.accounts[0].address.toWallethAddress()))
+                transactionProvider.addTransaction(Transaction(currentAmount!!, to = ERC67(currentERC67String!!).address, from =keyStore.getCurrentAddress()))
                 finish()
             }
         }

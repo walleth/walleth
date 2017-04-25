@@ -7,12 +7,16 @@ import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import com.github.salomonbrys.kodein.LazyKodein
+import com.github.salomonbrys.kodein.android.appKodein
+import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
 import net.glxn.qrgen.android.QRCode
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.walleth.App
 import org.ligi.walleth.R
+import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.iac.toERC67String
 import java.math.BigDecimal
 
@@ -20,6 +24,7 @@ import java.math.BigDecimal
 class RequestActivity : AppCompatActivity() {
 
     lateinit var currentERC67String: String
+    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +50,7 @@ class RequestActivity : AppCompatActivity() {
     }
 
     private fun refreshQR() {
-        val relevantAddress = App.currentAddress!!
+        val relevantAddress = keyStore.getCurrentAddress()
         currentERC67String = relevantAddress.toERC67String()
 
         if (add_value_checkbox.isChecked) {

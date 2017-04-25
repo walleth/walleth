@@ -12,12 +12,14 @@ import org.ligi.kaxt.startActivityFromURL
 import org.ligi.walleth.App
 import org.ligi.walleth.R
 import org.ligi.walleth.data.addressbook.AddressBook
+import org.ligi.walleth.data.keystore.WallethKeyStore
 
 class EditAccountActivity : AppCompatActivity() {
 
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
+    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
 
-    val currentAddressInfo by lazy { addressBook.getEntryForName(App.currentAddress!!) }
+    val currentAddressInfo by lazy { addressBook.getEntryForName(keyStore.getCurrentAddress()) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,7 +33,7 @@ class EditAccountActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         open_on_etherscan.setOnClickListener {
-            startActivityFromURL(App.networḱ.getBlockExplorer().getURLforAddress(App.currentAddress!!))
+            startActivityFromURL(App.networḱ.getBlockExplorer().getURLforAddress(keyStore.getCurrentAddress()))
         }
 
         nameInput.doAfterEdit {

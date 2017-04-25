@@ -8,14 +8,18 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import com.github.salomonbrys.kodein.LazyKodein
+import com.github.salomonbrys.kodein.android.appKodein
+import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
-import org.ligi.walleth.App
 import org.ligi.walleth.R
+import org.ligi.walleth.data.keystore.WallethKeyStore
 
 
 class ImportActivity : AppCompatActivity() {
 
     val READ_REQUEST_CODE = 42
+    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,23 +30,23 @@ class ImportActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {
+            val alertBuilder = AlertDialog.Builder(this)
             try {
-                val importKey = App.keyStore.importKey(inport_json_text.text.toString().toByteArray(), "default", "default")
-                AlertDialog.Builder(this)
-                        .setMessage("Imported " + importKey.address.hex)
-                        .setPositiveButton("OK",null)
+                val importKey = keyStore.importKey(inport_json_text.text.toString(), "default", "default")
+                alertBuilder
+                        .setMessage("Imported " + importKey?.hex)
                         .setTitle("Success").show()
-            } catch(e:Exception) {
-                AlertDialog.Builder(this)
+            } catch(e: Exception) {
+                alertBuilder
                         .setMessage(e.message)
-                        .setPositiveButton("OK",null)
                         .setTitle("Error").show()
             }
+            alertBuilder.setPositiveButton("OK", null).show()
         }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.menu_import,menu)
+        menuInflater.inflate(R.menu.menu_import, menu)
         return super.onCreateOptionsMenu(menu)
     }
 

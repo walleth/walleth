@@ -11,21 +11,22 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
 import org.ligi.kaxt.startActivityFromClass
-import org.ligi.walleth.App
 import org.ligi.walleth.R
 import org.ligi.walleth.activities.EditAccountActivity
 import org.ligi.walleth.activities.ImportActivity
 import org.ligi.walleth.data.addressbook.AddressBook
+import org.ligi.walleth.data.keystore.WallethKeyStore
 
 class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationView(context, attrs), ChangeObserver {
 
     var headerView: View? = null
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
+    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
 
     override fun observeChange() {
 
         headerView?.let { header ->
-            addressBook.getEntryForName(App.currentAddress!!)?.let {
+            addressBook.getEntryForName(keyStore.getCurrentAddress()).let {
                 header.accountHash.text = it.address.hex
                 header.accountName.text = it.name
             }
@@ -51,7 +52,7 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
 
                 R.id.menu_save -> {
 
-                    val keyJSON = String(App.keyStore.exportKey(App.keyStore.accounts[0], "default", "default"))
+                    val keyJSON = keyStore.exportCurrentKey(unlockPassword = "default", exportPassword = "default")
 
                     val sendIntent = Intent().apply {
                         action = Intent.ACTION_SEND

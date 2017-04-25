@@ -9,13 +9,14 @@ import org.ligi.walleth.data.ExchangeRateProvider
 import org.ligi.walleth.data.FixedValueExchangeProvider
 import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.addressbook.AddressBook
+import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
 import org.ligi.walleth.data.syncprogress.WallethSyncProgress
 
 class TestApp : App() {
 
     override fun createKodein() = Kodein.Module {
-        bind<AddressBook>() with singleton { AddressBookWithTestEntries() }
+        bind<AddressBook>() with singleton { addressBookWithEntries }
         bind<BalanceProvider>() with singleton { balanceProvider }
         bind<TransactionProvider>() with singleton { TransactionProviderWithTestData() }
         bind<ExchangeRateProvider>() with singleton { fixedValueExchangeProvider }
@@ -24,6 +25,7 @@ class TestApp : App() {
                 setSyncProgress(WallethSyncProgress(true, 42000, 42042))
             }
         }
+        bind<WallethKeyStore>() with singleton { keyStore }
     }
 
     override fun executeCodeWeWillIgnoreInTests() = Unit
@@ -32,5 +34,7 @@ class TestApp : App() {
 
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
         val balanceProvider = BalanceProvider()
+        val addressBookWithEntries = AddressBookWithTestEntries()
+        val keyStore = TestKeyStore()
     }
 }

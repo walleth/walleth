@@ -2,15 +2,11 @@ package org.walleth
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.contrib.DrawerActions.open
-
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.espresso.matcher.ViewMatchers.Visibility.*
-import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
-import org.ligi.walleth.App
 import org.ligi.walleth.R
 import org.ligi.walleth.activities.MainActivity
 import org.ligi.walleth.data.ETH_IN_WEI
@@ -23,7 +19,7 @@ class TheMainActivity {
 
     @Test
     fun behavesCorrectlyWhenBalanceIsZero() {
-        TestApp.balanceProvider.setBalance(App.currentAddress!!,42,BigInteger("0"))
+        TestApp.balanceProvider.setBalance(TestApp.keyStore.getCurrentAddress(),42,BigInteger("0"))
 
         onView(withId(R.id.current_eth)).check(matches(withText("0")))
 
@@ -40,7 +36,7 @@ class TheMainActivity {
 
     @Test
     fun behavesCorrectlyWhenBalanceIsOne() {
-        TestApp.balanceProvider.setBalance(App.currentAddress!!,42, ETH_IN_WEI)
+        TestApp.balanceProvider.setBalance(TestApp.keyStore.getCurrentAddress(),42, ETH_IN_WEI)
 
         onView(withId(R.id.current_eth)).check(matches(withText("1")))
 
@@ -54,19 +50,5 @@ class TheMainActivity {
 
         rule.screenShot("balance_one")
     }
-
-    @Test
-    fun navigationDrawerIsUsuallyNotShown() {
-        onView(withId(R.id.navigationView)).check(matches(not(isDisplayed())))
-    }
-
-    @Test
-    fun navigationDrawerOpensWhenRequested() {
-        onView(withId(R.id.drawer_layout)).perform(open())
-        onView(withId(R.id.navigationView)).check(matches(isDisplayed()))
-
-        rule.screenShot("drawer_opened")
-    }
-
 
 }
