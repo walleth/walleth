@@ -9,7 +9,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_account_edit.*
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
-import org.ligi.walleth.App
+import org.ligi.walleth.App.Companion.networḱ
 import org.ligi.walleth.R
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.keystore.WallethKeyStore
@@ -33,7 +33,7 @@ class EditAccountActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         open_on_etherscan.setOnClickListener {
-            startActivityFromURL(App.networḱ.getBlockExplorer().getURLforAddress(keyStore.getCurrentAddress()))
+            startActivityFromURL(networḱ.getBlockExplorer().getURLforAddress(keyStore.getCurrentAddress()))
         }
 
         nameInput.doAfterEdit {

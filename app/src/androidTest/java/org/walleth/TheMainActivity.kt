@@ -26,8 +26,8 @@ class TheMainActivity {
         onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(INVISIBLE)))
         onView(withId(R.id.empty_view)).check(matches(withEffectiveVisibility(VISIBLE)))
 
-        onView(withId(R.id.transactionRecyclerIn)).check(matches(withEffectiveVisibility(GONE)))
-        onView(withId(R.id.transactionRecyclerOut)).check(matches(withEffectiveVisibility(GONE)))
+        onView(withId(R.id.transaction_recycler_in)).check(matches(withEffectiveVisibility(GONE)))
+        onView(withId(R.id.transaction_recycler_out)).check(matches(withEffectiveVisibility(GONE)))
 
         onView(withId(R.id.fab)).check(matches(withEffectiveVisibility(GONE)))
 
@@ -43,8 +43,8 @@ class TheMainActivity {
         onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(VISIBLE)))
         onView(withId(R.id.empty_view)).check(matches(withEffectiveVisibility(GONE)))
 
-        onView(withId(R.id.transactionRecyclerIn)).check(matches(withEffectiveVisibility(VISIBLE)))
-        onView(withId(R.id.transactionRecyclerOut)).check(matches(withEffectiveVisibility(VISIBLE)))
+        onView(withId(R.id.transaction_recycler_in)).check(matches(withEffectiveVisibility(VISIBLE)))
+        onView(withId(R.id.transaction_recycler_out)).check(matches(withEffectiveVisibility(VISIBLE)))
 
         onView(withId(R.id.fab)).check(matches(withEffectiveVisibility(VISIBLE)))
 

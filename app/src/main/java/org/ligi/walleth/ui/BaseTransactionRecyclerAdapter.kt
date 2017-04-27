@@ -8,19 +8,16 @@ import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
 import org.ligi.walleth.R
 import org.ligi.walleth.data.Transaction
-import org.ligi.walleth.data.TransactionProvider
+import org.ligi.walleth.data.addressbook.AddressBook
 
-abstract class BaseTransactionRecyclerAdapter() : RecyclerView.Adapter<TransactionViewHolder>() {
-
-
-    abstract val transactionList: List<Transaction>
+class BaseTransactionRecyclerAdapter(val transactionList: List<Transaction>, val addressBook: AddressBook) : RecyclerView.Adapter<TransactionViewHolder>() {
 
     override fun getItemCount() = transactionList.size
 
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(transactionList[position])
+    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(transactionList[position], addressBook)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.transaction_item , null)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.transaction_item, null)
         val layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
         val margin = parent.context.resources.getDimension(R.dimen.rythm).toInt()
         layoutParams.setMargins(0, margin, 0, margin)

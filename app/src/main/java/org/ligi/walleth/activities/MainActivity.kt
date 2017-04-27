@@ -26,6 +26,7 @@ import org.ligi.walleth.data.BalanceAtBlock
 import org.ligi.walleth.data.BalanceProvider
 import org.ligi.walleth.data.ETH_IN_WEI
 import org.ligi.walleth.data.TransactionProvider
+import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
 import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
@@ -33,11 +34,11 @@ import org.ligi.walleth.functions.toEtherValueString
 import org.ligi.walleth.iac.BarCodeIntentIntegrator
 import org.ligi.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.ligi.walleth.iac.isERC67String
+import org.ligi.walleth.ui.BaseTransactionRecyclerAdapter
 import org.ligi.walleth.ui.ChangeObserver
-import org.ligi.walleth.ui.IncommingTransactionRecyclerAdapter
-import org.ligi.walleth.ui.OutgoingTransactionRecyclerAdapter
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.math.BigInteger.ZERO
 
 
 class MainActivity : AppCompatActivity() {
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
     val exchangeRateProvider: ExchangeRateProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
     val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
+    val addressBook: AddressBook by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
 
     override fun onResume() {
@@ -80,8 +82,8 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     current_eth.text = balanceForAddress.balance.toEtherValueString()
                     val exChangeRate = exchangeRateProvider.getExChangeRate("EUR")
-                    if (exChangeRate !=null) {
-                        current_fiat.text = (exChangeRate.multiply(BigDecimal(balanceForAddress.balance))/ BigDecimal(ETH_IN_WEI)).toString()
+                    if (exChangeRate != null) {
+                        current_fiat.text = (exChangeRate.multiply(BigDecimal(balanceForAddress.balance)) / BigDecimal(ETH_IN_WEI)).toString()
                     } else {
                         current_fiat.text = "?"
                     }
@@ -89,8 +91,8 @@ class MainActivity : AppCompatActivity() {
                     send_container.setVisibility(!balanceIsZero, INVISIBLE)
                     empty_view_container.setVisibility(balanceIsZero)
 
-                    transactionRecyclerIn.setVisibility(!balanceIsZero)
-                    transactionRecyclerOut.setVisibility(!balanceIsZero)
+                    transaction_recycler_in.setVisibility(!balanceIsZero)
+                    transaction_recycler_out.setVisibility(!balanceIsZero)
 
                     fab.setVisibility(!balanceIsZero)
 
@@ -144,11 +146,15 @@ class MainActivity : AppCompatActivity() {
             BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
         }
 
-        transactionRecyclerOut.layoutManager = LinearLayoutManager(this)
-        transactionRecyclerOut.adapter = OutgoingTransactionRecyclerAdapter(transactionProvider,keyStore.getCurrentAddress())
-        transactionRecyclerIn.layoutManager = LinearLayoutManager(this)
+        transaction_recycler_out.layoutManager = LinearLayoutManager(this)
+        transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
-        transactionRecyclerIn.adapter = IncommingTransactionRecyclerAdapter(transactionProvider,keyStore.getCurrentAddress())
+        val allTransactions = transactionProvider.getTransactionsForAddress(keyStore.getCurrentAddress())
+        val incomingTransactions = allTransactions.filter { it.value >= ZERO }
+        val outgoingTransactions = allTransactions.filter { it.value < ZERO }
+
+        transaction_recycler_out.adapter = BaseTransactionRecyclerAdapter(outgoingTransactions, addressBook)
+        transaction_recycler_in.adapter = BaseTransactionRecyclerAdapter(incomingTransactions, addressBook)
 
     }
 

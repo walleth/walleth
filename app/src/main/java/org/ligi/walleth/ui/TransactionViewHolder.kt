@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.transaction_item.view.*
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.walleth.data.ETH_IN_WEI
 import org.ligi.walleth.data.Transaction
+import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
 import org.ligi.walleth.functions.toEtherValueString
 import org.threeten.bp.ZoneOffset
@@ -17,7 +18,8 @@ import java.math.BigDecimal
 
 class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(transaction: Transaction) {
+
+    fun bind(transaction: Transaction,addressBook: AddressBook) {
 
         var differenceText = transaction.value.toEtherValueString() + "ETH"
 
@@ -32,8 +34,7 @@ class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
         itemView.difference.text = differenceText
 
-        itemView.address.text = transaction.to.hex
-
+        itemView.address.text = addressBook.getEntryForName(transaction.to).name
 
         val localTime = transaction.localTime
         val epochMillis = localTime.toEpochSecond(ZoneOffset.systemDefault().rules.getOffset(localTime)) * 1000

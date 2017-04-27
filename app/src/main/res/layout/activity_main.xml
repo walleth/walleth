@@ -73,14 +73,14 @@ You can find functions like these in the drawer to your left"
                     android:layout_height="match_parent"/>
         </ScrollView>
         <android.support.v7.widget.RecyclerView
-                android:id="@+id/transactionRecyclerIn"
+                android:id="@+id/transaction_recycler_in"
                 android:paddingRight="8dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"/>
 
         <android.support.v7.widget.RecyclerView
-                android:id="@+id/transactionRecyclerOut"
+                android:id="@+id/transaction_recycler_out"
                 android:paddingLeft="8dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
