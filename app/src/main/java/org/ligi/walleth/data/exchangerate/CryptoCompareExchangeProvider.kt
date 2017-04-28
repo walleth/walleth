@@ -11,6 +11,12 @@ import java.math.BigDecimal
 
 class CryptoCompareExchangeProvider(context: Context,val okHttpClient: OkHttpClient) : BaseExchangeProvider() {
 
+
+    override fun addFiat(name: String) {
+        super.addFiat(name)
+        refresh()
+    }
+
     private val lastDataFile = File(context.cacheDir, "exchangerates.json")
 
     init {

@@ -13,6 +13,8 @@ import org.ligi.walleth.data.FileBackedTransactionProvider
 import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.addressbook.FileBackedAddressBook
+import org.ligi.walleth.data.config.KotprefSettings
+import org.ligi.walleth.data.config.Settings
 import org.ligi.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
 import org.ligi.walleth.data.keystore.GethBackedWallethKeyStore
@@ -35,6 +37,7 @@ open class App : Application(), KodeinAware {
         bind<ExchangeRateProvider>() with singleton { CryptoCompareExchangeProvider(this@App, instance()) }
         bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
         bind<WallethKeyStore>() with singleton { GethBackedWallethKeyStore(this@App) }
+        bind<Settings>() with singleton { KotprefSettings }
     }
 
     override fun onCreate() {

@@ -26,6 +26,7 @@ import org.ligi.walleth.data.BalanceAtBlock
 import org.ligi.walleth.data.BalanceProvider
 import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.addressbook.AddressBook
+import org.ligi.walleth.data.config.Settings
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
 import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity() {
     val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
     val addressBook: AddressBook by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
+    val settings: Settings by lazyKodein.instance()
 
     override fun onResume() {
         super.onResume()
@@ -80,7 +82,8 @@ class MainActivity : AppCompatActivity() {
                 runOnUiThread {
                     current_eth.text = balanceForAddress.balance.toEtherValueString()
 
-                    val exChangeRate = exchangeRateProvider.getExchangeString(balanceForAddress.balance, "EUR")
+                    val exChangeRate = exchangeRateProvider.getExchangeString(balanceForAddress.balance, settings.currentFiat)
+                    current_fiat_symbol.text =  settings.currentFiat
                     if (exChangeRate != null) {
                         current_fiat.text = exChangeRate
                     } else {
@@ -156,7 +159,7 @@ class MainActivity : AppCompatActivity() {
         transaction_recycler_in.adapter = BaseTransactionRecyclerAdapter(incomingTransactions, addressBook)
 
         current_fiat_symbol.setOnClickListener {
-            startActivityFromClass(SelectFiatReferenceActivity::class)
+            startActivityFromClass(SelectReferenceActivity::class)
         }
     }
 
