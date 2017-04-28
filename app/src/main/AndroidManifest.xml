@@ -18,6 +18,7 @@
         <activity android:name=".activities.InfoActivity"/>
         <activity android:name=".activities.ImportActivity"/>
         <activity android:name=".activities.EditAccountActivity"/>
+        <activity android:name=".activities.SelectFiatReferenceActivity"/>
         <activity android:name=".activities.TransferActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

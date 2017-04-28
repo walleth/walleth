@@ -8,29 +8,24 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.transaction_item.view.*
 import org.ligi.kaxt.startActivityFromURL
-import org.ligi.walleth.data.ETH_IN_WEI
 import org.ligi.walleth.data.Transaction
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
 import org.ligi.walleth.functions.toEtherValueString
 import org.threeten.bp.ZoneOffset
-import java.math.BigDecimal
 
 class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
-    fun bind(transaction: Transaction,addressBook: AddressBook) {
+    fun bind(transaction: Transaction, addressBook: AddressBook) {
 
         var differenceText = transaction.value.toEtherValueString() + "ETH"
 
         val exchangeRateProvider: ExchangeRateProvider by LazyKodein(itemView.context.appKodein).instance()
 
-        exchangeRateProvider.getExChangeRate("EUR")?.let {
-            val divided = BigDecimal(transaction.value).divide(BigDecimal(ETH_IN_WEI))
-            val times = it.times(divided)
-            differenceText += String.format(" (%.2f EUR)", times)
+        exchangeRateProvider.getExchangeString(transaction.value, "EUR")?.let {
+            differenceText += " ($it EUR)"
         }
-
 
         itemView.difference.text = differenceText
 
@@ -46,7 +41,7 @@ class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
         itemView.isClickable = true
         itemView.setOnClickListener {
-            itemView.context.startActivityFromURL("https://testnet.etherscan.io/tx/"+transaction.txHash)
+            itemView.context.startActivityFromURL("https://testnet.etherscan.io/tx/" + transaction.txHash)
         }
     }
 

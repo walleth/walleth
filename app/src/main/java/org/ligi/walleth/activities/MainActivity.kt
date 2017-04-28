@@ -24,7 +24,6 @@ import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.ligi.walleth.R
 import org.ligi.walleth.data.BalanceAtBlock
 import org.ligi.walleth.data.BalanceProvider
-import org.ligi.walleth.data.ETH_IN_WEI
 import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
@@ -36,7 +35,6 @@ import org.ligi.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.ligi.walleth.iac.isERC67String
 import org.ligi.walleth.ui.BaseTransactionRecyclerAdapter
 import org.ligi.walleth.ui.ChangeObserver
-import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
 
@@ -81,9 +79,10 @@ class MainActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     current_eth.text = balanceForAddress.balance.toEtherValueString()
-                    val exChangeRate = exchangeRateProvider.getExChangeRate("EUR")
+
+                    val exChangeRate = exchangeRateProvider.getExchangeString(balanceForAddress.balance, "EUR")
                     if (exChangeRate != null) {
-                        current_fiat.text = (exChangeRate.multiply(BigDecimal(balanceForAddress.balance)) / BigDecimal(ETH_IN_WEI)).toString()
+                        current_fiat.text = exChangeRate
                     } else {
                         current_fiat.text = "?"
                     }
@@ -156,6 +155,9 @@ class MainActivity : AppCompatActivity() {
         transaction_recycler_out.adapter = BaseTransactionRecyclerAdapter(outgoingTransactions, addressBook)
         transaction_recycler_in.adapter = BaseTransactionRecyclerAdapter(incomingTransactions, addressBook)
 
+        current_fiat_symbol.setOnClickListener {
+            startActivityFromClass(SelectFiatReferenceActivity::class)
+        }
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

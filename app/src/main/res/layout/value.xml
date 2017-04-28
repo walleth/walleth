@@ -47,6 +47,7 @@
 
         <TextView
                 android:id="@+id/current_fiat_symbol"
+                android:background="?selectableItemBackgroundBorderless"
                 android:fontFamily="sans-serif-thin"
                 android:textSize="24sp"
                 android:text="EUR"
