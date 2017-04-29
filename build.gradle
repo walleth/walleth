@@ -13,6 +13,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'de.mobilej.unmock:UnMockPlugin:0.6.0'
         classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.2.2'
+        classpath files('app/libs/gradle-witness.jar')
     }
 }
 
