@@ -1,7 +1,7 @@
 WALLΞTH
 =======
 
-The native Android Ethereum Wallet
+The native Android Ethereum light client wallet
 
 References
 ==========
