@@ -31,9 +31,14 @@ class TransferActivity : AppCompatActivity() {
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data != null && data.hasExtra("SCAN_RESULT")) {
-            setToFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
+        data?.let {
+            if (data.hasExtra("HEX")) {
+                setToFromURL(data.getStringExtra("HEX"), fromUser = true)
+            } else if (data.hasExtra("SCAN_RESULT")) {
+                setToFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
+            }
         }
+
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,6 +61,11 @@ class TransferActivity : AppCompatActivity() {
             BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
         }
 
+        address_list_button.setOnClickListener {
+            val intent = Intent(this@TransferActivity, AddressBookActivity::class.java)
+            startActivityForResult(intent, 23451)
+        }
+
         amount_input.doAfterEdit {
             setAmountFromETHString(it.toString())
         }
@@ -66,7 +76,7 @@ class TransferActivity : AppCompatActivity() {
             } else if (currentAmount == null) {
                 alert("amount must be specified")
             } else {
-                transactionProvider.addTransaction(Transaction(currentAmount!!, to = ERC67(currentERC67String!!).address, from =keyStore.getCurrentAddress()))
+                transactionProvider.addTransaction(Transaction(currentAmount!!, to = ERC67(currentERC67String!!).address, from = keyStore.getCurrentAddress()))
                 finish()
             }
         }

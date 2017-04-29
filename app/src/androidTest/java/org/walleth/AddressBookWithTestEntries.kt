@@ -1,11 +1,11 @@
 package org.walleth
 
-import org.ligi.walleth.data.SimpleObserveable
 import org.ligi.walleth.data.WallethAddress
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.addressbook.AddressBookEntry
+import org.ligi.walleth.data.addressbook.BaseAddressBook
 
-class AddressBookWithTestEntries : SimpleObserveable(), AddressBook {
+class AddressBookWithTestEntries : BaseAddressBook(), AddressBook {
 
     companion object {
         val Room77 = WallethAddress("0xF00")
@@ -16,20 +16,13 @@ class AddressBookWithTestEntries : SimpleObserveable(), AddressBook {
         val Ligi = WallethAddress("0xBA4")
     }
 
-    private var addresses: MutableMap<WallethAddress, AddressBookEntry> = mutableMapOf(
+    override var addresses: MutableMap<WallethAddress, AddressBookEntry> = mutableMapOf(
             Room77 to AddressBookEntry("Room77", Room77),
             ShapeShift to AddressBookEntry("ShapeShift", ShapeShift),
             ΞBay to AddressBookEntry("ΞBay", ΞBay),
-            Faundation to AddressBookEntry("Faundation", Faundation),
+            Faundation to AddressBookEntry("Foundation", Faundation),
             Faucet to AddressBookEntry("Faucet", Faucet),
             Ligi to AddressBookEntry("Ligi", Room77)
     )
-
-    override fun getEntryForName(address: WallethAddress) = addresses[address] ?: AddressBookEntry("unknown", address)
-
-    override fun setEntry(entry: AddressBookEntry) {
-        addresses[entry.address] = entry
-        promoteChange()
-    }
 
 }

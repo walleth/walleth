@@ -20,7 +20,7 @@ class TheSelectReferenceActivity {
     @Test
     fun listShows() {
 
-        onView(withId(R.id.fiat_list_recycler)).check(matches(isDisplayed()))
+        onView(withId(R.id.recycler_view)).check(matches(isDisplayed()))
 
         rule.screenShot("reference_list")
     }

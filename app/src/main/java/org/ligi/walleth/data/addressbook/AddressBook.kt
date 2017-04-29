@@ -7,6 +7,8 @@ interface AddressBook : Observeable {
 
     fun getEntryForName(address: WallethAddress): AddressBookEntry
 
+    fun getAllEntries(): List<AddressBookEntry>
+
     fun setEntry(entry: AddressBookEntry)
 
 }
