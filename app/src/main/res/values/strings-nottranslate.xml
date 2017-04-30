@@ -1,0 +1,12 @@
+<resources>
+    <string name="prefs_day_night">KEY_DAY_NIGHT</string>
+
+    <string name="default_day_night">auto</string>
+
+    <array name="day_night_keys">
+        <item>day</item>
+        <item>night</item>
+        <item>auto</item>
+    </array>
+
+</resources>

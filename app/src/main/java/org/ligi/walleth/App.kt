@@ -46,7 +46,7 @@ open class App : Application(), KodeinAware {
         TraceDroid.init(this)
         AndroidThreeTen.init(this)
 
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        applyNightMode()
         executeCodeWeWillIgnoreInTests()
     }
 
@@ -56,6 +56,11 @@ open class App : Application(), KodeinAware {
 
     companion object {
         var networḱ: NetworkDefinition = RinkebyNetworkDefinition()
+
+        fun applyNightMode() {
+            @AppCompatDelegate.NightMode val nightMode = KotprefSettings.getNightMode()
+            AppCompatDelegate.setDefaultNightMode(nightMode)
+        }
     }
 }
 

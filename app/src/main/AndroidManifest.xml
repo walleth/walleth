@@ -20,6 +20,7 @@
         <activity android:name=".activities.EditAccountActivity"/>
         <activity android:name=".activities.SelectReferenceActivity"/>
         <activity android:name=".activities.AddressBookActivity"/>
+        <activity android:name=".activities.PreferenceActivity"/>
         <activity android:name=".activities.TransferActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>

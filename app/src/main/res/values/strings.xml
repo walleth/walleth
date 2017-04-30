@@ -30,4 +30,12 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
 <br/>Also you can pass on the test ether you got to users you see using this hashtag and exercise transactions this way.
 ]]>
 </string>
+    <array name="day_night">
+        <item>Day</item>
+        <item>Night</item>
+        <item>Auto</item>
+    </array>
+
+    <string name="day_or_night">Day or Night</string>
+    <string name="day_or_night_summary">There is a light and a dark theme</string>
 </resources>

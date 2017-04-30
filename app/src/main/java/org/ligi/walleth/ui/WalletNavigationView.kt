@@ -3,7 +3,6 @@ package org.ligi.walleth.ui
 import android.content.Context
 import android.content.Intent
 import android.support.design.widget.NavigationView
-import android.support.v7.app.AlertDialog
 import android.util.AttributeSet
 import android.view.View
 import com.github.salomonbrys.kodein.LazyKodein
@@ -14,6 +13,7 @@ import org.ligi.kaxt.startActivityFromClass
 import org.ligi.walleth.R
 import org.ligi.walleth.activities.EditAccountActivity
 import org.ligi.walleth.activities.ImportActivity
+import org.ligi.walleth.activities.PreferenceActivity
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.keystore.WallethKeyStore
 
@@ -71,7 +71,7 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
                 }
 
                 R.id.menu_settings -> {
-                    AlertDialog.Builder(context).setMessage("TODO").show()
+                    context.startActivityFromClass(PreferenceActivity::class.java)
                     true
                 }
                 else -> false
