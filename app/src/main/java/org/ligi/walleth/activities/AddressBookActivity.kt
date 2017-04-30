@@ -10,6 +10,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list.*
 import org.ligi.walleth.R
 import org.ligi.walleth.data.addressbook.AddressBook
+import org.ligi.walleth.ui.AddressAdapter
 
 class AddressBookActivity : AppCompatActivity() {
 

@@ -1,4 +1,4 @@
-package org.ligi.walleth.activities
+package org.ligi.walleth.ui
 
 import android.app.Activity
 import android.content.Intent

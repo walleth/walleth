@@ -10,7 +10,7 @@ import org.ligi.trulesk.TruleskActivityRule
 import org.ligi.walleth.R
 import org.ligi.walleth.activities.PreferenceActivity
 
-class ThrePreferencesActivity {
+class ThrPreferencesActivity {
 
     @get:Rule
     var rule = TruleskActivityRule(PreferenceActivity::class.java)
