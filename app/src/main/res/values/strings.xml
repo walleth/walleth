@@ -5,6 +5,7 @@
     <string name="edit_account_subtitle">Edit Account</string>
     <string name="address_book_subtitle">Address book</string>
     <string name="transaction_subtitle">Transaction details</string>
+    <string name="export_account_subtitle">Export account</string>
     <string name="request_subtitle">Request</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>

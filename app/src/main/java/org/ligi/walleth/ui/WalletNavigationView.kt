@@ -1,7 +1,6 @@
 package org.ligi.walleth.ui
 
 import android.content.Context
-import android.content.Intent
 import android.support.design.widget.NavigationView
 import android.util.AttributeSet
 import android.view.View
@@ -14,6 +13,7 @@ import org.ligi.walleth.R
 import org.ligi.walleth.activities.EditAccountActivity
 import org.ligi.walleth.activities.ImportActivity
 import org.ligi.walleth.activities.PreferenceActivity
+import org.ligi.walleth.activities.ShowAccountBarCodeActivity
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.keystore.WallethKeyStore
 
@@ -52,16 +52,12 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
 
                 R.id.menu_save -> {
 
+                    context.startActivityFromClass(ShowAccountBarCodeActivity::class.java)
+                    /*
                     val keyJSON = keyStore.exportCurrentKey(unlockPassword = "default", exportPassword = "default")
 
-                    val sendIntent = Intent().apply {
-                        action = Intent.ACTION_SEND
-                        putExtra(Intent.EXTRA_TEXT, keyJSON)
-                        type = "text/plain"
-                    }
 
-                    context.startActivity(sendIntent)
-
+*/
                     true
                 }
 

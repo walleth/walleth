@@ -6,4 +6,11 @@
             android:icon="@drawable/ic_folder_open_black_24dp"
             app:showAsAction="ifRoom"
     />
+
+    <item
+            android:title="Open"
+            android:id="@+id/menu_scan"
+            android:icon="@drawable/ic_image_camera_alt"
+            app:showAsAction="ifRoom"
+    />
 </menu>

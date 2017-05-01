@@ -13,13 +13,13 @@
 
     <item
             android:id="@+id/menu_save"
-            android:title="Save account"
-            android:icon="@drawable/ic_save_black_24dp"/>
+            android:title="Export account"
+            android:icon="@drawable/ic_unarchive_black_24dp"/>
 
     <item
             android:id="@+id/menu_load"
             android:title="Import account"
-            android:icon="@drawable/ic_system_update_black_24dp"/>
+            android:icon="@drawable/ic_archive_black_24dp"/>
     <item
             android:id="@+id/menu_settings"
             android:title="Settings"

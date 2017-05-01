@@ -14,6 +14,8 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
 import org.ligi.walleth.R
 import org.ligi.walleth.data.keystore.WallethKeyStore
+import org.ligi.walleth.iac.BarCodeIntentIntegrator
+import org.ligi.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 
 
 class ImportActivity : AppCompatActivity() {
@@ -32,18 +34,19 @@ class ImportActivity : AppCompatActivity() {
         fab.setOnClickListener {
             val alertBuilder = AlertDialog.Builder(this)
             try {
-                val importKey = keyStore.importKey(inport_json_text.text.toString(), "default", "default")
+                val importKey = keyStore.importKey(inport_json_text.text.toString(), importPassword = password.text.toString(), newPassword = "default")
                 alertBuilder
                         .setMessage("Imported " + importKey?.hex)
-                        .setTitle("Success").show()
+                        .setTitle("Success")
             } catch(e: Exception) {
                 alertBuilder
                         .setMessage(e.message)
-                        .setTitle("Error").show()
+                        .setTitle("Error")
             }
             alertBuilder.setPositiveButton("OK", null).show()
         }
     }
+
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_import, menu)
@@ -54,11 +57,18 @@ class ImportActivity : AppCompatActivity() {
                                          resultData: Intent?) {
 
 
-        if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
-            if (resultData != null) {
-                inport_json_text.setText(readTextFromUri(resultData.data))
+        resultData?.let {
+            if (it.hasExtra("SCAN_RESULT")) {
+                inport_json_text.setText(it.getStringExtra("SCAN_RESULT"))
+            }
+            if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
+                inport_json_text.setText(readTextFromUri(it.data))
+
             }
         }
+
+
     }
 
     private fun readTextFromUri(uri: Uri) = contentResolver.openInputStream(uri).reader().readText()
@@ -72,6 +82,11 @@ class ImportActivity : AppCompatActivity() {
             intent.type = "*/*"
 
             startActivityForResult(intent, READ_REQUEST_CODE)
+            true
+        }
+
+        R.id.menu_scan -> {
+            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
             true
         }
 
