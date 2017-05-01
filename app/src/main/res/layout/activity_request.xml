@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         android:padding="16dp"
         android:animateLayoutChanges="true"
-        tools:context="org.ligi.walleth.activities.RequestActivity">
+        tools:context="org.walleth.activities.RequestActivity">
 
     <TextView
             android:id="@+id/welcome_text"

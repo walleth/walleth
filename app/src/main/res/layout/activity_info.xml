@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:padding="16dp"
         android:orientation="vertical"
-        tools:context="org.ligi.walleth.activities.InfoActivity">
+        tools:context="org.walleth.activities.InfoActivity">
 
     <android.support.v7.widget.AppCompatImageView
             app:srcCompat="@mipmap/ic_launcher"

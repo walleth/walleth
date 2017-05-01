@@ -1,9 +1,9 @@
 
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
-import org.ligi.walleth.data.WallethAddress
-import org.ligi.walleth.iac.ERC67
-import org.ligi.walleth.iac.toERC67String
+import org.walleth.data.WallethAddress
+import org.walleth.iac.ERC67
+import org.walleth.iac.toERC67String
 import java.math.BigDecimal
 import java.math.BigInteger
 

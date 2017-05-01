@@ -1,9 +1,9 @@
 package org.walleth
 
-import org.ligi.walleth.data.WallethAddress
-import org.ligi.walleth.data.addressbook.AddressBook
-import org.ligi.walleth.data.addressbook.AddressBookEntry
-import org.ligi.walleth.data.addressbook.BaseAddressBook
+import org.walleth.data.WallethAddress
+import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addressbook.BaseAddressBook
 
 class AddressBookWithTestEntries : BaseAddressBook(), AddressBook {
 

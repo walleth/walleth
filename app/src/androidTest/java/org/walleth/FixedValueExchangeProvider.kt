@@ -1,7 +1,7 @@
 package org.walleth
 
-import org.ligi.walleth.data.exchangerate.BaseExchangeProvider
-import org.ligi.walleth.data.exchangerate.FiatInfo
+import org.walleth.data.exchangerate.BaseExchangeProvider
+import org.walleth.data.exchangerate.FiatInfo
 import org.threeten.bp.LocalTime
 import java.math.BigDecimal
 

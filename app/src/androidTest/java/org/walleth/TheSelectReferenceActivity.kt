@@ -9,8 +9,8 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
-import org.ligi.walleth.R
-import org.ligi.walleth.activities.SelectReferenceActivity
+import org.walleth.R
+import org.walleth.activities.SelectReferenceActivity
 
 class TheSelectReferenceActivity {
 

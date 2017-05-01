@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
-        tools:context="org.ligi.walleth.activities.TransactionActivity">
+        tools:context="org.walleth.activities.TransactionActivity">
 
     <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

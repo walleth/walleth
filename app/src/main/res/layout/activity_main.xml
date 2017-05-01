@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
 
         android:padding="@dimen/rythm2"
-        tools:context=".activities.MainActivity">
+        tools:context="org.walleth.activities.MainActivity">
 
     <LinearLayout
             android:id="@+id/top_container"
@@ -31,7 +31,7 @@
                     app:srcCompat="@drawable/ic_rec"/>
         </FrameLayout>
 
-        <org.ligi.walleth.ui.ValueView
+        <org.walleth.ui.ValueView
                 android:id="@+id/value_view"
                 android:orientation="vertical"
                 android:layout_width="0dp"

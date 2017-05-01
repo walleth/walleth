@@ -7,8 +7,8 @@ import android.support.test.espresso.matcher.ViewMatchers.withId
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
-import org.ligi.walleth.R
-import org.ligi.walleth.activities.AddressBookActivity
+import org.walleth.R
+import org.walleth.activities.AddressBookActivity
 
 class TheAddressBookActivity {
 

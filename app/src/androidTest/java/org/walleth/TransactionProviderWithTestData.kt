@@ -1,9 +1,9 @@
 package org.walleth
 
-import org.ligi.walleth.data.SimpleObserveable
-import org.ligi.walleth.data.WallethAddress
-import org.ligi.walleth.data.transactions.Transaction
-import org.ligi.walleth.data.transactions.TransactionProvider
+import org.walleth.data.SimpleObserveable
+import org.walleth.data.WallethAddress
+import org.walleth.data.transactions.Transaction
+import org.walleth.data.transactions.TransactionProvider
 import org.threeten.bp.LocalDateTime
 import java.math.BigInteger
 

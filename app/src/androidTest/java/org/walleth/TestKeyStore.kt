@@ -1,7 +1,7 @@
 package org.walleth
 
-import org.ligi.walleth.data.WallethAddress
-import org.ligi.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.WallethAddress
+import org.walleth.data.keystore.WallethKeyStore
 
 class TestKeyStore : WallethKeyStore {
     override fun getCurrentAddress() = WallethAddress("0xfdf1210fc262c73d0436236a0e07be419babbbc4")
