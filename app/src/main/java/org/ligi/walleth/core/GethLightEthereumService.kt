@@ -131,8 +131,8 @@ class GethLightEthereumService : Service() {
         val signHash = gethKeystore.signHash(it.from.toGethAddr(), newTransaction.sigHash.bytes)
         val transactionWithSignature = newTransaction.withSignature(signHash)
 
-        transactionWithSignature.hash.hex
         it.sigHash = newTransaction.sigHash.hex
+        it.txHash = newTransaction.hash.hex
 
         client.sendTransaction(ethereumContext, transactionWithSignature)
     }
