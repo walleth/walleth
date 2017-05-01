@@ -6,4 +6,7 @@
     <dimen name="rythm">8dp</dimen>
     <dimen name="rythm2">16dp</dimen>
 
+    <dimen name="transaction_eth_text">6sp</dimen>
+    <dimen name="transaction_fiat_text">6sp</dimen>
+
 </resources>

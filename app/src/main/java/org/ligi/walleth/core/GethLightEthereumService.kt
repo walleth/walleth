@@ -108,34 +108,35 @@ class GethLightEthereumService : Service() {
     }
 
 
-    private fun executeTransaction(it: Transaction) {
-        it.ref = TransactionSource.WALLETH_PROCESSED
+    private fun executeTransaction(transaction: Transaction) {
+        transaction.ref = TransactionSource.WALLETH_PROCESSED
 
         try {
             val client = ethereumNode.ethereumClient
-            val nonceAt = client.getNonceAt(ethereumContext, it.from.toGethAddr(), -1)
+            val nonceAt = client.getNonceAt(ethereumContext, transaction.from.toGethAddr(), -1)
 
             val gasPrice = client.suggestGasPrice(ethereumContext)
 
             val gasLimit = BigInt(21_000)
 
-            val newTransaction = Geth.newTransaction(nonceAt, it.to.toGethAddr(), BigInt(it.value.toLong()), gasLimit, gasPrice, ByteArray(0))
+            val newTransaction = Geth.newTransaction(nonceAt, transaction.to.toGethAddr(), BigInt(transaction.value.toLong()), gasLimit, gasPrice, ByteArray(0))
 
             newTransaction.hashCode()
 
             val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
             val accounts = gethKeystore.accounts
-            gethKeystore.unlock(accounts.get(0), "default")
+            val index = (0..(accounts.size() - 1)).first { accounts.get(0).address.hex.toUpperCase() == transaction.from.hex }
+            gethKeystore.unlock(accounts.get(index), "default")
 
-            val signHash = gethKeystore.signHash(it.from.toGethAddr(), newTransaction.sigHash.bytes)
+            val signHash = gethKeystore.signHash(transaction.from.toGethAddr(), newTransaction.sigHash.bytes)
             val transactionWithSignature = newTransaction.withSignature(signHash)
 
-            it.sigHash = newTransaction.sigHash.hex
-            it.txHash = newTransaction.hash.hex
+            transaction.sigHash = newTransaction.sigHash.hex
+            transaction.txHash = newTransaction.hash.hex
 
             client.sendTransaction(ethereumContext, transactionWithSignature)
         } catch (e: Exception) {
-            it.error = e.message
+            transaction.error = e.message
         }
     }
 

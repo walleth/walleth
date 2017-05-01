@@ -9,6 +9,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import okhttp3.*
 import org.json.JSONObject
+import org.ligi.walleth.data.BalanceProvider
 import org.ligi.walleth.data.ETHERSCAN_API_TOKEN
 import org.ligi.walleth.data.WallethAddress
 import org.ligi.walleth.data.keystore.WallethKeyStore
@@ -33,6 +34,7 @@ class EtherScanService : Service() {
     val okHttpClient: OkHttpClient by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
+    val balanceProvider: BalanceProvider by lazyKodein.instance()
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -83,11 +85,14 @@ class EtherScanService : Service() {
     }
 
     fun queryEtherscanForBalance(addressHex: String) {
+
         val urlString = "https://rinkeby.etherscan.io/api?module=account&action=balance&address=$addressHex&tag=latest&apikey=$ETHERSCAN_API_TOKEN"
         val url = Request.Builder().url(urlString).build()
         val newCall: Call = okHttpClient.newCall(url)
         newCall.enqueueOnlySuccess {
-            //success(BigInteger(it.getString("result")))
+            balanceProvider.setBalance(WallethAddress(addressHex),1,BigInteger(it.getString("result")))
+
+            // TODO get block number https://rinkeby.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken
         }
 
     }

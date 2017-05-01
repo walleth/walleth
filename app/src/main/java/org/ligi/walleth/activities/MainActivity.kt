@@ -90,15 +90,7 @@ class MainActivity : AppCompatActivity() {
                 val balanceIsZero = balanceForAddress.balance == BigInteger.ZERO
 
                 runOnUiThread {
-                    current_eth.text = balanceForAddress.balance.toEtherValueString()
-
-                    val exChangeRate = exchangeRateProvider.getExchangeString(balanceForAddress.balance, settings.currentFiat)
-                    current_fiat_symbol.text = settings.currentFiat
-                    if (exChangeRate != null) {
-                        current_fiat.text = exChangeRate
-                    } else {
-                        current_fiat.text = "?"
-                    }
+                    value_view.setEtherValue(balanceForAddress.balance)
 
                     send_container.setVisibility(!balanceIsZero, INVISIBLE)
                     empty_view_container.setVisibility(balanceIsZero)

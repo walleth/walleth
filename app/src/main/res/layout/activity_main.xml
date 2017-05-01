@@ -31,7 +31,12 @@
                     app:srcCompat="@drawable/ic_rec"/>
         </FrameLayout>
 
-        <include layout="@layout/value"/>
+        <org.ligi.walleth.ui.ValueView
+                android:id="@+id/value_view"
+                android:orientation="vertical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="123"/>
 
         <FrameLayout android:layout_width="0dp"
                      android:layout_weight="38"
