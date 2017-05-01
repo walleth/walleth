@@ -24,8 +24,6 @@ import java.io.File
 import java.math.BigInteger
 
 
-
-
 class GethLightEthereumService : Service() {
 
     val binder by lazy { Binder() }
@@ -56,7 +54,7 @@ class GethLightEthereumService : Service() {
             bootstrapNodes = bootNodes
             ethereumGenesis = network.genesis
             ethereumNetworkID = 4
-            ethereumNetStats =  settings.getStatsName()+":Respect my authoritah!@stats.rinkeby.io"
+            ethereumNetStats = settings.getStatsName() + ":Respect my authoritah!@stats.rinkeby.io"
         })
     }
 
@@ -113,28 +111,32 @@ class GethLightEthereumService : Service() {
     private fun executeTransaction(it: Transaction) {
         it.ref = TransactionSource.WALLETH_PROCESSED
 
-        val client = ethereumNode.ethereumClient
-        val nonceAt = client.getNonceAt(ethereumContext, it.from.toGethAddr(), -1)
+        try {
+            val client = ethereumNode.ethereumClient
+            val nonceAt = client.getNonceAt(ethereumContext, it.from.toGethAddr(), -1)
 
-        val gasPrice = client.suggestGasPrice(ethereumContext)
+            val gasPrice = client.suggestGasPrice(ethereumContext)
 
-        val gasLimit = BigInt(21_000)
+            val gasLimit = BigInt(21_000)
 
-        val newTransaction = Geth.newTransaction(nonceAt, it.to.toGethAddr(), BigInt(it.value.toLong()), gasLimit, gasPrice, ByteArray(0))
+            val newTransaction = Geth.newTransaction(nonceAt, it.to.toGethAddr(), BigInt(it.value.toLong()), gasLimit, gasPrice, ByteArray(0))
 
-        newTransaction.hashCode()
+            newTransaction.hashCode()
 
-        val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
-        val accounts = gethKeystore.accounts
-        gethKeystore.unlock(accounts.get(0), "default")
+            val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
+            val accounts = gethKeystore.accounts
+            gethKeystore.unlock(accounts.get(0), "default")
 
-        val signHash = gethKeystore.signHash(it.from.toGethAddr(), newTransaction.sigHash.bytes)
-        val transactionWithSignature = newTransaction.withSignature(signHash)
+            val signHash = gethKeystore.signHash(it.from.toGethAddr(), newTransaction.sigHash.bytes)
+            val transactionWithSignature = newTransaction.withSignature(signHash)
 
-        it.sigHash = newTransaction.sigHash.hex
-        it.txHash = newTransaction.hash.hex
+            it.sigHash = newTransaction.sigHash.hex
+            it.txHash = newTransaction.hash.hex
 
-        client.sendTransaction(ethereumContext, transactionWithSignature)
+            client.sendTransaction(ethereumContext, transactionWithSignature)
+        } catch (e: Exception) {
+            it.error = e.message
+        }
     }
 
 }

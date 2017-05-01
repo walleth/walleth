@@ -7,6 +7,7 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.transaction_item.view.*
+import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.config.Settings
@@ -36,6 +37,12 @@ class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         itemView.difference.text = differenceText
 
         itemView.address.text = addressBook.getEntryForName(transaction.from).name
+
+
+        itemView.transaction_err.setVisibility(transaction.error != null)
+        if (transaction.error != null) {
+            itemView.transaction_err.text = transaction.error
+        }
 
         val localTime = transaction.localTime
         val epochMillis = localTime.toEpochSecond(ZoneOffset.systemDefault().rules.getOffset(localTime)) * 1000
