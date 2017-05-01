@@ -13,6 +13,8 @@
             android:theme="@style/AppTheme">
 
         <service android:name="org.ligi.walleth.core.GethLightEthereumService"/>
+        <service android:name="org.ligi.walleth.core.EtherScanService"/>
+
 
         <activity android:name=".activities.RequestActivity"/>
         <activity android:name=".activities.InfoActivity"/>

@@ -7,10 +7,9 @@ import com.github.salomonbrys.kodein.*
 import com.jakewharton.threetenabp.AndroidThreeTen
 import okhttp3.OkHttpClient
 import org.ligi.tracedroid.TraceDroid
+import org.ligi.walleth.core.EtherScanService
 import org.ligi.walleth.core.GethLightEthereumService
 import org.ligi.walleth.data.BalanceProvider
-import org.ligi.walleth.data.FileBackedTransactionProvider
-import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.addressbook.FileBackedAddressBook
 import org.ligi.walleth.data.config.KotprefSettings
@@ -19,9 +18,10 @@ import org.ligi.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
 import org.ligi.walleth.data.keystore.GethBackedWallethKeyStore
 import org.ligi.walleth.data.keystore.WallethKeyStore
-import org.ligi.walleth.data.networks.NetworkDefinition
-import org.ligi.walleth.data.networks.RinkebyNetworkDefinition
+import org.ligi.walleth.data.networks.NetworkDefinitionProvider
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
+import org.ligi.walleth.data.transactions.FileBackedTransactionProvider
+import org.ligi.walleth.data.transactions.TransactionProvider
 
 open class App : Application(), KodeinAware {
 
@@ -38,6 +38,7 @@ open class App : Application(), KodeinAware {
         bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
         bind<WallethKeyStore>() with singleton { GethBackedWallethKeyStore(this@App) }
         bind<Settings>() with singleton { KotprefSettings }
+        bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider() }
     }
 
     override fun onCreate() {
@@ -52,11 +53,10 @@ open class App : Application(), KodeinAware {
 
     open fun executeCodeWeWillIgnoreInTests() {
         startService(Intent(this, GethLightEthereumService::class.java))
+        startService(Intent(this, EtherScanService::class.java))
     }
 
     companion object {
-        var networḱ: NetworkDefinition = RinkebyNetworkDefinition()
-
         fun applyNightMode() {
             @AppCompatDelegate.NightMode val nightMode = KotprefSettings.getNightMode()
             AppCompatDelegate.setDefaultNightMode(nightMode)

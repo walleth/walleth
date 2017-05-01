@@ -24,12 +24,12 @@ import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.ligi.walleth.R
 import org.ligi.walleth.data.BalanceAtBlock
 import org.ligi.walleth.data.BalanceProvider
-import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.config.Settings
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
 import org.ligi.walleth.data.keystore.WallethKeyStore
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
+import org.ligi.walleth.data.transactions.TransactionProvider
 import org.ligi.walleth.functions.toEtherValueString
 import org.ligi.walleth.iac.BarCodeIntentIntegrator
 import org.ligi.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
@@ -37,7 +37,6 @@ import org.ligi.walleth.iac.isERC67String
 import org.ligi.walleth.ui.BaseTransactionRecyclerAdapter
 import org.ligi.walleth.ui.ChangeObserver
 import java.math.BigInteger
-import java.math.BigInteger.ZERO
 
 
 class MainActivity : AppCompatActivity() {
@@ -70,7 +69,18 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
+        transactionProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
+            override fun observeChange() {
+                val allTransactions = transactionProvider.getTransactionsForAddress(keyStore.getCurrentAddress())
+                val incomingTransactions = allTransactions.filter { it.to == keyStore.getCurrentAddress()}.sortedByDescending { it.localTime }
+                val outgoingTransactions = allTransactions.filter { it.from  == keyStore.getCurrentAddress() }.sortedByDescending { it.localTime }
 
+                runOnUiThread {
+                    transaction_recycler_out.adapter = BaseTransactionRecyclerAdapter(outgoingTransactions, addressBook)
+                    transaction_recycler_in.adapter = BaseTransactionRecyclerAdapter(incomingTransactions, addressBook)
+                }
+            }
+        })
         balanceProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
             override fun observeChange() {
                 var balanceForAddress = BalanceAtBlock(balance = BigInteger("0"), block = 0)
@@ -83,7 +93,7 @@ class MainActivity : AppCompatActivity() {
                     current_eth.text = balanceForAddress.balance.toEtherValueString()
 
                     val exChangeRate = exchangeRateProvider.getExchangeString(balanceForAddress.balance, settings.currentFiat)
-                    current_fiat_symbol.text =  settings.currentFiat
+                    current_fiat_symbol.text = settings.currentFiat
                     if (exChangeRate != null) {
                         current_fiat.text = exChangeRate
                     } else {
@@ -150,13 +160,6 @@ class MainActivity : AppCompatActivity() {
 
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
-
-        val allTransactions = transactionProvider.getTransactionsForAddress(keyStore.getCurrentAddress())
-        val incomingTransactions = allTransactions.filter { it.value >= ZERO }
-        val outgoingTransactions = allTransactions.filter { it.value < ZERO }
-
-        transaction_recycler_out.adapter = BaseTransactionRecyclerAdapter(outgoingTransactions, addressBook)
-        transaction_recycler_in.adapter = BaseTransactionRecyclerAdapter(incomingTransactions, addressBook)
 
         current_fiat_symbol.setOnClickListener {
             startActivityFromClass(SelectReferenceActivity::class)

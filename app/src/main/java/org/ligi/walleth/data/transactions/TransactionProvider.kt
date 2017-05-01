@@ -1,6 +1,9 @@
-package org.ligi.walleth.data
+package org.ligi.walleth.data.transactions
 
-interface TransactionProvider {
+import org.ligi.walleth.data.Observeable
+import org.ligi.walleth.data.WallethAddress
+
+interface TransactionProvider : Observeable {
 
     fun getTransactionsForAddress(address: WallethAddress): List<Transaction>
     fun getAllTransactions(): List<Transaction>

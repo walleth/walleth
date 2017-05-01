@@ -1,7 +1,10 @@
 <resources>
-    <string name="prefs_day_night">KEY_DAY_NIGHT</string>
+    <string name="key_prefs_day_night">KEY_DAY_NIGHT</string>
+    <string name="key_prefs_stats_username">KEY_STATS_USERNAME</string>
+    <string name="key_reference">KEY_REFERENCE</string>
 
     <string name="default_day_night">auto</string>
+    <string name="default_stats_username">ligi</string>
 
     <array name="day_night_keys">
         <item>day</item>

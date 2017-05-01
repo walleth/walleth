@@ -19,7 +19,8 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
     override fun onResume() {
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        findPreference("reference_preference").summary = "Currently: " + settings.currentFiat
+        findPreference(getString(R.string.key_reference)).summary = "Currently: " + settings.currentFiat
+        setUserNameSummary()
     }
 
     override fun onPause() {
@@ -28,12 +29,17 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == getString(R.string.prefs_day_night)) {
+        if (key == getString(R.string.key_prefs_day_night)) {
 
             App.applyNightMode()
             activity.recreateWhenPossible()
         }
+        setUserNameSummary()
 
+    }
+
+    private fun setUserNameSummary() {
+        findPreference(getString(R.string.key_prefs_stats_username)).summary = settings.getStatsName() + " @ https://stats.rinkeby.io"
     }
 
     override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {

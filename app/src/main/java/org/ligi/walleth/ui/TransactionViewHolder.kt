@@ -8,14 +8,20 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.transaction_item.view.*
 import org.ligi.kaxt.startActivityFromURL
-import org.ligi.walleth.data.Transaction
 import org.ligi.walleth.data.addressbook.AddressBook
+import org.ligi.walleth.data.config.Settings
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
+import org.ligi.walleth.data.networks.NetworkDefinitionProvider
+import org.ligi.walleth.data.transactions.Transaction
 import org.ligi.walleth.functions.toEtherValueString
 import org.threeten.bp.ZoneOffset
 
 class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
+    val lazyKodein = LazyKodein(itemView.context.appKodein)
+
+    val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
+    val settings: Settings by lazyKodein.instance()
 
     fun bind(transaction: Transaction, addressBook: AddressBook) {
 
@@ -23,13 +29,13 @@ class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
         val exchangeRateProvider: ExchangeRateProvider by LazyKodein(itemView.context.appKodein).instance()
 
-        exchangeRateProvider.getExchangeString(transaction.value, "EUR")?.let {
-            differenceText += " ($it EUR)"
+        exchangeRateProvider.getExchangeString(transaction.value, settings.currentFiat)?.let {
+            differenceText += " ($it ${settings.currentFiat})"
         }
 
         itemView.difference.text = differenceText
 
-        itemView.address.text = addressBook.getEntryForName(transaction.to).name
+        itemView.address.text = addressBook.getEntryForName(transaction.from).name
 
         val localTime = transaction.localTime
         val epochMillis = localTime.toEpochSecond(ZoneOffset.systemDefault().rules.getOffset(localTime)) * 1000
@@ -41,7 +47,11 @@ class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
 
         itemView.isClickable = true
         itemView.setOnClickListener {
-            itemView.context.startActivityFromURL("https://testnet.etherscan.io/tx/" + transaction.txHash)
+            transaction.txHash?.let {
+                val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(it)
+                itemView.context.startActivityFromURL(url)
+            }
+
         }
     }
 

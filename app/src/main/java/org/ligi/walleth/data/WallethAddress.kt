@@ -9,6 +9,9 @@ import org.ethereum.geth.Geth
 
 data class WallethAddress(val hex: String) {
     fun toGethAddr() = Geth.newAddressFromHex(hex)
+    override fun equals(other: Any?): Boolean {
+        return other is WallethAddress && other.hex.toUpperCase() == hex.toUpperCase()
+    }
 }
 
 fun Address.toWallethAddress() = WallethAddress(hex)

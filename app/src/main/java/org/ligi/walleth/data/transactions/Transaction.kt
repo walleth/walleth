@@ -1,20 +1,14 @@
-package org.ligi.walleth.data
+package org.ligi.walleth.data.transactions
 
+import org.ligi.walleth.data.WallethAddress
 import org.threeten.bp.LocalDateTime
 import java.math.BigInteger
-
-enum class Source {
-    WALLETH,
-    WALLETH_PROCESSED,
-    GETH,
-    ETHERSCAN
-}
 
 data class Transaction(val value: BigInteger,
                        val from: WallethAddress,
                        val to: WallethAddress,
                        val localTime: LocalDateTime = LocalDateTime.now(),
-                       var ref: Source = Source.WALLETH,
+                       var ref: TransactionSource = TransactionSource.WALLETH,
                        var error: String? = null,
                        var sigHash: String? = null,
                        var txHash: String? = null

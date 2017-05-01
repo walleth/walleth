@@ -23,6 +23,13 @@ abstract class BaseAddressBook : SimpleObserveable(), AddressBook {
                     "Developer & Ideator - send some ETH if you like this project and want it to continue"
             ))
 
+            setEntry(AddressBookEntry(
+                    "Faucet",
+                    WallethAddress("0x31b98d14007bdee637298086988a0bbd31184523"),
+                    "The source of some rinkeby ether"
+            ))
+
+
         }
 
         return addresses.values.toList()

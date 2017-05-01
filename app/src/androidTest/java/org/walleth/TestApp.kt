@@ -5,7 +5,7 @@ import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.singleton
 import org.ligi.walleth.App
 import org.ligi.walleth.data.BalanceProvider
-import org.ligi.walleth.data.TransactionProvider
+import org.ligi.walleth.data.transactions.TransactionProvider
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.config.Settings
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider

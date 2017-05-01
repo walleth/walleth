@@ -5,17 +5,22 @@
             android:defaultValue="@string/default_day_night"
             android:entries="@array/day_night"
             android:entryValues="@array/day_night_keys"
-            android:key="@string/prefs_day_night"
+            android:key="@string/key_prefs_day_night"
             android:summary="@string/day_or_night_summary"
             android:title="@string/day_or_night"/>
 
     <Preference
-            android:key="reference_preference"
-            android:title="Select (Fiat) Reference"
-            android:summary="">
+            android:key="@string/key_reference"
+            android:title="Select (Fiat) Reference">
         <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="org.ligi.walleth"
                 android:targetClass="org.ligi.walleth.activities.SelectReferenceActivity"/>
     </Preference>
+
+    <EditTextPreference
+            android:key="@string/key_prefs_stats_username"
+            android:title="Your name in the stats"
+            android:defaultValue="@string/default_stats_username"/>
+
 </PreferenceScreen>

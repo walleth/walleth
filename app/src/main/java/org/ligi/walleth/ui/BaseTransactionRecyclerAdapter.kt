@@ -7,8 +7,8 @@ import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
 import org.ligi.walleth.R
-import org.ligi.walleth.data.Transaction
 import org.ligi.walleth.data.addressbook.AddressBook
+import org.ligi.walleth.data.transactions.Transaction
 
 class BaseTransactionRecyclerAdapter(val transactionList: List<Transaction>, val addressBook: AddressBook) : RecyclerView.Adapter<TransactionViewHolder>() {
 

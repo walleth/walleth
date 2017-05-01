@@ -12,9 +12,9 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxtui.alert
 import org.ligi.walleth.R
 import org.ligi.walleth.data.ETH_IN_WEI
-import org.ligi.walleth.data.Transaction
-import org.ligi.walleth.data.TransactionProvider
 import org.ligi.walleth.data.keystore.WallethKeyStore
+import org.ligi.walleth.data.transactions.Transaction
+import org.ligi.walleth.data.transactions.TransactionProvider
 import org.ligi.walleth.iac.BarCodeIntentIntegrator
 import org.ligi.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.ligi.walleth.iac.ERC67

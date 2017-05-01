@@ -8,15 +8,22 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.*
-import org.ligi.walleth.App.Companion.networḱ
-import org.ligi.walleth.data.*
-import org.ligi.walleth.data.Transaction
+import org.ligi.walleth.data.BalanceProvider
+import org.ligi.walleth.data.WallethAddress
+import org.ligi.walleth.data.config.Settings
 import org.ligi.walleth.data.keystore.GethBackedWallethKeyStore
 import org.ligi.walleth.data.keystore.WallethKeyStore
+import org.ligi.walleth.data.networks.NetworkDefinitionProvider
 import org.ligi.walleth.data.syncprogress.SyncProgressProvider
 import org.ligi.walleth.data.syncprogress.WallethSyncProgress
+import org.ligi.walleth.data.transactions.Transaction
+import org.ligi.walleth.data.transactions.TransactionProvider
+import org.ligi.walleth.data.transactions.TransactionSource
+import org.ligi.walleth.ui.ChangeObserver
 import java.io.File
 import java.math.BigInteger
+
+
 
 
 class GethLightEthereumService : Service() {
@@ -26,25 +33,30 @@ class GethLightEthereumService : Service() {
 
     val ethereumContext = Context()
 
-    val balanceProvider: BalanceProvider by LazyKodein(appKodein).instance()
-    val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
-    val syncProgress: SyncProgressProvider by LazyKodein(appKodein).instance()
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val lazyKodein = LazyKodein(appKodein)
 
+    val balanceProvider: BalanceProvider by lazyKodein.instance()
+    val transactionProvider: TransactionProvider by lazyKodein.instance()
+    val syncProgress: SyncProgressProvider by lazyKodein.instance()
+    val keyStore: WallethKeyStore by lazyKodein.instance()
+    val settings: Settings by lazyKodein.instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
     private val path by lazy { File(baseContext.filesDir, ".ethereum_rb").absolutePath }
 
     val ethereumNode by lazy {
         Geth.newNode(path, NodeConfig().apply {
             val bootNodes = Enodes()
 
-            networḱ.bootNodes.forEach {
+            val network = networkDefinitionProvider.networkDefinition
+
+            network.bootNodes.forEach {
                 bootNodes.append(Enode(it))
             }
 
             bootstrapNodes = bootNodes
-            ethereumGenesis = networḱ.genesis
+            ethereumGenesis = network.genesis
             ethereumNetworkID = 4
-            ethereumNetStats = "ligi:Respect my authoritah!@stats.rinkeby.io"
+            ethereumNetStats =  settings.getStatsName()+":Respect my authoritah!@stats.rinkeby.io"
         })
     }
 
@@ -67,6 +79,16 @@ class GethLightEthereumService : Service() {
 
         }, 16)
 
+        transactionProvider.registerChangeObserver(object : ChangeObserver {
+            override fun observeChange() {
+                transactionProvider.getAllTransactions().forEach {
+                    if (it.ref == TransactionSource.WALLETH) {
+                        executeTransaction(it)
+                    }
+                }
+            }
+
+        })
         Thread({
 
             while (true) {
@@ -80,13 +102,6 @@ class GethLightEthereumService : Service() {
                     syncProgress.setSyncProgress(WallethSyncProgress())
                 }
 
-
-                transactionProvider.getAllTransactions().forEach {
-                    if (it.ref == Source.WALLETH) {
-                        executeTransaction(it)
-                    }
-                }
-
                 SystemClock.sleep(1000)
             }
         }).start()
@@ -96,7 +111,7 @@ class GethLightEthereumService : Service() {
 
 
     private fun executeTransaction(it: Transaction) {
-        it.ref = Source.WALLETH_PROCESSED
+        it.ref = TransactionSource.WALLETH_PROCESSED
 
         val client = ethereumNode.ethereumClient
         val nonceAt = client.getNonceAt(ethereumContext, it.from.toGethAddr(), -1)
