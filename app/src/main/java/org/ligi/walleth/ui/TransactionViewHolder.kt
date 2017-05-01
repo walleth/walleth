@@ -1,5 +1,6 @@
 package org.ligi.walleth.ui
 
+import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.View
@@ -8,7 +9,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.transaction_item.view.*
 import org.ligi.kaxt.setVisibility
-import org.ligi.kaxt.startActivityFromURL
+import org.ligi.walleth.activities.TransactionActivity
 import org.ligi.walleth.data.addressbook.AddressBook
 import org.ligi.walleth.data.config.Settings
 import org.ligi.walleth.data.exchangerate.ExchangeRateProvider
@@ -55,8 +56,12 @@ class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         itemView.isClickable = true
         itemView.setOnClickListener {
             transaction.txHash?.let {
-                val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(it)
-                itemView.context.startActivityFromURL(url)
+                /*val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(it)
+                itemView.context.startActivityFromURL(url)*/
+
+                val intent = Intent(itemView.context, TransactionActivity::class.java)
+                intent.putExtra(TransactionActivity.HASH_KEY,it)
+                itemView.context.startActivity(intent)
             }
 
         }

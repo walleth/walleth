@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context="org.ligi.walleth.activities.TransactionActivity">
+
+
+    <TextView
+            android:id="@+id/from_to_title"
+            android:fontFamily="sans-serif"
+            android:textSize="18dp"
+            android:paddingBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/from_to"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:text="Hash:"
+            android:fontFamily="sans-serif"
+            android:textSize="18dp"
+            android:paddingBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <TextView
+            android:id="@+id/tx_hash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+
+
+    <Button android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="open on etherscan"
+            android:id="@+id/open_on_etherscan"
+    />
+</LinearLayout>

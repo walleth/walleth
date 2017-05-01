@@ -5,6 +5,8 @@ import org.ligi.walleth.data.WallethAddress
 
 class FileBackedTransactionProvider : SimpleObserveable(), TransactionProvider {
 
+    override fun getTransactionsForHash(hash: String) = transactionList.firstOrNull { it.txHash?.toUpperCase() == hash.toUpperCase() }
+
     val transactionList = mutableListOf<Transaction>()
 
     override fun getTransactionsForAddress(address: WallethAddress) = transactionList.filter { it.from == address || it.to == address }
