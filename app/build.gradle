@@ -31,6 +31,46 @@ android {
         warning 'InvalidPackage' // for OKIO
     }
 
+    flavorDimensions "fire", "store"
+
+    productFlavors {
+        forFDroid {
+            dimension "store"
+            buildConfigField 'String', 'STORE', '"fdroid"'
+        }
+
+        forAmazon {
+            dimension "store"
+            buildConfigField 'String', 'STORE', '"amazon"'
+        }
+
+        forPlay {
+            dimension "store"
+            buildConfigField 'String', 'STORE', '"play"'
+        }
+
+        withFirebase {
+            dimension "fire"
+        }
+
+        noFirebase {
+            dimension "fire"
+        }
+
+    }
+
+
+    android.variantFilter { variant ->
+        def firebase = variant.getFlavors().get(0).name
+        def store = variant.getFlavors().get(1).name
+
+        if ((project.hasProperty("singleFlavor") && (store != 'forPlay'))
+                || ((store == 'forAmazon' || store == 'forPlay') && firebase == 'noFirebase')
+                || (store == 'forFDroid' && firebase != 'noFirebase')) {
+            variant.setIgnore(true)
+        }
+    }
+
 }
 
 spoon {
@@ -86,6 +126,9 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.32'
+
+    withFirebaseCompile "com.google.firebase:firebase-core:$firebase_version"
+    withFirebaseCompile "com.google.firebase:firebase-crash:$firebase_version"
 
 }
 
