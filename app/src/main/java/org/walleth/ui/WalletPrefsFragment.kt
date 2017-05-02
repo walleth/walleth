@@ -31,7 +31,7 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key == getString(R.string.key_prefs_day_night)) {
 
-            App.applyNightMode()
+            App.applyNightMode(settings)
             activity.recreateWhenPossible()
         }
         setUserNameSummary()

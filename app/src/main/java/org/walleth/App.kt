@@ -47,7 +47,7 @@ open class App : Application(), KodeinAware {
         TraceDroid.init(this)
         AndroidThreeTen.init(this)
 
-        applyNightMode()
+        applyNightMode(kodein.instance())
         executeCodeWeWillIgnoreInTests()
     }
 
@@ -57,8 +57,8 @@ open class App : Application(), KodeinAware {
     }
 
     companion object {
-        fun applyNightMode() {
-            @AppCompatDelegate.NightMode val nightMode = KotprefSettings.getNightMode()
+        fun applyNightMode(settings : Settings) {
+            @AppCompatDelegate.NightMode val nightMode = settings.getNightMode()
             AppCompatDelegate.setDefaultNightMode(nightMode)
         }
     }

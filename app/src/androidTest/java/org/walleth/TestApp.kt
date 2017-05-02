@@ -1,19 +1,19 @@
 package org.walleth
 
+import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.singleton
-import org.walleth.App
+import org.mockito.Mockito.`when`
+import org.mockito.Mockito.mock
 import org.walleth.data.BalanceProvider
-import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
+import org.walleth.data.transactions.TransactionProvider
 
 class TestApp : App() {
 
@@ -32,6 +32,7 @@ class TestApp : App() {
 
             mock(Settings::class.java).apply {
                 `when`(currentFiat).thenReturn("EUR")
+                `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
             }
         }
     }
