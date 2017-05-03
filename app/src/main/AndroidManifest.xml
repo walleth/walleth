@@ -23,6 +23,7 @@
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
         <activity android:name="org.walleth.activities.SelectReferenceActivity"/>
         <activity android:name="org.walleth.activities.AddressBookActivity"/>
+        <activity android:name="org.walleth.activities.SwitchAccountActivity"/>
         <activity android:name="org.walleth.activities.PreferenceActivity"/>
         <activity android:name="org.walleth.activities.TransactionActivity"/>
         <activity android:name="org.walleth.activities.TransferActivity">

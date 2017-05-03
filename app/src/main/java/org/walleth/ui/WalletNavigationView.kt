@@ -7,13 +7,11 @@ import android.view.View
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
+import kotlinx.android.synthetic.main.activity_main_in_drawer_container.view.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
-import org.walleth.activities.EditAccountActivity
-import org.walleth.activities.ImportActivity
-import org.walleth.activities.PreferenceActivity
-import org.walleth.activities.ShowAccountBarCodeActivity
+import org.walleth.activities.*
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.keystore.WallethKeyStore
 
@@ -44,6 +42,7 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
         super.onAttachedToWindow()
 
         setNavigationItemSelectedListener {
+            rootView.drawer_layout.closeDrawers()
             when (it.itemId) {
                 R.id.menu_edit -> {
                     context.startActivityFromClass(EditAccountActivity::class.java)
@@ -51,13 +50,12 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
                 }
 
                 R.id.menu_save -> {
-
                     context.startActivityFromClass(ShowAccountBarCodeActivity::class.java)
-                    /*
-                    val keyJSON = keyStore.exportCurrentKey(unlockPassword = "default", exportPassword = "default")
+                    true
+                }
 
-
-*/
+                R.id.menu_switch -> {
+                    context.startActivityFromClass(SwitchAccountActivity::class.java)
                     true
                 }
 
@@ -75,12 +73,14 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
         }
 
         addressBook.registerChangeObserverWithInitialObservation(this)
+        keyStore.registerChangeObserver(this)
     }
 
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
         addressBook.unRegisterChangeObserver(this)
+        keyStore.unRegisterChangeObserver(this)
     }
 
 }

@@ -1,13 +1,12 @@
 package org.walleth.ui
 
-import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.walleth.R
 import org.walleth.data.addressbook.AddressBookEntry
 
-class AddressAdapter(val list: List<AddressBookEntry>, val activity: Activity) : RecyclerView.Adapter<AddressViewHolder>() {
+class AddressAdapter(val list: List<AddressBookEntry>, val onClickAction: (entry: AddressBookEntry) -> Unit) : RecyclerView.Adapter<AddressViewHolder>() {
 
     override fun getItemCount() = list.size
 
@@ -17,7 +16,7 @@ class AddressAdapter(val list: List<AddressBookEntry>, val activity: Activity) :
     }
 
     override fun onBindViewHolder(holder: AddressViewHolder, position: Int) {
-        holder.bind(list[position], activity)
+        holder.bind(list[position], onClickAction)
     }
 
 }
