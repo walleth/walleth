@@ -1,5 +1,6 @@
 package org.walleth
 
+import android.support.test.espresso.Espresso.closeSoftKeyboard
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.action.ViewActions.typeText
@@ -9,7 +10,6 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
-import org.walleth.R
 import org.walleth.activities.SelectReferenceActivity
 
 class TheSelectReferenceActivity {
@@ -41,6 +41,8 @@ class TheSelectReferenceActivity {
         onView(withId(R.id.fab)).perform(click())
 
         assertThat(TestApp.fixedValueExchangeProvider.getAvailableFiatInfoMap().keys).doesNotContain("TST")
+
+        closeSoftKeyboard()
 
         onView(withId(R.id.reference_text)).perform(typeText("TST"))
         onView(withText(android.R.string.ok)).perform(click())
