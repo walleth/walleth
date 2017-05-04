@@ -9,6 +9,11 @@
         android:padding="16dp"
         tools:context="org.walleth.activities.TransactionActivity">
 
+    <org.walleth.ui.ValueView
+            android:id="@+id/value_view"
+            android:layout_gravity="center_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     <TextView
             android:id="@+id/from_to_title"
@@ -35,7 +40,6 @@
             android:id="@+id/tx_hash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
-
 
 
     <Button android:layout_width="wrap_content"

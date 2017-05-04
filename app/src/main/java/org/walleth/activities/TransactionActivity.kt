@@ -42,6 +42,8 @@ class TransactionActivity : AppCompatActivity() {
             from_to.text = transaction.from.hex
         }
 
+        value_view.setEtherValue(transaction.value)
+
         open_on_etherscan.setOnClickListener {
             val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(transaction.txHash!!)
             startActivityFromURL(url)
