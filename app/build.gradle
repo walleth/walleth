@@ -95,7 +95,7 @@ dependencies {
 
     compile "org.ethereum:geth:1.6.1"
 
-    compile 'org.ligi:tracedroid:1.4'
+    compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.16'
     compile 'com.github.ligi:KAXTUI:0.2'
 
@@ -138,7 +138,7 @@ dependencyVerification {
     verify = [
             'org.jetbrains.kotlin:kotlin-stdlib:cb4f97bba643e6dd3845525e2d1ff18937c2c3c9be3c68b88213006e9e5fd51c',
             'org.ethereum:geth:01daa68db4a28b1d6c029e302f26caddc8a6a118982ea3a544e28b7cb9225b25',
-            'org.ligi:tracedroid:7d1a206ec63c8d1fdbfa49ea8b263022158fb8e92f035da8570cd5640d61d71d',
+            'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
             'com.github.ligi:KAXT:ab98e33f25c2c18d94ffd1b9251af716ba1b9a02e5bba9656be9fd1341917ecb',
             'com.github.ligi:KAXTUI:e261932ab4cd7386c6de513ccbe714118d83e8a25f30131b3719264c1a573de3',
             'com.github.kenglxn.QRGen:android:c4c3b2faa6220458ad10ae1ff9b496cc7617fc3657d8b81a6b7015787b22b32d',
