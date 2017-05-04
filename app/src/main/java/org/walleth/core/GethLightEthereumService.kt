@@ -125,7 +125,12 @@ class GethLightEthereumService : Service() {
 
             val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
             val accounts = gethKeystore.accounts
-            val index = (0..(accounts.size() - 1)).first { accounts.get(0).address.hex.toUpperCase() == transaction.from.hex }
+            val index = (0..(accounts.size() - 1)).firstOrNull { accounts.get(it).address.hex.toUpperCase() == transaction.from.hex.toUpperCase() }
+
+            if (index == null) {
+                transaction.error = "No key for sending account"
+                return
+            }
             gethKeystore.unlock(accounts.get(index), "default")
 
             val signHash = gethKeystore.signHash(transaction.from.toGethAddr(), newTransaction.sigHash.bytes)
