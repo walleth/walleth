@@ -1,3 +1,5 @@
+![](https://github.com/ligi/walleth/blob/master/assets/1024x500.png)
+
 WALLΞTH
 =======
 
