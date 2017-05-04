@@ -11,7 +11,7 @@
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
     <string name="info_text"><![CDATA[
-This is a native Android <a href="http://ethereum.org">Ethereum</a> wallet.
+This is a native Android <a href="http://ethereum.org">Ethereum</a> light client wallet.
 <br/><br/>
 It uses the in process node as ethereum light client from the <a href="https://github.com/ethereum/go-ethereum">go-ethereum</a> project.
 <br/><br/>
@@ -26,6 +26,8 @@ Our wonderful Icon is from <a href="https://cookicons.co">Michael Cook</a>.
 <br/><br/>
 Be aware that this is an alpha and there will be bugs. There are also some known issues like <a href="https://github.com/ethereum/go-ethereum/issues/14367">this one</a>
  and <a href="https://github.com/ethereum/go-ethereum/issues/14340">this one</a>
+<br/><br/>
+The project was started by <a href="http://ligi.de">ligi</a> as this is not only needed as a wallet - but also as a building block for the <a href="http://espass.it">espass</a> project
 ]]></string>
     <string name="qr_code">QR-Code</string>
     <string name="text_extract_funds">You can use this QR-Code to request a transaction:</string>
