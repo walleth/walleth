@@ -3,6 +3,7 @@
     <string name="welcome">Welcome,\n\n there was no account for you yet - so one was created. Note - this one is not secured with any password for easy use - so only use it as a hot walleth for a few beverages.</string>
     <string name="request_transaction_subtitle">Request Transaction</string>
     <string name="edit_account_subtitle">Edit Account</string>
+    <string name="switch_account_subtitle">Switch Account</string>
     <string name="address_book_subtitle">Address book</string>
     <string name="transaction_subtitle">Transaction details</string>
     <string name="export_account_subtitle">Export account</string>
@@ -17,6 +18,9 @@ It uses the in process node as ethereum light client from the <a href="https://g
 Big shout out to <a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/fjl">fjl</a> and  <a href="https://github.com/obscuren">obscuren</a> here - awesome work guys!
 <br/><br/>
 This alpha uses the <a href="http://www.rinkeby.io">rinkeby</a> testnet.
+<br/><br/>
+WALLΞTH is trying to be as decentralized as possible. Unfortunately complete we cannot be fully decentralized yet.
+For getting the exchange rates for (fiat) references we are querying <a href="https://www.cryptocompare.com">cryptocompare</> and to get transactions we use the great <a href="https://etherscan.io">etherscan.io</a> service.
 <br/><br/>
 Our wonderful Icon is from <a href="https://cookicons.co">Michael Cook</a>.
 <br/><br/>
