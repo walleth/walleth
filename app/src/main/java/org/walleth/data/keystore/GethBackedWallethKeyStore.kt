@@ -1,17 +1,24 @@
 package org.walleth.data.keystore
 
 import android.content.Context
+import com.github.salomonbrys.kodein.LazyKodein
+import com.github.salomonbrys.kodein.android.appKodein
+import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
 import org.walleth.data.SimpleObserveable
 import org.walleth.data.WallethAddress
+import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.toWallethAddress
 import java.io.File
 
-class GethBackedWallethKeyStore(context: Context) : SimpleObserveable(), WallethKeyStore {
+class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), WallethKeyStore {
 
     private val keyStoreFile by lazy { File(context.filesDir, "keystore") }
     val keyStore by lazy { KeyStore(keyStoreFile.absolutePath, Geth.LightScryptN, Geth.LightScryptP) }
+
+    val addressBook: AddressBook by LazyKodein(context.appKodein).instance()
 
     private var currentAddress: WallethAddress? = null
 
@@ -21,6 +28,7 @@ class GethBackedWallethKeyStore(context: Context) : SimpleObserveable(), Walleth
                 currentAddress = keyStore.accounts[0].address.toWallethAddress()
             } else {
                 currentAddress = keyStore.newAccount("default").address.toWallethAddress()
+                addressBook.setEntry(AddressBookEntry("Default Account", currentAddress!!, "This Account was created for you when WALLΞTH started for the first time"))
             }
 
         }
