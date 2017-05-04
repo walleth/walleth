@@ -30,7 +30,7 @@ open class App : Application(), KodeinAware {
     }
 
     open fun createKodein() = Kodein.Module {
-        bind<AddressBook>() with singleton { FileBackedAddressBook() }
+        bind<AddressBook>() with singleton { FileBackedAddressBook(this@App) }
         bind<BalanceProvider>() with singleton { BalanceProvider() }
         bind<OkHttpClient>() with singleton { OkHttpClient.Builder().build() }
         bind<TransactionProvider>() with singleton { FileBackedTransactionProvider() }

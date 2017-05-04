@@ -9,8 +9,8 @@ abstract class BaseAddressBook : SimpleObserveable(), AddressBook {
 
     override fun getEntryForName(address: WallethAddress) = addresses[address] ?: AddressBookEntry("unknown", address)
 
-    override fun getAllEntries() : List<AddressBookEntry> {
-        if (addresses.isEmpty()) {
+    override fun getAllEntries(): List<AddressBookEntry> {
+        if (addresses.size < 2) {
             setEntry(AddressBookEntry(
                     "Michael Cook",
                     WallethAddress("0xbE27686a93c54Af2f55f16e8dE9E6Dc5dccE915e"),

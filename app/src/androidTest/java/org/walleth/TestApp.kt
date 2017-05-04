@@ -42,7 +42,7 @@ class TestApp : App() {
     companion object {
 
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
-        val balanceProvider = BalanceProvider()
+        val balanceProvider = BalanceProviderWithResetFun()
         val addressBookWithEntries = AddressBookWithTestEntries()
         val keyStore = TestKeyStore()
     }

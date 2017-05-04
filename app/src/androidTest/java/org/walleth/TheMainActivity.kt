@@ -8,7 +8,6 @@ import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
-import org.walleth.R
 import org.walleth.activities.MainActivity
 import org.walleth.data.ETH_IN_WEI
 import java.math.BigInteger
@@ -16,7 +15,9 @@ import java.math.BigInteger
 class TheMainActivity {
 
     @get:Rule
-    var rule = TruleskActivityRule(MainActivity::class.java)
+    var rule = TruleskActivityRule(MainActivity::class.java) {
+        TestApp.balanceProvider.reset()
+    }
 
     @Test
     fun behavesCorrectlyWhenBalanceIsZero() {

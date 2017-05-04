@@ -116,6 +116,8 @@ dependencies {
     compile "com.chibatching.kotpref:kotpref:2.1.1"
     compile "com.chibatching.kotpref:initializer:2.1.1"
 
+    compile 'com.squareup.moshi:moshi:1.4.0'
+
     androidTestCompile 'com.google.truth:truth:0.32'
 
     androidTestCompile "org.mockito:mockito-core:2.7.22"

@@ -9,6 +9,9 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import okhttp3.*
 import org.json.JSONObject
+import org.threeten.bp.Instant
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
 import org.walleth.data.BalanceProvider
 import org.walleth.data.ETHERSCAN_API_TOKEN
 import org.walleth.data.WallethAddress
@@ -16,9 +19,6 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionSource
-import org.threeten.bp.Instant
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneOffset
 import java.io.IOException
 import java.math.BigInteger
 
@@ -86,13 +86,12 @@ class EtherScanService : Service() {
 
     fun queryEtherscanForBalance(addressHex: String) {
 
-        val urlString = "https://rinkeby.etherscan.io/api?module=account&action=balance&address=$addressHex&tag=latest&apikey=$ETHERSCAN_API_TOKEN"
-        val url = Request.Builder().url(urlString).build()
-        val newCall: Call = okHttpClient.newCall(url)
-        newCall.enqueueOnlySuccess {
-            balanceProvider.setBalance(WallethAddress(addressHex),1,BigInteger(it.getString("result")))
+        getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest") {
+            val balance = BigInteger(it.getString("result"))
+            getEtherscanResult("module=proxy&action=eth_blockNumber") {
+                balanceProvider.setBalance(WallethAddress(addressHex), it.getString("result").replace("0x","").toLong(16), balance)
+            }
 
-            // TODO get block number https://rinkeby.etherscan.io/api?module=proxy&action=eth_blockNumber&apikey=YourApiKeyToken
         }
 
     }
@@ -104,13 +103,17 @@ class EtherScanService : Service() {
             }
 
             override fun onResponse(call: Call?, response: Response) {
-                val jsonObject = JSONObject(response.body().string())
-                if (jsonObject.getString("message") == "OK") {
-                    success(jsonObject)
-                }
+                success(JSONObject(response.body().string()))
             }
         })
     }
 
 
+    fun getEtherscanResult(requestSTring: String, successCallback: (responseJSON: JSONObject) -> Unit) {
+        val urlString = "https://rinkeby.etherscan.io/api?$requestSTring&apikey=$ETHERSCAN_API_TOKEN"
+        val url = Request.Builder().url(urlString).build()
+        val newCall: Call = okHttpClient.newCall(url)
+        newCall.enqueueOnlySuccess(successCallback)
+
+    }
 }
