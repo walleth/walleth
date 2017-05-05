@@ -14,7 +14,6 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.walleth.BuildConfig
 import org.walleth.data.BalanceProvider
-import org.walleth.data.ETHERSCAN_API_TOKEN
 import org.walleth.data.WallethAddress
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
@@ -60,10 +59,7 @@ class EtherScanService : Service() {
 
     fun queryTransactions(addressHex: String) {
 
-        val urlString = "http://rinkeby.etherscan.io/api?module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc&apikey=$ETHERSCAN_API_TOKEN"
-        val url = Request.Builder().url(urlString).build()
-        val newCall: Call = okHttpClient.newCall(url)
-        newCall.enqueueOnlySuccess {
+        getEtherscanResult("module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc") {
 
             val jsonArray = it.getJSONArray("result")
             (0..(jsonArray.length() - 1)).forEach {
