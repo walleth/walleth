@@ -2,5 +2,6 @@
 <fragment
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:name="org.walleth.ui.WalletPrefsFragment"
+        android:id="@+id/preferences_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
