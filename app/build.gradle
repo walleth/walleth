@@ -17,6 +17,7 @@ android {
 
         versionCode 2
         versionName "0.2"
+        archivesBaseName = "WALLETH-$versionName"
 
         testInstrumentationRunner "org.walleth.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true
