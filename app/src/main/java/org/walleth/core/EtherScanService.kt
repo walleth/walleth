@@ -12,6 +12,7 @@ import org.json.JSONObject
 import org.threeten.bp.Instant
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
+import org.walleth.BuildConfig
 import org.walleth.data.BalanceProvider
 import org.walleth.data.ETHERSCAN_API_TOKEN
 import org.walleth.data.WallethAddress
@@ -110,7 +111,7 @@ class EtherScanService : Service() {
 
 
     fun getEtherscanResult(requestSTring: String, successCallback: (responseJSON: JSONObject) -> Unit) {
-        val urlString = "https://rinkeby.etherscan.io/api?$requestSTring&apikey=$ETHERSCAN_API_TOKEN"
+        val urlString = "https://rinkeby.etherscan.io/api?$requestSTring&apikey=$"+ BuildConfig.ETHERSCAN_APIKEY
         val url = Request.Builder().url(urlString).build()
         val newCall: Call = okHttpClient.newCall(url)
         newCall.enqueueOnlySuccess(successCallback)

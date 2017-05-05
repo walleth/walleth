@@ -8,15 +8,22 @@ apply plugin: 'witness'
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
+
     defaultConfig {
         applicationId "org.walleth"
+
         minSdkVersion 15
         targetSdkVersion 25
+
         versionCode 1
         versionName "0.1"
+
         testInstrumentationRunner "org.walleth.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true
+
+        buildConfigField "String", "ETHERSCAN_APIKEY",'"' + file('../.ci/etherscan.apikey').text + '"'
     }
+
     buildTypes {
         release {
             minifyEnabled false
