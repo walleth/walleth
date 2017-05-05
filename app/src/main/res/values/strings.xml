@@ -50,4 +50,6 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
 
     <string name="day_or_night">Day or Night</string>
     <string name="day_or_night_summary">There is a light and a dark theme</string>
+    <string name="dialog_title_success">Success</string>
+    <string name="dialog_title_error">Error</string>
 </resources>
