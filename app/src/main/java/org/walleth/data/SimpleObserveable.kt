@@ -4,21 +4,30 @@ import org.walleth.ui.ChangeObserver
 
 open class SimpleObserveable : Observeable {
 
+    val lock = Any()
     val changeObserves = HashSet<ChangeObserver>()
 
     override fun registerChangeObserver(changeObserver: ChangeObserver) {
-        changeObserves.add(changeObserver)
+        synchronized(lock) {
+            changeObserves.add(changeObserver)
+        }
     }
 
     override fun registerChangeObserverWithInitialObservation(changeObserver: ChangeObserver) {
-        changeObserver.observeChange()
-        changeObserves.add(changeObserver)
+        synchronized(lock) {
+            changeObserver.observeChange()
+            changeObserves.add(changeObserver)
+        }
     }
 
     override fun unRegisterChangeObserver(changeObserver: ChangeObserver) {
-        changeObserves.remove(changeObserver)
+        synchronized(lock) {
+            changeObserves.remove(changeObserver)
+        }
     }
 
-    fun promoteChange() = changeObserves.forEach(ChangeObserver::observeChange)
+    fun promoteChange() =  synchronized(lock) {
+        changeObserves.forEach(ChangeObserver::observeChange)
+    }
 
 }
