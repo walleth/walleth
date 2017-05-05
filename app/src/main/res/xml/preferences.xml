@@ -11,11 +11,11 @@
 
     <Preference
             android:key="@string/key_reference"
-            android:title="Select (Fiat) Reference">
+            android:title="@string/select_fiat_reference">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="org.ligi.walleth"
-                android:targetClass="org.ligi.walleth.activities.SelectReferenceActivity"/>
+                android:targetPackage="org.walleth"
+                android:targetClass="org.walleth.activities.SelectReferenceActivity"/>
     </Preference>
 
     <EditTextPreference
