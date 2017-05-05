@@ -86,6 +86,10 @@ spoon {
     grantAllPermissions = true
 }
 
+if (hasProperty("isCI")) {
+    apply plugin: 'com.google.gms.google-services'
+}
+
 configurations {
 
     // http://stackoverflow.com/questions/30578243/why-would-adding-espresso-contrib-cause-an-inflateexception
