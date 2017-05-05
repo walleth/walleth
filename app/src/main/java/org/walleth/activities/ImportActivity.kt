@@ -12,7 +12,11 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalTime
 import org.walleth.R
+import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.iac.BarCodeIntentIntegrator
 import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
@@ -22,6 +26,7 @@ class ImportActivity : AppCompatActivity() {
 
     val READ_REQUEST_CODE = 42
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val addressBook: AddressBook by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,11 +42,18 @@ class ImportActivity : AppCompatActivity() {
                 val importKey = keyStore.importKey(inport_json_text.text.toString(), importPassword = password.text.toString(), newPassword = "default")
                 alertBuilder
                         .setMessage("Imported " + importKey?.hex)
-                        .setTitle("Success")
+                        .setTitle(getString(R.string.dialog_title_success))
+
+                val accountName = if (account_name.text.isBlank()) {
+                    "Imported"
+                } else {
+                    account_name.text
+                }
+                addressBook.setEntry(AddressBookEntry(accountName.toString(),importKey!!,"Imported on " + LocalDateTime.now()))
             } catch(e: Exception) {
                 alertBuilder
                         .setMessage(e.message)
-                        .setTitle("Error")
+                        .setTitle(getString(R.string.dialog_title_error))
             }
             alertBuilder.setPositiveButton("OK", null).show()
         }
