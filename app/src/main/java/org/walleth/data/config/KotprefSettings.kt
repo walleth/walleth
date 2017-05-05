@@ -4,6 +4,8 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatDelegate
 import com.chibatching.kotpref.KotprefModel
 import org.walleth.R
+import java.math.BigInteger
+import java.security.SecureRandom
 
 object KotprefSettings : KotprefModel(), Settings {
 
@@ -12,7 +14,11 @@ object KotprefSettings : KotprefModel(), Settings {
 
     internal val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 
-    override fun getStatsName() = sharedPreferences.getString(context.getString(R.string.key_prefs_stats_username),context.getString(R.string.default_stats_username))
+    private fun createRandomUsername() : String {
+        return context.getString(R.string.default_stats_username) + " " + BigInteger(130,  SecureRandom()).toString(32).substring(0,5)
+    }
+
+    override fun getStatsName() = sharedPreferences.getString(context.getString(R.string.key_prefs_stats_username), createRandomUsername())
 
     override fun getNightMode()
             = when (sharedPreferences.getString(context.getString(R.string.key_prefs_day_night), context.getString(R.string.default_day_night))) {
