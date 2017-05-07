@@ -22,7 +22,7 @@ android {
         testInstrumentationRunner "org.walleth.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField "String", "ETHERSCAN_APIKEY",'"' + file('../.ci/etherscan.apikey').text + '"'
+        buildConfigField "String", "ETHERSCAN_APIKEY", '"' + file('../.ci/etherscan.apikey').text + '"'
     }
 
     buildTypes {
@@ -113,6 +113,8 @@ dependencies {
 
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
 
+    compile 'com.jakewharton:process-phoenix:2.0.0'
+
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
 
@@ -126,7 +128,6 @@ dependencies {
     compile "com.android.support:preference-v14:$support_version"
 
     compile "com.chibatching.kotpref:kotpref:2.1.1"
-    compile "com.chibatching.kotpref:initializer:2.1.1"
 
     compile 'com.squareup.moshi:moshi:1.4.0'
 
@@ -164,7 +165,6 @@ dependencyVerification {
             'com.android.support:recyclerview-v7:375974a8724e359d97d77fa8522c614f813a3ac4583c1807f154a3f9a054b0a1',
             'com.android.support:preference-v14:970904d676ea886d0be459e7e5e36c0db650daefea5bbe80cc59146091905be5',
             'com.chibatching.kotpref:kotpref:da436fceda1e7047a8394d1e0f0ec7f6cedd42d696eab8345b383767b7033d60',
-            'com.chibatching.kotpref:initializer:7f586aeb686897c48a3785c722cf24fda0e028c556d7bad13a53b9fb3e0bd84e',
             'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
             'com.github.kenglxn.QRGen:core:1782ab325497ce0b6a7116197bdb7fe2b44e998c7d1e2470ae195d686c385b65',
             'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102',

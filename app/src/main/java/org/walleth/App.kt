@@ -3,12 +3,14 @@ package org.walleth
 import android.app.Application
 import android.content.Intent
 import android.support.v7.app.AppCompatDelegate
+import com.chibatching.kotpref.Kotpref
 import com.github.salomonbrys.kodein.*
 import com.jakewharton.threetenabp.AndroidThreeTen
 import okhttp3.OkHttpClient
 import org.ligi.tracedroid.TraceDroid
 import org.walleth.core.EtherScanService
 import org.walleth.core.GethLightEthereumService
+import org.walleth.core.WatchDogService
 import org.walleth.data.BalanceProvider
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.FileBackedAddressBook
@@ -44,6 +46,7 @@ open class App : Application(), KodeinAware {
     override fun onCreate() {
         super.onCreate()
 
+        Kotpref.init(this)
         TraceDroid.init(this)
         AndroidThreeTen.init(this)
 
@@ -54,6 +57,7 @@ open class App : Application(), KodeinAware {
     open fun executeCodeWeWillIgnoreInTests() {
         startService(Intent(this, GethLightEthereumService::class.java))
         startService(Intent(this, EtherScanService::class.java))
+        startService(Intent(this, WatchDogService::class.java))
     }
 
     companion object {

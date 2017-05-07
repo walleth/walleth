@@ -1,13 +1,17 @@
 package org.walleth.core
 
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.SystemClock
+import android.support.v4.app.NotificationCompat
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.*
+import org.walleth.R
+import org.walleth.activities.MainActivity
 import org.walleth.data.BalanceProvider
 import org.walleth.data.WallethAddress
 import org.walleth.data.config.Settings
@@ -26,6 +30,16 @@ import java.math.BigInteger
 
 class GethLightEthereumService : Service() {
 
+    companion object {
+        val STOP_SERVICE_ACTION = "STOPSERVICE"
+
+        fun android.content.Context.gethStopIntent() = Intent(this, GethLightEthereumService::class.java).apply {
+            action = STOP_SERVICE_ACTION
+        }
+    }
+
+    val NOTIFICATION_ID = 101
+
     val binder by lazy { Binder() }
     override fun onBind(intent: Intent) = binder
 
@@ -41,74 +55,107 @@ class GethLightEthereumService : Service() {
     val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
     private val path by lazy { File(baseContext.filesDir, ".ethereum_rb").absolutePath }
 
-    val ethereumNode by lazy {
-        Geth.newNode(path, NodeConfig().apply {
-            val bootNodes = Enodes()
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
-            val network = networkDefinitionProvider.networkDefinition
-
-            network.bootNodes.forEach {
-                bootNodes.append(Enode(it))
-            }
-
-            bootstrapNodes = bootNodes
-            ethereumGenesis = network.genesis
-            ethereumNetworkID = 4
-            ethereumNetStats = settings.getStatsName() + ":Respect my authoritah!@stats.rinkeby.io"
-        })
-    }
-
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-        try {
-            ethereumNode.start()
-        } catch (e: Exception) {
-            // TODO better handling - unfortunately ethereumNode does not have one isStarted method which would come handy here
+        if (intent.action == STOP_SERVICE_ACTION) {
+            WatchdogState.geth_service_running = false
+            return START_NOT_STICKY
         }
 
-        ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
-            override fun onNewHead(p0: Header) {
-                val address = keyStore.getCurrentAddress().toGethAddr()
-                val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
-                balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
-            }
+        if (WatchdogState.geth_service_running) {
+            return START_NOT_STICKY
+        }
 
-            override fun onError(p0: String?) {}
+        WatchdogState.geth_last_seen = System.currentTimeMillis()
+        WatchdogState.geth_service_running = true
 
-        }, 16)
+        val pendingStopIntent = PendingIntent.getService(baseContext, 0, gethStopIntent(), 0)
+        val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, MainActivity::class.java), 0)
 
-        transactionProvider.registerChangeObserver(object : ChangeObserver {
-            override fun observeChange() {
-                transactionProvider.getAllTransactions().forEach {
-                    if (it.ref == TransactionSource.WALLETH) {
-                        executeTransaction(it)
-                    }
-                }
-            }
+        val notification = NotificationCompat.Builder(this).apply {
+            setContentTitle("WALLETH Geth")
+            setContentText("light client running")
+            setContentIntent(contentIntent)
+            addAction(android.R.drawable.ic_menu_close_clear_cancel, "exit", pendingStopIntent)
+            setSmallIcon(R.drawable.notification)
+        }.build()
 
-        })
+        startForeground(NOTIFICATION_ID, notification)
+
         Thread({
 
-            while (true) {
+            val ethereumNode = Geth.newNode(path, NodeConfig().apply {
+                val bootNodes = Enodes()
 
-                val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
+                val network = networkDefinitionProvider.networkDefinition
 
-                if (ethereumSyncProgress != null) {
-                    val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
-                    syncProgress.setSyncProgress(newSyncProgress)
-                } else {
-                    syncProgress.setSyncProgress(WallethSyncProgress())
+                network.bootNodes.forEach {
+                    bootNodes.append(Enode(it))
+                }
+
+                bootstrapNodes = bootNodes
+                ethereumGenesis = network.genesis
+                ethereumNetworkID = 4
+                ethereumNetStats = settings.getStatsName() + ":Respect my authoritah!@stats.rinkeby.io"
+            })
+
+            try {
+                ethereumNode.start()
+
+                ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
+                    override fun onNewHead(p0: Header) {
+                        val address = keyStore.getCurrentAddress().toGethAddr()
+                        val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
+                        balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
+
+                    }
+
+                    override fun onError(p0: String?) {}
+
+                }, 16)
+
+                transactionProvider.registerChangeObserver(object : ChangeObserver {
+                    override fun observeChange() {
+                        transactionProvider.getAllTransactions().forEach {
+                            if (it.ref == TransactionSource.WALLETH) {
+                                executeTransaction(it, ethereumNode)
+                            }
+                        }
+                    }
+
+                })
+            } catch (e: Exception) {
+                org.ligi.tracedroid.logging.Log.e("node error", e)
+            }
+
+            while (WatchdogState.geth_service_running) {
+
+                WatchdogState.geth_last_seen = System.currentTimeMillis()
+                try {
+                    val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
+
+                    if (ethereumSyncProgress != null) {
+                        val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
+                        syncProgress.setSyncProgress(newSyncProgress)
+                    } else {
+                        syncProgress.setSyncProgress(WallethSyncProgress())
+                    }
+                } catch(e: Exception) {
                 }
 
                 SystemClock.sleep(1000)
             }
+
+            ethereumNode.stop()
+            stopForeground(true)
+            stopSelf()
         }).start()
 
-        return START_STICKY
+        return START_NOT_STICKY
     }
 
 
-    private fun executeTransaction(transaction: Transaction) {
+    private fun executeTransaction(transaction: Transaction, ethereumNode: Node) {
         transaction.ref = TransactionSource.WALLETH_PROCESSED
 
         try {

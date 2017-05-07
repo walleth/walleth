@@ -20,8 +20,15 @@
             android:id="@+id/menu_load"
             android:title="Import account"
             android:icon="@drawable/ic_archive_black_24dp"/>
+
     <item
             android:id="@+id/menu_settings"
             android:title="Settings"
             android:icon="@drawable/ic_action_settings"/>
+
+    <item
+            android:id="@+id/menu_debug"
+            android:title="Debug"
+            android:icon="@drawable/ic_adb_black_24dp"/>
+
 </menu>

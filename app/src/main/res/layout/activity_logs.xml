@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:focusableInTouchMode="true"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical"
+        tools:context="org.walleth.activities.InfoActivity">
+
+    <Button
+            android:id="@+id/start_stop_service"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="start/stop service"/>
+
+    <android.support.v7.widget.SwitchCompat
+            android:id="@+id/golog_switch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="filter GoLog"/>
+    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+        <TextView
+                android:padding="8dp"
+                android:id="@+id/log_text"
+                android:fontFamily="sans-serif"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+    </ScrollView>
+
+
+</LinearLayout>

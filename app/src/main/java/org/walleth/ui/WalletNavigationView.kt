@@ -44,6 +44,10 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
         setNavigationItemSelectedListener {
             rootView.drawer_layout.closeDrawers()
             when (it.itemId) {
+                R.id.menu_debug -> {
+                    context.startActivityFromClass(DebugWallethActivity::class.java)
+                    true
+                }
                 R.id.menu_edit -> {
                     context.startActivityFromClass(EditAccountActivity::class.java)
                     true

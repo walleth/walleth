@@ -3,6 +3,7 @@
           package="org.walleth">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_LOGS"/>
 
     <application
             android:allowBackup="true"
@@ -13,11 +14,13 @@
             android:theme="@style/AppTheme">
 
         <service android:name="org.walleth.core.GethLightEthereumService"/>
-        <service android:name="org.walleth.core.EtherScanService"/>
+        <service android:name="org.walleth.core.WatchDogService"/>
 
+        <service android:name="org.walleth.core.EtherScanService"/>
 
         <activity android:name="org.walleth.activities.RequestActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>
+        <activity android:name="org.walleth.activities.DebugWallethActivity"/>
         <activity android:name="org.walleth.activities.ImportActivity"/>
         <activity android:name="org.walleth.activities.ShowAccountBarCodeActivity"/>
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
