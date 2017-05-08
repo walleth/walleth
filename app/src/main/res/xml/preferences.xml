@@ -22,4 +22,9 @@
             android:key="@string/key_prefs_stats_username"
             android:title="Your name in the stats"/>
 
+    <CheckBoxPreference
+            android:key="@string/key_prefs_start_light"
+            android:title="Start Geth Light Client"
+            android:summary="This makes your phone warm, might crash and use a lot of CPU cycles and bandwidth - but also gives you the warm feeling of helping decentralisation by finding issues in this area."
+    />
 </PreferenceScreen>

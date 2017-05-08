@@ -7,9 +7,6 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_logs.*
 import org.walleth.R
-import org.walleth.core.GethLightEthereumService
-import org.walleth.core.GethLightEthereumService.Companion.gethStopIntent
-import org.walleth.core.WatchdogState
 import java.io.IOException
 
 class DebugWallethActivity : AppCompatActivity() {
@@ -19,13 +16,6 @@ class DebugWallethActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_logs)
 
-        start_stop_service.setOnClickListener {
-            if (WatchdogState.geth_service_running) {
-                startService(gethStopIntent())
-            } else {
-                startService(Intent(this, GethLightEthereumService::class.java))
-            }
-        }
         golog_switch.setOnCheckedChangeListener { _, _ ->
             displayLog()
         }

@@ -1,6 +1,8 @@
 <resources>
     <string name="key_prefs_day_night">KEY_DAY_NIGHT</string>
     <string name="key_prefs_stats_username">KEY_STATS_USERNAME</string>
+    <string name="key_prefs_start_light">KEY_START_LIGHT</string>
+
     <string name="key_reference">KEY_REFERENCE</string>
 
     <string name="default_day_night">auto</string>

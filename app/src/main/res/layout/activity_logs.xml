@@ -11,12 +11,6 @@
         android:orientation="vertical"
         tools:context="org.walleth.activities.InfoActivity">
 
-    <Button
-            android:id="@+id/start_stop_service"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="start/stop service"/>
-
     <android.support.v7.widget.SwitchCompat
             android:id="@+id/golog_switch"
             android:layout_width="wrap_content"

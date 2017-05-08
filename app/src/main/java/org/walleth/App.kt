@@ -55,13 +55,15 @@ open class App : Application(), KodeinAware {
     }
 
     open fun executeCodeWeWillIgnoreInTests() {
-        startService(Intent(this, GethLightEthereumService::class.java))
+        if (KotprefSettings.isLightClientWanted()) {
+            startService(Intent(this, GethLightEthereumService::class.java))
+        }
         startService(Intent(this, EtherScanService::class.java))
         startService(Intent(this, WatchDogService::class.java))
     }
 
     companion object {
-        fun applyNightMode(settings : Settings) {
+        fun applyNightMode(settings: Settings) {
             @AppCompatDelegate.NightMode val nightMode = settings.getNightMode()
             AppCompatDelegate.setDefaultNightMode(nightMode)
         }

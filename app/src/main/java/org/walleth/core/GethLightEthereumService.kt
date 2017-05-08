@@ -43,8 +43,6 @@ class GethLightEthereumService : Service() {
     val binder by lazy { Binder() }
     override fun onBind(intent: Intent) = binder
 
-    val ethereumContext = Context()
-
     val lazyKodein = LazyKodein(appKodein)
 
     val balanceProvider: BalanceProvider by lazyKodein.instance()
@@ -84,6 +82,8 @@ class GethLightEthereumService : Service() {
 
         Thread({
 
+            val ethereumContext = Context()
+
             val ethereumNode = Geth.newNode(path, NodeConfig().apply {
                 val bootNodes = Enodes()
 
@@ -118,7 +118,7 @@ class GethLightEthereumService : Service() {
                     override fun observeChange() {
                         transactionProvider.getAllTransactions().forEach {
                             if (it.ref == TransactionSource.WALLETH) {
-                                executeTransaction(it, ethereumNode)
+                                executeTransaction(it, ethereumNode, ethereumContext)
                             }
                         }
                     }
@@ -155,7 +155,7 @@ class GethLightEthereumService : Service() {
     }
 
 
-    private fun executeTransaction(transaction: Transaction, ethereumNode: Node) {
+    private fun executeTransaction(transaction: Transaction, ethereumNode: Node, ethereumContext: Context) {
         transaction.ref = TransactionSource.WALLETH_PROCESSED
 
         try {
