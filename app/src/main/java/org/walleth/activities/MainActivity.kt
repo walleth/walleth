@@ -33,8 +33,10 @@ import org.walleth.data.transactions.TransactionProvider
 import org.walleth.iac.BarCodeIntentIntegrator
 import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.walleth.iac.isERC67String
-import org.walleth.ui.BaseTransactionRecyclerAdapter
 import org.walleth.ui.ChangeObserver
+import org.walleth.ui.TransactionAdapterDirection.INCOMMING
+import org.walleth.ui.TransactionAdapterDirection.OUTGOING
+import org.walleth.ui.TransactionRecyclerAdapter
 import java.math.BigInteger
 
 
@@ -71,12 +73,12 @@ class MainActivity : AppCompatActivity() {
         transactionProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
             override fun observeChange() {
                 val allTransactions = transactionProvider.getTransactionsForAddress(keyStore.getCurrentAddress())
-                val incomingTransactions = allTransactions.filter { it.to == keyStore.getCurrentAddress()}.sortedByDescending { it.localTime }
-                val outgoingTransactions = allTransactions.filter { it.from  == keyStore.getCurrentAddress() }.sortedByDescending { it.localTime }
+                val incomingTransactions = allTransactions.filter { it.to == keyStore.getCurrentAddress() }.sortedByDescending { it.localTime }
+                val outgoingTransactions = allTransactions.filter { it.from == keyStore.getCurrentAddress() }.sortedByDescending { it.localTime }
 
                 runOnUiThread {
-                    transaction_recycler_out.adapter = BaseTransactionRecyclerAdapter(outgoingTransactions, addressBook)
-                    transaction_recycler_in.adapter = BaseTransactionRecyclerAdapter(incomingTransactions, addressBook)
+                    transaction_recycler_out.adapter = TransactionRecyclerAdapter(outgoingTransactions, addressBook, OUTGOING)
+                    transaction_recycler_in.adapter = TransactionRecyclerAdapter(incomingTransactions, addressBook, INCOMMING)
                 }
             }
         })

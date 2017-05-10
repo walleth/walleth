@@ -6,19 +6,23 @@ import android.text.format.DateUtils
 import android.view.View
 import kotlinx.android.synthetic.main.transaction_item.view.*
 import org.ligi.kaxt.setVisibility
+import org.threeten.bp.ZoneOffset
 import org.walleth.activities.TransactionActivity
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.transactions.Transaction
-import org.threeten.bp.ZoneOffset
 
-class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDirection) : RecyclerView.ViewHolder(itemView) {
 
 
     fun bind(transaction: Transaction, addressBook: AddressBook) {
 
         itemView.difference.setEtherValue(transaction.value)
 
-        itemView.address.text = addressBook.getEntryForName(transaction.from).name
+        itemView.address.text = if (direction == TransactionAdapterDirection.INCOMMING) {
+            addressBook.getEntryForName(transaction.from)
+        } else {
+            addressBook.getEntryForName(transaction.to)
+        }.name
 
         itemView.transaction_err.setVisibility(transaction.error != null)
         if (transaction.error != null) {
@@ -37,7 +41,7 @@ class TransactionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         itemView.setOnClickListener {
             transaction.txHash?.let {
                 val intent = Intent(itemView.context, TransactionActivity::class.java)
-                intent.putExtra(TransactionActivity.HASH_KEY,it)
+                intent.putExtra(TransactionActivity.HASH_KEY, it)
                 itemView.context.startActivity(intent)
             }
 

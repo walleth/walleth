@@ -10,7 +10,11 @@ import org.walleth.R
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.transactions.Transaction
 
-class BaseTransactionRecyclerAdapter(val transactionList: List<Transaction>, val addressBook: AddressBook) : RecyclerView.Adapter<TransactionViewHolder>() {
+enum class TransactionAdapterDirection {
+    INCOMMING, OUTGOING
+}
+
+class TransactionRecyclerAdapter(val transactionList: List<Transaction>, val addressBook: AddressBook, val direction: TransactionAdapterDirection) : RecyclerView.Adapter<TransactionViewHolder>() {
 
     override fun getItemCount() = transactionList.size
 
@@ -22,7 +26,7 @@ class BaseTransactionRecyclerAdapter(val transactionList: List<Transaction>, val
         val margin = parent.context.resources.getDimension(R.dimen.rythm).toInt()
         layoutParams.setMargins(0, margin, 0, margin)
         itemView.layoutParams = layoutParams
-        return TransactionViewHolder(itemView)
+        return TransactionViewHolder(itemView,direction)
     }
 
 }
