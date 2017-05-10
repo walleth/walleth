@@ -80,6 +80,7 @@ class GethLightEthereumService : Service() {
 
         startForeground(NOTIFICATION_ID, notification)
 
+
         Thread({
 
             val ethereumContext = Context()
@@ -99,6 +100,17 @@ class GethLightEthereumService : Service() {
                 ethereumNetStats = settings.getStatsName() + ":Respect my authoritah!@stats.rinkeby.io"
             })
 
+
+            val changeObserver: ChangeObserver = object : ChangeObserver {
+                override fun observeChange() {
+                    transactionProvider.getAllTransactions().forEach {
+                        if (it.ref == TransactionSource.WALLETH) {
+                            executeTransaction(it, ethereumNode, ethereumContext)
+                        }
+                    }
+                }
+
+            }
             try {
                 ethereumNode.start()
 
@@ -114,16 +126,8 @@ class GethLightEthereumService : Service() {
 
                 }, 16)
 
-                transactionProvider.registerChangeObserver(object : ChangeObserver {
-                    override fun observeChange() {
-                        transactionProvider.getAllTransactions().forEach {
-                            if (it.ref == TransactionSource.WALLETH) {
-                                executeTransaction(it, ethereumNode, ethereumContext)
-                            }
-                        }
-                    }
 
-                })
+                transactionProvider.registerChangeObserver(changeObserver)
             } catch (e: Exception) {
                 org.ligi.tracedroid.logging.Log.e("node error", e)
             }
@@ -146,6 +150,7 @@ class GethLightEthereumService : Service() {
                 SystemClock.sleep(1000)
             }
 
+            transactionProvider.unRegisterChangeObserver(changeObserver)
             ethereumNode.stop()
             stopForeground(true)
             stopSelf()

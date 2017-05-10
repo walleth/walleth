@@ -10,6 +10,7 @@ import okhttp3.OkHttpClient
 import org.ligi.tracedroid.TraceDroid
 import org.walleth.core.EtherScanService
 import org.walleth.core.GethLightEthereumService
+import org.walleth.core.GethTransactionSigner
 import org.walleth.core.WatchDogService
 import org.walleth.data.BalanceProvider
 import org.walleth.data.addressbook.AddressBook
@@ -22,7 +23,7 @@ import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
-import org.walleth.data.transactions.FileBackedTransactionProvider
+import org.walleth.data.transactions.BaseTransactionProvider
 import org.walleth.data.transactions.TransactionProvider
 
 open class App : Application(), KodeinAware {
@@ -35,7 +36,7 @@ open class App : Application(), KodeinAware {
         bind<AddressBook>() with singleton { FileBackedAddressBook(this@App) }
         bind<BalanceProvider>() with singleton { BalanceProvider() }
         bind<OkHttpClient>() with singleton { OkHttpClient.Builder().build() }
-        bind<TransactionProvider>() with singleton { FileBackedTransactionProvider() }
+        bind<TransactionProvider>() with singleton { BaseTransactionProvider() }
         bind<ExchangeRateProvider>() with singleton { CryptoCompareExchangeProvider(this@App, instance()) }
         bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
         bind<WallethKeyStore>() with singleton { GethBackedWallethKeyStore(this@App) }
@@ -58,6 +59,7 @@ open class App : Application(), KodeinAware {
         if (KotprefSettings.isLightClientWanted()) {
             startService(Intent(this, GethLightEthereumService::class.java))
         }
+        startService(Intent(this, GethTransactionSigner::class.java))
         startService(Intent(this, EtherScanService::class.java))
         startService(Intent(this, WatchDogService::class.java))
     }

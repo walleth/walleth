@@ -3,7 +3,9 @@ package org.walleth.data.transactions
 import org.walleth.data.SimpleObserveable
 import org.walleth.data.WallethAddress
 
-class FileBackedTransactionProvider : SimpleObserveable(), TransactionProvider {
+open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
+
+    override fun getLastNonceForAddress(address: WallethAddress) = getTransactionsForAddress(address).fold(0L, { i: Long, transaction: Transaction -> Math.max(i, transaction.nonce ?: 0) })
 
     val txListLock = Any()
 

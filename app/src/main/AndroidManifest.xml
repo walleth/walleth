@@ -17,6 +17,7 @@
         <service android:name="org.walleth.core.WatchDogService"/>
 
         <service android:name="org.walleth.core.EtherScanService"/>
+        <service android:name="org.walleth.core.GethTransactionSigner"/>
 
         <activity android:name="org.walleth.activities.RequestActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>

@@ -1,17 +1,12 @@
 package org.walleth
 
 import org.threeten.bp.LocalDateTime
-import org.walleth.data.SimpleObserveable
 import org.walleth.data.WallethAddress
+import org.walleth.data.transactions.BaseTransactionProvider
 import org.walleth.data.transactions.Transaction
-import org.walleth.data.transactions.TransactionProvider
 import java.math.BigInteger
 
-class TransactionProviderWithTestData : SimpleObserveable(), TransactionProvider {
-
-    override fun getTransactionsForHash(hash: String) = null
-
-    val transactionList = mutableListOf<Transaction>()
+class TransactionProviderWithTestData : BaseTransactionProvider() {
 
     override fun getTransactionsForAddress(address: WallethAddress): List<Transaction> = mutableListOf(
             Transaction(BigInteger("420000000000000000"), address, AddressBookWithTestEntries.Room77, localTime = LocalDateTime.now().minusHours(3)),
@@ -30,10 +25,4 @@ class TransactionProviderWithTestData : SimpleObserveable(), TransactionProvider
             Transaction(BigInteger("125000000000000000"), address, AddressBookWithTestEntries.Room77, localTime = LocalDateTime.now().minusHours(360))
 
     )
-
-    override fun addTransaction(transaction: Transaction) {
-        transactionList.add(transaction)
-    }
-
-    override fun getAllTransactions() = transactionList
 }

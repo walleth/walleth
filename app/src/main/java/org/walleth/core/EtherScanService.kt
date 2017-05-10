@@ -71,6 +71,7 @@ class EtherScanService : Service() {
                         value,
                         WallethAddress(transactionJson.getString("from")),
                         WallethAddress(transactionJson.getString("to")),
+                        nonce = transactionJson.getLong("nonce"),
                         ref = TransactionSource.ETHERSCAN,
                         txHash = transactionJson.getString("hash"),
                         localTime = ofInstant
