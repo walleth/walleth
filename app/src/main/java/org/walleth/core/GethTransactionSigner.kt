@@ -25,7 +25,7 @@ class GethTransactionSigner : Service() {
     val keyStore: WallethKeyStore by lazyKodein.instance()
     val settings: Settings by lazyKodein.instance()
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         val changeObserver: ChangeObserver = object : ChangeObserver {
             override fun observeChange() {
