@@ -15,7 +15,7 @@ This is a native Android <a href="http://ethereum.org">Ethereum</a> light client
 <br/><br/>
 It uses the in process node as ethereum light client from the <a href="https://github.com/ethereum/go-ethereum">go-ethereum</a> project.
 <br/><br/>
-Big shout out to <a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/fjl">fjl</a> and  <a href="https://github.com/obscuren">obscuren</a> here - awesome work guys!
+Big shout out to <a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/fjl">fjl</a>, <a href="https://github.com/zsfelfoldi">zsfelfoldi</a> and <a href="https://github.com/obscuren">obscuren</a> here - awesome work!
 <br/><br/>
 This alpha uses the <a href="http://www.rinkeby.io">rinkeby</a> testnet.
 <br/><br/>
