@@ -25,6 +25,7 @@
         <activity android:name="org.walleth.activities.ImportActivity"/>
         <activity android:name="org.walleth.activities.ShowAccountBarCodeActivity"/>
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
+        <activity android:name="org.walleth.activities.CreateAccountActivity"/>
         <activity android:name="org.walleth.activities.SelectReferenceActivity"/>
         <activity android:name="org.walleth.activities.AddressBookActivity"/>
         <activity android:name="org.walleth.activities.SwitchAccountActivity"/>

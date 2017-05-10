@@ -56,4 +56,5 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="dialog_title_error">Error</string>
 
     <string name="select_fiat_reference">Select (Fiat) Reference</string>
+    <string name="create_account_subtitle">Create Account</string>
 </resources>
