@@ -3,7 +3,6 @@ package org.walleth.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.text.Html
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
@@ -12,9 +11,9 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
 import net.glxn.qrgen.android.QRCode
+import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
-import org.walleth.App
 import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.iac.toERC67String
@@ -36,7 +35,7 @@ class RequestActivity : AppCompatActivity() {
 
         refreshQR()
 
-        request_hint.text = Html.fromHtml(getString(R.string.request_hint))
+        request_hint.text = HtmlCompat.fromHtml(getString(R.string.request_hint))
         request_hint.movementMethod = LinkMovementMethod()
 
         add_value_checkbox.setOnCheckedChangeListener { _, isChecked ->

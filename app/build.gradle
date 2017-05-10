@@ -130,6 +130,7 @@ dependencies {
     compile "com.chibatching.kotpref:kotpref:2.1.1"
 
     compile 'com.squareup.moshi:moshi:1.4.0'
+    compile 'com.github.ligi:ExtraCompats:0.4'
 
     androidTestCompile 'com.google.truth:truth:0.32'
 
