@@ -75,7 +75,7 @@ Hence it has no transactions/value yet\n\n
 You could now press the green button to send value to this account\n\n
 Or import an existing account\n\n
 You can find functions like these in the drawer to your left"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="wrap_content"/>
         </ScrollView>
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/transaction_recycler_in"
