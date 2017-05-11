@@ -109,7 +109,7 @@ dependencies {
     compile "org.ethereum:geth:1.6.0"
 
     compile 'com.github.ligi:tracedroid:1.4'
-    compile 'com.github.ligi:KAXT:0.16'
+    compile 'com.github.ligi:KAXT:0.17'
     compile 'com.github.ligi:KAXTUI:0.2'
 
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
@@ -156,7 +156,7 @@ dependencyVerification {
         'org.jetbrains.kotlin:kotlin-stdlib:225f131d9e6dc6632caea918d301a645e3b189001c140919e0b609faa6fbb357',
         'org.ethereum:geth:fd0c8a27f395002b49830dede8ec997394bf5fc479bba13c6de2cfe46041731f',
         'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
-        'com.github.ligi:KAXT:ab98e33f25c2c18d94ffd1b9251af716ba1b9a02e5bba9656be9fd1341917ecb',
+        'com.github.ligi:KAXT:4cfe2b683dacff9575799edb63a3d46ff647761bf76cb17702150856471538bc',
         'com.github.ligi:KAXTUI:e261932ab4cd7386c6de513ccbe714118d83e8a25f30131b3719264c1a573de3',
         'com.github.kenglxn.QRGen:android:c4c3b2faa6220458ad10ae1ff9b496cc7617fc3657d8b81a6b7015787b22b32d',
         'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
@@ -173,6 +173,7 @@ dependencyVerification {
         'com.squareup.moshi:moshi:d8ef4da48b59790d587904c4ef2245ee6f64dedec780f1250d00ab136160dcce',
         'com.github.ligi:ExtraCompats:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
         'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
+        'com.android.support:support-v4:07d389154bcf73b47e514964df1578136b26cba78257b8a577a3ccb54beff0ae',
         'com.github.kenglxn.QRGen:core:1782ab325497ce0b6a7116197bdb7fe2b44e998c7d1e2470ae195d686c385b65',
         'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102',
         'com.squareup.okio:okio:bfe7dfe483c37137966a1690f0c7d0b448ba217902c1fed202aaffdbba3291ae',
@@ -183,11 +184,10 @@ dependencyVerification {
         'com.android.support:support-core-ui:6182278a6653e6c111c888963626cbb16f2d0022571cb239760475119e0b92a8',
         'com.android.support:preference-v7:b37d8193c65cf8eb3c4ba9cbfc6d5c96042177901622717fb089290bef784a58',
         'com.google.zxing:core:f00b32f7a1b0edc914a8f74301e8dc34f189afc4698e9c8cc54e5d46772734a5',
-        'com.android.support:support-vector-drawable:13728f337f36d1c02d52198a6c20724edb447a0875454d829f95cb9eb4aa293b',
-        'com.android.support:animated-vector-drawable:4bc46edf1946b32d518b41416d1734e915e0cbb28021de3b340527419b070691',
-        'com.android.support:support-v4:07d389154bcf73b47e514964df1578136b26cba78257b8a577a3ccb54beff0ae',
         'com.android.support:support-media-compat:cbed07d07e0e84fdb4b75712f5fd946229a8af155933c9a92e41db64d00791e0',
         'com.android.support:support-core-utils:32fac02eb2c20a77fa3e3bc3ede62392a19613f72b8f8e10f5dfa84bb4c89ea1',
         'com.android.support:support-fragment:541d6393c1e024453aca2a14f31bea0c7270ff4e2a02783f3528aa426367444d',
+        'com.android.support:support-vector-drawable:13728f337f36d1c02d52198a6c20724edb447a0875454d829f95cb9eb4aa293b',
+        'com.android.support:animated-vector-drawable:4bc46edf1946b32d518b41416d1734e915e0cbb28021de3b340527419b070691',
     ]
 }
