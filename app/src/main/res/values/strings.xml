@@ -58,4 +58,5 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
 
     <string name="select_fiat_reference">Select (Fiat) Reference</string>
     <string name="create_account_subtitle">Create Account</string>
+    <string name="open_in_etherscan">Open in EtherScan</string>
 </resources>

@@ -42,9 +42,4 @@
             android:layout_height="wrap_content"/>
 
 
-    <Button android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="open on etherscan"
-            android:id="@+id/open_on_etherscan"
-    />
 </LinearLayout>

@@ -31,10 +31,4 @@
                 android:layout_height="wrap_content"/>
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-            android:padding="16dp"
-            android:id="@+id/open_on_etherscan"
-            android:text="open on etherscan"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
 </LinearLayout>

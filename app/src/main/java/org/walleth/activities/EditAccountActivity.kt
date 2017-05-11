@@ -2,6 +2,7 @@ package org.walleth.activities
 
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.view.Menu
 import android.view.MenuItem
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
@@ -33,10 +34,6 @@ class EditAccountActivity : AppCompatActivity() {
         supportActionBar?.subtitle = getString(R.string.edit_account_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        open_on_etherscan.setOnClickListener {
-            startActivityFromURL(networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforAddress(keyStore.getCurrentAddress()))
-        }
-
         nameInput.doAfterEdit {
             currentAddressInfo.name = nameInput.text.toString()
         }
@@ -52,7 +49,15 @@ class EditAccountActivity : AppCompatActivity() {
         addressBook.setEntry(currentAddressInfo)
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?)
+            = super.onCreateOptionsMenu(menu.apply { menuInflater.inflate(R.menu.menu_edit, menu) })
+
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.menu_etherscan -> {
+            startActivityFromURL(networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforAddress(keyStore.getCurrentAddress()))
+            true
+        }
         android.R.id.home -> {
             finish()
             true
