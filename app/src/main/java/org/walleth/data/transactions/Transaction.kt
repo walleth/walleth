@@ -10,7 +10,7 @@ data class Transaction(val value: BigInteger,
 
                        val localTime: LocalDateTime = LocalDateTime.now(),
                        var ref: TransactionSource = TransactionSource.WALLETH,
-                       var nonce: Long? =null,
+                       var nonce: Long? = null,
                        var error: String? = null,
                        var sigHash: String? = null,
                        var txHash: String? = null

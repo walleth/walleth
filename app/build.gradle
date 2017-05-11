@@ -142,6 +142,7 @@ dependencies {
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.32'
+    testCompile 'org.threeten:threetenbp:1.3.3'
 
     withFirebaseCompile "com.google.firebase:firebase-core:$firebase_version"
     withFirebaseCompile "com.google.firebase:firebase-crash:$firebase_version"
