@@ -150,9 +150,10 @@ dependencies {
 
 }
 
+
 dependencyVerification {
     verify = [
-        'org.jetbrains.kotlin:kotlin-stdlib:cb4f97bba643e6dd3845525e2d1ff18937c2c3c9be3c68b88213006e9e5fd51c',
+        'org.jetbrains.kotlin:kotlin-stdlib:225f131d9e6dc6632caea918d301a645e3b189001c140919e0b609faa6fbb357',
         'org.ethereum:geth:fd0c8a27f395002b49830dede8ec997394bf5fc479bba13c6de2cfe46041731f',
         'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
         'com.github.ligi:KAXT:ab98e33f25c2c18d94ffd1b9251af716ba1b9a02e5bba9656be9fd1341917ecb',
