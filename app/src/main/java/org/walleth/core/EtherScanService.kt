@@ -84,7 +84,7 @@ class EtherScanService : Service() {
             }
 
             override fun onResponse(call: Call?, response: Response) {
-                success(JSONObject(response.body().string()))
+                response.body()?.let { it.use { success(JSONObject(it.string())) } }
             }
         })
     }

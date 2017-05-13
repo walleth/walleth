@@ -9,7 +9,7 @@ import java.io.File
 import java.io.IOException
 import java.math.BigDecimal
 
-class CryptoCompareExchangeProvider(context: Context,val okHttpClient: OkHttpClient) : BaseExchangeProvider() {
+class CryptoCompareExchangeProvider(context: Context, val okHttpClient: OkHttpClient) : BaseExchangeProvider() {
 
 
     override fun addFiat(name: String) {
@@ -48,12 +48,12 @@ class CryptoCompareExchangeProvider(context: Context,val okHttpClient: OkHttpCli
 
             override fun onResponse(call: Call?, response: Response) {
                 if (response.code() == 200) {
-                    val responseBody = response.body()
-                    val bufferedSink = Okio.buffer(Okio.sink(lastDataFile))
-                    bufferedSink.writeAll(responseBody.source())
-                    bufferedSink.close()
-                    responseBody.close()
-                    setFromFile()
+                    response.body()?.use {
+                        val bufferedSink = Okio.buffer(Okio.sink(lastDataFile))
+                        bufferedSink.writeAll(it.source())
+                        bufferedSink.close()
+                        setFromFile()
+                    }
                 }
             }
 
