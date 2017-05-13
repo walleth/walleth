@@ -36,10 +36,10 @@ class TransactionActivity : AppCompatActivity() {
         tx_hash.text = transaction.txHash
 
         if (transaction.from == keyStore.getCurrentAddress()) {
-            from_to_title.text = "To:"
+            from_to_title.setText(R.string.transaction_to_label)
             from_to.text = transaction.to.hex
         } else {
-            from_to_title.text = "From:"
+            from_to_title.setText(R.string.transaction_from_label)
             from_to.text = transaction.from.hex
         }
 
