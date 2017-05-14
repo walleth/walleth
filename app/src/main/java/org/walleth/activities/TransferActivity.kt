@@ -9,8 +9,11 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_transfer.*
 import org.ligi.kaxt.doAfterEdit
+import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.data.DEFAULT_GAS_LIMIT
+import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
@@ -55,6 +58,22 @@ class TransferActivity : AppCompatActivity() {
         supportActionBar?.subtitle = "Transfer"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
+        gas_limit_input.setText(DEFAULT_GAS_LIMIT.toString())
+
+        gas_limit_input.doAfterEdit {
+            refreshFee()
+        }
+
+        gas_price_input.doAfterEdit {
+            refreshFee()
+        }
+
+        gas_station_image.setOnClickListener {
+            startActivityFromURL("http://ethgasstation.info")
+        }
+
+        refreshFee()
         setToFromURL(currentERC67String, false)
 
         scan_button.setOnClickListener {
@@ -68,7 +87,10 @@ class TransferActivity : AppCompatActivity() {
 
         amount_input.doAfterEdit {
             setAmountFromETHString(it.toString())
+            amount_value.setEtherValue(currentAmount?: ZERO)
         }
+
+        amount_value.setEtherValue(currentAmount?: ZERO)
 
         fab.setOnClickListener {
             if (currentERC67String == null) {
@@ -76,10 +98,22 @@ class TransferActivity : AppCompatActivity() {
             } else if (currentAmount == null) {
                 alert("amount must be specified")
             } else {
-                transactionProvider.addTransaction(Transaction(currentAmount!!, to = ERC67(currentERC67String!!).address, from = keyStore.getCurrentAddress()))
+                val transaction = Transaction(
+                        currentAmount!!,
+                        to = ERC67(currentERC67String!!).address,
+                        from = keyStore.getCurrentAddress(),
+                        gasPrice = BigInteger(gas_price_input.text.toString()),
+                        gasLimit = BigInteger(gas_limit_input.text.toString())
+                )
+                transactionProvider.addTransaction(transaction)
                 finish()
             }
         }
+    }
+
+    private fun refreshFee() {
+        val fee = BigInteger(gas_price_input.text.toString()) * BigInteger(gas_limit_input.text.toString())
+        fee_value_view.setEtherValue(fee)
     }
 
     private fun setAmountFromETHString(it: String) {
