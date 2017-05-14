@@ -33,7 +33,8 @@ class TransactionActivity : AppCompatActivity() {
         supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        tx_hash.text = transaction.txHash
+        nonce.text = transaction.nonce.toString()
+        fee_value_view.setEtherValue(transaction.gasLimit * transaction.gasPrice)
 
         if (transaction.from == keyStore.getCurrentAddress()) {
             from_to_title.setText(R.string.transaction_to_label)

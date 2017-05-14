@@ -25,20 +25,39 @@
 
     <TextView
             android:id="@+id/from_to"
+            android:paddingLeft="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+
     <TextView
-            android:text="Hash:"
+            android:text="Nonce:"
             android:fontFamily="sans-serif"
             android:textSize="18dp"
             android:paddingBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+
     <TextView
-            android:id="@+id/tx_hash"
+            android:id="@+id/nonce"
+            android:paddingLeft="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+
+    <TextView
+            android:text="Fee:"
+            android:fontFamily="sans-serif"
+            android:textSize="18dp"
+            android:paddingBottom="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <org.walleth.ui.ValueViewSmall
+            android:id="@+id/fee_value_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
 
 </LinearLayout>
