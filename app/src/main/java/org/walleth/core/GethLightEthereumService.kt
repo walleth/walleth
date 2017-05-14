@@ -15,7 +15,6 @@ import org.walleth.activities.MainActivity
 import org.walleth.data.BalanceProvider
 import org.walleth.data.WallethAddress
 import org.walleth.data.config.Settings
-import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -105,7 +104,7 @@ class GethLightEthereumService : Service() {
                 override fun observeChange() {
                     transactionProvider.getAllTransactions().forEach {
                         if (it.ref == TransactionSource.WALLETH) {
-                            executeTransaction(it, ethereumNode, ethereumContext)
+                            executeTransaction(it, ethereumNode.ethereumClient, ethereumContext)
                         }
                     }
                 }
@@ -160,38 +159,14 @@ class GethLightEthereumService : Service() {
     }
 
 
-    private fun executeTransaction(transaction: Transaction, ethereumNode: Node, ethereumContext: Context) {
-        transaction.ref = TransactionSource.WALLETH_PROCESSED
-
+    private fun executeTransaction(transaction: Transaction, client: EthereumClient, ethereumContext: Context) {
         try {
-            val client = ethereumNode.ethereumClient
-            val nonceAt = client.getNonceAt(ethereumContext, transaction.from.toGethAddr(), -1)
-
-            val gasPrice = client.suggestGasPrice(ethereumContext)
-
-            val gasLimit = BigInt(21_000)
-
-            val newTransaction = Geth.newTransaction(nonceAt, transaction.to.toGethAddr(), BigInt(transaction.value.toLong()), gasLimit, gasPrice, ByteArray(0))
-
-            newTransaction.hashCode()
-
-            val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
-            val accounts = gethKeystore.accounts
-            val index = (0..(accounts.size() - 1)).firstOrNull { accounts.get(it).address.hex.toUpperCase() == transaction.from.hex.toUpperCase() }
-
-            if (index == null) {
-                transaction.error = "No key for sending account"
-                return
+            transaction.signedRLP?.let {
+                val transactionWithSignature = Geth.newTransactionFromRLP(it.toByteArray())
+                client.sendTransaction(ethereumContext, transactionWithSignature)
+                transaction.ref = TransactionSource.WALLETH_PROCESSED
             }
-            gethKeystore.unlock(accounts.get(index), "default")
 
-            val signHash = gethKeystore.signHash(transaction.from.toGethAddr(), newTransaction.sigHash.bytes)
-            val transactionWithSignature = newTransaction.withSignature(signHash)
-
-            transaction.sigHash = newTransaction.sigHash.hex
-            transaction.txHash = newTransaction.hash.hex
-
-            client.sendTransaction(ethereumContext, transactionWithSignature)
         } catch (e: Exception) {
             transaction.error = e.message
         }

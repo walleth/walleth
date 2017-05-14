@@ -13,7 +13,10 @@ import org.walleth.BuildConfig
 import org.walleth.data.BalanceProvider
 import org.walleth.data.WallethAddress
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
+import org.walleth.functions.toHexString
+import org.walleth.ui.ChangeObserver
 import java.io.IOException
 import java.math.BigInteger
 
@@ -36,6 +39,17 @@ class EtherScanService : Service() {
 
         Thread({
 
+            transactionProvider.registerChangeObserver(object : ChangeObserver {
+                override fun observeChange() {
+                    transactionProvider.getAllTransactions().forEach {
+                        if (it.signedRLP != null) {
+                            relayTransaction(it)
+                        }
+                    }
+                }
+
+            })
+
             while (true) {
                 tryFetchFromEtherScan(keyStore.getCurrentAddress().hex)
 
@@ -45,6 +59,19 @@ class EtherScanService : Service() {
 
 
         return START_STICKY
+    }
+
+    private fun relayTransaction(transaction: Transaction) {
+        transaction.signedRLP?.let {
+            getEtherscanResult("module=proxy&action=eth_sendRawTransaction&hex=" + it.fold("0x", { s: String, byte: Byte -> s + byte.toHexString() })) {
+                if (it.has("result")) {
+                    transaction.txHash = it.getString("result")
+                } else {
+                    transaction.error = it.toString()
+                }
+                transaction.signedRLP = null
+            }
+        }
     }
 
     fun tryFetchFromEtherScan(addressHex: String) {
@@ -95,6 +122,5 @@ class EtherScanService : Service() {
         val url = Request.Builder().url(urlString).build()
         val newCall: Call = okHttpClient.newCall(url)
         newCall.enqueueOnlySuccess(successCallback)
-
     }
 }

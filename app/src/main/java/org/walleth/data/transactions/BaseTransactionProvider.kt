@@ -5,7 +5,7 @@ import org.walleth.data.WallethAddress
 
 open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
 
-    override fun getLastNonceForAddress(address: WallethAddress) = getTransactionsForAddress(address).fold(0L, { i: Long, transaction: Transaction -> Math.max(i, transaction.nonce ?: 0) })
+    override fun getLastNonceForAddress(address: WallethAddress) = getTransactionsForAddress(address).filter { it.from == address }.fold(-1L, { i: Long, transaction: Transaction -> Math.max(i, transaction.nonce ?: -1) })
 
     val txListLock = Any()
 
