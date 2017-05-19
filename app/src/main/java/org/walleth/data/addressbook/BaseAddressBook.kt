@@ -11,19 +11,19 @@ abstract class BaseAddressBook : SimpleObserveable(), AddressBook {
 
     override fun getAllEntries(): List<AddressBookEntry> {
         if (addresses.size < 2) {
-            setEntry(AddressBookEntry(
+            setEntrySilent(AddressBookEntry(
                     "Michael Cook",
                     WallethAddress("0xbE27686a93c54Af2f55f16e8dE9E6Dc5dccE915e"),
                     "Icon designer - please tip him well if you want things to look nice"
             ))
 
-            setEntry(AddressBookEntry(
+            setEntrySilent(AddressBookEntry(
                     "LIGI",
                     WallethAddress("0xfdf1210fc262c73d0436236a0e07be419babbbc4"),
                     "Developer & Ideator - send some ETH if you like this project and want it to continue"
             ))
 
-            setEntry(AddressBookEntry(
+            setEntrySilent(AddressBookEntry(
                     "Faucet",
                     WallethAddress("0x31b98d14007bdee637298086988a0bbd31184523"),
                     "The source of some rinkeby ether"
@@ -33,6 +33,10 @@ abstract class BaseAddressBook : SimpleObserveable(), AddressBook {
         }
 
         return addresses.values.toList()
+    }
+
+    private fun setEntrySilent(entry: AddressBookEntry) {
+        addresses[entry.address] = entry
     }
 
     override fun setEntry(entry: AddressBookEntry) {

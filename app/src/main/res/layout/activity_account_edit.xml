@@ -6,10 +6,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:padding="16dp"
         tools:context="org.walleth.activities.MainActivity">
 
     <android.support.design.widget.TextInputLayout
-            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputEditText
@@ -21,7 +21,6 @@
 
 
     <android.support.design.widget.TextInputLayout
-            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputEditText
@@ -31,4 +30,9 @@
                 android:layout_height="wrap_content"/>
     </android.support.design.widget.TextInputLayout>
 
+    <CheckBox
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/notification_checkbox"
+            android:text="Notify on transactions"/>
 </LinearLayout>

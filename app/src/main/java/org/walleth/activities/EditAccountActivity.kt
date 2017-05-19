@@ -31,6 +31,8 @@ class EditAccountActivity : AppCompatActivity() {
         nameInput.setText(currentAddressInfo.name)
         noteInput.setText(currentAddressInfo.note)
 
+        notification_checkbox.isChecked = currentAddressInfo.isNotificationWanted
+
         supportActionBar?.subtitle = getString(R.string.edit_account_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -42,6 +44,9 @@ class EditAccountActivity : AppCompatActivity() {
             currentAddressInfo.note = noteInput.text.toString()
         }
 
+        notification_checkbox.setOnCheckedChangeListener { _, isChecked ->
+            currentAddressInfo.isNotificationWanted = isChecked
+        }
     }
 
     override fun onPause() {

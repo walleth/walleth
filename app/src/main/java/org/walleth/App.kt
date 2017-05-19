@@ -29,13 +29,14 @@ import org.walleth.data.transactions.TransactionProvider
 open class App : Application(), KodeinAware {
 
     override val kodein by Kodein.lazy {
+        bind<OkHttpClient>() with singleton { OkHttpClient.Builder().build() }
+
         import(createKodein())
     }
 
     open fun createKodein() = Kodein.Module {
         bind<AddressBook>() with singleton { FileBackedAddressBook(this@App) }
         bind<BalanceProvider>() with singleton { BalanceProvider() }
-        bind<OkHttpClient>() with singleton { OkHttpClient.Builder().build() }
         bind<TransactionProvider>() with singleton { BaseTransactionProvider() }
         bind<ExchangeRateProvider>() with singleton { CryptoCompareExchangeProvider(this@App, instance()) }
         bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
