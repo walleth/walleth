@@ -16,7 +16,7 @@ class FileBackedAddressBook(val context: Context) : BaseAddressBook(), AddressBo
 
     init {
         if (file.exists()) {
-            adapter.fromJson(Okio.buffer(Okio.source(file))).forEach {
+            adapter.fromJson(Okio.buffer(Okio.source(file)))?.forEach {
                 setEntry(it)
             }
         }

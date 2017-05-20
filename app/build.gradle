@@ -128,7 +128,7 @@ dependencies {
 
     compile "com.chibatching.kotpref:kotpref:2.1.1"
 
-    compile 'com.squareup.moshi:moshi:1.4.0'
+    compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.github.ligi:ExtraCompats:0.4'
 
     androidTestCompile 'com.google.truth:truth:0.32'
@@ -166,7 +166,7 @@ dependencyVerification {
             'com.android.support:recyclerview-v7:375974a8724e359d97d77fa8522c614f813a3ac4583c1807f154a3f9a054b0a1',
             'com.android.support:preference-v14:970904d676ea886d0be459e7e5e36c0db650daefea5bbe80cc59146091905be5',
             'com.chibatching.kotpref:kotpref:da436fceda1e7047a8394d1e0f0ec7f6cedd42d696eab8345b383767b7033d60',
-            'com.squareup.moshi:moshi:d8ef4da48b59790d587904c4ef2245ee6f64dedec780f1250d00ab136160dcce',
+
             'com.github.ligi:ExtraCompats:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
             'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
             'com.android.support:support-v4:07d389154bcf73b47e514964df1578136b26cba78257b8a577a3ccb54beff0ae',
