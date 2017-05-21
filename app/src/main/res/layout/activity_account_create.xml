@@ -35,10 +35,11 @@
 
     <LinearLayout
             android:layout_below="@+id/note_input_container"
+            android:id="@+id/address_container"
+            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputLayout
-                android:padding="16dp"
                 android:id="@+id/hex_input_container"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -60,6 +61,14 @@
                 android:layout_gravity="center_vertical"
                 style="@style/button"/>
     </LinearLayout>
+
+    <CheckBox
+            android:layout_margin="16dp"
+            android:layout_below="@id/address_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/notify_checkbox"
+            android:text="Notify on changes"/>
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

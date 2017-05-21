@@ -48,7 +48,7 @@ class CreateAccountActivity : AppCompatActivity() {
                         name = nameInput.text.toString(),
                         address = WallethAddress(hex),
                         note = noteInput.text.toString(),
-                        isNotificationWanted = true)
+                        isNotificationWanted = notify_checkbox.isChecked)
                 )
                 finish()
             }
@@ -58,6 +58,7 @@ class CreateAccountActivity : AppCompatActivity() {
             val newAddress = keyStore.newAddress(DEFAULT_PASSWORD)
             lastCreatedAddress = newAddress
             hexInput.setText(newAddress.hex)
+            notify_checkbox.isChecked = true
         }
 
         camera_button.setOnClickListener {
