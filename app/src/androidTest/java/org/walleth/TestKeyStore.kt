@@ -3,8 +3,23 @@ package org.walleth
 import org.walleth.data.SimpleObserveable
 import org.walleth.data.WallethAddress
 import org.walleth.data.keystore.WallethKeyStore
+import java.util.*
 
 class TestKeyStore : SimpleObserveable(), WallethKeyStore {
+
+    val addresses = mutableListOf<WallethAddress>()
+
+    override fun hasKeyForForAddress(wallethAddress: WallethAddress) = addresses.contains(wallethAddress)
+
+    override fun newAddress(password: String): WallethAddress {
+        val newAddress = WallethAddress("0x" + UUID.randomUUID().toString())
+        addresses.add(newAddress)
+        return newAddress
+    }
+
+    override fun deleteKey(address: WallethAddress, password: String) {
+        addresses.remove(address)
+    }
 
     private var currentAddressVar = WallethAddress("0xfdf1210fc262c73d0436236a0e07be419babbbc4")
 

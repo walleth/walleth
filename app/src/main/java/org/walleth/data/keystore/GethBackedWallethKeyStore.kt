@@ -4,8 +4,10 @@ import android.content.Context
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
+import org.ethereum.geth.Account
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
+import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.SimpleObserveable
 import org.walleth.data.WallethAddress
 import org.walleth.data.addressbook.AddressBook
@@ -27,7 +29,7 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
             if (keyStore.accounts.size() > 0) {
                 currentAddress = keyStore.accounts[0].address.toWallethAddress()
             } else {
-                currentAddress = keyStore.newAccount("default").address.toWallethAddress()
+                currentAddress = keyStore.newAccount(DEFAULT_PASSWORD).address.toWallethAddress()
                 addressBook.setEntry(AddressBookEntry("Default Account", currentAddress!!, "This Account was created for you when WALLΞTH started for the first time"))
             }
 
@@ -38,6 +40,27 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
     override fun setCurrentAddress(address: WallethAddress) {
         currentAddress = address
         promoteChange()
+    }
+
+    override fun newAddress(password: String) =
+            keyStore.newAccount(password).address.toWallethAddress()
+
+    fun getAccountForAddress(wallethAddress: WallethAddress): Account? {
+        val index = (0..(keyStore.accounts.size() - 1)).firstOrNull { keyStore.accounts.get(it).address.hex.equals(wallethAddress.hex, ignoreCase = true) }
+
+        return if (index != null)
+            keyStore.accounts.get(index)
+        else
+            null
+    }
+
+    override fun hasKeyForForAddress(wallethAddress: WallethAddress)
+            = getAccountForAddress(wallethAddress) != null
+
+    override fun deleteKey(address: WallethAddress, password: String) {
+        getAccountForAddress(address)?.let {
+            keyStore.deleteAccount(it, password)
+        }
     }
 
     override fun importKey(json: String, importPassword: String, newPassword: String)

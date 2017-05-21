@@ -7,6 +7,7 @@ import android.support.test.espresso.action.ViewActions.typeText
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import com.google.common.truth.Truth.assertThat
+import kotlinx.android.synthetic.main.activity_account_create.*
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
@@ -30,6 +31,46 @@ class TheCreateAccountActivity {
         assertThat(rule.activity.isFinishing).isFalse()
     }
 
+
+    @Test
+    fun rejects_blank_name() {
+
+        onView(withId(R.id.hexInput)).perform(typeText("0xF00"))
+
+        closeSoftKeyboard()
+
+        onView(withId(R.id.fab)).perform(click())
+
+        onView(withText(R.string.alert_problem_title)).check(matches(isDisplayed()))
+        onView(withText(R.string.please_enter_name)).check(matches(isDisplayed()))
+
+        rule.screenShot("address_not_valid")
+        assertThat(rule.activity.isFinishing).isFalse()
+    }
+
+    @Test
+    fun when_creating_new_address_old_gets_cleared() {
+
+        onView(withId(R.id.new_address_button)).perform(click())
+
+        val firstCreatedAddress = WallethAddress(rule.activity.hexInput.text.toString())
+
+        assertThat(TestApp.keyStore.hasKeyForForAddress(firstCreatedAddress)).isTrue()
+
+        onView(withId(R.id.new_address_button)).perform(click())
+
+        val secondCreatedAddress = WallethAddress(rule.activity.hexInput.text.toString())
+
+        onView(withId(R.id.nameInput)).perform(typeText("nameProbe"))
+
+        closeSoftKeyboard()
+
+        onView(withId(R.id.fab)).perform(click())
+
+        assertThat(TestApp.keyStore.hasKeyForForAddress(firstCreatedAddress)).isFalse()
+        assertThat(TestApp.keyStore.hasKeyForForAddress(secondCreatedAddress)).isTrue()
+        assertThat(firstCreatedAddress).isNotEqualTo(secondCreatedAddress)
+    }
 
     @Test
     fun savesValidAddress() {
