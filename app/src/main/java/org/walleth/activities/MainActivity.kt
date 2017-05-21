@@ -26,7 +26,6 @@ import org.walleth.data.BalanceAtBlock
 import org.walleth.data.BalanceProvider
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.config.Settings
-import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.transactions.TransactionProvider
@@ -47,7 +46,6 @@ class MainActivity : AppCompatActivity() {
     val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
     val balanceProvider: BalanceProvider by lazyKodein.instance()
-    val exchangeRateProvider: ExchangeRateProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
     val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
     val addressBook: AddressBook by lazyKodein.instance()
