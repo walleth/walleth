@@ -8,7 +8,7 @@ import org.walleth.ui.AddressAdapter
 
 open class AddressBookActivity : BaseAddressBookActivity() {
 
-    override fun getAdapter() = AddressAdapter(addressBook.getAllEntries()) {
+    override fun getAdapter() = AddressAdapter(addressBook.getAllEntries(), keyStore) {
         setResult(Activity.RESULT_OK, Intent().apply { putExtra("HEX", it.address.hex) })
         finish()
     }

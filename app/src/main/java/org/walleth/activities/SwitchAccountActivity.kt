@@ -12,7 +12,7 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
         supportActionBar?.subtitle = getString(R.string.switch_account_subtitle)
     }
 
-    override fun getAdapter() = AddressAdapter(addressBook.getAllEntries()) {
+    override fun getAdapter() = AddressAdapter(addressBook.getAllEntries(), keyStore) {
         keyStore.setCurrentAddress(it.address)
         finish()
     }
