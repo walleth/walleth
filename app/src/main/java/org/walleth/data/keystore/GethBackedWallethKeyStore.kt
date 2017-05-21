@@ -30,7 +30,12 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
                 currentAddress = keyStore.accounts[0].address.toWallethAddress()
             } else {
                 currentAddress = keyStore.newAccount(DEFAULT_PASSWORD).address.toWallethAddress()
-                addressBook.setEntry(AddressBookEntry("Default Account", currentAddress!!, "This Account was created for you when WALLΞTH started for the first time"))
+                addressBook.setEntry(AddressBookEntry(
+                        name = "Default Account",
+                        address = currentAddress!!,
+                        note = "This Account was created for you when WALLΞTH started for the first time",
+                        isNotificationWanted = true
+                ))
             }
 
         }

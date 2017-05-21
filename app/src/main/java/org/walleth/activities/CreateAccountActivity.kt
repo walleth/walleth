@@ -44,7 +44,12 @@ class CreateAccountActivity : AppCompatActivity() {
                 alert(title = alert_problem_title, message = please_enter_name)
             } else {
                 lastCreatedAddress = null // prevent cleanup
-                addressBook.setEntry(AddressBookEntry(nameInput.text.toString(), WallethAddress(hex), noteInput.text.toString()))
+                addressBook.setEntry(AddressBookEntry(
+                        name = nameInput.text.toString(),
+                        address = WallethAddress(hex),
+                        note = noteInput.text.toString(),
+                        isNotificationWanted = true)
+                )
                 finish()
             }
         }
