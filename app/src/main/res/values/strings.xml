@@ -64,4 +64,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="transaction_from_label">From:</string>
     <string name="alert_problem_title">Problem</string>
     <string name="address_not_valid">The address is not valid</string>
+    <string name="input_hint_address">Address</string>
+    <string name="input_hint_notes">notes</string>
+    <string name="input_hint_account_name">account name</string>
 </resources>
