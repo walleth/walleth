@@ -9,8 +9,8 @@ import java.security.SecureRandom
 
 object KotprefSettings : KotprefModel(), Settings {
 
-
     override var currentFiat by stringPref(default = "USD")
+    override var startupWarningDone by booleanPref(default = false)
 
     internal val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 

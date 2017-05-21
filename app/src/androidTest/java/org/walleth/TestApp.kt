@@ -33,6 +33,7 @@ class TestApp : App() {
             mock(Settings::class.java).apply {
                 `when`(currentFiat).thenReturn("EUR")
                 `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
+                `when`(startupWarningDone).thenReturn(true)
             }
         }
     }

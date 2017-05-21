@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
+import org.ligi.kaxtui.alert
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.walleth.R
@@ -126,6 +127,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (!settings.startupWarningDone) {
+            alert(title = "Special Awareness", message = "Please note this is one alpha on the rinkeby test-network. Please do not work with real values yet!")
+            settings.startupWarningDone = true
+        }
 
         if (TraceDroid.getStackTraceFiles().isNotEmpty()) {
             TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", this)
