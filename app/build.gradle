@@ -108,7 +108,7 @@ dependencies {
 
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.17'
-    compile 'com.github.ligi:KAXTUI:0.2'
+    compile 'com.github.ligi:KAXTUI:0.3'
 
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
 
@@ -153,7 +153,6 @@ dependencyVerification {
             'org.jetbrains.kotlin:kotlin-stdlib:d205c5a05890d09bc46c33275fbfcff1922e14944e688a3356e02cb6b0f88cd0',
             'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
             'com.github.ligi:KAXT:4cfe2b683dacff9575799edb63a3d46ff647761bf76cb17702150856471538bc',
-            'com.github.ligi:KAXTUI:e261932ab4cd7386c6de513ccbe714118d83e8a25f30131b3719264c1a573de3',
             'com.github.kenglxn.QRGen:android:c4c3b2faa6220458ad10ae1ff9b496cc7617fc3657d8b81a6b7015787b22b32d',
             'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
             'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',

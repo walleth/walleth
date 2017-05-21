@@ -7,7 +7,9 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_account_create.*
+import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.R.string.*
 import org.walleth.data.WallethAddress
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
@@ -23,14 +25,19 @@ class CreateAccountActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_account_create)
 
-        supportActionBar?.subtitle = getString(R.string.create_account_subtitle)
+        supportActionBar?.subtitle = getString(create_account_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-    }
+        fab.setOnClickListener {
+            val hex = hexInput.text.toString()
 
-    override fun onPause() {
-        super.onPause()
-        addressBook.setEntry(AddressBookEntry(nameInput.text.toString(), WallethAddress(hexInput.text.toString()),noteInput.text.toString()))
+            if (!hex.startsWith("0x")) {
+                alert(title = alert_problem_title, message = address_not_valid)
+            } else {
+                addressBook.setEntry(AddressBookEntry(nameInput.text.toString(), WallethAddress(hex), noteInput.text.toString()))
+                finish()
+            }
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

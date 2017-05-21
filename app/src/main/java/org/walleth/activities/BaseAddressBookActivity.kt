@@ -27,6 +27,10 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         recycler_view.layoutManager = LinearLayoutManager(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
         recycler_view.adapter = getAdapter()
     }
 
