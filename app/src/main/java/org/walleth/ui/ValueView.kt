@@ -19,10 +19,12 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     val exchangeRateProvider: ExchangeRateProvider by LazyKodein(appKodein).instance()
     val settings: Settings by LazyKodein(appKodein).instance()
 
+    open val layoutRes = R.layout.value
+
     override fun onFinishInflate() {
         super.onFinishInflate()
         orientation = VERTICAL
-        LayoutInflater.from(context).inflate(R.layout.value, this, true)
+        LayoutInflater.from(context).inflate(layoutRes, this, true)
     }
 
     fun setEtherValue(int: BigInteger) {
@@ -37,9 +39,6 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
         current_eth.text = int.toEtherValueString()
 
-    }
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
     }
 
 }
