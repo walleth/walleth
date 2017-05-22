@@ -27,6 +27,7 @@ task clean(type: Delete) {
 
 allprojects {
     repositories {
+        maven { url 'https://maven.google.com' }
         jcenter()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://jitpack.io' }
