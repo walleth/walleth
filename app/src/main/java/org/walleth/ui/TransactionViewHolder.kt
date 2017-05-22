@@ -1,15 +1,15 @@
 package org.walleth.ui
 
-import android.content.Intent
 import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.View
 import kotlinx.android.synthetic.main.transaction_item.view.*
 import org.ligi.kaxt.setVisibility
 import org.threeten.bp.ZoneOffset
-import org.walleth.activities.TransactionActivity
+import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.transactions.Transaction
+import org.walleth.functions.resolveNameFromAddressBook
 
 class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDirection) : RecyclerView.ViewHolder(itemView) {
 
@@ -18,11 +18,13 @@ class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDir
 
         itemView.difference.setEtherValue(transaction.value)
 
-        itemView.address.text = if (direction == TransactionAdapterDirection.INCOMMING) {
-            addressBook.getEntryForName(transaction.from)
+        val relevantAddress = if (direction == TransactionAdapterDirection.INCOMMING) {
+            transaction.from
         } else {
-            addressBook.getEntryForName(transaction.to)
-        }.name
+            transaction.to
+        }
+
+        itemView.address.text = relevantAddress.resolveNameFromAddressBook(addressBook)
 
         itemView.transaction_err.setVisibility(transaction.error != null)
         if (transaction.error != null) {
@@ -31,7 +33,8 @@ class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDir
 
         val localTime = transaction.localTime
         val epochMillis = localTime.toEpochSecond(ZoneOffset.systemDefault().rules.getOffset(localTime)) * 1000
-        itemView.date.text = DateUtils.getRelativeDateTimeString(itemView.context, epochMillis,
+        val context = itemView.context
+        itemView.date.text = DateUtils.getRelativeDateTimeString(context, epochMillis,
                 DateUtils.MINUTE_IN_MILLIS,
                 DateUtils.WEEK_IN_MILLIS,
                 0
@@ -40,9 +43,7 @@ class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDir
         itemView.isClickable = true
         itemView.setOnClickListener {
             transaction.txHash?.let {
-                val intent = Intent(itemView.context, TransactionActivity::class.java)
-                intent.putExtra(TransactionActivity.HASH_KEY, it)
-                itemView.context.startActivity(intent)
+                context.startActivity(context.getTransactionActivityIntentForHash(it))
             }
 
         }

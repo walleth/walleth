@@ -9,9 +9,9 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
 
     val txListLock = Any()
 
-    val transactionList = mutableListOf<Transaction>()
+    open val transactionList = mutableListOf<Transaction>()
 
-    override fun getTransactionsForHash(hash: String) = synchronized(txListLock) {
+    override fun getTransactionForHash(hash: String) = synchronized(txListLock) {
         transactionList.firstOrNull { it.txHash?.toUpperCase() == hash.toUpperCase() }
     }
 

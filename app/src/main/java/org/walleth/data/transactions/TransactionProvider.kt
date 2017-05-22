@@ -8,7 +8,7 @@ interface TransactionProvider : Observeable {
     fun getTransactionsForAddress(address: WallethAddress): List<Transaction>
     fun getLastNonceForAddress(address: WallethAddress): Long
 
-    fun getTransactionsForHash(hash: String): Transaction?
+    fun getTransactionForHash(hash: String): Transaction?
 
     fun getAllTransactions(): List<Transaction>
 

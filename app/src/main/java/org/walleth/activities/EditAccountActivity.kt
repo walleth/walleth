@@ -21,7 +21,7 @@ class EditAccountActivity : AppCompatActivity() {
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
 
-    val currentAddressInfo by lazy { addressBook.getEntryForName(keyStore.getCurrentAddress()) }
+    val currentAddressInfo by lazy { addressBook.getEntryForName(keyStore.getCurrentAddress())!! }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

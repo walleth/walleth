@@ -24,7 +24,7 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
     override fun observeChange() {
 
         headerView?.let { header ->
-            addressBook.getEntryForName(keyStore.getCurrentAddress()).let {
+            addressBook.getEntryForName(keyStore.getCurrentAddress())?.let {
                 header.accountHash.text = it.address.hex
                 header.accountName.text = it.name
             }
@@ -32,10 +32,8 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
     }
 
 
-    override fun inflateHeaderView(res: Int): View {
-        headerView = super.inflateHeaderView(res)
-
-        return headerView!!
+    override fun inflateHeaderView(res: Int): View = super.inflateHeaderView(res).apply {
+        headerView = this
     }
 
     override fun onAttachedToWindow() {

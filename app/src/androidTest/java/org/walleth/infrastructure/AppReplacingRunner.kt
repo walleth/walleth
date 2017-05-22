@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.infrastructure
 
 import org.ligi.trulesk.AppReplacingRunnerBase
 

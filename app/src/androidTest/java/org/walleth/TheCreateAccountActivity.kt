@@ -13,6 +13,7 @@ import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.activities.CreateAccountActivity
 import org.walleth.data.WallethAddress
+import org.walleth.infrastructure.TestApp
 
 class TheCreateAccountActivity {
 
@@ -88,7 +89,7 @@ class TheCreateAccountActivity {
         val tested = TestApp.addressBookWithEntries.getEntryForName(WallethAddress("0xF00"))
 
         assertThat(tested).isNotNull()
-        assertThat(tested.name).isEqualTo("nameProbe")
+        assertThat(tested!!.name).isEqualTo("nameProbe")
         assertThat(tested.note).isEqualTo("noteProbe")
         assertThat(rule.activity.isFinishing).isTrue()
     }

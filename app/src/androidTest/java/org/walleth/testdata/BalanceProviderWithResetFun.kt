@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.testdata
 
 import org.walleth.data.BalanceProvider
 

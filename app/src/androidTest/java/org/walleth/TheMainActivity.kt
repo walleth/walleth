@@ -10,6 +10,7 @@ import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.activities.MainActivity
 import org.walleth.data.ETH_IN_WEI
+import org.walleth.infrastructure.TestApp
 import java.math.BigInteger
 
 class TheMainActivity {
@@ -17,6 +18,7 @@ class TheMainActivity {
     @get:Rule
     var rule = TruleskActivityRule(MainActivity::class.java) {
         TestApp.balanceProvider.reset()
+        TestApp.transactionProvicer.load()
     }
 
     @Test

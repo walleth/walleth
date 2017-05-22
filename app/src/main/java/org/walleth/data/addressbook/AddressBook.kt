@@ -5,7 +5,7 @@ import org.walleth.data.WallethAddress
 
 interface AddressBook : Observeable {
 
-    fun getEntryForName(address: WallethAddress): AddressBookEntry
+    fun getEntryForName(address: WallethAddress): AddressBookEntry?
 
     fun getAllEntries(): List<AddressBookEntry>
 

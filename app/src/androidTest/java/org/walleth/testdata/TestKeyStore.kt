@@ -1,9 +1,11 @@
-package org.walleth
+package org.walleth.testdata
 
 import org.walleth.data.SimpleObserveable
 import org.walleth.data.WallethAddress
 import org.walleth.data.keystore.WallethKeyStore
 import java.util.*
+
+val DEFAULT_TEST_ADDRESS = WallethAddress("0xfdf1210fc262c73d0436236a0e07be419babbbc4")
 
 class TestKeyStore : SimpleObserveable(), WallethKeyStore {
 
@@ -21,7 +23,7 @@ class TestKeyStore : SimpleObserveable(), WallethKeyStore {
         addresses.remove(address)
     }
 
-    private var currentAddressVar = WallethAddress("0xfdf1210fc262c73d0436236a0e07be419babbbc4")
+    private var currentAddressVar = DEFAULT_TEST_ADDRESS
 
     val import_result_address = WallethAddress("OxABCD43")
 

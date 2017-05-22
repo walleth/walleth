@@ -15,9 +15,12 @@ import org.walleth.R
 import org.walleth.data.DEFAULT_GAS_LIMIT
 import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.ETH_IN_WEI
+import org.walleth.data.WallethAddress
+import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
+import org.walleth.functions.resolveNameFromAddressBook
 import org.walleth.iac.BarCodeIntentIntegrator
 import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.walleth.iac.ERC67
@@ -32,6 +35,7 @@ class TransferActivity : AppCompatActivity() {
 
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val addressBook: AddressBook by LazyKodein(appKodein).instance()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         data?.let {
@@ -87,10 +91,10 @@ class TransferActivity : AppCompatActivity() {
 
         amount_input.doAfterEdit {
             setAmountFromETHString(it.toString())
-            amount_value.setEtherValue(currentAmount?: ZERO)
+            amount_value.setEtherValue(currentAmount ?: ZERO)
         }
 
-        amount_value.setEtherValue(currentAmount?: ZERO)
+        amount_value.setEtherValue(currentAmount ?: ZERO)
 
         fab.setOnClickListener {
             if (currentERC67String == null) {
@@ -136,7 +140,8 @@ class TransferActivity : AppCompatActivity() {
 
         if (currentERC67String != null && ERC67(currentERC67String!!).isValid()) {
             val erc67 = ERC67(currentERC67String!!)
-            to_address.text = erc67.getHex()
+
+            to_address.text = WallethAddress(erc67.getHex()).resolveNameFromAddressBook(addressBook)
             erc67.getValue()?.let {
                 amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal(ETH_IN_WEI)).toString())
                 setAmountFromETHString(it)

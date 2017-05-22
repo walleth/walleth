@@ -20,7 +20,7 @@ android {
         versionName "0.9"
         archivesBaseName = "WALLETH-$versionName"
 
-        testInstrumentationRunner "org.walleth.AppReplacingRunner"
+        testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField "String", "ETHERSCAN_APIKEY", '"' + file('../.ci/etherscan.apikey').text + '"'

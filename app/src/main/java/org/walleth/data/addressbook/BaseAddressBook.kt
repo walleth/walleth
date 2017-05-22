@@ -7,7 +7,7 @@ abstract class BaseAddressBook : SimpleObserveable(), AddressBook {
 
     protected open var addresses: MutableMap<WallethAddress, AddressBookEntry> = mutableMapOf()
 
-    override fun getEntryForName(address: WallethAddress) = addresses[address] ?: AddressBookEntry("unknown", address)
+    override fun getEntryForName(address: WallethAddress) = addresses[address]
 
     override fun getAllEntries(): List<AddressBookEntry> {
         if (addresses.size < 2) {
