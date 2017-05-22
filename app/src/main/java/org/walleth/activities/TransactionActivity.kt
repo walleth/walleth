@@ -45,6 +45,8 @@ class TransactionActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         nonce.text = transaction.nonce.toString()
+        event_log_textview.text = transaction.eventLog
+
         fee_value_view.setEtherValue(transaction.gasLimit * transaction.gasPrice)
 
         if (transaction.from == keyStore.getCurrentAddress()) {

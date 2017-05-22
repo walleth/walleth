@@ -34,7 +34,6 @@ class EtherScanService : Service() {
     val transactionProvider: TransactionProvider by lazyKodein.instance()
     val balanceProvider: BalanceProvider by lazyKodein.instance()
 
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
         Thread({
@@ -69,6 +68,7 @@ class EtherScanService : Service() {
                 } else {
                     transaction.error = it.toString()
                 }
+                transaction.eventLog = transaction.eventLog?:""+"relayed via EtherScan"
                 transaction.signedRLP = null
             }
         }
