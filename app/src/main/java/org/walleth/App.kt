@@ -11,6 +11,7 @@ import org.ligi.tracedroid.TraceDroid
 import org.walleth.core.EtherScanService
 import org.walleth.core.GethLightEthereumService
 import org.walleth.core.GethTransactionSigner
+import org.walleth.core.TransactionNotificationService
 import org.walleth.data.BalanceProvider
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.FileBackedAddressBook
@@ -61,6 +62,7 @@ open class App : Application(), KodeinAware {
         }
         startService(Intent(this, GethTransactionSigner::class.java))
         startService(Intent(this, EtherScanService::class.java))
+        startService(Intent(this, TransactionNotificationService::class.java))
     }
 
     companion object {
