@@ -72,6 +72,6 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
             = keyStore.importKey(json.toByteArray(), importPassword, newPassword)?.address?.toWallethAddress()
 
     override fun exportCurrentKey(unlockPassword: String, exportPassword: String)
-            = String(keyStore.exportKey(keyStore.accounts[0], unlockPassword, exportPassword))
+            = String(keyStore.exportKey(getAccountForAddress(currentAddress!!), unlockPassword, exportPassword))
 
 }
