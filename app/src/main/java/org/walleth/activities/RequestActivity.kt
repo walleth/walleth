@@ -1,7 +1,11 @@
 package org.walleth.activities
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
 import android.view.Menu
@@ -18,7 +22,6 @@ import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.iac.toERC67String
 import java.math.BigDecimal
-
 
 class RequestActivity : AppCompatActivity() {
 
@@ -76,6 +79,12 @@ class RequestActivity : AppCompatActivity() {
             }
 
             startActivity(sendIntent)
+            true
+        }
+        R.id.menu_copy -> {
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            clipboard.primaryClip = ClipData.newPlainText("Ethereum Address", currentERC67String)
+            Snackbar.make(receive_qrcode,"Copied to clipboard",Snackbar.LENGTH_LONG).show()
             true
         }
         android.R.id.home -> {
