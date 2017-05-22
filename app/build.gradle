@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'spoon'
-apply plugin: 'com.github.ben-manes.versions'
+
 apply plugin: 'witness'
 
 android {
@@ -86,8 +86,6 @@ spoon {
     debug = true
     grantAllPermissions = true
 }
-
-apply plugin: 'com.google.gms.google-services'
 
 configurations {
 
@@ -186,3 +184,6 @@ dependencyVerification {
             'com.android.support:animated-vector-drawable:4bc46edf1946b32d518b41416d1734e915e0cbb28021de3b340527419b070691',
     ]
 }
+
+apply plugin: 'com.google.gms.google-services'
+apply plugin: 'com.github.ben-manes.versions'
