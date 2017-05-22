@@ -28,6 +28,8 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
                 header.accountHash.text = it.address.hex
                 header.accountName.text = it.name
             }
+
+            menu.findItem(R.id.menu_save).setVisible(keyStore.hasKeyForForAddress(keyStore.getCurrentAddress()))
         }
     }
 
