@@ -5,7 +5,7 @@ import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.SystemClock
-import android.support.v4.app.NotificationCompat
+import android.support.v7.app.NotificationCompat
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
@@ -31,10 +31,11 @@ class GethLightEthereumService : Service() {
 
     companion object {
         val STOP_SERVICE_ACTION = "STOPSERVICE"
-
         fun android.content.Context.gethStopIntent() = Intent(this, GethLightEthereumService::class.java).apply {
             action = STOP_SERVICE_ACTION
         }
+
+        var isRunning = false
     }
 
     val NOTIFICATION_ID = 101
@@ -50,21 +51,19 @@ class GethLightEthereumService : Service() {
     val keyStore: WallethKeyStore by lazyKodein.instance()
     val settings: Settings by lazyKodein.instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
-    private val path by lazy { File(baseContext.filesDir, ".ethereum_rb").absolutePath }
+    protected val path by lazy { File(baseContext.filesDir, ".ethereum_rb").absolutePath }
+
+    var isSyncing = false
+    var finishedSyncing = false
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
 
         if (intent.action == STOP_SERVICE_ACTION) {
-            WatchdogState.geth_service_running = false
+            isRunning = false
             return START_NOT_STICKY
         }
 
-        if (WatchdogState.geth_service_running) {
-            return START_NOT_STICKY
-        }
-
-        WatchdogState.geth_last_seen = System.currentTimeMillis()
-        WatchdogState.geth_service_running = true
+        isRunning = true
 
         val pendingStopIntent = PendingIntent.getService(baseContext, 0, gethStopIntent(), 0)
         val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, MainActivity::class.java), 0)
@@ -79,6 +78,12 @@ class GethLightEthereumService : Service() {
 
         startForeground(NOTIFICATION_ID, notification)
 
+
+
+        if (intent.action == STOP_SERVICE_ACTION) {
+            isRunning = false
+            return START_NOT_STICKY
+        }
 
         Thread({
 
@@ -99,6 +104,12 @@ class GethLightEthereumService : Service() {
                 ethereumNetStats = settings.getStatsName() + ":Respect my authoritah!@stats.rinkeby.io"
             })
 
+            ethereumNode.start()
+
+            while (isRunning && !finishedSyncing) {
+                syncTick(ethereumNode, ethereumContext)
+            }
+
 
             val changeObserver: ChangeObserver = object : ChangeObserver {
                 override fun observeChange() {
@@ -110,15 +121,13 @@ class GethLightEthereumService : Service() {
                 }
 
             }
-            try {
-                ethereumNode.start()
 
+            try {
                 ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
                     override fun onNewHead(p0: Header) {
                         val address = keyStore.getCurrentAddress().toGethAddr()
                         val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
                         balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
-
                     }
 
                     override fun onError(p0: String?) {}
@@ -127,26 +136,14 @@ class GethLightEthereumService : Service() {
 
 
                 transactionProvider.registerChangeObserver(changeObserver)
+
             } catch (e: Exception) {
                 org.ligi.tracedroid.logging.Log.e("node error", e)
             }
 
-            while (WatchdogState.geth_service_running) {
-
-                WatchdogState.geth_last_seen = System.currentTimeMillis()
-                try {
-                    val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
-
-                    if (ethereumSyncProgress != null) {
-                        val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
-                        syncProgress.setSyncProgress(newSyncProgress)
-                    } else {
-                        syncProgress.setSyncProgress(WallethSyncProgress())
-                    }
-                } catch(e: Exception) {
-                }
-
-                SystemClock.sleep(1000)
+            org.ligi.tracedroid.logging.Log.i("FinishedSyncing")
+            while (isRunning) {
+                syncTick(ethereumNode, ethereumContext)
             }
 
             transactionProvider.unRegisterChangeObserver(changeObserver)
@@ -156,6 +153,27 @@ class GethLightEthereumService : Service() {
         }).start()
 
         return START_NOT_STICKY
+    }
+
+    private fun syncTick(ethereumNode: Node, ethereumContext: Context) {
+        try {
+            val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
+
+            if (ethereumSyncProgress != null) {
+                isSyncing = true
+                val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
+                syncProgress.setSyncProgress(newSyncProgress)
+            } else {
+                syncProgress.setSyncProgress(WallethSyncProgress())
+                if (isSyncing) {
+                    finishedSyncing = true
+                }
+            }
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
+
+        SystemClock.sleep(1000)
     }
 
 
