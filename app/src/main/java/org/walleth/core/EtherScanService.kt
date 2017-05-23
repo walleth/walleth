@@ -117,8 +117,8 @@ class EtherScanService : Service() {
     }
 
 
-    fun getEtherscanResult(requestSTring: String, successCallback: (responseJSON: JSONObject) -> Unit) {
-        val urlString = "https://rinkeby.etherscan.io/api?$requestSTring&apikey=$" + BuildConfig.ETHERSCAN_APIKEY
+    fun getEtherscanResult(requestString: String, successCallback: (responseJSON: JSONObject) -> Unit) {
+        val urlString = "https://rinkeby.etherscan.io/api?$requestString&apikey=$" + BuildConfig.ETHERSCAN_APIKEY
         val url = Request.Builder().url(urlString).build()
         val newCall: Call = okHttpClient.newCall(url)
         newCall.enqueueOnlySuccess(successCallback)
