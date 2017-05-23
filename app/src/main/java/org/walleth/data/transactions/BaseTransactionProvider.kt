@@ -25,6 +25,8 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
             val firstOrNull = transactionList.firstOrNull { transaction.txHash != null && it.txHash == transaction.txHash }
             if (firstOrNull == null) {
                 transactionList.add(transaction)
+            }
+            if (transaction != firstOrNull) {
                 promoteChange()
             }
         }
