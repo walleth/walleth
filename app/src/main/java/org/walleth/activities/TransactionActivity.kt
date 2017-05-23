@@ -11,6 +11,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_transaction.*
 import org.ligi.kaxt.startActivityFromURL
+import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.keystore.WallethKeyStore
@@ -33,7 +34,7 @@ class TransactionActivity : AppCompatActivity() {
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val transaction by lazy {
-        transactionProvider.getTransactionForHash(intent.getStringExtra(HASH_KEY))!!
+        transactionProvider.getTransactionForHash(intent.getStringExtra(HASH_KEY))
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,23 +42,25 @@ class TransactionActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_transaction)
 
-        supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        transaction?.let {
+            supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
+            supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        nonce.text = transaction.nonce.toString()
-        event_log_textview.text = transaction.eventLog
+            nonce.text = transaction!!.nonce.toString()
+            event_log_textview.text = it.eventLog
 
-        fee_value_view.setEtherValue(transaction.gasLimit * transaction.gasPrice)
+            fee_value_view.setEtherValue(it.gasLimit * it.gasPrice)
 
-        if (transaction.from == keyStore.getCurrentAddress()) {
-            from_to_title.setText(R.string.transaction_to_label)
-            from_to.text = transaction.to.resolveNameFromAddressBook(addressBook)
-        } else {
-            from_to_title.setText(R.string.transaction_from_label)
-            from_to.text = transaction.from.resolveNameFromAddressBook(addressBook)
-        }
+            if (it.from == keyStore.getCurrentAddress()) {
+                from_to_title.setText(R.string.transaction_to_label)
+                from_to.text = it.to.resolveNameFromAddressBook(addressBook)
+            } else {
+                from_to_title.setText(R.string.transaction_from_label)
+                from_to.text = it.from.resolveNameFromAddressBook(addressBook)
+            }
 
-        value_view.setEtherValue(transaction.value)
+            value_view.setEtherValue(it.value)
+        } ?: alert("transaction not found")
 
     }
 
@@ -66,7 +69,7 @@ class TransactionActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_etherscan -> {
-            val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(transaction.txHash!!)
+            val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(transaction!!.txHash!!)
             startActivityFromURL(url)
             true
         }
