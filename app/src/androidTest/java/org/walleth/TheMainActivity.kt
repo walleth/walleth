@@ -11,21 +11,22 @@ import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.activities.MainActivity
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.infrastructure.TestApp
-import java.math.BigInteger
+import java.math.BigInteger.ZERO
 
 class TheMainActivity {
 
     @get:Rule
     var rule = TruleskActivityRule(MainActivity::class.java) {
         TestApp.balanceProvider.reset()
-        TestApp.transactionProvicer.load()
+
+        TestApp.transactionProvicer.mutableListOf.clear()
     }
 
     @Test
-    fun behavesCorrectlyWhenBalanceIsZero() {
-        TestApp.balanceProvider.setBalance(TestApp.keyStore.getCurrentAddress(),42,BigInteger("0"))
+    fun behavesCorrectlyNoTransactions() {
+        TestApp.balanceProvider.setBalance(TestApp.keyStore.getCurrentAddress(), 42, ZERO)
 
-        onView(allOf(isDescendantOfA(withId(R.id.value_view)),withId(R.id.current_eth)))
+        onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))
                 .check(matches(withText("0")))
 
         onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(INVISIBLE)))
@@ -36,14 +37,16 @@ class TheMainActivity {
 
         onView(withId(R.id.fab)).check(matches(withEffectiveVisibility(GONE)))
 
-        rule.screenShot("balance_zero")
+        rule.screenShot("no_transactions")
     }
 
     @Test
-    fun behavesCorrectlyWhenBalanceIsOne() {
-        TestApp.balanceProvider.setBalance(TestApp.keyStore.getCurrentAddress(),42, ETH_IN_WEI)
+    fun behavesCorrectlyWhenBalanceIsOneWithTransactions() {
 
-        onView(allOf(isDescendantOfA(withId(R.id.value_view)),withId(R.id.current_eth)))
+        TestApp.transactionProvicer.load()
+        TestApp.balanceProvider.setBalance(TestApp.keyStore.getCurrentAddress(), 42, ETH_IN_WEI)
+
+        onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))
                 .check(matches(withText("1")))
 
         onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(VISIBLE)))

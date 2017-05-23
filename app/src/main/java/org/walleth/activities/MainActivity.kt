@@ -75,9 +75,20 @@ class MainActivity : AppCompatActivity() {
                 val incomingTransactions = allTransactions.filter { it.to == keyStore.getCurrentAddress() }.sortedByDescending { it.localTime }
                 val outgoingTransactions = allTransactions.filter { it.from == keyStore.getCurrentAddress() }.sortedByDescending { it.localTime }
 
+                val hasNoTransactions = incomingTransactions.size + outgoingTransactions.size == 0
+
                 runOnUiThread {
                     transaction_recycler_out.adapter = TransactionRecyclerAdapter(outgoingTransactions, addressBook, OUTGOING)
                     transaction_recycler_in.adapter = TransactionRecyclerAdapter(incomingTransactions, addressBook, INCOMMING)
+
+                    empty_view_container.setVisibility(hasNoTransactions)
+
+                    send_container.setVisibility(!hasNoTransactions, INVISIBLE)
+
+                    transaction_recycler_in.setVisibility(!hasNoTransactions)
+                    transaction_recycler_out.setVisibility(!hasNoTransactions)
+
+                    fab.setVisibility(!hasNoTransactions)
                 }
             }
         })
@@ -91,14 +102,6 @@ class MainActivity : AppCompatActivity() {
 
                 runOnUiThread {
                     value_view.setEtherValue(balanceForAddress.balance)
-
-                    send_container.setVisibility(!balanceIsZero, INVISIBLE)
-                    empty_view_container.setVisibility(balanceIsZero)
-
-                    transaction_recycler_in.setVisibility(!balanceIsZero)
-                    transaction_recycler_out.setVisibility(!balanceIsZero)
-
-                    fab.setVisibility(!balanceIsZero)
 
                     if (!syncProgressProvider.currentSyncProgress.isSyncing) {
                         supportActionBar?.subtitle = "Block " + balanceForAddress.block
