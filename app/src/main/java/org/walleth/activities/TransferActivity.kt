@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.widget.TextView
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
@@ -12,10 +13,7 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.DEFAULT_GAS_LIMIT
-import org.walleth.data.DEFAULT_GAS_PRICE
-import org.walleth.data.ETH_IN_WEI
-import org.walleth.data.WallethAddress
+import org.walleth.data.*
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
@@ -36,6 +34,7 @@ class TransferActivity : AppCompatActivity() {
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
+    val balanceProvider: BalanceProvider by LazyKodein(appKodein).instance()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         data?.let {
@@ -101,19 +100,23 @@ class TransferActivity : AppCompatActivity() {
                 alert("address must be specified")
             } else if (currentAmount == null) {
                 alert("amount must be specified")
+            } else if (currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress())!!.balance) {
+                alert("Not enough funds for this transaction with the given amount plus fee")
             } else {
                 val transaction = Transaction(
                         currentAmount!!,
                         to = ERC67(currentERC67String!!).address,
                         from = keyStore.getCurrentAddress(),
-                        gasPrice = BigInteger(gas_price_input.text.toString()),
-                        gasLimit = BigInteger(gas_limit_input.text.toString())
+                        gasPrice = gas_price_input.asBigInit(),
+                        gasLimit = gas_limit_input.asBigInit()
                 )
                 transactionProvider.addTransaction(transaction)
                 finish()
             }
         }
     }
+
+    fun TextView.asBigInit() = BigInteger(text.toString())
 
     private fun refreshFee() {
         val fee = BigInteger(gas_price_input.text.toString()) * BigInteger(gas_limit_input.text.toString())
