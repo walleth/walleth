@@ -80,21 +80,35 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-            <android.support.design.widget.TextInputLayout
+            <LinearLayout
                     android:layout_below="@id/amount_value"
                     android:padding="16dp"
+                    android:orientation="horizontal"
                     android:id="@+id/amount_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputEditText
-                        android:id="@+id/amount_input"
-                        android:hint="Please specify the amount"
-                        android:minWidth="256dp"
-                        android:inputType="numberDecimal"
+                <android.support.design.widget.TextInputLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
-            </android.support.design.widget.TextInputLayout>
+                        android:layout_height="wrap_content">
+                    <android.support.design.widget.TextInputEditText
+                            android:id="@+id/amount_input"
+                            android:hint="Please specify the amount"
+                            android:minWidth="256dp"
+                            android:inputType="numberDecimal"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
 
+
+                </android.support.design.widget.TextInputLayout>
+                <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/sweep_button"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:clickable="true"
+                        app:srcCompat="@drawable/ic_all_inclusive_black_24dp"
+                        android:padding="8dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"/>
+            </LinearLayout>
             <TextView
                     android:layout_below="@id/amount_container"
                     android:text="Fee:"
