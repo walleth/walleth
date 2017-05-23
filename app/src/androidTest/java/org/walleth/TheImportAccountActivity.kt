@@ -18,6 +18,7 @@ class TheImportAccountActivity {
     @get:Rule
     var rule = TruleskActivityRule(ImportActivity::class.java) {
         TestApp.balanceProvider.reset()
+        TestApp.addressBookWithEntries.reset()
     }
 
     @Test

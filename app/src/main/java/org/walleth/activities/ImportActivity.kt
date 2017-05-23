@@ -13,7 +13,6 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
 import org.threeten.bp.LocalDateTime
-import org.threeten.bp.LocalTime
 import org.walleth.R
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
@@ -44,12 +43,15 @@ class ImportActivity : AppCompatActivity() {
                         .setMessage("Imported " + importKey?.hex)
                         .setTitle(getString(R.string.dialog_title_success))
 
-                val accountName = if (account_name.text.isBlank()) {
-                    "Imported"
-                } else {
-                    account_name.text
+                if (importKey != null) {
+                    val oldEntry = addressBook.getEntryForName(importKey)
+                    val accountName = if (account_name.text.isBlank()) {
+                        oldEntry?.name ?: "Imported"
+                    } else {
+                        account_name.text
+                    }
+                    addressBook.setEntry(AddressBookEntry(accountName.toString(), importKey, oldEntry?.note ?: "Imported on " + LocalDateTime.now()))
                 }
-                addressBook.setEntry(AddressBookEntry(accountName.toString(),importKey!!,"Imported on " + LocalDateTime.now()))
             } catch(e: Exception) {
                 alertBuilder
                         .setMessage(e.message)
