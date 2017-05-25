@@ -54,7 +54,7 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
                 }
 
                 R.id.menu_save -> {
-                    context.startActivityFromClass(ShowAccountBarCodeActivity::class.java)
+                    context.startActivityFromClass(ExportKeyActivity::class.java)
                     true
                 }
 

@@ -18,7 +18,7 @@ import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
 
 
-class ShowAccountBarCodeActivity : AppCompatActivity() {
+class ExportKeyActivity : AppCompatActivity() {
 
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     lateinit var keyJSON: String
