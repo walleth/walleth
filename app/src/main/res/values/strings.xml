@@ -68,4 +68,5 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="input_hint_notes">notes</string>
     <string name="input_hint_account_name">account name</string>
     <string name="please_enter_name">Please enter a name</string>
+    <string name="share">Share</string>
 </resources>
