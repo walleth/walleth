@@ -6,4 +6,10 @@
             android:icon="@drawable/ic_share_24dp"
             app:showAsAction="ifRoom"
     />
+    <item
+            android:title="@string/print"
+            android:id="@+id/menu_print"
+            android:icon="@drawable/ic_print_black_24dp"
+            app:showAsAction="ifRoom"
+    />
 </menu>
