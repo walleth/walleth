@@ -72,4 +72,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="print">Print</string>
     <string name="paper_wallet_title">WALLΞTH Paper Ethereum Wallet</string>
     <string name="paper_wallet_text">This is the private key for your Ethereum account - store it safely and remember the corresponding password.</string>
+    <string name="imported_key_alert_message">Imported %s</string>
+    <string name="imported_key_default_entry_name">Imported</string>
+    <string name="imported_key_entry_note">Imported on %s</string>
 </resources>

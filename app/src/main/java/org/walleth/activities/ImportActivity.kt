@@ -41,24 +41,25 @@ class ImportActivity : AppCompatActivity() {
             try {
                 val importKey = keyStore.importKey(inport_json_text.text.toString(), importPassword = password.text.toString(), newPassword = DEFAULT_PASSWORD)
                 alertBuilder
-                        .setMessage("Imported " + importKey?.hex)
+                        .setMessage(getString(R.string.imported_key_alert_message, importKey?.hex))
                         .setTitle(getString(R.string.dialog_title_success))
 
                 if (importKey != null) {
                     val oldEntry = addressBook.getEntryForName(importKey)
                     val accountName = if (account_name.text.isBlank()) {
-                        oldEntry?.name ?: "Imported"
+                        oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
                     } else {
                         account_name.text
                     }
-                    addressBook.setEntry(AddressBookEntry(accountName.toString(), importKey, oldEntry?.note ?: "Imported on " + LocalDateTime.now()))
+                    val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
+                    addressBook.setEntry(AddressBookEntry(accountName.toString(), importKey, note))
                 }
             } catch(e: Exception) {
                 alertBuilder
                         .setMessage(e.message)
                         .setTitle(getString(R.string.dialog_title_error))
             }
-            alertBuilder.setPositiveButton("OK", null).show()
+            alertBuilder.setPositiveButton(android.R.string.ok, null).show()
         }
     }
 
