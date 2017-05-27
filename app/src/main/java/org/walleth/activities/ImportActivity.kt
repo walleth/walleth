@@ -14,6 +14,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
 import org.threeten.bp.LocalDateTime
 import org.walleth.R
+import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
@@ -38,7 +39,7 @@ class ImportActivity : AppCompatActivity() {
         fab.setOnClickListener {
             val alertBuilder = AlertDialog.Builder(this)
             try {
-                val importKey = keyStore.importKey(inport_json_text.text.toString(), importPassword = password.text.toString(), newPassword = "default")
+                val importKey = keyStore.importKey(inport_json_text.text.toString(), importPassword = password.text.toString(), newPassword = DEFAULT_PASSWORD)
                 alertBuilder
                         .setMessage("Imported " + importKey?.hex)
                         .setTitle(getString(R.string.dialog_title_success))
