@@ -25,7 +25,7 @@ class TheImportAccountActivity {
     fun importShows() {
         onView(withId(R.id.password)).check(matches(isDisplayed()))
         onView(withId(R.id.account_name)).check(matches(isDisplayed()))
-        onView(withId(R.id.inport_json_text)).check(matches(isDisplayed()))
+        onView(withId(R.id.key_content)).check(matches(isDisplayed()))
 
         rule.screenShot("import")
     }

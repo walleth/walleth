@@ -7,7 +7,8 @@ interface WallethKeyStore : Observeable {
 
     fun getCurrentAddress(): WallethAddress
     fun setCurrentAddress(address: WallethAddress)
-    fun importKey(json: String, importPassword: String, newPassword: String): WallethAddress?
+    fun importJSONKey(json: String, importPassword: String, storePassword: String): WallethAddress?
+    fun importECDSAKey(key: String, storePassword: String): WallethAddress?
     fun exportCurrentKey(unlockPassword: String, exportPassword: String): String
 
     fun newAddress(password: String): WallethAddress

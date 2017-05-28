@@ -75,4 +75,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="imported_key_alert_message">Imported %s</string>
     <string name="imported_key_default_entry_name">Imported</string>
     <string name="imported_key_entry_note">Imported on %s</string>
+    <string name="key_input_key_hint">The key</string>
+    <string name="key_import_password_input_hint">Password</string>
+    <string name="key_import_account_name_input_hint">Account name</string>
 </resources>

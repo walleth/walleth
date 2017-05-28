@@ -33,12 +33,15 @@ class TestKeyStore : SimpleObserveable(), WallethKeyStore {
 
     override fun getCurrentAddress() = currentAddressVar
 
-    override fun importKey(json: String, importPassword: String, newPassword: String): WallethAddress {
+    override fun importJSONKey(json: String, importPassword: String, storePassword: String): WallethAddress {
         if (importPassword == "bad password") {
             throw(IllegalArgumentException("Bad Password"))
         }
         return import_result_address
     }
 
-    override fun exportCurrentKey(unlockPassword: String, exportPassword: String) = "export_key" + unlockPassword + exportPassword
+    override fun exportCurrentKey(unlockPassword: String, exportPassword: String) = "export_key_json_" + unlockPassword + exportPassword
+
+    override fun importECDSAKey(key: String, storePassword: String) = import_result_address
+
 }

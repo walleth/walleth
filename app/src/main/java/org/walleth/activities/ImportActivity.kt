@@ -12,6 +12,7 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
+import org.ligi.kaxt.setVisibility
 import org.threeten.bp.LocalDateTime
 import org.walleth.R
 import org.walleth.data.DEFAULT_PASSWORD
@@ -33,13 +34,22 @@ class ImportActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_import_json)
 
+        type_json_select.isChecked = true
+        key_type_select.setOnCheckedChangeListener { _, _ ->
+            password.setVisibility(type_json_select.isChecked)
+        }
+
         supportActionBar?.subtitle = getString(R.string.import_json_title)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {
             val alertBuilder = AlertDialog.Builder(this)
             try {
-                val importKey = keyStore.importKey(inport_json_text.text.toString(), importPassword = password.text.toString(), newPassword = DEFAULT_PASSWORD)
+                val importKey = if (type_json_select.isChecked)
+                    keyStore.importJSONKey(key_content.text.toString(), importPassword = password.text.toString(), storePassword = DEFAULT_PASSWORD)
+                else
+                    keyStore.importECDSAKey(key_content.text.toString(), storePassword = DEFAULT_PASSWORD)
+
                 alertBuilder
                         .setMessage(getString(R.string.imported_key_alert_message, importKey?.hex))
                         .setTitle(getString(R.string.dialog_title_success))
@@ -75,11 +85,11 @@ class ImportActivity : AppCompatActivity() {
 
         resultData?.let {
             if (it.hasExtra("SCAN_RESULT")) {
-                inport_json_text.setText(it.getStringExtra("SCAN_RESULT"))
+                key_content.setText(it.getStringExtra("SCAN_RESULT"))
             }
             if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
-                inport_json_text.setText(readTextFromUri(it.data))
+                key_content.setText(readTextFromUri(it.data))
 
             }
         }

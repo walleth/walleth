@@ -13,6 +13,7 @@ import org.walleth.data.WallethAddress
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.toWallethAddress
+import org.walleth.functions.fromHexToByteArray
 import java.io.File
 
 class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), WallethKeyStore {
@@ -68,8 +69,11 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
         }
     }
 
-    override fun importKey(json: String, importPassword: String, newPassword: String)
-            = keyStore.importKey(json.toByteArray(), importPassword, newPassword)?.address?.toWallethAddress()
+    override fun importECDSAKey(key: String, storePassword: String)
+            = keyStore.importECDSAKey(fromHexToByteArray(key), storePassword)?.address?.toWallethAddress()
+
+    override fun importJSONKey(json: String, importPassword: String, storePassword: String)
+            = keyStore.importKey(json.toByteArray(), importPassword, storePassword)?.address?.toWallethAddress()
 
     override fun exportCurrentKey(unlockPassword: String, exportPassword: String)
             = String(keyStore.exportKey(getAccountForAddress(currentAddress!!), unlockPassword, exportPassword))

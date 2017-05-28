@@ -13,7 +13,7 @@ class TheHexFunctions {
         assertThat(15.toByte().toHexString()).isEqualTo("0f")
     }
 
-  @Test
+    @Test
     fun weCanProduceDoubleDigitHex() {
         assertThat(16.toByte().toHexString()).isEqualTo("10")
         assertThat(42.toByte().toHexString()).isEqualTo("2a")
