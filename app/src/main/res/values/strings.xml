@@ -51,6 +51,13 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
         <item>Auto</item>
     </array>
 
+    <array name="scan_hex_choices">
+        <item>Add to AddressBook</item>
+        <item>Perform transaction</item>
+        <item>Add token definition</item>
+    </array>
+
+
     <string name="day_or_night">Day or Night</string>
     <string name="day_or_night_summary">There is a light and a dark theme</string>
     <string name="dialog_title_success">Success</string>
@@ -78,4 +85,6 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="key_input_key_hint">The key</string>
     <string name="key_import_password_input_hint">Password</string>
     <string name="key_import_account_name_input_hint">Account name</string>
+    <string name="scan_not_interpreted_error_message">Could not interpret your intent for the scan. Currently only support: ERC67, Address, ECDSA-Key, JSON(UTC-) Key</string>
+    <string name="select_action_messagebox_title">Select Action</string>
 </resources>

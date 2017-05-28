@@ -17,6 +17,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
+import org.json.JSONObject
 import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -118,18 +119,61 @@ class MainActivity : AppCompatActivity() {
         })
     }
 
+    fun String.isJSONKey() = try {
+        JSONObject(this).let {
+            it.has("address") && (it.has("crypto") || it.has("Crypto"))
+        }
+    } catch (e: Exception) {
+        false
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (data != null && data.hasExtra("SCAN_RESULT")) {
-            if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
-                AlertDialog.Builder(this)
-                        .setMessage("Only ERC67 supported currently")
-                        .setPositiveButton("OK", null)
-                        .show()
-            } else {
-                val intent = Intent(this, TransferActivity::class.java).apply {
-                    setData(Uri.parse(data.getStringExtra("SCAN_RESULT")))
+            val scanResult = data.getStringExtra("SCAN_RESULT")
+
+            when {
+                scanResult.isERC67String() -> {
+                    startActivity(Intent(this, TransferActivity::class.java).apply {
+                        setData(Uri.parse(scanResult))
+                    })
                 }
-                startActivity(intent)
+
+                scanResult.length == 64 -> {
+                    startActivity(getKeyImportIntent(scanResult, KeyType.ECDSA))
+                }
+
+                scanResult.isJSONKey() -> {
+                    startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
+                }
+
+                scanResult.startsWith("0x") -> {
+                    AlertDialog.Builder(this)
+                            .setTitle(R.string.select_action_messagebox_title)
+                            .setItems(R.array.scan_hex_choices, { _, which ->
+                                when (which) {
+                                    0 -> {
+                                        startCreateAccountActivity(scanResult)
+                                    }
+                                    1 -> {
+                                        startActivity(Intent(this, TransferActivity::class.java).apply {
+                                            setData(Uri.parse("ethereum:$scanResult"))
+                                        })
+                                    }
+                                    2 -> {
+                                        alert("TODO")
+                                    }
+                                }
+                            })
+                            .setNegativeButton(android.R.string.cancel, null)
+                            .show()
+                }
+
+                else -> {
+                    AlertDialog.Builder(this)
+                            .setMessage(R.string.scan_not_interpreted_error_message)
+                            .setPositiveButton(android.R.string.ok, null)
+                            .show()
+                }
             }
         }
     }

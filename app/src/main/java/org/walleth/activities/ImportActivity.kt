@@ -1,6 +1,7 @@
 package org.walleth.activities
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -22,6 +23,18 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.iac.BarCodeIntentIntegrator
 import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 
+enum class KeyType {
+    ECDSA, JSON
+}
+
+
+private val KEY_INTENT_EXTRA_TYPE = "TYPE"
+private val KEY_INTENT_EXTRA_KEYCONTENT = "KEY"
+
+fun Context.getKeyImportIntent(key: String, type: KeyType) = Intent(this, ImportActivity::class.java).apply {
+    putExtra(KEY_INTENT_EXTRA_TYPE, type.toString())
+    putExtra(KEY_INTENT_EXTRA_KEYCONTENT, key)
+}
 
 class ImportActivity : AppCompatActivity() {
 
@@ -34,7 +47,15 @@ class ImportActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_import_json)
 
-        type_json_select.isChecked = true
+        intent.getStringExtra(KEY_INTENT_EXTRA_KEYCONTENT)?.let {
+            key_content.setText(it)
+        }
+
+        val typeExtra = intent.getStringExtra(KEY_INTENT_EXTRA_TYPE)
+
+        type_json_select.isChecked = typeExtra == null || KeyType.valueOf(typeExtra) == KeyType.JSON
+        type_ecdsa_select.isChecked = !type_json_select.isChecked
+
         key_type_select.setOnCheckedChangeListener { _, _ ->
             password.setVisibility(type_json_select.isChecked)
         }

@@ -39,6 +39,7 @@
 
         <RadioButton android:layout_width="wrap_content"
                      android:layout_height="wrap_content"
+                     android:id="@+id/type_ecdsa_select"
                      android:text="ECDSA"/>
 
     </RadioGroup>

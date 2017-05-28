@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -21,6 +22,13 @@ import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.walleth.iac.ERC67
 import org.walleth.iac.isERC67String
 
+private val HEX_INTENT_EXTRA_KEY = "HEX"
+fun Context.startCreateAccountActivity(hex: String) {
+    startActivity(Intent(this, CreateAccountActivity::class.java).apply {
+        putExtra(HEX_INTENT_EXTRA_KEY, hex)
+    })
+}
+
 class CreateAccountActivity : AppCompatActivity() {
 
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
@@ -34,6 +42,10 @@ class CreateAccountActivity : AppCompatActivity() {
 
         supportActionBar?.subtitle = getString(create_account_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
+        intent.getStringExtra(HEX_INTENT_EXTRA_KEY)?.let {
+            hexInput.setText(it)
+        }
 
         fab.setOnClickListener {
             val hex = hexInput.text.toString()
