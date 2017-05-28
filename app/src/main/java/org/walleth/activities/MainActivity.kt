@@ -17,6 +17,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
+import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
@@ -52,9 +53,16 @@ class MainActivity : AppCompatActivity() {
     val addressBook: AddressBook by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
     val settings: Settings by lazyKodein.instance()
+    var lastNightMode: Int? = null
 
     override fun onResume() {
         super.onResume()
+
+        if (lastNightMode != null && lastNightMode != settings.getNightMode()) {
+            recreateWhenPossible()
+            return
+        }
+        lastNightMode = settings.getNightMode()
 
         syncProgressProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
             override fun observeChange() {
