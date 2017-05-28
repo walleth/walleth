@@ -106,7 +106,6 @@ class MainActivity : AppCompatActivity() {
                 balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress())?.let {
                     balanceForAddress = it
                 }
-                val balanceIsZero = balanceForAddress.balance == BigInteger.ZERO
 
                 runOnUiThread {
                     value_view.setEtherValue(balanceForAddress.balance)
