@@ -40,11 +40,7 @@ class EtherScanService : Service() {
 
             transactionProvider.registerChangeObserver(object : ChangeObserver {
                 override fun observeChange() {
-                    transactionProvider.getAllTransactions().forEach {
-                        if (it.signedRLP != null) {
-                            relayTransaction(it)
-                        }
-                    }
+                    relayTransactionsIfNeeded()
                 }
 
             })
@@ -52,12 +48,21 @@ class EtherScanService : Service() {
             while (true) {
                 tryFetchFromEtherScan(keyStore.getCurrentAddress().hex)
 
+                relayTransactionsIfNeeded()
                 SystemClock.sleep(10000)
             }
         }).start()
 
 
         return START_STICKY
+    }
+
+    private fun relayTransactionsIfNeeded() {
+        transactionProvider.getAllTransactions().forEach {
+            if (it.signedRLP != null) {
+                relayTransaction(it)
+            }
+        }
     }
 
     private fun relayTransaction(transaction: Transaction) {
