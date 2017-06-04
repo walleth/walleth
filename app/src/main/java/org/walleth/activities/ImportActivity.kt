@@ -1,9 +1,11 @@
 package org.walleth.activities
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -14,6 +16,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
 import org.ligi.kaxt.setVisibility
+import org.ligi.kaxtui.alert
 import org.threeten.bp.LocalDateTime
 import org.walleth.R
 import org.walleth.data.DEFAULT_PASSWORD
@@ -95,8 +98,9 @@ class ImportActivity : AppCompatActivity() {
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_import, menu)
+        menu.findItem(R.id.menu_open).isVisible = Build.VERSION.SDK_INT>=19
         return super.onCreateOptionsMenu(menu)
     }
 
@@ -124,11 +128,15 @@ class ImportActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
         R.id.menu_open -> {
-            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.addCategory(Intent.CATEGORY_OPENABLE)
-            intent.type = "*/*"
+            try {
+                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+                intent.addCategory(Intent.CATEGORY_OPENABLE)
+                intent.type = "*/*"
 
-            startActivityForResult(intent, READ_REQUEST_CODE)
+                startActivityForResult(intent, READ_REQUEST_CODE)
+            } catch (e: ActivityNotFoundException) {
+                alert(R.string.saf_activity_not_found_problem)
+            }
             true
         }
 

@@ -87,4 +87,5 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="key_import_account_name_input_hint">Account name</string>
     <string name="scan_not_interpreted_error_message">Could not interpret your intent for the scan. Currently only support: ERC67, Address, ECDSA-Key, JSON(UTC-) Key</string>
     <string name="select_action_messagebox_title">Select Action</string>
+    <string name="saf_activity_not_found_problem">No App found to handle ACTION_OPEN_DOCUMENT - please report this as a problem to your phone-/ROM-provider</string>
 </resources>
