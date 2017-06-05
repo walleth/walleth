@@ -123,7 +123,11 @@ class TransferActivity : AppCompatActivity() {
     fun TextView.asBigInit() = BigInteger(text.toString())
 
     private fun refreshFee() {
-        val fee = BigInteger(gas_price_input.text.toString()) * BigInteger(gas_limit_input.text.toString())
+        val fee = try {
+            BigInteger(gas_price_input.text.toString()) * BigInteger(gas_limit_input.text.toString())
+        } catch (numberFormatException: NumberFormatException) {
+            ZERO
+        }
         fee_value_view.setEtherValue(fee)
     }
 
