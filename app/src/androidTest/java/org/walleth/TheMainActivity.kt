@@ -35,8 +35,6 @@ class TheMainActivity {
         onView(withId(R.id.transaction_recycler_in)).check(matches(withEffectiveVisibility(GONE)))
         onView(withId(R.id.transaction_recycler_out)).check(matches(withEffectiveVisibility(GONE)))
 
-        onView(withId(R.id.fab)).check(matches(withEffectiveVisibility(GONE)))
-
         rule.screenShot("no_transactions")
     }
 
@@ -54,8 +52,6 @@ class TheMainActivity {
 
         onView(withId(R.id.transaction_recycler_in)).check(matches(withEffectiveVisibility(VISIBLE)))
         onView(withId(R.id.transaction_recycler_out)).check(matches(withEffectiveVisibility(VISIBLE)))
-
-        onView(withId(R.id.fab)).check(matches(withEffectiveVisibility(VISIBLE)))
 
         rule.screenShot("balance_one")
     }

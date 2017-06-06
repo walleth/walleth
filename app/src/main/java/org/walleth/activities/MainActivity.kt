@@ -97,7 +97,6 @@ class MainActivity : AppCompatActivity() {
                     transaction_recycler_in.setVisibility(!hasNoTransactions)
                     transaction_recycler_out.setVisibility(!hasNoTransactions)
 
-                    fab.setVisibility(!hasNoTransactions)
                 }
             }
         })
