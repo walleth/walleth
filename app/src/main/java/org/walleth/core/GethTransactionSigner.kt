@@ -8,6 +8,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
+import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.config.Settings
 import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
@@ -65,7 +66,7 @@ class GethTransactionSigner : Service() {
         if (index == null) {
             transaction.error = "No key for sending account"
         } else {
-            gethKeystore.unlock(accounts.get(index), "default")
+            gethKeystore.unlock(accounts.get(index), DEFAULT_PASSWORD)
 
             val signHash = gethKeystore.signHash(transaction.from.toGethAddr(), newTransaction.sigHash.bytes)
             val transactionWithSignature = newTransaction.withSignature(signHash)
