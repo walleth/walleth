@@ -63,8 +63,11 @@ class GethTransactionSigner : Service() {
         val accounts = gethKeystore.accounts
         val index = (0..(accounts.size() - 1)).firstOrNull { accounts.get(it).address.hex.toUpperCase() == transaction.from.hex.toUpperCase() }
 
+        transaction.txHash = newTransaction.hash.hex
+
         if (index == null) {
             transaction.error = "No key for sending account"
+            transaction.txRLP = newTransaction.encodeRLP().asList()
         } else {
             gethKeystore.unlock(accounts.get(index), DEFAULT_PASSWORD)
 
@@ -73,10 +76,11 @@ class GethTransactionSigner : Service() {
 
             transaction.signedRLP = transactionWithSignature.encodeRLP().asList()
             transaction.sigHash = newTransaction.sigHash.hex
-            transaction.txHash = newTransaction.hash.hex
 
-            transactionProvider.addTransaction(transaction)
         }
+
+        transactionProvider.addTransaction(transaction)
+
     }
 
 }
