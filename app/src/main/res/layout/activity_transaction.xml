@@ -1,78 +1,97 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_main"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp"
-        tools:context="org.walleth.activities.TransactionActivity">
+        android:layout_height="match_parent">
 
-    <org.walleth.ui.ValueView
-            android:id="@+id/value_view"
-            android:layout_gravity="center_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    <TextView
-            android:id="@+id/from_to_title"
-            android:fontFamily="sans-serif"
-            android:textSize="18dp"
-            android:paddingBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    <TextView
-            android:id="@+id/from_to"
-            android:paddingLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-
-    <TextView
-            android:text="Nonce:"
-            android:fontFamily="sans-serif"
-            android:textSize="18dp"
-            android:paddingBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-
-    <TextView
-            android:id="@+id/nonce"
-            android:paddingLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-
-    <TextView
-            android:text="Fee:"
-            android:fontFamily="sans-serif"
-            android:textSize="18dp"
-            android:paddingBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-    <org.walleth.ui.ValueViewSmall
-            android:id="@+id/fee_value_view"
-            android:layout_width="wrap_content"
+    <LinearLayout
+            android:id="@+id/activity_main"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"/>
+            android:orientation="vertical"
+            android:padding="16dp"
+            tools:context="org.walleth.activities.TransactionActivity">
 
-    <TextView
-            android:text="Log:"
-            android:fontFamily="sans-serif"
-            android:textSize="18dp"
-            android:paddingBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <org.walleth.ui.ValueView
+                android:id="@+id/value_view"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:id="@+id/from_to_title"
+                android:fontFamily="sans-serif"
+                android:textSize="18dp"
+                android:paddingBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:id="@+id/from_to"
+                android:paddingLeft="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
 
-    <TextView
-            android:id="@+id/event_log_textview"
-            android:paddingLeft="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+        <TextView
+                android:text="Nonce:"
+                android:fontFamily="sans-serif"
+                android:textSize="18dp"
+                android:paddingBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
 
-</LinearLayout>
+
+        <TextView
+                android:id="@+id/nonce"
+                android:paddingLeft="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+        <TextView
+                android:text="Fee:"
+                android:fontFamily="sans-serif"
+                android:textSize="18dp"
+                android:paddingBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <org.walleth.ui.ValueViewSmall
+                android:id="@+id/fee_value_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"/>
+
+        <TextView
+                android:text="Log:"
+                android:fontFamily="sans-serif"
+                android:textSize="18dp"
+                android:paddingBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+
+        <TextView
+                android:id="@+id/event_log_textview"
+                android:paddingLeft="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:id="@+id/rlp_header"
+                android:fontFamily="sans-serif"
+                android:textSize="18dp"
+                android:paddingBottom="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <ImageView
+                android:id="@+id/rlp_image"
+                android:layout_gravity="center_horizontal"
+                android:layout_width="@dimen/qrcode_size"
+                android:layout_height="@dimen/qrcode_size"/>
+
+    </LinearLayout>
+</ScrollView>
