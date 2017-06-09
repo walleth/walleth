@@ -41,4 +41,12 @@ class TheHexFunctions {
         fromHexToByteArray("0xa")
     }
 
+    @Test
+    fun testRoundTrip() {
+        assertThat(fromHexToByteArray("00").toHexString()).isEqualTo("0x00")
+        assertThat(fromHexToByteArray("ff").toHexString()).isEqualTo("0xff")
+        assertThat(fromHexToByteArray("abcdef").toHexString()).isEqualTo("0xabcdef")
+        assertThat(fromHexToByteArray("0xaa12456789bb").toHexString()).isEqualTo("0xaa12456789bb")
+    }
+
 }

@@ -12,6 +12,9 @@ internal fun Byte.toHexString() = toInt().let {
     CHARS[it.shr(4) and 0x0f].toString() + CHARS[it.and(0x0f)].toString()
 }
 
+fun ByteArray.toHexString() = "0x" + this.map { "" + it.toHexString() }.joinToString("")
+fun List<Byte>.toHexString() = toByteArray().toHexString()
+
 fun fromHexToByteArray(hex: String): ByteArray {
     if (hex.length % 2 != 0)
         throw IllegalArgumentException("hex-string must have an even number of digits (nibbles)")
