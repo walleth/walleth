@@ -19,7 +19,7 @@ class TheMainActivity {
     var rule = TruleskActivityRule(MainActivity::class.java) {
         TestApp.balanceProvider.reset()
 
-        TestApp.transactionProvicer.mutableListOf.clear()
+        TestApp.transactionProvider.reset()
     }
 
     @Test
@@ -41,7 +41,7 @@ class TheMainActivity {
     @Test
     fun behavesCorrectlyWhenBalanceIsOneWithTransactions() {
 
-        TestApp.transactionProvicer.load()
+        TestApp.transactionProvider.load()
         TestApp.balanceProvider.setBalance(TestApp.keyStore.getCurrentAddress(), 42, ETH_IN_WEI)
 
         onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))

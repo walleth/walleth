@@ -24,7 +24,7 @@ class TheTransactionActivity {
 
     @Test
     fun nonceIsDisplayedCorrectly() {
-        TestApp.transactionProvicer.addTransaction(Transaction(ETH_IN_WEI, DEFAULT_TEST_ADDRESS, DEFAULT_TEST_ADDRESS, nonce = 11, txHash = "0xFOO"))
+        TestApp.transactionProvider.addTransaction(Transaction(ETH_IN_WEI, DEFAULT_TEST_ADDRESS, DEFAULT_TEST_ADDRESS, nonce = 11, txHash = "0xFOO"))
 
         rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash("0xFOO"))
 
@@ -34,7 +34,7 @@ class TheTransactionActivity {
     @Test
     fun isLabeledToWhenWeReceive() {
         val transaction = Transaction(ETH_IN_WEI, from = DEFAULT_TEST_ADDRESS, to = Room77, nonce = 11, txHash = "0xFOO12")
-        TestApp.transactionProvicer.addTransaction(transaction)
+        TestApp.transactionProvider.addTransaction(transaction)
 
         rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash(transaction.txHash!!))
 
@@ -46,7 +46,7 @@ class TheTransactionActivity {
     @Test
     fun isLabeledFromWhenWeReceive() {
         val transaction = Transaction(ETH_IN_WEI, from = ShapeShift, to = DEFAULT_TEST_ADDRESS, nonce = 11, txHash = "0xFOO21")
-        TestApp.transactionProvicer.addTransaction(transaction)
+        TestApp.transactionProvider.addTransaction(transaction)
 
         rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash(transaction.txHash!!))
 

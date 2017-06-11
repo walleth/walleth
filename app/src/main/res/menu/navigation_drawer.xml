@@ -27,6 +27,11 @@
             android:icon="@drawable/ic_action_settings"/>
 
     <item
+            android:id="@+id/menu_offline_transaction"
+            android:title="Offline Transaction"
+            android:icon="@drawable/ic_enhanced_encryption_black_24dp"/>
+
+    <item
             android:id="@+id/menu_debug"
             android:title="Debug"
             android:icon="@drawable/ic_adb_black_24dp"/>

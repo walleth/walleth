@@ -68,6 +68,11 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
                     true
                 }
 
+                R.id.menu_offline_transaction -> {
+                    context.startActivityFromClass(OfflineTransactionActivity::class.java)
+                    true
+                }
+
                 R.id.menu_settings -> {
                     context.startActivityFromClass(PreferenceActivity::class.java)
                     true

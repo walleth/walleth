@@ -34,6 +34,10 @@ class GethTransactionSigner : Service() {
 
         val changeObserver: ChangeObserver = object : ChangeObserver {
             override fun observeChange() {
+                transactionProvider.popPendingTransaction()?.let {
+                    signTransaction(it)
+                }
+
                 transactionProvider.getAllTransactions().forEach {
                     if (it.ref == TransactionSource.WALLETH) {
                         signTransaction(it)
@@ -48,11 +52,19 @@ class GethTransactionSigner : Service() {
     }
 
     private fun signTransaction(transaction: Transaction) {
+        if (transaction.needsSigningConfirmation || transaction.signedRLP != null) {
+            return
+        }
+
+        val previousTxHash = transaction.txHash
+
         transaction.ref = TransactionSource.WALLETH_PROCESSED
 
-        val nonce = transactionProvider.getLastNonceForAddress(transaction.from) + 1
-        transaction.nonce = nonce
-        val newTransaction = Geth.newTransaction(nonce,
+        if (transaction.nonce == null) {
+            transaction.nonce = transactionProvider.getLastNonceForAddress(transaction.from) + 1
+        }
+
+        val newTransaction = Geth.newTransaction(transaction.nonce!!,
                 transaction.to.toGethAddr(),
                 BigInt(transaction.value.toLong()),
                 transaction.gasLimit.toGethInteger(),
@@ -63,23 +75,27 @@ class GethTransactionSigner : Service() {
         val accounts = gethKeystore.accounts
         val index = (0..(accounts.size() - 1)).firstOrNull { accounts.get(it).address.hex.toUpperCase() == transaction.from.hex.toUpperCase() }
 
-        transaction.txHash = newTransaction.hash.hex
-
         if (index == null) {
             transaction.error = "No key for sending account"
             transaction.txRLP = newTransaction.encodeRLP().asList()
+            transaction.txHash = newTransaction.hash.hex
         } else {
             gethKeystore.unlock(accounts.get(index), DEFAULT_PASSWORD)
 
             val signHash = gethKeystore.signHash(transaction.from.toGethAddr(), newTransaction.sigHash.bytes)
             val transactionWithSignature = newTransaction.withSignature(signHash)
 
+            transaction.txHash = transactionWithSignature.hash.hex
             transaction.signedRLP = transactionWithSignature.encodeRLP().asList()
             transaction.sigHash = newTransaction.sigHash.hex
 
         }
 
-        transactionProvider.addTransaction(transaction)
+        if (previousTxHash != null) {
+            transactionProvider.updateTransaction(previousTxHash, transaction)
+        } else {
+            transactionProvider.addTransaction(transaction)
+        }
 
     }
 

@@ -14,4 +14,11 @@ interface TransactionProvider : Observeable {
 
     fun addTransaction(transaction: Transaction)
 
+    fun getPendingTransactions(): List<Transaction>
+    fun addPendingTransaction(transaction: Transaction)
+
+    fun popPendingTransaction(): Transaction?
+
+    fun updateTransaction(oldTxHash: String,transaction: Transaction)
+
 }

@@ -22,7 +22,7 @@ class TestApp : App() {
     override fun createKodein() = Kodein.Module {
         bind<AddressBook>() with singleton { addressBookWithEntries }
         bind<BalanceProvider>() with singleton { balanceProvider }
-        bind<TransactionProvider>() with singleton { transactionProvicer }
+        bind<TransactionProvider>() with singleton { transactionProvider }
         bind<ExchangeRateProvider>() with singleton { fixedValueExchangeProvider }
         bind<SyncProgressProvider>() with singleton {
             SyncProgressProvider().apply {
@@ -43,7 +43,7 @@ class TestApp : App() {
     override fun executeCodeWeWillIgnoreInTests() = Unit
 
     companion object {
-        val transactionProvicer = TransactionProviderWithTestData()
+        val transactionProvider = TransactionProviderWithTestData()
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
         val balanceProvider = BalanceProviderWithResetFun()
         val addressBookWithEntries = AddressBookWithTestEntries()

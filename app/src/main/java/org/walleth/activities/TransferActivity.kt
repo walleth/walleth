@@ -114,7 +114,7 @@ class TransferActivity : AppCompatActivity() {
                         gasPrice = gas_price_input.asBigInit(),
                         gasLimit = gas_limit_input.asBigInit()
                 )
-                transactionProvider.addTransaction(transaction)
+                transactionProvider.addPendingTransaction(transaction)
                 finish()
             }
         }

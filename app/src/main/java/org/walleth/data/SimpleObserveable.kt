@@ -26,7 +26,7 @@ open class SimpleObserveable : Observeable {
         }
     }
 
-    fun promoteChange() =  synchronized(lock) {
+    fun promoteChange() = synchronized(lock) {
         changeObserves.forEach(ChangeObserver::observeChange)
     }
 

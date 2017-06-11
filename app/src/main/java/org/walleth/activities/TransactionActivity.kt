@@ -12,6 +12,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_transaction.*
 import net.glxn.qrgen.android.QRCode
+import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -52,6 +53,13 @@ class TransactionActivity : AppCompatActivity() {
             nonce.text = transaction!!.nonce.toString()
             event_log_textview.text = it.eventLog
 
+            fab.setVisibility(it.needsSigningConfirmation)
+            fab.setOnClickListener { _ ->
+                it.needsSigningConfirmation = false
+                transactionProvider.updateTransaction(it.txHash!!, it)
+                finish()
+            }
+
             fee_value_view.setEtherValue(it.gasLimit * it.gasPrice)
 
             if (it.from == keyStore.getCurrentAddress()) {
@@ -63,10 +71,10 @@ class TransactionActivity : AppCompatActivity() {
             }
 
             if (it.signedRLP != null) {
-                rlp_header.text="Signed RLP"
+                rlp_header.text = "Signed RLP"
                 rlp_image.setImageBitmap(QRCode.from(it.signedRLP!!.toHexString()).bitmap())
             } else if (it.txRLP != null) {
-                rlp_header.text="Unsigned RLP"
+                rlp_header.text = "Unsigned RLP"
                 rlp_image.setImageBitmap(QRCode.from(it.txRLP!!.toHexString()).bitmap())
             } else {
                 rlp_image.visibility = View.GONE
