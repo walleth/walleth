@@ -113,6 +113,8 @@ dependencies {
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.17'
     compile 'com.github.ligi:KAXTUI:0.3'
+    compile 'com.github.trezor.trezor-android:trezor-lib:v1.0.4'
+
 
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
     compile 'com.google.zxing:core:3.3.0'

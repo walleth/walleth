@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -29,6 +30,8 @@ fun Context.startCreateAccountActivity(hex: String) {
 }
 
 class CreateAccountActivity : AppCompatActivity() {
+
+    val REQUEST_CODE_TREZOR = 7965
 
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
@@ -64,6 +67,11 @@ class CreateAccountActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        add_trezor.setOnClickListener {
+            startActivityForResult(Intent(this, TrezorCommunicatorActivity::class.java), REQUEST_CODE_TREZOR)
+        }
+
         new_address_button.setOnClickListener {
             cleanupGeneratedKeyWhenNeeded()
             val newAddress = keyStore.newAddress(DEFAULT_PASSWORD)
@@ -85,12 +93,21 @@ class CreateAccountActivity : AppCompatActivity() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data != null && data.hasExtra("SCAN_RESULT")) {
-            hexInput.setText(if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
-                data.getStringExtra("SCAN_RESULT")
-            } else {
-                ERC67(data.getStringExtra("SCAN_RESULT")).getHex()
-            })
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        if (data != null) {
+            if (data.hasExtra("SCAN_RESULT")) {
+                hexInput.setText(if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
+                    data.getStringExtra("SCAN_RESULT")
+                } else {
+                    ERC67(data.getStringExtra("SCAN_RESULT")).getHex()
+                })
+            }
+            if (data.hasAddressResult()) {
+                hexInput.setText(data.getAddressResult())
+            }
         }
     }
 

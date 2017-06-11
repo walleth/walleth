@@ -39,34 +39,39 @@
                         android:layout_height="wrap_content"/>
             </android.support.design.widget.TextInputLayout>
 
-            <LinearLayout
-                    android:layout_below="@+id/note_input_container"
-                    android:id="@+id/address_container"
-                    android:padding="16dp"
+    <LinearLayout
+            android:layout_below="@+id/note_input_container"
+            android:id="@+id/address_container"
+            android:padding="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+        <android.support.design.widget.TextInputLayout
+                android:id="@+id/hex_input_container"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content">
+            <android.support.design.widget.TextInputEditText
+                    android:id="@+id/hexInput"
+                    android:hint="@string/input_hint_address"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                <android.support.design.widget.TextInputLayout
-                        android:id="@+id/hex_input_container"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="wrap_content">
-                    <android.support.design.widget.TextInputEditText
-                            android:id="@+id/hexInput"
-                            android:hint="@string/input_hint_address"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"/>
-                </android.support.design.widget.TextInputLayout>
-                <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/camera_button"
-                        app:srcCompat="@drawable/ic_image_camera_alt"
-                        android:layout_gravity="center_vertical"
-                        style="@style/button"/>
-                <android.support.v7.widget.AppCompatImageView
-                        android:id="@+id/new_address_button"
-                        app:srcCompat="@drawable/ic_vpn_key_black_24dp"
-                        android:layout_gravity="center_vertical"
-                        style="@style/button"/>
-            </LinearLayout>
+                    android:layout_height="wrap_content"/>
+        </android.support.design.widget.TextInputLayout>
+        <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/camera_button"
+                app:srcCompat="@drawable/ic_image_camera_alt"
+                android:layout_gravity="center_vertical"
+                style="@style/button"/>
+        <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/new_address_button"
+                app:srcCompat="@drawable/ic_vpn_key_black_24dp"
+                android:layout_gravity="center_vertical"
+                style="@style/button"/>
+        <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/add_trezor"
+                app:srcCompat="@drawable/trezor_icon"
+                android:layout_gravity="center_vertical"
+                style="@style/button"/>
+    </LinearLayout>
 
             <CheckBox
                     android:layout_margin="16dp"
