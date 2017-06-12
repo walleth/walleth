@@ -65,7 +65,13 @@ class TransferActivity : AppCompatActivity() {
         gas_limit_input.setText(DEFAULT_GAS_LIMIT.toString())
 
         sweep_button.setOnClickListener {
-            amount_input.setText(BigDecimal(balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress())!!.balance-gas_price_input.asBigInit()*gas_limit_input.asBigInit()).divide(BigDecimal(ETH_IN_WEI)).toString())
+            val balance = balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress())!!.balance
+            val amountAfterFee = balance - gas_price_input.asBigInit() * gas_limit_input.asBigInit()
+            if (amountAfterFee< ZERO) {
+                alert(R.string.no_funds_after_fee)
+            } else {
+                amount_input.setText(BigDecimal(amountAfterFee).divide(BigDecimal(ETH_IN_WEI)).toString())
+            }
         }
 
         gas_limit_input.doAfterEdit {
