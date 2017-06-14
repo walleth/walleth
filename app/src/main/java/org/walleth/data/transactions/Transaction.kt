@@ -21,4 +21,5 @@ data class Transaction(val value: BigInteger,
                        var txHash: String? = null,
                        var txRLP: List<Byte>? = null,
                        var signedRLP: List<Byte>? = null,
+                       var input: List<Byte> = emptyList(),
                        var eventLog: String? = null)

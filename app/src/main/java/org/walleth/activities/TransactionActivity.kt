@@ -17,6 +17,7 @@ import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionProvider
@@ -60,7 +61,7 @@ class TransactionActivity : AppCompatActivity() {
                 finish()
             }
 
-            fee_value_view.setEtherValue(it.gasLimit * it.gasPrice)
+            fee_value_view.setValue(it.gasLimit * it.gasPrice, ETH_TOKEN)
 
             if (it.from == keyStore.getCurrentAddress()) {
                 from_to_title.setText(R.string.transaction_to_label)
@@ -81,7 +82,7 @@ class TransactionActivity : AppCompatActivity() {
                 rlp_header.visibility = View.GONE
             }
 
-            value_view.setEtherValue(it.value)
+            value_view.setValue(it.value, ETH_TOKEN)
         } ?: alert("transaction not found " + intent.getStringExtra(HASH_KEY))
 
     }

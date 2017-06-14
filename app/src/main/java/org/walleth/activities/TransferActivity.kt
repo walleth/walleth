@@ -13,11 +13,18 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.*
+import org.walleth.data.BalanceProvider
+import org.walleth.data.DEFAULT_GAS_LIMIT
+import org.walleth.data.DEFAULT_GAS_PRICE
+import org.walleth.data.WallethAddress
 import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.exchangerate.ETH_TOKEN
+import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
+import org.walleth.functions.decimalsInZeroes
+import org.walleth.functions.fromHexToByteArray
 import org.walleth.functions.resolveNameFromAddressBook
 import org.walleth.iac.BarCodeIntentIntegrator
 import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
@@ -35,6 +42,7 @@ class TransferActivity : AppCompatActivity() {
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val balanceProvider: BalanceProvider by LazyKodein(appKodein).instance()
+    val tokenProvider: TokenProvider by LazyKodein(appKodein).instance()
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         data?.let {
@@ -65,12 +73,12 @@ class TransferActivity : AppCompatActivity() {
         gas_limit_input.setText(DEFAULT_GAS_LIMIT.toString())
 
         sweep_button.setOnClickListener {
-            val balance = balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress())!!.balance
+            val balance = balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)!!.balance
             val amountAfterFee = balance - gas_price_input.asBigInit() * gas_limit_input.asBigInit()
-            if (amountAfterFee< ZERO) {
+            if (amountAfterFee < ZERO) {
                 alert(R.string.no_funds_after_fee)
             } else {
-                amount_input.setText(BigDecimal(amountAfterFee).divide(BigDecimal(ETH_IN_WEI)).toString())
+                amount_input.setText(BigDecimal(amountAfterFee).divide(BigDecimal("1" + tokenProvider.currentToken.decimalsInZeroes())).toString())
             }
         }
 
@@ -100,31 +108,41 @@ class TransferActivity : AppCompatActivity() {
 
         amount_input.doAfterEdit {
             setAmountFromETHString(it.toString())
-            amount_value.setEtherValue(currentAmount ?: ZERO)
+            amount_value.setValue(currentAmount ?: ZERO, tokenProvider.currentToken)
         }
 
-        amount_value.setEtherValue(currentAmount ?: ZERO)
+        amount_value.setValue(currentAmount ?: ZERO, tokenProvider.currentToken)
 
         fab.setOnClickListener {
             if (currentERC67String == null) {
                 alert("address must be specified")
             } else if (currentAmount == null) {
                 alert("amount must be specified")
-            } else if (currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress())!!.balance) {
+            } else if (tokenProvider.currentToken == ETH_TOKEN && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)!!.balance) {
                 alert("Not enough funds for this transaction with the given amount plus fee")
             } else {
-                val transaction = Transaction(
-                        currentAmount!!,
+                val transaction = if (tokenProvider.currentToken == ETH_TOKEN) Transaction(
+                        value = currentAmount!!,
                         to = ERC67(currentERC67String!!).address,
+                        from = keyStore.getCurrentAddress()
+                ) else Transaction(
+                        value = ZERO,
+                        to = WallethAddress(tokenProvider.currentToken.address),
                         from = keyStore.getCurrentAddress(),
-                        gasPrice = gas_price_input.asBigInit(),
-                        gasLimit = gas_limit_input.asBigInit()
+                        input = createTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
                 )
+
+                transaction.gasPrice = gas_price_input.asBigInit()
+                transaction.gasLimit = gas_limit_input.asBigInit()
                 transactionProvider.addPendingTransaction(transaction)
                 finish()
             }
         }
     }
+
+    fun createTransactionInput(address: WallethAddress, currentAmount: BigInteger?): List<Byte>
+            = fromHexToByteArray("0xa9059cbb" + "000000000000000000000000" + address.hex.replace("0x", "")
+            + String.format("%064x", currentAmount)).toList()
 
     fun TextView.asBigInit() = BigInteger(text.toString())
 
@@ -134,12 +152,12 @@ class TransferActivity : AppCompatActivity() {
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
-        fee_value_view.setEtherValue(fee)
+        fee_value_view.setValue(fee, ETH_TOKEN)
     }
 
     private fun setAmountFromETHString(it: String) {
         currentAmount = try {
-            (BigDecimal(it) * BigDecimal(ETH_IN_WEI)).toBigInteger()
+            (BigDecimal(it) * BigDecimal("1" + tokenProvider.currentToken.decimalsInZeroes())).toBigInteger()
         } catch (e: NumberFormatException) {
             ZERO
         }
@@ -160,7 +178,7 @@ class TransferActivity : AppCompatActivity() {
 
             to_address.text = WallethAddress(erc67.getHex()).resolveNameFromAddressBook(addressBook)
             erc67.getValue()?.let {
-                amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal(ETH_IN_WEI)).toString())
+                amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + tokenProvider.currentToken.decimalsInZeroes())).toString())
                 setAmountFromETHString(it)
                 currentAmount = currentERC67String?.let { BigInteger(ERC67(it).getValue()) }
             }

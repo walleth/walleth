@@ -12,6 +12,8 @@ import org.json.JSONObject
 import org.walleth.BuildConfig
 import org.walleth.data.BalanceProvider
 import org.walleth.data.WallethAddress
+import org.walleth.data.exchangerate.ETH_TOKEN
+import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
@@ -33,6 +35,7 @@ class EtherScanService : Service() {
     val keyStore: WallethKeyStore by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
     val balanceProvider: BalanceProvider by lazyKodein.instance()
+    val tokenProvider: TokenProvider by lazyKodein.instance()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
@@ -73,7 +76,7 @@ class EtherScanService : Service() {
                 } else {
                     transaction.error = it.toString()
                 }
-                transaction.eventLog = transaction.eventLog?:""+"relayed via EtherScan"
+                transaction.eventLog = transaction.eventLog ?: "" + "relayed via EtherScan"
                 transaction.signedRLP = null
             }
         }
@@ -99,14 +102,22 @@ class EtherScanService : Service() {
 
     fun queryEtherscanForBalance(addressHex: String) {
 
-        getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest") {
-            val balance = BigInteger(it.getString("result"))
-            getEtherscanResult("module=proxy&action=eth_blockNumber") {
-                balanceProvider.setBalance(WallethAddress(addressHex), it.getString("result").replace("0x", "").toLong(16), balance)
+        val currentToken = tokenProvider.currentToken
+        if (currentToken == ETH_TOKEN) {
+            getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest") {
+                val balance = BigInteger(it.getString("result"))
+                getEtherscanResult("module=proxy&action=eth_blockNumber") {
+                    balanceProvider.setBalance(WallethAddress(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, ETH_TOKEN)
+                }
             }
-
+        } else {
+            getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest") {
+                val balance = BigInteger(it.getString("result"))
+                getEtherscanResult("module=proxy&action=eth_blockNumber") {
+                    balanceProvider.setBalance(WallethAddress(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, currentToken)
+                }
+            }
         }
-
     }
 
     fun Call.enqueueOnlySuccess(success: (it: JSONObject) -> Unit) {

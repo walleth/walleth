@@ -11,6 +11,8 @@ import org.walleth.data.BalanceProvider
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.exchangerate.InMemoryTokenProvider
+import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
@@ -24,6 +26,7 @@ class TestApp : App() {
         bind<BalanceProvider>() with singleton { balanceProvider }
         bind<TransactionProvider>() with singleton { transactionProvider }
         bind<ExchangeRateProvider>() with singleton { fixedValueExchangeProvider }
+        bind<TokenProvider>() with singleton { InMemoryTokenProvider() }
         bind<SyncProgressProvider>() with singleton {
             SyncProgressProvider().apply {
                 setSyncProgress(WallethSyncProgress(true, 42000, 42042))

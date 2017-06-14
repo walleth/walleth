@@ -8,6 +8,7 @@ import org.ligi.kaxt.setVisibility
 import org.threeten.bp.ZoneOffset
 import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.transactions.Transaction
 import org.walleth.functions.resolveNameFromAddressBook
 
@@ -16,7 +17,7 @@ class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDir
 
     fun bind(transaction: Transaction, addressBook: AddressBook) {
 
-        itemView.difference.setEtherValue(transaction.value)
+        itemView.difference.setValue(transaction.value, ETH_TOKEN)
 
         val relevantAddress = if (direction == TransactionAdapterDirection.INCOMMING) {
             transaction.from

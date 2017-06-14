@@ -69,7 +69,7 @@ class GethTransactionSigner : Service() {
                 BigInt(transaction.value.toLong()),
                 transaction.gasLimit.toGethInteger(),
                 transaction.gasPrice.toGethInteger(),
-                ByteArray(0)
+                transaction.input.toByteArray()
         )
         val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
         val accounts = gethKeystore.accounts

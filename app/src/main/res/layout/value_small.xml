@@ -20,7 +20,7 @@
                 android:textSize="16sp"
                 android:text="ETH"
                 android:lines="1"
-                android:id="@+id/current_eth_symbol"
+                android:id="@+id/current_token_symbol"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </LinearLayout>

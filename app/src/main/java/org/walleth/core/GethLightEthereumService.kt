@@ -15,6 +15,7 @@ import org.walleth.activities.MainActivity
 import org.walleth.data.BalanceProvider
 import org.walleth.data.WallethAddress
 import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -127,7 +128,7 @@ class GethLightEthereumService : Service() {
                     override fun onNewHead(p0: Header) {
                         val address = keyStore.getCurrentAddress().toGethAddr()
                         val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
-                        balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()))
+                        balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()), ETH_TOKEN)
                     }
 
                     override fun onError(p0: String?) {}

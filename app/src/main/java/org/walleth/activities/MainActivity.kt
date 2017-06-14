@@ -29,6 +29,7 @@ import org.walleth.data.BalanceAtBlock
 import org.walleth.data.BalanceProvider
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.transactions.TransactionProvider
@@ -50,6 +51,7 @@ class MainActivity : AppCompatActivity() {
 
     val balanceProvider: BalanceProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
+    val tokenProvider: TokenProvider by lazyKodein.instance()
     val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
     val addressBook: AddressBook by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
@@ -102,13 +104,13 @@ class MainActivity : AppCompatActivity() {
         })
         balanceProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
             override fun observeChange() {
-                var balanceForAddress = BalanceAtBlock(balance = BigInteger("0"), block = 0)
-                balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress())?.let {
+                var balanceForAddress = BalanceAtBlock(balance = BigInteger("0"), block = 0,tokenDescriptor = tokenProvider.currentToken)
+                balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(),tokenProvider.currentToken)?.let {
                     balanceForAddress = it
                 }
 
                 runOnUiThread {
-                    value_view.setEtherValue(balanceForAddress.balance)
+                    value_view.setValue(balanceForAddress.balance,tokenProvider.currentToken)
 
                     if (!syncProgressProvider.currentSyncProgress.isSyncing) {
                         supportActionBar?.subtitle = "Block " + balanceForAddress.block
@@ -213,6 +215,10 @@ class MainActivity : AppCompatActivity() {
 
         current_fiat_symbol.setOnClickListener {
             startActivityFromClass(SelectReferenceActivity::class)
+        }
+
+        current_token_symbol.setOnClickListener {
+            startActivityFromClass(SelectTokenActivity::class)
         }
     }
 

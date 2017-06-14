@@ -8,10 +8,13 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.value.view.*
+import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.functions.toEtherValueString
+import org.walleth.data.tokens.TokenDescriptor
+import org.walleth.functions.toValueString
 import java.math.BigInteger
 
 open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
@@ -27,18 +30,25 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         LayoutInflater.from(context).inflate(layoutRes, this, true)
     }
 
-    fun setEtherValue(int: BigInteger) {
+    fun setValue(int: BigInteger, token: TokenDescriptor) {
 
         val exChangeRate = exchangeRateProvider.getExchangeString(int, settings.currentFiat)
-        current_fiat_symbol.text = settings.currentFiat
-        if (exChangeRate != null) {
-            current_fiat.text = exChangeRate
-        } else {
-            current_fiat.text = "?"
+
+        if (token == ETH_TOKEN) {
+            current_fiat_symbol.text = settings.currentFiat
+            if (exChangeRate != null) {
+                current_fiat.text = exChangeRate
+            } else {
+                current_fiat.text = "?"
+            }
         }
 
-        current_eth.text = int.toEtherValueString()
+        current_token_symbol.text = token.name
 
+        current_fiat_symbol.setVisibility(token == ETH_TOKEN)
+        current_fiat.setVisibility(token == ETH_TOKEN)
+
+        current_eth.text = int.toValueString(token)
     }
 
 }
