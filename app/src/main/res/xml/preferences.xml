@@ -10,6 +10,15 @@
             android:title="@string/day_or_night"/>
 
     <Preference
+            android:key="@string/key_token"
+            android:title="@string/select_token">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="org.walleth"
+                android:targetClass="org.walleth.activities.SelectTokenActivity"/>
+    </Preference>
+
+    <Preference
             android:key="@string/key_reference"
             android:title="@string/select_fiat_reference">
         <intent

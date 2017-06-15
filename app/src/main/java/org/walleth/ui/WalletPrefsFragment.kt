@@ -15,15 +15,18 @@ import org.walleth.R
 import org.walleth.core.GethLightEthereumService
 import org.walleth.core.GethLightEthereumService.Companion.gethStopIntent
 import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.TokenProvider
 
 class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     val settings: Settings by LazyKodein(appKodein).instance()
+    val tokenProvider: TokenProvider by LazyKodein(appKodein).instance()
 
     override fun onResume() {
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         findPreference(getString(R.string.key_reference)).summary = "Currently: " + settings.currentFiat
+        findPreference(getString(R.string.key_token)).summary = "Currently: " + tokenProvider.currentToken.name
 
         setUserNameSummary()
     }

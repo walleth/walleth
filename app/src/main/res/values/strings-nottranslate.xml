@@ -4,6 +4,7 @@
     <string name="key_prefs_start_light">KEY_START_LIGHT</string>
 
     <string name="key_reference">KEY_REFERENCE</string>
+    <string name="key_token">KEY_TOKEN</string>
 
     <string name="default_day_night">auto</string>
     <string name="default_stats_username">WALLΞTH user</string>
