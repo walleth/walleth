@@ -90,7 +90,9 @@ class EtherScanService : Service() {
                 if (it.has("result")) {
                     transaction.txHash = it.getString("result")
                 } else {
-                    transaction.error = it.toString()
+                    if (!it.toString().startsWith("known")) {
+                        transaction.error = it.toString()
+                    }
                 }
                 transaction.eventLog = transaction.eventLog ?: "" + "relayed via EtherScan"
                 transaction.signedRLP = null
