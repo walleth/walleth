@@ -63,7 +63,7 @@ class ImportActivity : AppCompatActivity() {
             password.setVisibility(type_json_select.isChecked)
         }
 
-        supportActionBar?.subtitle = getString(R.string.import_json_title)
+        supportActionBar?.subtitle = getString(R.string.import_json_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {

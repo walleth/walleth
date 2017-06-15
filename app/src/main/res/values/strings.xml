@@ -6,7 +6,7 @@
     <string name="switch_account_subtitle">Switch Account</string>
     <string name="address_book_subtitle">Address book</string>
     <string name="transaction_subtitle">Transaction details</string>
-    <string name="export_account_subtitle">Export account</string>
+
     <string name="request_subtitle">Request</string>
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
@@ -38,7 +38,10 @@ You can find the source <a href="https://github.com/walleth">on github</a>
 ]]></string>
     <string name="qr_code">QR-Code</string>
     <string name="text_extract_funds">You can use this QR-Code to request a transaction:</string>
-    <string name="import_json_title">Import Account</string>
+
+    <string name="import_json_subtitle">Import Key</string>
+    <string name="export_account_subtitle">Export key</string>
+
     <string name="request_hint"><![CDATA[
 You might share this address with the hashtag <a href="https://twitter.com/search?q=%23walleth">#walleth</a> on social media to get test ether.
 <br/><a href="http://ligi.de">LIGI</a> will monitor twitter and has some test-ether collected since the launch of <a href="http://www.rinkeby.io">rinkeby</a>.
