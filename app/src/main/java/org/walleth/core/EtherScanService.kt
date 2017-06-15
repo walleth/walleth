@@ -41,9 +41,18 @@ class EtherScanService : Service() {
 
         Thread({
 
+            var shortcut = false
+
             transactionProvider.registerChangeObserver(object : ChangeObserver {
                 override fun observeChange() {
-                    relayTransactionsIfNeeded()
+                    shortcut = true
+                }
+
+            })
+
+            keyStore.registerChangeObserver(object : ChangeObserver {
+                override fun observeChange() {
+                    shortcut = true
                 }
 
             })
@@ -52,7 +61,14 @@ class EtherScanService : Service() {
                 tryFetchFromEtherScan(keyStore.getCurrentAddress().hex)
 
                 relayTransactionsIfNeeded()
-                SystemClock.sleep(10000)
+
+                var i = 0
+                while (i < 10000 && !shortcut) {
+                    SystemClock.sleep(1)
+                    i++
+                }
+
+                shortcut = false
             }
         }).start()
 
@@ -83,8 +99,8 @@ class EtherScanService : Service() {
     }
 
     fun tryFetchFromEtherScan(addressHex: String) {
-        queryTransactions(addressHex)
         queryEtherscanForBalance(addressHex)
+        queryTransactions(addressHex)
     }
 
     fun queryTransactions(addressHex: String) {
