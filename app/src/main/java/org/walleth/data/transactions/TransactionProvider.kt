@@ -13,6 +13,7 @@ interface TransactionProvider : Observeable {
     fun getAllTransactions(): List<Transaction>
 
     fun addTransaction(transaction: Transaction)
+    fun addTransactions(transactions: List<Transaction>)
 
     fun getPendingTransactions(): List<Transaction>
     fun addPendingTransaction(transaction: Transaction)

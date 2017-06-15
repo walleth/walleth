@@ -109,9 +109,7 @@ class EtherScanService : Service() {
 
             val jsonArray = it.getJSONArray("result")
             val transactions = parseEtherScanTransactions(jsonArray)
-            transactions.forEach {
-                transactionProvider.addTransaction(it)
-            }
+            transactionProvider.addTransactions(transactions)
         }
 
     }

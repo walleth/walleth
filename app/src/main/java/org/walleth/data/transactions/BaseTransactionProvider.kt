@@ -36,6 +36,20 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
 
     }
 
+
+    override fun addTransactions(transactions: List<Transaction>) {
+        synchronized(txListLock) {
+            var needsUpdate = false
+            for (transaction in transactions) {
+                val txHash = transaction.txHash
+                if (txHash != null) {
+                    needsUpdate = needsUpdate || (!transactionMap.containsKey(txHash.toUpperCase()) || transactionMap[txHash.toUpperCase()] != transaction)
+                    transactionMap[txHash.toUpperCase()] = transaction
+                }
+            }
+            if (needsUpdate) promoteChange()
+        }
+    }
     override fun addTransaction(transaction: Transaction) {
         synchronized(txListLock) {
             val txHash = transaction.txHash
