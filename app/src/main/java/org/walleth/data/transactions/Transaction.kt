@@ -1,7 +1,7 @@
 package org.walleth.data.transactions
 
 import org.threeten.bp.LocalDateTime
-import org.walleth.data.DEFAULT_GAS_LIMIT
+import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
 import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.WallethAddress
 import java.math.BigInteger
@@ -14,7 +14,7 @@ data class Transaction(val value: BigInteger,
                        var ref: TransactionSource = TransactionSource.WALLETH,
                        var nonce: Long? = null,
                        var gasPrice: BigInteger = DEFAULT_GAS_PRICE,
-                       var gasLimit: BigInteger = DEFAULT_GAS_LIMIT,
+                       var gasLimit: BigInteger = DEFAULT_GAS_LIMIT_ETH_TX,
                        var error: String? = null,
                        var sigHash: String? = null,
                        var needsSigningConfirmation: Boolean = false,

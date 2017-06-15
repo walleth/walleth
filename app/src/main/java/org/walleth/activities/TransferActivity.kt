@@ -13,10 +13,7 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.BalanceProvider
-import org.walleth.data.DEFAULT_GAS_LIMIT
-import org.walleth.data.DEFAULT_GAS_PRICE
-import org.walleth.data.WallethAddress
+import org.walleth.data.*
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.TokenProvider
@@ -70,7 +67,12 @@ class TransferActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
-        gas_limit_input.setText(DEFAULT_GAS_LIMIT.toString())
+
+        if (tokenProvider.currentToken== ETH_TOKEN) {
+            gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
+        } else {
+            gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
+        }
 
         sweep_button.setOnClickListener {
             val balance = balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)!!.balance
