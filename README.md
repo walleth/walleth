@@ -33,3 +33,5 @@ License
 =======
 
 GPL
+
+  [2]: https://i.stack.imgur.com/1RDcW.png
