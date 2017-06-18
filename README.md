@@ -7,6 +7,19 @@ WALLΞTH
 
 The native Android Ethereum light client wallet
 
+Contributing
+==========
+
+When running the WALLΞTH project in Android Studio one might encounter the following error during the build process: 
+
+[![enter image description here][2]][2]
+
+This happens as a result of the fact that `google-services.json` is encrypted with git-crypt. Quick fix is to remove:
+
+    apply plugin: 'com.google.gms.google-services'
+
+from `build.gradle`
+
 References
 ==========
 
