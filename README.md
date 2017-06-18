@@ -12,7 +12,26 @@ Contributing
 
 When running the WALLΞTH project in Android Studio one might encounter the following error during the build process: 
 
-[![enter image description here][2]][2]
+**Messages Gradle Build**
+
+    Error:Execution failed for task ':app:processNoFirebaseForFDroidDebugGoogleServices'.
+    > com.google.gson.stream.MalformedJsonException: Use JsonReader.setLenient(true) to accept malformed JSON at line 1 column 25 path $
+    BUILD FAILED
+
+**Gradle Console**
+
+    :app:processNoFirebaseForFDroidDebugGoogleServices FAILED
+
+    FAILURE: Build failed with an exception.
+
+    * What went wrong:
+    Execution failed for task ':app:processNoFirebaseForFDroidDebugGoogleServices'.
+    > com.google.gson.stream.MalformedJsonException: Use JsonReader.setLenient(true) to accept malformed JSON at line 1 column 25 path $
+
+    * Try:
+    Run with --stacktrace option to get the stack trace. Run with --info or --debug option to get more log output.
+
+    BUILD FAILED
 
 This happens as a result of the fact that `google-services.json` is encrypted with git-crypt. Quick fix is to remove:
 
@@ -34,4 +53,3 @@ License
 
 GPL
 
-  [2]: https://i.stack.imgur.com/1RDcW.png
