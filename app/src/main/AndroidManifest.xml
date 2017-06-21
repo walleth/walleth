@@ -27,7 +27,10 @@
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
         <activity android:name="org.walleth.activities.CreateAccountActivity"/>
         <activity android:name="org.walleth.activities.SelectReferenceActivity"/>
+
         <activity android:name="org.walleth.activities.SelectTokenActivity"/>
+        <activity android:name="org.walleth.activities.CreateTokenDefinitionActivity"/>
+
         <activity android:name="org.walleth.activities.AddressBookActivity"/>
         <activity android:name="org.walleth.activities.SwitchAccountActivity"/>
         <activity android:name="org.walleth.activities.PreferenceActivity"/>

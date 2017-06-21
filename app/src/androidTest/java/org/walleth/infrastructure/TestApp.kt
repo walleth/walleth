@@ -3,6 +3,7 @@ package org.walleth.infrastructure
 import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
+import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -11,11 +12,11 @@ import org.walleth.data.BalanceProvider
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.exchangerate.InMemoryTokenProvider
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
+import org.walleth.data.tokens.FileBackedTokenProvider
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.testdata.*
 
@@ -26,7 +27,7 @@ class TestApp : App() {
         bind<BalanceProvider>() with singleton { balanceProvider }
         bind<TransactionProvider>() with singleton { transactionProvider }
         bind<ExchangeRateProvider>() with singleton { fixedValueExchangeProvider }
-        bind<TokenProvider>() with singleton { InMemoryTokenProvider() }
+        bind<TokenProvider>() with singleton { FileBackedTokenProvider(this@TestApp,instance()) }
         bind<SyncProgressProvider>() with singleton {
             SyncProgressProvider().apply {
                 setSyncProgress(WallethSyncProgress(true, 42000, 42042))

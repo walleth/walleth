@@ -19,12 +19,12 @@ import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.exchangerate.InMemoryTokenProvider
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
+import org.walleth.data.tokens.FileBackedTokenProvider
 import org.walleth.data.transactions.BaseTransactionProvider
 import org.walleth.data.transactions.TransactionProvider
 
@@ -32,6 +32,7 @@ open class App : Application(), KodeinAware {
 
     override val kodein by Kodein.lazy {
         bind<OkHttpClient>() with singleton { OkHttpClient.Builder().build() }
+        bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider() }
 
         import(createKodein())
     }
@@ -44,8 +45,7 @@ open class App : Application(), KodeinAware {
         bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
         bind<WallethKeyStore>() with singleton { GethBackedWallethKeyStore(this@App) }
         bind<Settings>() with singleton { KotprefSettings }
-        bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider() }
-        bind<TokenProvider>() with singleton { InMemoryTokenProvider() }
+        bind<TokenProvider>() with singleton { FileBackedTokenProvider(this@App, instance()) }
     }
 
     override fun onCreate() {

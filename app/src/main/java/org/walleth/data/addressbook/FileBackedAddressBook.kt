@@ -9,8 +9,8 @@ import java.io.File
 
 class FileBackedAddressBook(val context: Context) : BaseAddressBook(), AddressBook {
 
-    val workPackageListType = Types.newParameterizedType(List::class.java, AddressBookEntry::class.java)
-    val adapter: JsonAdapter<List<AddressBookEntry>> = Moshi.Builder().build().adapter(workPackageListType)!!
+    val addressBookType = Types.newParameterizedType(List::class.java, AddressBookEntry::class.java)!!
+    val adapter: JsonAdapter<List<AddressBookEntry>> = Moshi.Builder().build().adapter(addressBookType)!!
 
     val file = File(context.filesDir, "addresses.json")
 

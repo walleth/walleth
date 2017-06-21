@@ -20,6 +20,7 @@ import org.walleth.data.transactions.TransactionProvider
 import org.walleth.functions.toHexString
 import org.walleth.ui.ChangeObserver
 import java.io.IOException
+import java.lang.NumberFormatException
 import java.math.BigInteger
 
 
@@ -128,10 +129,12 @@ class EtherScanService : Service() {
             }
         } else {
             getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest") {
-                val balance = BigInteger(it.getString("result"))
-                getEtherscanResult("module=proxy&action=eth_blockNumber") {
-                    balanceProvider.setBalance(WallethAddress(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, currentToken)
-                }
+                try {
+                    val balance = BigInteger(it.getString("result"))
+                    getEtherscanResult("module=proxy&action=eth_blockNumber") {
+                        balanceProvider.setBalance(WallethAddress(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, currentToken)
+                    }
+                } catch(e: NumberFormatException) {}
             }
         }
     }

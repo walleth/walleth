@@ -17,6 +17,7 @@ import org.walleth.data.*
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.TokenProvider
+import org.walleth.data.exchangerate.isETH
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
@@ -68,7 +69,7 @@ class TransferActivity : AppCompatActivity() {
 
         gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
 
-        if (tokenProvider.currentToken== ETH_TOKEN) {
+        if (tokenProvider.currentToken.isETH()) {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
         } else {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
@@ -123,7 +124,7 @@ class TransferActivity : AppCompatActivity() {
             } else if (tokenProvider.currentToken == ETH_TOKEN && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)!!.balance) {
                 alert("Not enough funds for this transaction with the given amount plus fee")
             } else {
-                val transaction = if (tokenProvider.currentToken == ETH_TOKEN) Transaction(
+                val transaction = if (tokenProvider.currentToken.isETH()) Transaction(
                         value = currentAmount!!,
                         to = ERC67(currentERC67String!!).address,
                         from = keyStore.getCurrentAddress()
