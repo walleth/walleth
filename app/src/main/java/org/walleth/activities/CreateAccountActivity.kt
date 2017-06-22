@@ -9,6 +9,7 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_account_create.*
+import org.kethereum.functions.isValid
 import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -50,7 +51,7 @@ class CreateAccountActivity : AppCompatActivity() {
         fab.setOnClickListener {
             val hex = hexInput.text.toString()
 
-            if (!hex.startsWith("0x")) {
+            if (!Address(hex).isValid()) {
                 alert(title = alert_problem_title, message = address_not_valid)
             } else if (nameInput.text.isBlank()) {
                 alert(title = alert_problem_title, message = please_enter_name)
