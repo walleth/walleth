@@ -112,8 +112,8 @@ dependencies {
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
 
-    compile 'com.github.salomonbrys.kodein:kodein:3.3.0'
-    compile 'com.github.salomonbrys.kodein:kodein-android:3.3.0'
+    compile 'com.github.salomonbrys.kodein:kodein:4.0.0'
+    compile 'com.github.salomonbrys.kodein:kodein-android:4.0.0'
 
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:design:$support_version"
@@ -156,8 +156,8 @@ if (hasProperty("isCI")) {
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
                 'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',
                 'com.squareup.okhttp3:okhttp:c1d57f913f74f61d424d4250a92723ba9a61affc12a0ab194d84cc179b472841',
-                'com.github.salomonbrys.kodein:kodein:c4a6b138ddafae71943b0b8b875941e03bba3e301b8f943df4821fd819b016ae',
-                'com.github.salomonbrys.kodein:kodein-android:19e5f35542e52cbfc33ffc8d92ea54bcbdf4c354074423434ed4e494034d1d63',
+                'com.github.salomonbrys.kodein:kodein:271943486ac863722d18ad3146c676acfde8445120e0ce5b0cf112e62e7b6999',
+                'com.github.salomonbrys.kodein:kodein-android:c4ce77131c83046dafa6a301a2728c63e17a60836c7125845d2bb805aa2dd7fc',
                 'com.android.support:appcompat-v7:ac1ebbc46589195dda3e0b1becfe410bafd75bdf3edd1cd9acf04850f3895830',
                 'com.android.support:design:a3e83064fe99d0a4369f9b46d8bfbe77d0c3022fffdee4be3ac3857b87cc89e3',
                 'com.android.support:cardview-v7:defc17032ffa600a82e1c7d96bb574aa5ed64e2b57e28414a245da7d6db0c666',
@@ -171,7 +171,7 @@ if (hasProperty("isCI")) {
                 'com.github.kenglxn.QRGen:core:1782ab325497ce0b6a7116197bdb7fe2b44e998c7d1e2470ae195d686c385b65',
 
                 'com.squareup.okio:okio:734269c3ebc5090e3b23566db558f421f0b4027277c79ad5d176b8ec168bb850',
-                'com.github.salomonbrys.kodein:kodein-core:7de59d0a343086f8faf5880533748503db1e62241732e13604301f9de57a2c0d',
+                'com.github.salomonbrys.kodein:kodein-core:e91955ed83e8524016fa5c2fb3ba715f140abb417802b6795a51774156fc714e',
                 'com.android.support:transition:36c688825a8c0e6e879e18886de83dc90673322822d5b606ee302f70fb558e16',
                 'com.android.support:support-annotations:aedf76962584adfaed2bd3fcaa22406461c4310237fc27e301128edaa2dba2fa',
                 'com.android.support:support-compat:e02d781268dc60aab6638d8dc20156ea11ca20b962d294b85e6f1e8418cabfa7',
