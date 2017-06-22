@@ -12,9 +12,10 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.config.Settings
 import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.transactions.Transaction
+import org.walleth.data.toGethAddr
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionSource
+import org.walleth.data.transactions.TransactionWithState
 import org.walleth.functions.toGethInteger
 import org.walleth.ui.ChangeObserver
 
@@ -39,7 +40,7 @@ class GethTransactionSigner : Service() {
                 }
 
                 transactionProvider.getAllTransactions().forEach {
-                    if (it.ref == TransactionSource.WALLETH) {
+                    if (it.state.ref == TransactionSource.WALLETH) {
                         signTransaction(it)
                     }
                 }
@@ -51,43 +52,43 @@ class GethTransactionSigner : Service() {
         return START_STICKY
     }
 
-    private fun signTransaction(transaction: Transaction) {
-        if (transaction.needsSigningConfirmation || transaction.signedRLP != null) {
+    private fun signTransaction(transaction: TransactionWithState) {
+        if (transaction.state.needsSigningConfirmation || transaction.transaction.signedRLP != null) {
             return
         }
 
-        val previousTxHash = transaction.txHash
+        val previousTxHash = transaction.transaction.txHash
 
-        transaction.ref = TransactionSource.WALLETH_PROCESSED
+        transaction.state.ref = TransactionSource.WALLETH_PROCESSED
 
-        if (transaction.nonce == null) {
-            transaction.nonce = transactionProvider.getLastNonceForAddress(transaction.from) + 1
+        if (transaction.transaction.nonce == null) {
+            transaction.transaction.nonce = transactionProvider.getLastNonceForAddress(transaction.transaction.from) + 1
         }
 
-        val newTransaction = Geth.newTransaction(transaction.nonce!!,
-                transaction.to.toGethAddr(),
-                BigInt(transaction.value.toLong()),
-                transaction.gasLimit.toGethInteger(),
-                transaction.gasPrice.toGethInteger(),
-                transaction.input.toByteArray()
+        val newTransaction = Geth.newTransaction(transaction.transaction.nonce!!,
+                transaction.transaction.to!!.toGethAddr(),
+                BigInt(transaction.transaction.value.toLong()),
+                transaction.transaction.gasLimit.toGethInteger(),
+                transaction.transaction.gasPrice.toGethInteger(),
+                transaction.transaction.input.toByteArray()
         )
         val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
         val accounts = gethKeystore.accounts
-        val index = (0..(accounts.size() - 1)).firstOrNull { accounts.get(it).address.hex.toUpperCase() == transaction.from.hex.toUpperCase() }
+        val index = (0..(accounts.size() - 1)).firstOrNull { accounts.get(it).address.hex.toUpperCase() == transaction.transaction.from.hex.toUpperCase() }
 
         if (index == null) {
-            transaction.error = "No key for sending account"
-            transaction.txRLP = newTransaction.encodeRLP().asList()
-            transaction.txHash = newTransaction.hash.hex
+            transaction.transaction.error = "No key for sending account"
+            transaction.transaction.unSignedRLP = newTransaction.encodeRLP().asList()
+            transaction.transaction.txHash = newTransaction.hash.hex
         } else {
             gethKeystore.unlock(accounts.get(index), DEFAULT_PASSWORD)
 
-            val signHash = gethKeystore.signHash(transaction.from.toGethAddr(), newTransaction.sigHash.bytes)
+            val signHash = gethKeystore.signHash(transaction.transaction.from.toGethAddr(), newTransaction.sigHash.bytes)
             val transactionWithSignature = newTransaction.withSignature(signHash)
 
-            transaction.txHash = transactionWithSignature.hash.hex
-            transaction.signedRLP = transactionWithSignature.encodeRLP().asList()
-            transaction.sigHash = newTransaction.sigHash.hex
+            transaction.transaction.txHash = transactionWithSignature.hash.hex
+            transaction.transaction.signedRLP = transactionWithSignature.encodeRLP().asList()
+            transaction.transaction.sigHash = newTransaction.sigHash.hex
 
         }
 

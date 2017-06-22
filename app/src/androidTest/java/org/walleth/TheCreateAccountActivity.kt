@@ -10,9 +10,9 @@ import com.google.common.truth.Truth.assertThat
 import kotlinx.android.synthetic.main.activity_account_create.*
 import org.junit.Rule
 import org.junit.Test
+import org.kethereum.model.Address
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.activities.CreateAccountActivity
-import org.walleth.data.WallethAddress
 import org.walleth.infrastructure.TestApp
 
 class TheCreateAccountActivity {
@@ -54,13 +54,13 @@ class TheCreateAccountActivity {
 
         onView(withId(R.id.new_address_button)).perform(click())
 
-        val firstCreatedAddress = WallethAddress(rule.activity.hexInput.text.toString())
+        val firstCreatedAddress = Address(rule.activity.hexInput.text.toString())
 
         assertThat(TestApp.keyStore.hasKeyForForAddress(firstCreatedAddress)).isTrue()
 
         onView(withId(R.id.new_address_button)).perform(click())
 
-        val secondCreatedAddress = WallethAddress(rule.activity.hexInput.text.toString())
+        val secondCreatedAddress = Address(rule.activity.hexInput.text.toString())
 
         onView(withId(R.id.nameInput)).perform(typeText("nameProbe"))
 
@@ -86,7 +86,7 @@ class TheCreateAccountActivity {
 
         onView(withId(R.id.fab)).perform(click())
 
-        val tested = TestApp.addressBookWithEntries.getEntryForName(WallethAddress("0xF00"))
+        val tested = TestApp.addressBookWithEntries.getEntryForName(Address("0xF00"))
 
         assertThat(tested).isNotNull()
         assertThat(tested!!.name).isEqualTo("nameProbe")

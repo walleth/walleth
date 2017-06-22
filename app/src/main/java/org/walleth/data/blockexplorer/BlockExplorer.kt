@@ -1,9 +1,10 @@
 package org.walleth.data.blockexplorer
 
-import org.walleth.data.WallethAddress
+import org.kethereum.model.Address
+
 
 interface BlockExplorer {
-    fun getURLforAddress(address: WallethAddress): String
+    fun getURLforAddress(address: Address): String
     fun getURLforTransaction(transactionHash: String): String
     fun getURLforBlock(blockNum: Long): String
 }

@@ -1,17 +1,9 @@
 package org.walleth.data
 
-import org.ethereum.geth.Address
 import org.ethereum.geth.Geth
+import org.kethereum.model.Address
+import org.ethereum.geth.Address as GethAddress
 
-/**
- * To decouple and distinguish from the native Address from geth
- */
+fun Address.toGethAddr() = Geth.newAddressFromHex(hex)
+fun GethAddress.toKethereumAddress() = Address(hex)
 
-data class WallethAddress(val hex: String) {
-    fun toGethAddr() = Geth.newAddressFromHex(hex)
-    override fun equals(other: Any?): Boolean {
-        return other is WallethAddress && other.hex.toUpperCase() == hex.toUpperCase()
-    }
-}
-
-fun Address.toWallethAddress() = WallethAddress(hex)

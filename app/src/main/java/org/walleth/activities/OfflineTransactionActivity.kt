@@ -12,18 +12,20 @@ import com.github.salomonbrys.kodein.instance
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_relay.*
 import org.ethereum.geth.Geth
+import org.kethereum.functions.fromHexToByteArray
+import org.kethereum.model.Address
+import org.kethereum.model.Transaction
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
-import org.walleth.data.WallethAddress
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.toWallethAddress
-import org.walleth.data.transactions.Transaction
+import org.walleth.data.toKethereumAddress
 import org.walleth.data.transactions.TransactionJSON
 import org.walleth.data.transactions.TransactionProvider
-import org.walleth.functions.fromHexToByteArray
+import org.walleth.data.transactions.TransactionState
+import org.walleth.data.transactions.TransactionWithState
 import org.walleth.iac.BarCodeIntentIntegrator
 import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import java.math.BigInteger
@@ -58,7 +60,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
                             })
                             .show()
                 } else {
-                    createTransaction(gethTransaction, transactionRLP.toList(), { gethTransaction.from.toWallethAddress() })
+                    createTransaction(gethTransaction, transactionRLP.toList(), { gethTransaction.from.toKethereumAddress() })
                 }
             } catch (e: Exception) {
                 alert("Input not valid " + e.message)
@@ -66,18 +68,19 @@ class OfflineTransactionActivity : AppCompatActivity() {
         }
     }
 
-    private fun createTransaction(gethTransaction: org.ethereum.geth.Transaction, signedRLP: List<Byte>?, from: () -> WallethAddress) {
+    private fun createTransaction(gethTransaction: org.ethereum.geth.Transaction, signedRLP: List<Byte>?, from: () -> Address) {
         try {
             val transaction = Transaction(
                     value = BigInteger(gethTransaction.value.toString()),
                     from = from.invoke(),
-                    to = gethTransaction.to.toWallethAddress(),
-                    needsSigningConfirmation = signedRLP == null,
+                    to = gethTransaction.to!!.toKethereumAddress(),
+
                     nonce = gethTransaction.nonce,
                     txHash = gethTransaction.hash.hex,
                     signedRLP = signedRLP
             )
-            transactionProvider.addTransaction(transaction)
+            val transactionState = TransactionState(needsSigningConfirmation = signedRLP == null)
+            transactionProvider.addTransaction(TransactionWithState(transaction, transactionState))
 
             Log.i("encodeJSON" + gethTransaction.encodeJSON())
 

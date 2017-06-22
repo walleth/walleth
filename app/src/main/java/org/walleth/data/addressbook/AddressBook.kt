@@ -1,11 +1,11 @@
 package org.walleth.data.addressbook
 
+import org.kethereum.model.Address
 import org.walleth.data.Observeable
-import org.walleth.data.WallethAddress
 
 interface AddressBook : Observeable {
 
-    fun getEntryForName(address: WallethAddress): AddressBookEntry?
+    fun getEntryForName(address: Address): AddressBookEntry?
 
     fun getAllEntries(): List<AddressBookEntry>
 

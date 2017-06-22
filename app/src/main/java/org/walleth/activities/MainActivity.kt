@@ -83,8 +83,8 @@ class MainActivity : AppCompatActivity() {
         transactionProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
             override fun observeChange() {
                 val allTransactions = transactionProvider.getTransactionsForAddress(keyStore.getCurrentAddress())
-                val incomingTransactions = allTransactions.filter { it.to == keyStore.getCurrentAddress() }.sortedByDescending { it.localTime }
-                val outgoingTransactions = allTransactions.filter { it.from == keyStore.getCurrentAddress() }.sortedByDescending { it.localTime }
+                val incomingTransactions = allTransactions.filter { it.transaction.to == keyStore.getCurrentAddress() }.sortedByDescending { it.transaction.creationEpochSecond }
+                val outgoingTransactions = allTransactions.filter { it.transaction.from == keyStore.getCurrentAddress() }.sortedByDescending { it.transaction.creationEpochSecond }
 
                 val hasNoTransactions = incomingTransactions.size + outgoingTransactions.size == 0
 

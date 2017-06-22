@@ -7,13 +7,13 @@ import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.Account
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
+import org.kethereum.functions.fromHexToByteArray
+import org.kethereum.model.Address
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.SimpleObserveable
-import org.walleth.data.WallethAddress
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.toWallethAddress
-import org.walleth.functions.fromHexToByteArray
+import org.walleth.data.toKethereumAddress
 import java.io.File
 
 class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), WallethKeyStore {
@@ -23,14 +23,14 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
 
     val addressBook: AddressBook by LazyKodein(context.appKodein).instance()
 
-    private var currentAddress: WallethAddress? = null
+    private var currentAddress: Address? = null
 
-    override fun getCurrentAddress(): WallethAddress {
+    override fun getCurrentAddress(): Address {
         if (currentAddress == null) {
             if (keyStore.accounts.size() > 0) {
-                currentAddress = keyStore.accounts[0].address.toWallethAddress()
+                currentAddress = keyStore.accounts[0].address.toKethereumAddress()
             } else {
-                currentAddress = keyStore.newAccount(DEFAULT_PASSWORD).address.toWallethAddress()
+                currentAddress = keyStore.newAccount(DEFAULT_PASSWORD).address.toKethereumAddress()
                 addressBook.setEntry(AddressBookEntry(
                         name = "Default Account",
                         address = currentAddress!!,
@@ -43,15 +43,15 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
         return currentAddress!!
     }
 
-    override fun setCurrentAddress(address: WallethAddress) {
+    override fun setCurrentAddress(address: Address) {
         currentAddress = address
         promoteChange()
     }
 
     override fun newAddress(password: String) =
-            keyStore.newAccount(password).address.toWallethAddress()
+            keyStore.newAccount(password).address.toKethereumAddress()
 
-    fun getAccountForAddress(wallethAddress: WallethAddress): Account? {
+    fun getAccountForAddress(wallethAddress: Address): Account? {
         val index = (0..(keyStore.accounts.size() - 1)).firstOrNull { keyStore.accounts.get(it).address.hex.equals(wallethAddress.hex, ignoreCase = true) }
 
         return if (index != null)
@@ -60,20 +60,20 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
             null
     }
 
-    override fun hasKeyForForAddress(wallethAddress: WallethAddress)
+    override fun hasKeyForForAddress(wallethAddress: Address)
             = getAccountForAddress(wallethAddress) != null
 
-    override fun deleteKey(address: WallethAddress, password: String) {
+    override fun deleteKey(address: Address, password: String) {
         getAccountForAddress(address)?.let {
             keyStore.deleteAccount(it, password)
         }
     }
 
     override fun importECDSAKey(key: String, storePassword: String)
-            = keyStore.importECDSAKey(fromHexToByteArray(key), storePassword)?.address?.toWallethAddress()
+            = keyStore.importECDSAKey(fromHexToByteArray(key), storePassword)?.address?.toKethereumAddress()
 
     override fun importJSONKey(json: String, importPassword: String, storePassword: String)
-            = keyStore.importKey(json.toByteArray(), importPassword, storePassword)?.address?.toWallethAddress()
+            = keyStore.importKey(json.toByteArray(), importPassword, storePassword)?.address?.toKethereumAddress()
 
     override fun exportCurrentKey(unlockPassword: String, exportPassword: String)
             = String(keyStore.exportKey(getAccountForAddress(currentAddress!!), unlockPassword, exportPassword))

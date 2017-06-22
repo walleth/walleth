@@ -9,19 +9,25 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_transfer.*
+import org.kethereum.functions.createTokenTransferTransactionInput
+import org.kethereum.model.Address
+import org.kethereum.model.Transaction
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.*
+import org.walleth.data.BalanceProvider
+import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
+import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
+import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.exchangerate.isETH
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
-import org.walleth.data.transactions.createTokenTransferTransactionInput
+import org.walleth.data.transactions.TransactionState
+import org.walleth.data.transactions.TransactionWithState
 import org.walleth.functions.decimalsInZeroes
 import org.walleth.functions.resolveNameFromAddressBook
 import org.walleth.iac.BarCodeIntentIntegrator
@@ -130,14 +136,14 @@ class TransferActivity : AppCompatActivity() {
                         from = keyStore.getCurrentAddress()
                 ) else Transaction(
                         value = ZERO,
-                        to = WallethAddress(tokenProvider.currentToken.address),
+                        to = Address(tokenProvider.currentToken.address),
                         from = keyStore.getCurrentAddress(),
                         input = createTokenTransferTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
                 )
 
                 transaction.gasPrice = gas_price_input.asBigInit()
                 transaction.gasLimit = gas_limit_input.asBigInit()
-                transactionProvider.addPendingTransaction(transaction)
+                transactionProvider.addPendingTransaction(TransactionWithState(transaction, TransactionState()))
                 finish()
             }
         }
@@ -175,7 +181,7 @@ class TransferActivity : AppCompatActivity() {
         if (currentERC67String != null && ERC67(currentERC67String!!).isValid()) {
             val erc67 = ERC67(currentERC67String!!)
 
-            to_address.text = WallethAddress(erc67.getHex()).resolveNameFromAddressBook(addressBook)
+            to_address.text = Address(erc67.getHex()).resolveNameFromAddressBook(addressBook)
             erc67.getValue()?.let {
                 amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + tokenProvider.currentToken.decimalsInZeroes())).toString())
                 setAmountFromETHString(it)

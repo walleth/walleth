@@ -1,30 +1,30 @@
 package org.walleth.core
 
 import org.json.JSONArray
-import org.threeten.bp.Instant
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.ZoneOffset
-import org.walleth.data.WallethAddress
-import org.walleth.data.transactions.Transaction
+import org.kethereum.functions.fromHexToByteArray
+import org.kethereum.model.Address
+import org.kethereum.model.Transaction
 import org.walleth.data.transactions.TransactionSource
-import org.walleth.functions.fromHexToByteArray
+import org.walleth.data.transactions.TransactionState
+import org.walleth.data.transactions.TransactionWithState
 import java.math.BigInteger
 
-fun parseEtherScanTransactions(jsonArray: JSONArray): List<Transaction> {
+fun parseEtherScanTransactions(jsonArray: JSONArray): List<TransactionWithState> {
     return (0..(jsonArray.length() - 1)).map {
         val transactionJson = jsonArray.getJSONObject(it)
         val value = BigInteger(transactionJson.getString("value"))
-        val timeStamp = Instant.ofEpochSecond(transactionJson.getString("timeStamp").toLong())
-        val ofInstant = LocalDateTime.ofInstant(timeStamp, ZoneOffset.systemDefault())
-        Transaction(
-                value,
-                WallethAddress(transactionJson.getString("from")),
-                WallethAddress(transactionJson.getString("to")),
-                nonce = transactionJson.optLong("nonce"),
-                ref = TransactionSource.ETHERSCAN,
-                input = fromHexToByteArray(transactionJson.getString("input")).toList(),
-                txHash = transactionJson.getString("hash"),
-                localTime = ofInstant
+        val timeStamp = transactionJson.getString("timeStamp").toLong()
+        TransactionWithState(
+                Transaction(
+                        value,
+                        Address(transactionJson.getString("from")),
+                        Address(transactionJson.getString("to")),
+                        nonce = transactionJson.optLong("nonce"),
+                        input = fromHexToByteArray(transactionJson.getString("input")).toList(),
+                        txHash = transactionJson.getString("hash"),
+                        creationEpochSecond = timeStamp
+                ),
+                TransactionState(false,TransactionSource.ETHERSCAN)
         )
     }
 }

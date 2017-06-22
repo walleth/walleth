@@ -10,19 +10,20 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.*
+import org.kethereum.model.Address
 import org.walleth.R
 import org.walleth.activities.MainActivity
 import org.walleth.data.BalanceProvider
-import org.walleth.data.WallethAddress
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
-import org.walleth.data.transactions.Transaction
+import org.walleth.data.toGethAddr
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionSource
+import org.walleth.data.transactions.TransactionWithState
 import org.walleth.ui.ChangeObserver
 import java.io.File
 import java.math.BigInteger
@@ -115,7 +116,7 @@ class GethLightEthereumService : Service() {
             val changeObserver: ChangeObserver = object : ChangeObserver {
                 override fun observeChange() {
                     transactionProvider.getAllTransactions().forEach {
-                        if (it.ref == TransactionSource.WALLETH) {
+                        if (it.state.ref == TransactionSource.WALLETH) {
                             executeTransaction(it, ethereumNode.ethereumClient, ethereumContext)
                         }
                     }
@@ -128,7 +129,7 @@ class GethLightEthereumService : Service() {
                     override fun onNewHead(p0: Header) {
                         val address = keyStore.getCurrentAddress().toGethAddr()
                         val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
-                        balanceProvider.setBalance(WallethAddress(address.hex), p0.number, BigInteger(balance.string()), ETH_TOKEN)
+                        balanceProvider.setBalance(Address(address.hex), p0.number, BigInteger(balance.string()), ETH_TOKEN)
                     }
 
                     override fun onError(p0: String?) {}
@@ -178,16 +179,16 @@ class GethLightEthereumService : Service() {
     }
 
 
-    private fun executeTransaction(transaction: Transaction, client: EthereumClient, ethereumContext: Context) {
+    private fun executeTransaction(transaction: TransactionWithState, client: EthereumClient, ethereumContext: Context) {
         try {
-            transaction.signedRLP?.let {
+            transaction.transaction.signedRLP?.let {
                 val transactionWithSignature = Geth.newTransactionFromRLP(it.toByteArray())
                 client.sendTransaction(ethereumContext, transactionWithSignature)
-                transaction.ref = TransactionSource.WALLETH_PROCESSED
+                transaction.state.ref = TransactionSource.WALLETH_PROCESSED
             }
 
         } catch (e: Exception) {
-            transaction.error = e.message
+            transaction.transaction.error = e.message
         }
     }
 

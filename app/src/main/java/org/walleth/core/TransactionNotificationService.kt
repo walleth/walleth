@@ -12,13 +12,13 @@ import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import org.threeten.bp.Duration
+import org.kethereum.model.Address
+import org.kethereum.model.Transaction
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.ZoneOffset
 import org.walleth.R
 import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
-import org.walleth.data.WallethAddress
 import org.walleth.data.addressbook.AddressBook
-import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.ui.ChangeObserver
 
@@ -36,15 +36,14 @@ class TransactionNotificationService : Service(), KodeinInjected {
 
     fun Transaction.isNotifyWorthyTransaction(): Boolean {
 
-        if (!(addressBook.isEntryRelevant(from) || addressBook.isEntryRelevant(to))) {
+        if (!(addressBook.isEntryRelevant(from) || addressBook.isEntryRelevant(to!!))) {
             return false
         }
 
-        return Duration.between(localTime, LocalDateTime.now()).toMinutes() < 1
-
+        return LocalDateTime.now().atZone(ZoneOffset.systemDefault()).toEpochSecond() - (creationEpochSecond ?: 0) < 60
     }
 
-    fun AddressBook.isEntryRelevant(address: WallethAddress) =
+    fun AddressBook.isEntryRelevant(address: Address) =
             getEntryForName(address).let { (it != null && it.isNotificationWanted) }
 
 
@@ -53,11 +52,11 @@ class TransactionNotificationService : Service(), KodeinInjected {
         transactionProvider.registerChangeObserver(object : ChangeObserver {
             override fun observeChange() {
                 val transactions = transactionProvider.getAllTransactions()
-                        .filter { it.isNotifyWorthyTransaction() }
+                        .filter { it.transaction.isNotifyWorthyTransaction() }
 
                 if (!transactions.isEmpty()) {
                     val relevantTransaction = transactions.first()
-                    relevantTransaction.txHash?.let {
+                    relevantTransaction.transaction.txHash?.let {
 
                         val transactionIntent = baseContext.getTransactionActivityIntentForHash(it)
                         val contentIntent = PendingIntent.getActivity(baseContext, 0, transactionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
@@ -67,7 +66,7 @@ class TransactionNotificationService : Service(), KodeinInjected {
                             setContentText("Got transaction")
                             setAutoCancel(true)
                             setContentIntent(contentIntent)
-                            if (addressBook.isEntryRelevant(relevantTransaction.from)) {
+                            if (addressBook.isEntryRelevant(relevantTransaction.transaction.from)) {
                                 setSmallIcon(R.drawable.notification_minus)
                             } else {
                                 setSmallIcon(R.drawable.notification_plus)

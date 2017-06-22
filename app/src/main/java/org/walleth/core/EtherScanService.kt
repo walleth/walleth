@@ -9,20 +9,19 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import okhttp3.*
 import org.json.JSONObject
+import org.kethereum.functions.toHexString
+import org.kethereum.model.Address
+import org.kethereum.model.Transaction
 import org.walleth.BuildConfig
 import org.walleth.data.BalanceProvider
-import org.walleth.data.WallethAddress
 import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
-import org.walleth.functions.toHexString
 import org.walleth.ui.ChangeObserver
 import java.io.IOException
 import java.lang.NumberFormatException
 import java.math.BigInteger
-
 
 class EtherScanService : Service() {
 
@@ -79,8 +78,8 @@ class EtherScanService : Service() {
 
     private fun relayTransactionsIfNeeded() {
         transactionProvider.getAllTransactions().forEach {
-            if (it.signedRLP != null) {
-                relayTransaction(it)
+            if (it.transaction.signedRLP != null) {
+                relayTransaction(it.transaction)
             }
         }
     }
@@ -124,7 +123,7 @@ class EtherScanService : Service() {
             getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest") {
                 val balance = BigInteger(it.getString("result"))
                 getEtherscanResult("module=proxy&action=eth_blockNumber") {
-                    balanceProvider.setBalance(WallethAddress(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, ETH_TOKEN)
+                    balanceProvider.setBalance(Address(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, ETH_TOKEN)
                 }
             }
         } else {
@@ -132,7 +131,7 @@ class EtherScanService : Service() {
                 try {
                     val balance = BigInteger(it.getString("result"))
                     getEtherscanResult("module=proxy&action=eth_blockNumber") {
-                        balanceProvider.setBalance(WallethAddress(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, currentToken)
+                        balanceProvider.setBalance(Address(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, currentToken)
                     }
                 } catch(e: NumberFormatException) {}
             }

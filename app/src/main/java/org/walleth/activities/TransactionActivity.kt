@@ -12,6 +12,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_transaction.*
 import net.glxn.qrgen.android.QRCode
+import org.kethereum.functions.toHexString
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
@@ -22,7 +23,6 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.functions.resolveNameFromAddressBook
-import org.walleth.functions.toHexString
 
 class TransactionActivity : AppCompatActivity() {
 
@@ -51,38 +51,38 @@ class TransactionActivity : AppCompatActivity() {
             supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
             supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-            nonce.text = transaction!!.nonce.toString()
-            event_log_textview.text = it.eventLog
+            nonce.text = transaction!!.transaction.nonce.toString()
+            event_log_textview.text = it.state.eventLog
 
-            fab.setVisibility(it.needsSigningConfirmation)
+            fab.setVisibility(it.state.needsSigningConfirmation)
             fab.setOnClickListener { _ ->
-                it.needsSigningConfirmation = false
-                transactionProvider.updateTransaction(it.txHash!!, it)
+                it.state.needsSigningConfirmation = false
+                transactionProvider.updateTransaction(it.transaction.txHash!!, it)
                 finish()
             }
 
-            fee_value_view.setValue(it.gasLimit * it.gasPrice, ETH_TOKEN)
+            fee_value_view.setValue(it.transaction.gasLimit * it.transaction.gasPrice, ETH_TOKEN)
 
-            if (it.from == keyStore.getCurrentAddress()) {
+            if (it.transaction.from == keyStore.getCurrentAddress()) {
                 from_to_title.setText(R.string.transaction_to_label)
-                from_to.text = it.to.resolveNameFromAddressBook(addressBook)
+                from_to.text = it.transaction.to?.resolveNameFromAddressBook(addressBook)
             } else {
                 from_to_title.setText(R.string.transaction_from_label)
-                from_to.text = it.from.resolveNameFromAddressBook(addressBook)
+                from_to.text = it.transaction.from.resolveNameFromAddressBook(addressBook)
             }
 
-            if (it.signedRLP != null) {
+            if (it.transaction.signedRLP != null) {
                 rlp_header.text = "Signed RLP"
-                rlp_image.setImageBitmap(QRCode.from(it.signedRLP!!.toHexString()).bitmap())
-            } else if (it.txRLP != null) {
+                rlp_image.setImageBitmap(QRCode.from(it.transaction.signedRLP!!.toHexString()).bitmap())
+            } else if (it.transaction.unSignedRLP != null) {
                 rlp_header.text = "Unsigned RLP"
-                rlp_image.setImageBitmap(QRCode.from(it.txRLP!!.toHexString()).bitmap())
+                rlp_image.setImageBitmap(QRCode.from(it.transaction.unSignedRLP!!.toHexString()).bitmap())
             } else {
                 rlp_image.visibility = View.GONE
                 rlp_header.visibility = View.GONE
             }
 
-            value_view.setValue(it.value, ETH_TOKEN)
+            value_view.setValue(it.transaction.value, ETH_TOKEN)
         } ?: alert("transaction not found " + intent.getStringExtra(HASH_KEY))
 
     }
@@ -92,7 +92,7 @@ class TransactionActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_etherscan -> {
-            val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(transaction!!.txHash!!)
+            val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(transaction!!.transaction.txHash!!)
             startActivityFromURL(url)
             true
         }

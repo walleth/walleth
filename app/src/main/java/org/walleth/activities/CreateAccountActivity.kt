@@ -9,11 +9,11 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_account_create.*
+import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string.*
 import org.walleth.data.DEFAULT_PASSWORD
-import org.walleth.data.WallethAddress
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
@@ -33,7 +33,7 @@ class CreateAccountActivity : AppCompatActivity() {
 
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    var lastCreatedAddress: WallethAddress? = null
+    var lastCreatedAddress: Address? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +58,7 @@ class CreateAccountActivity : AppCompatActivity() {
                 lastCreatedAddress = null // prevent cleanup
                 addressBook.setEntry(AddressBookEntry(
                         name = nameInput.text.toString(),
-                        address = WallethAddress(hex),
+                        address = Address(hex),
                         note = noteInput.text.toString(),
                         isNotificationWanted = notify_checkbox.isChecked)
                 )

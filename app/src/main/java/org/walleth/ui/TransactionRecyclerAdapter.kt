@@ -9,13 +9,13 @@ import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
 import org.walleth.R
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.exchangerate.TokenProvider
-import org.walleth.data.transactions.Transaction
+import org.walleth.data.transactions.TransactionWithState
 
 enum class TransactionAdapterDirection {
     INCOMMING, OUTGOING
 }
 
-class TransactionRecyclerAdapter(val transactionList: List<Transaction>,
+class TransactionRecyclerAdapter(val transactionList: List<TransactionWithState>,
                                  val addressBook: AddressBook,
                                  val tokenProvider: TokenProvider,
                                  val direction: TransactionAdapterDirection) : RecyclerView.Adapter<TransactionViewHolder>() {
