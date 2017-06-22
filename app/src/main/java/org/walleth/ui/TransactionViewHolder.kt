@@ -9,15 +9,17 @@ import org.threeten.bp.ZoneOffset
 import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.exchangerate.ETH_TOKEN
+import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.transactions.Transaction
+import org.walleth.data.transactions.getTokenTransferTo
+import org.walleth.data.transactions.getTokenTransferValue
+import org.walleth.data.transactions.isTokenTransfer
 import org.walleth.functions.resolveNameFromAddressBook
 
 class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDirection) : RecyclerView.ViewHolder(itemView) {
 
 
-    fun bind(transaction: Transaction, addressBook: AddressBook) {
-
-        itemView.difference.setValue(transaction.value, ETH_TOKEN)
+    fun bind(transaction: Transaction, addressBook: AddressBook, tokenProvider: TokenProvider) {
 
         val relevantAddress = if (direction == TransactionAdapterDirection.INCOMMING) {
             transaction.from
@@ -25,7 +27,16 @@ class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDir
             transaction.to
         }
 
-        itemView.address.text = relevantAddress.resolveNameFromAddressBook(addressBook)
+        if (transaction.isTokenTransfer()) {
+            itemView.address.text = transaction.getTokenTransferTo().resolveNameFromAddressBook(addressBook)
+            val firstOrNull = tokenProvider.getAllTokens().firstOrNull { it.address == relevantAddress.hex }
+            if (firstOrNull != null) {
+                itemView.difference.setValue(transaction.getTokenTransferValue(), firstOrNull)
+            }
+        } else {
+            itemView.difference.setValue(transaction.value, ETH_TOKEN)
+            itemView.address.text = relevantAddress.resolveNameFromAddressBook(addressBook)
+        }
 
         itemView.transaction_err.setVisibility(transaction.error != null)
         if (transaction.error != null) {

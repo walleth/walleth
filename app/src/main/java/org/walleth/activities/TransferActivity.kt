@@ -21,8 +21,8 @@ import org.walleth.data.exchangerate.isETH
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionProvider
+import org.walleth.data.transactions.createTokenTransferTransactionInput
 import org.walleth.functions.decimalsInZeroes
-import org.walleth.functions.fromHexToByteArray
 import org.walleth.functions.resolveNameFromAddressBook
 import org.walleth.iac.BarCodeIntentIntegrator
 import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
@@ -132,7 +132,7 @@ class TransferActivity : AppCompatActivity() {
                         value = ZERO,
                         to = WallethAddress(tokenProvider.currentToken.address),
                         from = keyStore.getCurrentAddress(),
-                        input = createTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
+                        input = createTokenTransferTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
                 )
 
                 transaction.gasPrice = gas_price_input.asBigInit()
@@ -142,10 +142,6 @@ class TransferActivity : AppCompatActivity() {
             }
         }
     }
-
-    fun createTransactionInput(address: WallethAddress, currentAmount: BigInteger?): List<Byte>
-            = fromHexToByteArray("0xa9059cbb" + "000000000000000000000000" + address.hex.replace("0x", "")
-            + String.format("%064x", currentAmount)).toList()
 
     fun TextView.asBigInit() = BigInteger(text.toString())
 

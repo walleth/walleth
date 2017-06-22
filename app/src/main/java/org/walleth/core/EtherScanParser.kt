@@ -7,6 +7,7 @@ import org.threeten.bp.ZoneOffset
 import org.walleth.data.WallethAddress
 import org.walleth.data.transactions.Transaction
 import org.walleth.data.transactions.TransactionSource
+import org.walleth.functions.fromHexToByteArray
 import java.math.BigInteger
 
 fun parseEtherScanTransactions(jsonArray: JSONArray): List<Transaction> {
@@ -21,6 +22,7 @@ fun parseEtherScanTransactions(jsonArray: JSONArray): List<Transaction> {
                 WallethAddress(transactionJson.getString("to")),
                 nonce = transactionJson.optLong("nonce"),
                 ref = TransactionSource.ETHERSCAN,
+                input = fromHexToByteArray(transactionJson.getString("input")).toList(),
                 txHash = transactionJson.getString("hash"),
                 localTime = ofInstant
         )

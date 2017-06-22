@@ -12,8 +12,8 @@ internal fun Byte.toHexString() = toInt().let {
     CHARS[it.shr(4) and 0x0f].toString() + CHARS[it.and(0x0f)].toString()
 }
 
-fun ByteArray.toHexString() = "0x" + this.map { "" + it.toHexString() }.joinToString("")
-fun List<Byte>.toHexString() = toByteArray().toHexString()
+fun ByteArray.toHexString(prefix: String = "0x") = prefix + this.map { "" + it.toHexString() }.joinToString("")
+fun List<Byte>.toHexString(prefix: String = "0x") = toByteArray().toHexString(prefix)
 
 fun fromHexToByteArray(hex: String): ByteArray {
     if (hex.length % 2 != 0)

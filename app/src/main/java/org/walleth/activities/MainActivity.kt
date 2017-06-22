@@ -89,8 +89,8 @@ class MainActivity : AppCompatActivity() {
                 val hasNoTransactions = incomingTransactions.size + outgoingTransactions.size == 0
 
                 runOnUiThread {
-                    transaction_recycler_out.adapter = TransactionRecyclerAdapter(outgoingTransactions, addressBook, OUTGOING)
-                    transaction_recycler_in.adapter = TransactionRecyclerAdapter(incomingTransactions, addressBook, INCOMMING)
+                    transaction_recycler_out.adapter = TransactionRecyclerAdapter(outgoingTransactions, addressBook, tokenProvider, OUTGOING)
+                    transaction_recycler_in.adapter = TransactionRecyclerAdapter(incomingTransactions, addressBook, tokenProvider, INCOMMING)
 
                     empty_view_container.setVisibility(hasNoTransactions)
 
@@ -104,13 +104,13 @@ class MainActivity : AppCompatActivity() {
         })
         balanceProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
             override fun observeChange() {
-                var balanceForAddress = BalanceAtBlock(balance = BigInteger("0"), block = 0,tokenDescriptor = tokenProvider.currentToken)
-                balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(),tokenProvider.currentToken)?.let {
+                var balanceForAddress = BalanceAtBlock(balance = BigInteger("0"), block = 0, tokenDescriptor = tokenProvider.currentToken)
+                balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)?.let {
                     balanceForAddress = it
                 }
 
                 runOnUiThread {
-                    value_view.setValue(balanceForAddress.balance,tokenProvider.currentToken)
+                    value_view.setValue(balanceForAddress.balance, tokenProvider.currentToken)
 
                     if (!syncProgressProvider.currentSyncProgress.isSyncing) {
                         supportActionBar?.subtitle = "Block " + balanceForAddress.block
