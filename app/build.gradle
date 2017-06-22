@@ -186,5 +186,9 @@ if (hasProperty("isCI")) {
         ]
     }
 }
-apply plugin: 'com.google.gms.google-services'
+
+if (hasProperty("isCI") || hasProperty("firebase")) {
+   apply plugin: 'com.google.gms.google-services'
+}
+
 apply plugin: 'com.github.ben-manes.versions'
