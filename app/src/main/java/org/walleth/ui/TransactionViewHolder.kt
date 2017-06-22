@@ -39,9 +39,9 @@ class TransactionViewHolder(itemView: View, val direction: TransactionAdapterDir
             itemView.address.text = relevantAddress?.resolveNameFromAddressBook(addressBook)
         }
 
-        itemView.transaction_err.setVisibility(transaction.error != null)
-        if (transaction.error != null) {
-            itemView.transaction_err.text = transaction.error
+        itemView.transaction_err.setVisibility(transactionWithState.state.error != null)
+        if (transactionWithState.state.error != null) {
+            itemView.transaction_err.text = transactionWithState.state.error
         }
 
         val epochMillis = (transaction.creationEpochSecond ?: 0) * 1000L

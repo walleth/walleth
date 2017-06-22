@@ -188,7 +188,7 @@ class GethLightEthereumService : Service() {
             }
 
         } catch (e: Exception) {
-            transaction.transaction.error = e.message
+            transaction.state.error = e.message
         }
     }
 

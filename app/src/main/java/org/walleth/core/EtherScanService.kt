@@ -11,13 +11,13 @@ import okhttp3.*
 import org.json.JSONObject
 import org.kethereum.functions.toHexString
 import org.kethereum.model.Address
-import org.kethereum.model.Transaction
 import org.walleth.BuildConfig
 import org.walleth.data.BalanceProvider
 import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.TransactionProvider
+import org.walleth.data.transactions.TransactionWithState
 import org.walleth.ui.ChangeObserver
 import java.io.IOException
 import java.lang.NumberFormatException
@@ -79,23 +79,23 @@ class EtherScanService : Service() {
     private fun relayTransactionsIfNeeded() {
         transactionProvider.getAllTransactions().forEach {
             if (it.transaction.signedRLP != null) {
-                relayTransaction(it.transaction)
+                relayTransaction(it)
             }
         }
     }
 
-    private fun relayTransaction(transaction: Transaction) {
-        transaction.signedRLP?.let {
+    private fun relayTransaction(transaction: TransactionWithState) {
+        transaction.transaction.signedRLP?.let {
             getEtherscanResult("module=proxy&action=eth_sendRawTransaction&hex=" + it.fold("0x", { s: String, byte: Byte -> s + byte.toHexString() })) {
                 if (it.has("result")) {
-                    transaction.txHash = it.getString("result")
+                    transaction.transaction.txHash = it.getString("result")
                 } else {
                     if (!it.toString().startsWith("known")) {
-                        transaction.error = it.toString()
+                        transaction.state.error = it.toString()
                     }
                 }
-                transaction.eventLog = transaction.eventLog ?: "" + "relayed via EtherScan"
-                transaction.signedRLP = null
+                transaction.state.eventLog = transaction.state.eventLog ?: "" + "relayed via EtherScan"
+                transaction.transaction.signedRLP = null
             }
         }
     }

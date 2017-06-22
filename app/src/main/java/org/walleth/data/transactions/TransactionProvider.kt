@@ -7,7 +7,8 @@ import org.walleth.data.transactions.TransactionSource.WALLETH
 
 data class TransactionState(var needsSigningConfirmation: Boolean = false,
                             var ref: TransactionSource = WALLETH,
-                            var eventLog: String? = null)
+                            var eventLog: String? = null,
+                            var error: String? = null)
 
 data class TransactionWithState(val transaction: Transaction, val state: TransactionState)
 

@@ -99,7 +99,7 @@ dependencies {
 
     compile "org.ethereum:geth:1.6.5"
 
-    compile 'com.github.ligi:kethereum:0.5'
+    compile 'com.github.ligi:kethereum:0.6'
 
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.17'

@@ -77,7 +77,7 @@ class GethTransactionSigner : Service() {
         val index = (0..(accounts.size() - 1)).firstOrNull { accounts.get(it).address.hex.toUpperCase() == transaction.transaction.from.hex.toUpperCase() }
 
         if (index == null) {
-            transaction.transaction.error = "No key for sending account"
+            transaction.state.error = "No key for sending account"
             transaction.transaction.unSignedRLP = newTransaction.encodeRLP().asList()
             transaction.transaction.txHash = newTransaction.hash.hex
         } else {

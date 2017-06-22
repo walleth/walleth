@@ -36,7 +36,7 @@ class TheCreateAccountActivity {
     @Test
     fun rejects_blank_name() {
 
-        onView(withId(R.id.hexInput)).perform(typeText("0xF00"))
+        onView(withId(R.id.hexInput)).perform(typeText("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
 
         closeSoftKeyboard()
 
@@ -76,7 +76,7 @@ class TheCreateAccountActivity {
     @Test
     fun savesValidAddress() {
 
-        onView(withId(R.id.hexInput)).perform(typeText("0xF00"))
+        onView(withId(R.id.hexInput)).perform(typeText("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
         onView(withId(R.id.nameInput)).perform(typeText("nameProbe"))
         onView(withId(R.id.noteInput)).perform(typeText("noteProbe"))
 
@@ -86,7 +86,7 @@ class TheCreateAccountActivity {
 
         onView(withId(R.id.fab)).perform(click())
 
-        val tested = TestApp.addressBookWithEntries.getEntryForName(Address("0xF00"))
+        val tested = TestApp.addressBookWithEntries.getEntryForName(Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
 
         assertThat(tested).isNotNull()
         assertThat(tested!!.name).isEqualTo("nameProbe")
