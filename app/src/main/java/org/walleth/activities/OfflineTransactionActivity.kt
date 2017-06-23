@@ -11,6 +11,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_relay.*
+import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
 import org.kethereum.functions.fromHexToByteArray
 import org.kethereum.model.Address
@@ -21,6 +22,7 @@ import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.toKethereumAddress
 import org.walleth.data.transactions.TransactionJSON
 import org.walleth.data.transactions.TransactionProvider
@@ -34,6 +36,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
 
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +63,10 @@ class OfflineTransactionActivity : AppCompatActivity() {
                             })
                             .show()
                 } else {
-                    createTransaction(gethTransaction, transactionRLP.toList(), { gethTransaction.from.toKethereumAddress() })
+                    createTransaction(gethTransaction, transactionRLP.toList(), {
+                        val chainId = BigInt(networkDefinitionProvider.networkDefinition.chainId)
+                        gethTransaction.getFrom(chainId).toKethereumAddress()
+                    })
                 }
             } catch (e: Exception) {
                 alert("Input not valid " + e.message)

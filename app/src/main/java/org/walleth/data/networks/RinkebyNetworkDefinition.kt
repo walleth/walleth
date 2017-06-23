@@ -5,6 +5,8 @@ import org.walleth.data.blockexplorer.EtherscanRinkebyBlockExplorer
 
 class RinkebyNetworkDefinition : NetworkDefinition {
 
+    override val chainId = 4L
+
     override fun getNetworkName() = ETHEREUM_NETWORK_RINKEBY
 
     override fun getBlockExplorer() = EtherscanRinkebyBlockExplorer()
