@@ -131,10 +131,12 @@ class TransferActivity : AppCompatActivity() {
                 alert("Not enough funds for this transaction with the given amount plus fee")
             } else {
                 val transaction = if (tokenProvider.currentToken.isETH()) Transaction(
+                        creationEpochSecond = System.currentTimeMillis() / 1000,
                         value = currentAmount!!,
                         to = ERC67(currentERC67String!!).address,
                         from = keyStore.getCurrentAddress()
                 ) else Transaction(
+                        creationEpochSecond = System.currentTimeMillis() / 1000,
                         value = ZERO,
                         to = Address(tokenProvider.currentToken.address),
                         from = keyStore.getCurrentAddress(),
