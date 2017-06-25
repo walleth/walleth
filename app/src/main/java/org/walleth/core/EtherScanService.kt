@@ -89,10 +89,13 @@ class EtherScanService : Service() {
             getEtherscanResult("module=proxy&action=eth_sendRawTransaction&hex=" + it.fold("0x", { s: String, byte: Byte -> s + byte.toHexString() })) {
                 if (it.has("result")) {
                     transaction.transaction.txHash = it.getString("result")
-                } else {
-                    if (!it.toString().startsWith("known")) {
+                } else if (it.has("error")) {
+                    val error= it.getJSONObject("error")
+                    if (error.has("message") && !error.getString("message").startsWith("known")) {
                         transaction.state.error = it.toString()
                     }
+                } else {
+                    transaction.state.error = it.toString()
                 }
                 transaction.state.eventLog = transaction.state.eventLog ?: "" + "relayed via EtherScan"
                 transaction.transaction.signedRLP = null
