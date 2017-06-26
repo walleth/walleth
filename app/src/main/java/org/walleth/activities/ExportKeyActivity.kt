@@ -52,12 +52,16 @@ class ExportKeyActivity : AppCompatActivity() {
     }
 
     private fun generate() {
-        keyJSON = keyStore.exportCurrentKey(unlockPassword = "default", exportPassword = password_input.text.toString())
+        Thread(Runnable {
+            keyJSON = keyStore.exportCurrentKey(unlockPassword = "default", exportPassword = password_input.text.toString())
 
-        val point = Point()
-        windowManager.defaultDisplay.getSize(point)
-        val bmpScaled = Bitmap.createScaledBitmap(QRCode.from(keyJSON).bitmap(), point.x, point.x, false)
-        qrcode_image.setImageBitmap(bmpScaled)
+            val point = Point()
+            windowManager.defaultDisplay.getSize(point)
+            val bmpScaled = Bitmap.createScaledBitmap(QRCode.from(keyJSON).bitmap(), point.x, point.x, false)
+            runOnUiThread {
+                qrcode_image.setImageBitmap(bmpScaled)
+            }
+        }).start()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
