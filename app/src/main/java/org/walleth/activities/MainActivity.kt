@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
 
             when {
                 scanResult.isERC67String() -> {
-                    startActivity(Intent(this, TransferActivity::class.java).apply {
+                    startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
                         setData(Uri.parse(scanResult))
                     })
                 }
@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity() {
                                         startCreateAccountActivity(scanResult)
                                     }
                                     1 -> {
-                                        startActivity(Intent(this, TransferActivity::class.java).apply {
+                                        startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
                                             setData(Uri.parse("ethereum:$scanResult"))
                                         })
                                     }
@@ -203,7 +203,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         send_container.setOnClickListener {
-            startActivityFromClass(TransferActivity::class)
+            startActivityFromClass(CreateTransactionActivity::class)
         }
 
         fab.setOnClickListener {

@@ -8,7 +8,7 @@ import org.kethereum.functions.getTokenTransferTo
 import org.kethereum.functions.getTokenTransferValue
 import org.kethereum.functions.isTokenTransfer
 import org.ligi.kaxt.setVisibility
-import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
+import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.TokenProvider

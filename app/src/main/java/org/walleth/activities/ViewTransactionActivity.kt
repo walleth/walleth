@@ -10,7 +10,7 @@ import android.view.View
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.android.synthetic.main.activity_transaction.*
+import kotlinx.android.synthetic.main.activity_view_transaction.*
 import net.glxn.qrgen.android.QRCode
 import org.kethereum.functions.toHexString
 import org.ligi.kaxt.setVisibility
@@ -24,12 +24,12 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.functions.resolveNameFromAddressBook
 
-class TransactionActivity : AppCompatActivity() {
+class ViewTransactionActivity : AppCompatActivity() {
 
     companion object {
         private val HASH_KEY = "TXHASH"
         fun Context.getTransactionActivityIntentForHash(hex: String)
-                = Intent(this, TransactionActivity::class.java).apply {
+                = Intent(this, ViewTransactionActivity::class.java).apply {
             putExtra(HASH_KEY, hex)
         }
     }
@@ -45,7 +45,7 @@ class TransactionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_transaction)
+        setContentView(R.layout.activity_view_transaction)
 
         transaction?.let {
             supportActionBar?.subtitle = getString(R.string.transaction_subtitle)

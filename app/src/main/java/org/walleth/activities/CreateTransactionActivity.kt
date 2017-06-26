@@ -8,7 +8,7 @@ import android.widget.TextView
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.android.synthetic.main.activity_transfer.*
+import kotlinx.android.synthetic.main.activity_create_transaction.*
 import org.kethereum.functions.createTokenTransferTransactionInput
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
@@ -37,7 +37,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
 
-class TransferActivity : AppCompatActivity() {
+class CreateTransactionActivity : AppCompatActivity() {
 
     var currentERC67String: String? = null
     var currentAmount: BigInteger? = null
@@ -62,7 +62,7 @@ class TransferActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_transfer)
+        setContentView(R.layout.activity_create_transaction)
 
         currentERC67String = if (savedInstanceState != null && savedInstanceState.containsKey("ERC67")) {
             savedInstanceState.getString("ERC67")
@@ -111,7 +111,7 @@ class TransferActivity : AppCompatActivity() {
         }
 
         address_list_button.setOnClickListener {
-            val intent = Intent(this@TransferActivity, AddressBookActivity::class.java)
+            val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
             startActivityForResult(intent, 23451)
         }
 

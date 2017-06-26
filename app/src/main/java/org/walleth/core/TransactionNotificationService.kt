@@ -17,7 +17,7 @@ import org.kethereum.model.Transaction
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.walleth.R
-import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
+import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.ui.ChangeObserver

@@ -9,8 +9,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.kethereum.model.Transaction
 import org.ligi.trulesk.TruleskActivityRule
-import org.walleth.activities.TransactionActivity
-import org.walleth.activities.TransactionActivity.Companion.getTransactionActivityIntentForHash
+import org.walleth.activities.ViewTransactionActivity
+import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
@@ -22,7 +22,7 @@ import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 class TheTransactionActivity {
 
     @get:Rule
-    var rule = TruleskActivityRule(TransactionActivity::class.java, false)
+    var rule = TruleskActivityRule(ViewTransactionActivity::class.java, false)
 
     @Test
     fun nonceIsDisplayedCorrectly() {

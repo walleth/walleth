@@ -34,8 +34,8 @@
         <activity android:name="org.walleth.activities.AddressBookActivity"/>
         <activity android:name="org.walleth.activities.SwitchAccountActivity"/>
         <activity android:name="org.walleth.activities.PreferenceActivity"/>
-        <activity android:name="org.walleth.activities.TransactionActivity"/>
-        <activity android:name="org.walleth.activities.TransferActivity">
+        <activity android:name="org.walleth.activities.ViewTransactionActivity"/>
+        <activity android:name="org.walleth.activities.CreateTransactionActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
