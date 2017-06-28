@@ -1,5 +1,5 @@
 [![on Google Play](http://ligi.de/img/play_badge.png)](https://play.google.com/store/apps/details?id=org.walleth)
-
+[![on FDroid](http://ligi.de/img/fdroid_badge.png)](https://f-droid.org/repository/browse/?fdid=org.walleth)
 ![](https://github.com/ligi/walleth/blob/master/assets/1024x500.png)
 
 WALLΞTH
