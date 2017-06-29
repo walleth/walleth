@@ -1,7 +1,7 @@
 package org.walleth.core
 
 import org.json.JSONArray
-import org.kethereum.functions.fromHexToByteArray
+import org.kethereum.functions.hexToByteArray
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
 import org.walleth.data.transactions.TransactionSource
@@ -20,7 +20,7 @@ fun parseEtherScanTransactions(jsonArray: JSONArray): List<TransactionWithState>
                         Address(transactionJson.getString("from")),
                         Address(transactionJson.getString("to")),
                         nonce = transactionJson.optLong("nonce"),
-                        input = fromHexToByteArray(transactionJson.getString("input")).toList(),
+                        input = transactionJson.getString("input").hexToByteArray().toList(),
                         txHash = transactionJson.getString("hash"),
                         creationEpochSecond = timeStamp
                 ),

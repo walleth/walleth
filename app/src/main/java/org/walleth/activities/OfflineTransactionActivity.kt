@@ -13,7 +13,7 @@ import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_relay.*
 import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
-import org.kethereum.functions.fromHexToByteArray
+import org.kethereum.functions.hexToByteArray
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
 import org.ligi.kaxt.startActivityFromURL
@@ -46,7 +46,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
 
         fab.setOnClickListener {
             try {
-                val transactionRLP = fromHexToByteArray(transaction_to_relay_hex.text.toString())
+                val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
                 val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
                 val json = gethTransaction.encodeJSON()
                 val adapter = Moshi.Builder().build().adapter(TransactionJSON::class.java)

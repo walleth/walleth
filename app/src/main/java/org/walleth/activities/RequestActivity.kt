@@ -15,12 +15,12 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
 import net.glxn.qrgen.android.QRCode
+import org.kethereum.functions.toERC67String
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.iac.toERC67String
 import java.math.BigDecimal
 
 class RequestActivity : AppCompatActivity() {

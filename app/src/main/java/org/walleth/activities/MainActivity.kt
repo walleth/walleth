@@ -18,6 +18,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
+import org.kethereum.functions.isERC67String
 import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -33,7 +34,6 @@ import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.transactions.TransactionProvider
-import org.walleth.iac.isERC67String
 import org.walleth.ui.ChangeObserver
 import org.walleth.ui.TransactionAdapterDirection.INCOMMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
