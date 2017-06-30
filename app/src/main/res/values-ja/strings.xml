@@ -1,0 +1,102 @@
+<resources>
+    <string name="app_name">WALLΞTH</string>
+    <string name="welcome">ようこそ、\n\n まだアカウントがないようです - 1 つ作成しました。 注意 - このアカウントは簡単に利用できるようにパスワードがないため安全ではありません - そのため熱い飲み物が冷めない間 walleth を試すだけにご利用ください。</string>
+    <string name="request_transaction_subtitle">トランザクションのリクエスト</string>
+    <string name="edit_account_subtitle">アカウントを編集</string>
+    <string name="switch_account_subtitle">アカウントの切り替え</string>
+    <string name="address_book_subtitle">アドレス帳</string>
+    <string name="transaction_subtitle">トランザクションの詳細</string>
+
+    <string name="request_subtitle">リクエスト</string>
+    <string name="drawer_open">開く</string>
+    <string name="drawer_close">閉じる</string>
+    <string name="info_text"><![CDATA[
+これはネイティブの Android <a href="http://ethereum.org">Ethereum</a> 軽量クライアントウォレットです。
+<br/><br/>
+<a href="https://github.com/ethereum/go-ethereum">go-ethereum</a> プロジェクトから、Ethereum 軽量クライアントとしてインプロセスノードを使用します。
+<br/><br/>
+<a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/fjl">fjl</a>, <a href="https://github.com/zsfelfoldi">zsfelfoldi</a> および <a href="https://github.com/obscuren">obscuren</a> の素晴らしい仕事に大変感謝します!
+<br/><br/>
+このアルファは <a href="http://www.rinkeby.io">rinkeby</a> testnet を使用します。
+<br/><br/>
+WALLΞTH は可能な限り分散化しようとしています。 したがって、集中型の事前構成済みのノードではなく、軽いクライアントを使用しています。 残念ながら、まだ完全に分散化することはできません。
+(フィアット) 参照の為替レートを取得するために、<a href="https://www.cryptocompare.com">cryptocompare</> に照会し、素晴らしい <a href="https://etherscan.io">etherscan.io</a> サービスを使用してトランダクションを取得します。 何かの理由でこれらのサービスがダウンしてもアプリは動作しますが、為替レートの更新などの一部の機能は使えません。 これらのものが分散化されて入手できるようになると、すぐにそれを使用しようとします。
+<br/><br/>
+素晴らしいアイコンは <a href="https://cookicons.co">Michael Cook</a> の作成です。
+<br/><br/>
+これはアルファ版であり、バグがあるかもしれないことにご注意ください。 <a href="https://github.com/ethereum/go-ethereum/issues/14367">これ</a>
+ または <a href="https://github.com/ethereum/go-ethereum/issues/14340">これ</a> ような既知のバグがあるかもしれません。
+<br/><br/>
+プロジェクトは <a href="http://ligi.de">ligi</a> によって、ウォレットとしてのみの必要性からだけでなく <a href="http://espass.it">espass</a> プロジェクトのビルディングブロックとして始まりました
+<br/><br/>
+プロジェクトは無料のソフトウェアです (別名 FOSS/フリー/オープンソース) - <a href="https://github.com/walleth">WALLΞTH GitHub 組織</a> でコードを見たり、問題を報告することができます
+<br/><br/>
+このアプリですばらしい時間をお過ごしください。フィードバック、寄付、プルリクエストをお待ちしています ..-)
+<br/><br/>
+フィードバックの理想的な場所は、sub-reddit <a href="https://www.reddit.com/r/walleth">https://www.reddit.com/r/walleth</a> です
+ソースは <a href="https://github.com/walleth">github</a> で見つけることができます
+]]></string>
+    <string name="qr_code">QR-コード</string>
+    <string name="text_extract_funds">この QR-コードを使用して、トランザクションをリクエストすることができます:</string>
+
+    <string name="import_json_subtitle">キーをインポート</string>
+    <string name="export_account_subtitle">キーをエクスポート</string>
+
+    <string name="request_hint"><![CDATA[
+ソーシャルメディアでこのアドレスをハッシュタグ <a href="https://twitter.com/search?q=%23walleth">#walleth</a> で共有して、テスト Ether を入手することができます。
+<br/><a href="http://ligi.de">LIGI</a> は Twitter をモニターして、<a href="http://www.rinkeby.io">rinkeby</a> のローンチしたテスト Ether を集めました。
+<br/>あなたも手に入れたテスト Ether を、このハッシュタグを使用して見つけたユーザーに渡して、この方法でトランザクションを練習することができます。
+]]>
+</string>
+    <array name="day_night">
+        <item>日中</item>
+        <item>夜間</item>
+        <item>自動</item>
+    </array>
+
+    <array name="scan_hex_choices">
+        <item>アドレス帳に追加</item>
+        <item>トランザクションを実行</item>
+        <item>トークンの定義を追加</item>
+    </array>
+
+
+    <string name="day_or_night">日中または夜間</string>
+    <string name="day_or_night_summary">ライトおよびダークテーマがあります</string>
+    <string name="dialog_title_success">成功</string>
+    <string name="dialog_title_error">エラー</string>
+
+    <string name="select_fiat_reference">(フィアット) 参照を選択</string>
+    <string name="select_token">トークンを選択</string>
+    <string name="create_account_subtitle">アカウントを作成</string>
+    <string name="open_in_etherscan">EtherScan で開く</string>
+    <string name="empty_view">このアカウントは作成したばかりで、トランザクション/値はまだありません。緑色のボタンを押してこのアカウントに値を送るか、既存のアカウントをインポートしてください。左のドロワーにこれらの機能があります</string>
+    <string name="transaction_to_label">宛先:</string>
+    <string name="transaction_from_label">送信元:</string>
+    <string name="alert_problem_title">問題</string>
+    <string name="address_not_valid">アドレスが正しくありません</string>
+    <string name="input_hint_address">アドレス</string>
+    <string name="input_hint_notes">メモ</string>
+    <string name="input_hint_account_name">アカウント名</string>
+    <string name="please_enter_name">名前を入力してください</string>
+    <string name="share">共有</string>
+    <string name="print">印刷</string>
+    <string name="paper_wallet_title">WALLΞTH ペーパー Ethereum ウォレット</string>
+    <string name="paper_wallet_text">これはあなたの Ethereum アカウントのプライベートキー（秘密鍵）です - 安全に保管し、対応するパスワードを合わせて忘れないようにしてください。</string>
+    <string name="imported_key_alert_message">%s をインポートしました</string>
+    <string name="imported_key_default_entry_name">インポートしました</string>
+    <string name="imported_key_entry_note">%s にインポートしました</string>
+    <string name="key_input_key_hint">キー</string>
+    <string name="key_import_password_input_hint">パスワード</string>
+    <string name="key_import_account_name_input_hint">アカウント名</string>
+    <string name="scan_not_interpreted_error_message">スキャンのインテントを処理できません。 現在は以下のみサポートしています: ERC67, アドレス, ECDSA-キー, JSON(UTC-) キー</string>
+    <string name="select_action_messagebox_title">操作を選択</string>
+    <string name="saf_activity_not_found_problem">ACTION_OPEN_DOCUMENT を処理するアプリが見つかりません - 電話-/ROM-メーカーに問題を報告してください</string>
+    <string name="transaction_to_use_hint">使用するトランザクション</string>
+    <string name="no_funds_after_fee">指定した手数料の資金が残っていません</string>
+    <string name="nav_drawer_edit_account">アカウントを編集</string>
+    <string name="nav_drawer_switch_account">アカウントの切り替え</string>
+    <string name="nav_drawer_export_key">キーをエクスポート</string>
+    <string name="nav_drawer_import_key">キーをインポート</string>
+    <string name="nav_drawer_settings">設定</string>
+</resources>
