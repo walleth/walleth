@@ -2,8 +2,7 @@ package org.walleth
 
 import android.support.test.espresso.Espresso.closeSoftKeyboard
 import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.action.ViewActions.typeText
+import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import com.google.common.truth.Truth.assertThat
@@ -36,7 +35,7 @@ class TheCreateAccountActivity {
     @Test
     fun rejects_blank_name() {
 
-        onView(withId(R.id.hexInput)).perform(typeText("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
+        onView(withId(R.id.hexInput)).perform(scrollTo(),typeText("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
 
         closeSoftKeyboard()
 
@@ -62,7 +61,7 @@ class TheCreateAccountActivity {
 
         val secondCreatedAddress = Address(rule.activity.hexInput.text.toString())
 
-        onView(withId(R.id.nameInput)).perform(typeText("nameProbe"))
+        onView(withId(R.id.nameInput)).perform(scrollTo(),typeText("nameProbe"))
 
         closeSoftKeyboard()
 
@@ -76,9 +75,9 @@ class TheCreateAccountActivity {
     @Test
     fun savesValidAddress() {
 
-        onView(withId(R.id.hexInput)).perform(typeText("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
-        onView(withId(R.id.nameInput)).perform(typeText("nameProbe"))
-        onView(withId(R.id.noteInput)).perform(typeText("noteProbe"))
+        onView(withId(R.id.hexInput)).perform(scrollTo(),typeText("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
+        onView(withId(R.id.nameInput)).perform(scrollTo(),typeText("nameProbe"))
+        onView(withId(R.id.noteInput)).perform(scrollTo(),typeText("noteProbe"))
 
         closeSoftKeyboard()
 
