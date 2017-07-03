@@ -35,6 +35,7 @@ android {
 
     lintOptions {
         warning 'InvalidPackage' // for OKIO
+        warning 'MissingTranslation'
     }
 
     flavorDimensions "fire", "store"
