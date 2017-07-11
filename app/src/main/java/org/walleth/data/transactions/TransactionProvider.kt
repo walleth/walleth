@@ -4,6 +4,7 @@ import org.kethereum.model.Address
 import org.kethereum.model.Transaction
 import org.walleth.data.Observeable
 import org.walleth.data.transactions.TransactionSource.WALLETH
+import java.math.BigInteger
 
 data class TransactionState(var needsSigningConfirmation: Boolean = false,
                             var ref: TransactionSource = WALLETH,
@@ -15,7 +16,7 @@ data class TransactionWithState(val transaction: Transaction, val state: Transac
 interface TransactionProvider : Observeable {
 
     fun getTransactionsForAddress(address: Address): List<TransactionWithState>
-    fun getLastNonceForAddress(address: Address): Long
+    fun getLastNonceForAddress(address: Address): BigInteger
 
     fun getTransactionForHash(hash: String): TransactionWithState?
 

@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
+import android.view.View
 import android.widget.TextView
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
@@ -17,6 +18,7 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.BalanceProvider
 import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
 import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
@@ -31,8 +33,10 @@ import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
 import org.walleth.functions.decimalsInZeroes
 import org.walleth.functions.resolveNameFromAddressBook
+import org.walleth.kethereum.android.TransactionParcel
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
 
 class CreateTransactionActivity : AppCompatActivity() {
@@ -71,6 +75,8 @@ class CreateTransactionActivity : AppCompatActivity() {
         supportActionBar?.subtitle = "Transfer"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        fab.setImageResource(if (isTrezorTransaction()) R.drawable.trezor_icon_black else R.drawable.ic_action_done)
+
         gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
 
         if (tokenProvider.currentToken.isETH()) {
@@ -101,6 +107,16 @@ class CreateTransactionActivity : AppCompatActivity() {
             startActivityFromURL("http://ethgasstation.info")
         }
 
+        show_advanced_button.setOnClickListener {
+            show_advanced_button.visibility = View.GONE
+            fee_label.visibility = View.VISIBLE
+            fee_value_view.visibility = View.VISIBLE
+            gas_price_input_container.visibility = View.VISIBLE
+            gas_limit_input_container.visibility = View.VISIBLE
+            nonce_title.visibility = View.VISIBLE
+            nonce_input_container.visibility = View.VISIBLE
+        }
+        nonce_input.setText((transactionProvider.getLastNonceForAddress(keyStore.getCurrentAddress()) + ONE).toString())
         refreshFee()
         setToFromURL(currentERC67String, false)
 
@@ -127,6 +143,8 @@ class CreateTransactionActivity : AppCompatActivity() {
                 alert("amount must be specified")
             } else if (tokenProvider.currentToken == ETH_TOKEN && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)!!.balance) {
                 alert("Not enough funds for this transaction with the given amount plus fee")
+            } else if (nonce_input.text.isBlank()) {
+                alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
             } else {
                 val transaction = if (tokenProvider.currentToken.isETH()) Transaction(
                         creationEpochSecond = System.currentTimeMillis() / 1000,
@@ -141,13 +159,22 @@ class CreateTransactionActivity : AppCompatActivity() {
                         input = createTokenTransferTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
                 )
 
+                transaction.nonce = nonce_input.asBigInit()
                 transaction.gasPrice = gas_price_input.asBigInit()
                 transaction.gasLimit = gas_limit_input.asBigInit()
-                transactionProvider.addPendingTransaction(TransactionWithState(transaction, TransactionState()))
+
+                when {
+                    keyStore.hasKeyForForAddress(keyStore.getCurrentAddress()) -> {
+                        transactionProvider.addPendingTransaction(TransactionWithState(transaction, TransactionState()))
+                    }
+                    isTrezorTransaction() -> startTrezorActivity(TransactionParcel(transaction))
+                }
                 finish()
             }
         }
     }
+
+    private fun isTrezorTransaction() = addressBook.getEntryForName(keyStore.getCurrentAddress())?.trezorDerivationPath != null
 
     fun TextView.asBigInit() = BigInteger(text.toString())
 

@@ -63,7 +63,7 @@
                 style="@style/button"/>
         <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/new_address_button"
-                app:srcCompat="@drawable/ic_vpn_key_black_24dp"
+                app:srcCompat="@drawable/ic_key"
                 android:layout_gravity="center_vertical"
                 style="@style/button"/>
         <android.support.v7.widget.AppCompatImageView

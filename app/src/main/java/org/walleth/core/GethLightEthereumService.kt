@@ -20,7 +20,7 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
-import org.walleth.data.toGethAddr
+import org.walleth.kethereum.geth.toGethAddr
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionSource
 import org.walleth.data.transactions.TransactionWithState

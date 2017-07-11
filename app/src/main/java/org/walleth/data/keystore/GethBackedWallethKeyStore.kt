@@ -13,7 +13,7 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.SimpleObserveable
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.toKethereumAddress
+import org.walleth.kethereum.geth.toKethereumAddress
 import java.io.File
 
 class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), WallethKeyStore {

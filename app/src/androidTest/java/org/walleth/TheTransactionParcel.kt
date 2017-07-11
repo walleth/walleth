@@ -10,10 +10,11 @@ import java.math.BigInteger
 
 class TheTransactionParcel {
 
+    val DEFAULT_NONCE = BigInteger("42")
     @Test
     fun normalTransactionSurvives() {
 
-        val transactionBefore = Transaction(BigInteger("10"), Address("0xab"), Address("0xcd"), nonce = 42)
+        val transactionBefore = Transaction(BigInteger("10"), Address("0xab"), Address("0xcd"), nonce = DEFAULT_NONCE)
         testTransactionParcel(transactionBefore)
     }
 

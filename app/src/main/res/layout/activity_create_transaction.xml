@@ -3,7 +3,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-
+        android:animateLayoutChanges="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <ScrollView
@@ -65,13 +65,8 @@
             <TextView
                     android:layout_below="@id/to_address"
                     android:text="Amount:"
-                    android:padding="8dp"
-                    android:id="@+id/amount_label"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
+                    style="@style/section_header"
+                    android:id="@+id/amount_label"/>
 
             <org.walleth.ui.ValueView
                     android:layout_centerHorizontal="true"
@@ -109,20 +104,25 @@
                         android:layout_width="48dp"
                         android:layout_height="48dp"/>
             </LinearLayout>
+            <Button
+                    android:layout_margin="16dp"
+                    android:id="@+id/show_advanced_button"
+                    android:layout_below="@id/amount_container"
+                    android:text="Show Advanced Options"
+                    android:layout_width="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_height="wrap_content"            />
             <TextView
                     android:layout_below="@id/amount_container"
                     android:text="Fee:"
-                    android:padding="8dp"
+                    android:visibility="gone"
                     android:id="@+id/fee_label"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
+                    style="@style/section_header"/>
 
             <org.walleth.ui.ValueViewSmall
                     android:layout_centerHorizontal="true"
                     android:id="@+id/fee_value_view"
+                    android:visibility="gone"
                     android:layout_below="@id/fee_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -130,6 +130,7 @@
             <LinearLayout android:layout_width="wrap_content"
                           android:layout_height="match_parent"
                           android:paddingLeft="16dp"
+                          android:visibility="gone"
                           android:layout_below="@id/fee_value_view"
                           android:id="@+id/gas_price_input_container">
                 <android.support.design.widget.TextInputLayout
@@ -157,12 +158,38 @@
                     android:paddingLeft="16dp"
                     android:layout_below="@id/gas_price_input_container"
                     android:id="@+id/gas_limit_input_container"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
                         android:hint="Gas Limit"
                         android:minWidth="128dp"
                         android:id="@+id/gas_limit_input"
+                        android:inputType="number|numberDecimal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+            </android.support.design.widget.TextInputLayout>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Nonce"
+                    android:visibility="gone"
+                    android:id="@+id/nonce_title"
+                    android:layout_below="@id/gas_limit_input_container"
+                    style="@style/section_header"/>
+
+            <android.support.design.widget.TextInputLayout
+                    android:paddingLeft="16dp"
+                    android:layout_below="@id/nonce_title"
+                    android:id="@+id/nonce_input_container"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                <android.support.design.widget.TextInputEditText
+                        android:hint="nonce"
+                        android:minWidth="128dp"
+                        android:id="@+id/nonce_input"
                         android:inputType="number|numberDecimal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>

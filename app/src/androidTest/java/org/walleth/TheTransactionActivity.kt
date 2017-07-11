@@ -18,15 +18,17 @@ import org.walleth.infrastructure.TestApp
 import org.walleth.testdata.AddressBookWithTestEntries.Companion.Room77
 import org.walleth.testdata.AddressBookWithTestEntries.Companion.ShapeShift
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS
+import java.math.BigInteger
 
 class TheTransactionActivity {
 
     @get:Rule
     var rule = TruleskActivityRule(ViewTransactionActivity::class.java, false)
 
+    private val DEFAULT_NONCE = BigInteger("11")
     @Test
     fun nonceIsDisplayedCorrectly() {
-        TestApp.transactionProvider.addTransaction(TransactionWithState(Transaction(ETH_IN_WEI, DEFAULT_TEST_ADDRESS, DEFAULT_TEST_ADDRESS, nonce = 11, txHash = "0xFOO"), TransactionState()))
+        TestApp.transactionProvider.addTransaction(TransactionWithState(Transaction(ETH_IN_WEI, DEFAULT_TEST_ADDRESS, DEFAULT_TEST_ADDRESS, nonce = DEFAULT_NONCE, txHash = "0xFOO"), TransactionState()))
 
         rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash("0xFOO"))
 
@@ -35,7 +37,7 @@ class TheTransactionActivity {
 
     @Test
     fun isLabeledToWhenWeReceive() {
-        val transaction = Transaction(ETH_IN_WEI, from = DEFAULT_TEST_ADDRESS, to = Room77, nonce = 11, txHash = "0xFOO12")
+        val transaction = Transaction(ETH_IN_WEI, from = DEFAULT_TEST_ADDRESS, to = Room77, nonce = DEFAULT_NONCE, txHash = "0xFOO12")
         TestApp.transactionProvider.addTransaction(TransactionWithState(transaction, TransactionState()))
 
         rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash(transaction.txHash!!))
@@ -47,7 +49,7 @@ class TheTransactionActivity {
 
     @Test
     fun isLabeledFromWhenWeReceive() {
-        val transaction = Transaction(ETH_IN_WEI, from = ShapeShift, to = DEFAULT_TEST_ADDRESS, nonce = 11, txHash = "0xFOO21")
+        val transaction = Transaction(ETH_IN_WEI, from = ShapeShift, to = DEFAULT_TEST_ADDRESS, nonce = DEFAULT_NONCE, txHash = "0xFOO21")
         TestApp.transactionProvider.addTransaction(TransactionWithState(transaction, TransactionState()))
 
         rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash(transaction.txHash!!))

@@ -19,7 +19,11 @@ fun parseEtherScanTransactions(jsonArray: JSONArray): List<TransactionWithState>
                         value,
                         Address(transactionJson.getString("from")),
                         Address(transactionJson.getString("to")),
-                        nonce = transactionJson.optLong("nonce"),
+                        nonce = try {
+                            BigInteger(transactionJson.getString("nonce"))
+                        } catch (e:NumberFormatException) {
+                            null
+                        },
                         input = transactionJson.getString("input").hexToByteArray().toList(),
                         txHash = transactionJson.getString("hash"),
                         creationEpochSecond = timeStamp

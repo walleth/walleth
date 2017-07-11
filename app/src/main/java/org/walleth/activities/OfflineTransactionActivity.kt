@@ -23,11 +23,11 @@ import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.toKethereumAddress
 import org.walleth.data.transactions.TransactionJSON
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
+import org.walleth.kethereum.geth.toKethereumAddress
 import java.math.BigInteger
 
 class OfflineTransactionActivity : AppCompatActivity() {
@@ -79,7 +79,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
                     from = from.invoke(),
                     to = gethTransaction.to!!.toKethereumAddress(),
 
-                    nonce = gethTransaction.nonce,
+                    nonce = BigInteger(gethTransaction.nonce.toString()),
                     txHash = gethTransaction.hash.hex,
                     signedRLP = signedRLP
             )

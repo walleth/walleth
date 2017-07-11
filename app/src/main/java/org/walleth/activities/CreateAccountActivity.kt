@@ -17,6 +17,10 @@ import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string.*
+import org.walleth.activities.trezor.TrezorGetAddress
+import org.walleth.activities.trezor.getAddressResult
+import org.walleth.activities.trezor.getPATHResult
+import org.walleth.activities.trezor.hasAddressResult
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
@@ -36,6 +40,7 @@ class CreateAccountActivity : AppCompatActivity() {
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     var lastCreatedAddress: Address? = null
+    var trezorPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +67,7 @@ class CreateAccountActivity : AppCompatActivity() {
                         name = nameInput.text.toString(),
                         address = Address(hex),
                         note = noteInput.text.toString(),
+                        trezorDerivationPath = trezorPath,
                         isNotificationWanted = notify_checkbox.isChecked)
                 )
                 finish()
@@ -69,7 +75,7 @@ class CreateAccountActivity : AppCompatActivity() {
         }
 
         add_trezor.setOnClickListener {
-            startActivityForResult(Intent(this, TrezorCommunicatorActivity::class.java), REQUEST_CODE_TREZOR)
+            startActivityForResult(Intent(this, TrezorGetAddress::class.java), REQUEST_CODE_TREZOR)
         }
 
         new_address_button.setOnClickListener {
@@ -106,6 +112,7 @@ class CreateAccountActivity : AppCompatActivity() {
                 })
             }
             if (data.hasAddressResult()) {
+                trezorPath = data.getPATHResult()
                 hexInput.setText(data.getAddressResult())
             }
         }
