@@ -33,8 +33,6 @@ import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.transactions.TransactionProvider
-import org.walleth.iac.BarCodeIntentIntegrator
-import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.walleth.iac.isERC67String
 import org.walleth.ui.ChangeObserver
 import org.walleth.ui.TransactionAdapterDirection.INCOMMING
@@ -207,7 +205,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         fab.setOnClickListener {
-            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
+            startScanActivityForResult(this)
         }
 
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)

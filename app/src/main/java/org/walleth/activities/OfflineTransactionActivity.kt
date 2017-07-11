@@ -28,8 +28,6 @@ import org.walleth.data.transactions.TransactionJSON
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
-import org.walleth.iac.BarCodeIntentIntegrator
-import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import java.math.BigInteger
 
 class OfflineTransactionActivity : AppCompatActivity() {
@@ -132,7 +130,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
         R.id.menu_scan -> {
-            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
+            startScanActivityForResult(this)
             true
         }
 
