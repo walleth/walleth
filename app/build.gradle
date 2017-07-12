@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'spoon'
+apply plugin: 'com.getkeepsafe.dexcount'
 
 def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
 

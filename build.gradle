@@ -17,6 +17,7 @@ buildscript {
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.14.0'
         classpath files('app/libs/gradle-witness.jar')
         classpath 'com.google.gms:google-services:3.0.0'
+        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.2'
     }
 }
 
