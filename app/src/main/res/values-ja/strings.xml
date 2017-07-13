@@ -7,6 +7,9 @@
     <string name="address_book_subtitle">アドレス帳</string>
     <string name="transaction_subtitle">トランザクションの詳細</string>
 
+    <string name="scan_instructions">QR コードをフレームの中心にしてください。</string>
+    <string name="no_camera_permission">WALLΞTH はカメラにアクセスするアクセス許可がありません。</string>
+
     <string name="request_subtitle">リクエスト</string>
     <string name="drawer_open">開く</string>
     <string name="drawer_close">閉じる</string>
