@@ -11,7 +11,8 @@ import android.os.Handler
 import android.os.HandlerThread
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
-import android.view.*
+import android.view.Surface
+import android.view.TextureView
 import android.widget.Toast
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.PlanarYUVLuminanceSource
@@ -131,21 +132,21 @@ private class Videographer(val activity: Activity) {
          * The id of the first back-facing camera. Defaults to the first camera if not found.
          */
         val defaultCameraId: Int by lazy {
-            val n = Camera.getNumberOfCameras()
+            findDefaultCamera()
+        }
+
+        private fun findDefaultCamera(): Int {
             val info = Camera.CameraInfo()
 
-            var id = 0
-
-            for (i in 0 until n) {
+            for (i in 0 until Camera.getNumberOfCameras()) {
                 Camera.getCameraInfo(i, info)
 
                 if (info.facing == Camera.CameraInfo.CAMERA_FACING_BACK) {
-                    id = i
-                    break
+                    return i
                 }
             }
 
-            id
+            return 0
         }
     }
 
@@ -256,7 +257,7 @@ private class Scanner(val videographer: Videographer) {
         val centerX = width / 2
         val centerY = height / 2
 
-        var size = if (height > width) { width } else { height }
+        var size = Math.min(width, height)
         size = (size.toDouble() * ReticleView.FRAME_SCALE).toInt()
 
         val halfSize = size / 2
