@@ -11,6 +11,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_token.*
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.TokenDescriptor

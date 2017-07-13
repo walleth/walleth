@@ -18,6 +18,7 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.BalanceProvider
 import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX

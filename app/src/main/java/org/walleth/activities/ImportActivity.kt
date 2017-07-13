@@ -19,6 +19,7 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.threeten.bp.LocalDateTime
 import org.walleth.R
+import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry

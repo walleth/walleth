@@ -26,6 +26,7 @@ import org.ligi.kaxtui.alert
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.walleth.R
+import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.BalanceAtBlock
 import org.walleth.data.BalanceProvider
 import org.walleth.data.addressbook.AddressBook

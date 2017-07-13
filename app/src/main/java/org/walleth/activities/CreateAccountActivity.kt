@@ -17,6 +17,7 @@ import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string.*
+import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.activities.trezor.TrezorGetAddress
 import org.walleth.activities.trezor.getAddressResult
 import org.walleth.activities.trezor.getPATHResult

@@ -21,6 +21,7 @@ import org.ligi.kaxtui.alert
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
+import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionJSON

@@ -20,7 +20,7 @@
         <service android:name="org.walleth.core.GethTransactionSigner"/>
 
         <activity
-            android:name="org.walleth.activities.ScanActivity"
+            android:name="org.walleth.activities.qrscan.QRScanActivity"
             android:theme="@style/AppThemeNoActionbar"/>
 
         <activity android:name="org.walleth.activities.RequestActivity"/>
