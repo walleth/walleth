@@ -111,6 +111,7 @@ dependencies {
     compile 'com.github.ligi:KAXTUI:0.3'
 
     compile 'com.github.kenglxn.QRGen:android:2.2.0'
+    compile 'com.google.zxing:core:3.3.0'
 
     compile 'com.jakewharton:process-phoenix:2.0.0'
 
