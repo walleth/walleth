@@ -25,6 +25,8 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         buildConfigField "String", "ETHERSCAN_APIKEY", '"' + file('../.ci/etherscan.apikey').text + '"'
+
+        multiDexEnabled true
     }
 
     buildTypes {
@@ -101,6 +103,7 @@ configurations {
 }
 
 dependencies {
+    compile 'com.android.support:multidex:1.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     compile "org.ethereum:geth:1.6.6"
