@@ -21,7 +21,7 @@ class TheCreateAccountActivity {
     @Test
     fun rejectsInvalidAddress() {
 
-        onView(withId(R.id.fab)).perform(click())
+        onView(withId(R.id.fab)).perform(closeSoftKeyboard(), click())
 
         onView(withText(R.string.alert_problem_title)).check(matches(isDisplayed()))
         onView(withText(R.string.address_not_valid)).check(matches(isDisplayed()))
