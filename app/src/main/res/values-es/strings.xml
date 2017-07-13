@@ -1,0 +1,104 @@
+<resources>
+    <string name="app_name">WALLΞTH</string>
+    <string name="welcome">Bienvenido,\n\n no había cuenta para ti aún - entonces te hemos creado una. Nota - esta cuenta no esta asegurada por ningúna contraseña para facilitar su uso - entonces solo la debes usar como una billetera caliente para algunas bebidas.</string>
+    <string name="request_transaction_subtitle">Solicitar Transacción</string>
+    <string name="edit_account_subtitle">Editar cuenta</string>
+    <string name="switch_account_subtitle">Cambiar cuenta</string>
+    <string name="address_book_subtitle">Libreta de direcciones</string>
+    <string name="transaction_subtitle">Detalles de la transacción</string>
+
+    <string name="request_subtitle">Solicitar</string>
+    <string name="drawer_open">abrir</string>
+    <string name="drawer_close">cerrar</string>
+    <string name="info_text"><![CDATA[
+This is a native Android <a href="http://ethereum.org">Ethereum</a> light client wallet.
+<br/><br/>
+It uses the in process node as ethereum light client from the <a href="https://github.com/ethereum/go-ethereum">go-ethereum</a> project.
+<br/><br/>
+Big shout out to <a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/fjl">fjl</a>, <a href="https://github.com/zsfelfoldi">zsfelfoldi</a> and <a href="https://github.com/obscuren">obscuren</a> here - awesome work!
+<br/><br/>
+This alpha uses the <a href="http://www.rinkeby.io">rinkeby</a> testnet.
+<br/><br/>
+WALLΞTH is trying to be as decentralized as possible. Hence it is using a light client and not centralized pre-configured nodes. Unfortunately we cannot be fully decentralized yet.
+For getting the exchange rates for (fiat) references we are querying <a href="https://www.cryptocompare.com">cryptocompare</> and to get transactions we use the great <a href="https://etherscan.io">etherscan.io</a> service. The app will work if these services are down for some reason - but you might miss some features like up to date exchange rates. As soon as it is possible to get these things in a decentralized manner we will try to use it.
+<br/><br/>
+Our wonderful Icon is from <a href="https://cookicons.co">Michael Cook</a>.
+<br/><br/>
+Be aware that this is an alpha and there will be bugs. There are also some known issues like <a href="https://github.com/ethereum/go-ethereum/issues/14367">this one</a>
+ and <a href="https://github.com/ethereum/go-ethereum/issues/14340">this one</a>
+<br/><br/>
+The project was started by <a href="http://ligi.de">ligi</a> as this is not only needed as a wallet - but also as a building block for the <a href="http://espass.it">espass</a> project
+<br/><br/>
+The project is libre software (aka FOSS/free/open source) - you can find code and open issues on the <a href="https://github.com/walleth">WALLΞTH GitHub Organisation</a>
+<br/><br/>
+Please have a great time with this app and we are happy about feedback, donations, pull-requests ..-)
+<br/><br/>
+The ideal place for feedback is our sub-reddit <a href="https://www.reddit.com/r/walleth">https://www.reddit.com/r/walleth</a>
+You can find the source <a href="https://github.com/walleth">on github</a>
+]]></string>
+    <string name="qr_code">Código QR</string>
+    <string name="text_extract_funds">Usted puede usar este Código QR para solicitar una transacción:</string>
+
+    <string name="import_json_subtitle">Importar llave</string>
+    <string name="export_account_subtitle">Exportar llave</string>
+
+    <string name="request_hint"><![CDATA[
+You might share this address with the hashtag <a href="https://twitter.com/search?q=%23walleth">#walleth</a> on social media to get test ether.
+<br/><a href="http://ligi.de">LIGI</a> will monitor twitter and has some test-ether collected since the launch of <a href="http://www.rinkeby.io">rinkeby</a>.
+<br/>Also you can pass on the test ether you got to users you see using this hashtag and exercise transactions this way.
+]]>
+</string>
+    <array name="day_night">
+        <item>Day</item>
+        <item>Night</item>
+        <item>Auto</item>
+    </array>
+
+    <array name="scan_hex_choices">
+        <item>Add to AddressBook</item>
+        <item>Perform transaction</item>
+        <item>Add token definition</item>
+    </array>
+
+
+    <string name="day_or_night">Día o Noche</string>
+    <string name="day_or_night_summary">Hay un tema claro y uno oscuro</string>
+    <string name="dialog_title_success">Exitoso</string>
+    <string name="dialog_title_error">Error</string>
+
+    <string name="select_fiat_reference">Seleccionar (Fiat) de Referencia</string>
+    <string name="select_token">Seleccionar Token</string>
+    <string name="create_account_subtitle">Crear cuenta</string>
+    <string name="open_in_etherscan">Abrir en EtherScan</string>
+    <string name="empty_view">"Esta cuenta fue creada para usted, entonces no tiene transacciones/valor aún. Usted ahora podría presionar el botón verde para enviar valor a esta cuenta o importar una cuenta existente. Usted puede encontrar las funciones para eso en el desplegable de la izquierda "</string>
+    <string name="transaction_to_label">Para:</string>
+    <string name="transaction_from_label">De:</string>
+    <string name="alert_problem_title">Problema</string>
+    <string name="address_not_valid">La dirección no es válida</string>
+    <string name="input_hint_address">Dirección</string>
+    <string name="input_hint_notes">notas</string>
+    <string name="input_hint_account_name">nombre de la cuenta</string>
+    <string name="please_enter_name">Por favor digite un nombre</string>
+    <string name="share">Compartir</string>
+    <string name="print">Imprimir</string>
+    <string name="paper_wallet_title">WALLΞTH Billetera Ethereum de Papel</string>
+    <string name="paper_wallet_text">Esta es la llave privada para tu cuenta de Ethereum - almacenela de forma segura y recuerde la contraseña correspondiente</string>
+    <string name="imported_key_alert_message">Importa %s</string>
+    <string name="imported_key_default_entry_name">Importa</string>
+    <string name="imported_key_entry_note">Importa en %s</string>
+    <string name="key_input_key_hint">La llave</string>
+    <string name="key_import_password_input_hint">Contraseña</string>
+    <string name="key_import_account_name_input_hint">Nombre de la cuenta</string>
+    <string name="scan_not_interpreted_error_message">No sé pudó interpretar su intensión para escanear. Actualmente sólo se soporta: ERC67, Direcciones, ECDSA-Key, JSON(UTC-) Llaves</string>
+    <string name="select_action_messagebox_title">Seleccionar Acción</string>
+    <string name="saf_activity_not_found_problem">No App found to handle ACTION_OPEN_DOCUMENT - please report this as a problem to your phone-/ROM-provider</string>
+    <string name="transaction_to_use_hint">Transacción a usar</string>
+    <string name="no_funds_after_fee">Sin fondos con la comisión dada</string>
+    <string name="nav_drawer_edit_account">Editar cuenta</string>
+    <string name="nav_drawer_switch_account">Cambiar cuentas</string>
+    <string name="nav_drawer_export_key">Exportar llave</string>
+    <string name="nav_drawer_import_key">Importar llave</string>
+    <string name="nav_drawer_settings">Ajustes</string>
+    <string name="default_day_night">auto</string>
+    <string name="default_stats_username">Usuario WALLΞTH</string>
+</resources>

@@ -23,8 +23,6 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.iac.BarCodeIntentIntegrator
-import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 
 enum class KeyType {
     ECDSA, JSON
@@ -141,7 +139,7 @@ class ImportActivity : AppCompatActivity() {
         }
 
         R.id.menu_scan -> {
-            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
+            startScanActivityForResult(this)
             true
         }
 

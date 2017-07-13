@@ -18,8 +18,6 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.iac.BarCodeIntentIntegrator
-import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.walleth.iac.ERC67
 import org.walleth.iac.isERC67String
 
@@ -75,7 +73,7 @@ class CreateAccountActivity : AppCompatActivity() {
         }
 
         camera_button.setOnClickListener {
-            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
+            startScanActivityForResult(this)
         }
     }
 

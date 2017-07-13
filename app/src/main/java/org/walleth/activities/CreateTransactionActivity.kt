@@ -30,8 +30,6 @@ import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
 import org.walleth.functions.decimalsInZeroes
 import org.walleth.functions.resolveNameFromAddressBook
-import org.walleth.iac.BarCodeIntentIntegrator
-import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 import org.walleth.iac.ERC67
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -107,7 +105,7 @@ class CreateTransactionActivity : AppCompatActivity() {
         setToFromURL(currentERC67String, false)
 
         scan_button.setOnClickListener {
-            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
+            startScanActivityForResult(this)
         }
 
         address_list_button.setOnClickListener {
