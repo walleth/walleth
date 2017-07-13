@@ -106,7 +106,7 @@ dependencies {
     compile 'com.android.support:multidex:1.0.1'
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile "org.ethereum:geth:1.6.6"
+    compile "org.ethereum:geth:1.6.7"
 
     compile 'com.github.ligi.kethereum:functions:0.13'
     compile 'com.github.ligi.kethereum:bip44:0.16'
