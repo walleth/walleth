@@ -158,7 +158,8 @@ if (hasProperty("isCI")) {
 
     dependencyVerification {
         verify = [
-                'org.jetbrains.kotlin:kotlin-stdlib:dcfeacae538dd44e9a7b37440c05f990156e9f5644269ab2f5aecc66e1843090',
+
+
                 'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
                 'com.github.ligi:KAXT:4cfe2b683dacff9575799edb63a3d46ff647761bf76cb17702150856471538bc',
                 'com.github.kenglxn.QRGen:android:c4c3b2faa6220458ad10ae1ff9b496cc7617fc3657d8b81a6b7015787b22b32d',
