@@ -117,7 +117,7 @@ dependencies {
     compile 'com.github.trezor.trezor-android:trezor-lib:v1.0.6'
 
 
-    compile 'com.github.kenglxn.QRGen:android:2.2.0'
+    compile 'com.github.kenglxn.QRGen:android:2.3.0'
     compile 'com.google.zxing:core:3.3.0'
 
     compile 'com.jakewharton:process-phoenix:2.0.0'
@@ -168,7 +168,6 @@ if (hasProperty("isCI")) {
 
                 'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
                 'com.github.ligi:KAXT:4cfe2b683dacff9575799edb63a3d46ff647761bf76cb17702150856471538bc',
-                'com.github.kenglxn.QRGen:android:c4c3b2faa6220458ad10ae1ff9b496cc7617fc3657d8b81a6b7015787b22b32d',
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
                 'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',
                 'com.squareup.okhttp3:okhttp:c1d57f913f74f61d424d4250a92723ba9a61affc12a0ab194d84cc179b472841',
@@ -183,8 +182,8 @@ if (hasProperty("isCI")) {
                 'com.github.ligi:ExtraCompats:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
                 'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
                 'com.android.support:support-v4:07d389154bcf73b47e514964df1578136b26cba78257b8a577a3ccb54beff0ae',
-                'com.github.kenglxn.QRGen:core:1782ab325497ce0b6a7116197bdb7fe2b44e998c7d1e2470ae195d686c385b65',
-
+                'com.github.kenglxn.QRGen:android:7670317f4ec37cf2bb24b7d3932da83daafa2956e77cd2e92dccce86a66816d9',
+                'com.github.kenglxn.QRGen:core:1db3f51189a71bb37ee0e97081a353b6c6b203ee73bb93c4372aa76e94f9d701',
                 'com.squareup.okio:okio:734269c3ebc5090e3b23566db558f421f0b4027277c79ad5d176b8ec168bb850',
                 'com.github.salomonbrys.kodein:kodein-core:e91955ed83e8524016fa5c2fb3ba715f140abb417802b6795a51774156fc714e',
                 'com.android.support:transition:36c688825a8c0e6e879e18886de83dc90673322822d5b606ee302f70fb558e16',
