@@ -104,4 +104,6 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="nav_drawer_settings">Settings</string>
     <string name="nonce_invalid">we need a nonce</string>
     <string name="connect_trezor_message"><![CDATA[Connect your TREZOR.<br/>If you have none: <a href=\"https://shop.trezor.io?a=walleth.org\">get one</a>]]></string>
+    <string name="activity_subtitle_get_trezor_address">Get TREZOR Address</string>
+    <string name="activity_subtitle_sign_with_trezor">Sign with TREZOR</string>
 </resources>

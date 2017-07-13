@@ -13,6 +13,7 @@ import org.kethereum.functions.hexToByteArray
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.ligi.kaxtui.alert
+import org.walleth.R.string
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
 import org.walleth.kethereum.android.TransactionParcel
@@ -73,6 +74,7 @@ class TrezorSignTX : BaseTrezorActivity() {
         currentBIP44 = addressBook.getEntryForName(keyStore.getCurrentAddress())?.trezorDerivationPath?.let {
             BIP44.fromPath(it)
         } ?: throw IllegalArgumentException("Starting TREZOR Activity")
+        supportActionBar?.subtitle = getString(string.activity_subtitle_sign_with_trezor)
     }
 
     private fun ByteArray.removeLeadingZero() = if (first() == 0.toByte()) copyOfRange(1, size) else this

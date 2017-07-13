@@ -73,7 +73,6 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
 
         trezor_status_text.text = HtmlCompat.fromHtml(getString(R.string.connect_trezor_message))
         trezor_status_text.movementMethod = LinkMovementMethod()
-        supportActionBar?.subtitle = "TREZOR Hardware Wallet"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         handler.post(mainRunnable)

@@ -48,6 +48,7 @@ class TrezorGetAddress : BaseTrezorActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         currentBIP44 = initialBIP44
+        supportActionBar?.subtitle = getString(R.string.activity_subtitle_get_trezor_address)
     }
 
     override fun handleExtraMessage(res: Message?) = Unit // we ony care for addresses
