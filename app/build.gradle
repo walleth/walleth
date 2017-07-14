@@ -9,7 +9,7 @@ def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    buildToolsVersion "25.0.3"
 
     defaultConfig {
         applicationId "org.walleth"
