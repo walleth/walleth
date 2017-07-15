@@ -119,10 +119,13 @@ class Videographer(val activity: Activity) {
         val parameters = camera.parameters
 
         // NV21 is guaranteed to be available.
-        // @see android.hardware.Camera.Parameters.setPreviewFormat(int)
+        // @see android.hardware.Camera.Parameters.getSupportedPreviewFormats()
         parameters.previewFormat = ImageFormat.NV21
 
-        parameters.focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+        val focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
+        if (parameters.supportedFocusModes.contains(focusMode)) {
+            parameters.focusMode = focusMode
+        }
 
         camera.parameters = parameters
     }
