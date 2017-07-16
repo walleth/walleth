@@ -3,7 +3,7 @@
     <item
             android:title="Copy"
             android:id="@+id/menu_copy"
-            android:icon="@drawable/ic_content_copy_black_24dp"
+            android:icon="@drawable/ic_content_copy"
             app:showAsAction="ifRoom"
     />
     <item

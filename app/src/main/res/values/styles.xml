@@ -44,6 +44,7 @@
     <style name="button">
         <item name="android:padding">8dp</item>
         <item name="android:background">?selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
         <item name="android:layout_width">48dp</item>
         <item name="android:layout_height">48dp</item>
     </style>

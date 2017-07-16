@@ -1,8 +1,11 @@
 package org.walleth.activities
 
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -24,6 +27,7 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.functions.resolveNameFromAddressBook
 import org.walleth.khex.toHexString
+
 
 class ViewTransactionActivity : AppCompatActivity() {
 
@@ -47,6 +51,11 @@ class ViewTransactionActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_view_transaction)
+    }
+
+    override fun onResume() {
+        super.onResume()
+
 
         transaction?.let {
             supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
@@ -64,13 +73,32 @@ class ViewTransactionActivity : AppCompatActivity() {
 
             fee_value_view.setValue(it.transaction.gasLimit * it.transaction.gasPrice, ETH_TOKEN)
 
-            if (it.transaction.from == keyStore.getCurrentAddress()) {
+            val relevant_address = if (it.transaction.from == keyStore.getCurrentAddress()) {
                 from_to_title.setText(R.string.transaction_to_label)
-                from_to.text = it.transaction.to?.resolveNameFromAddressBook(addressBook)
+                it.transaction.to
             } else {
                 from_to_title.setText(R.string.transaction_from_label)
-                from_to.text = it.transaction.from.resolveNameFromAddressBook(addressBook)
+                it.transaction.from
             }
+
+            relevant_address?.let { ensured_relevant_address ->
+                val name = ensured_relevant_address.resolveNameFromAddressBook(addressBook)
+                from_to.text = name
+
+                add_address.setVisibility(name == ensured_relevant_address.hex)
+
+                add_address.setOnClickListener {
+                    startCreateAccountActivity(ensured_relevant_address.hex)
+                }
+
+                copy_address.setOnClickListener {
+                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                    val clip = ClipData.newPlainText("Ethereum Address", ensured_relevant_address.hex)
+                    clipboard.primaryClip = clip
+                    Snackbar.make(fab, "Address copied to clipboard", Snackbar.LENGTH_LONG).show()
+                }
+            }
+
 
             if (!it.state.relayedEtherscan && !it.state.relayedLightClient) {
                 rlp_header.setText(if (it.transaction.signatureData != null) {

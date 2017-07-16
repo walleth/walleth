@@ -32,13 +32,33 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-            <TextView
-                    android:id="@+id/from_to"
+            <LinearLayout
                     android:paddingLeft="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:paddingRight="8dp"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <TextView
+                        android:id="@+id/from_to"
+                        android:lines="1"
+                        android:ellipsize="middle"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
 
 
+                <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/add_address"
+                        style="@style/button"
+                        app:srcCompat="@drawable/ic_playlist_add"/>
+
+                <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/copy_address"
+                        style="@style/button"
+                        app:srcCompat="@drawable/ic_content_copy"/>
+
+            </LinearLayout>
             <TextView
                     android:text="Nonce:"
                     android:fontFamily="sans-serif"
