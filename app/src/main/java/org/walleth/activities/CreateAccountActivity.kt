@@ -10,6 +10,7 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_account_create.*
+import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.functions.ERC67
 import org.kethereum.functions.isERC67String
 import org.kethereum.functions.isValid
@@ -83,7 +84,7 @@ class CreateAccountActivity : AppCompatActivity() {
             cleanupGeneratedKeyWhenNeeded()
             val newAddress = keyStore.newAddress(DEFAULT_PASSWORD)
             lastCreatedAddress = newAddress
-            hexInput.setText(newAddress.hex)
+            setAddressFromExternalApplyingChecksum(newAddress.hex)
             notify_checkbox.isChecked = true
         }
 
@@ -106,19 +107,23 @@ class CreateAccountActivity : AppCompatActivity() {
 
         if (data != null) {
             if (data.hasExtra("SCAN_RESULT")) {
-                hexInput.setText(if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
+                val address = if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
                     data.getStringExtra("SCAN_RESULT")
                 } else {
                     ERC67(data.getStringExtra("SCAN_RESULT")).getHex()
-                })
+                }
+                setAddressFromExternalApplyingChecksum(address)
             }
             if (data.hasAddressResult()) {
                 trezorPath = data.getPATHResult()
-                hexInput.setText(data.getAddressResult())
+                setAddressFromExternalApplyingChecksum(data.getAddressResult())
             }
         }
     }
 
+    fun setAddressFromExternalApplyingChecksum(addressHex: String) {
+        hexInput.setText(Address(addressHex).withERC55Checksum().hex)
+    }
     override fun onPause() {
         super.onPause()
         cleanupGeneratedKeyWhenNeeded()

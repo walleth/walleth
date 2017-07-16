@@ -110,6 +110,7 @@ dependencies {
 
     compile "com.github.ligi.kethereum:functions:$kethereum_version"
     compile "com.github.ligi.kethereum:bip44:$kethereum_version"
+    compile "com.github.ligi.kethereum:erc55:$kethereum_version"
 
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.17'
