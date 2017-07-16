@@ -29,27 +29,18 @@
 
             <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/scan_button"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:clickable="true"
                     app:srcCompat="@drawable/ic_image_camera_alt"
                     android:layout_alignParentRight="true"
                     android:layout_below="@id/to_label"
-                    android:padding="8dp"
-
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"/>
+                    style="@style/button"/>
 
 
             <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/address_list_button"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:clickable="true"
                     app:srcCompat="@drawable/ic_list_black_24dp"
                     android:layout_toLeftOf="@id/scan_button"
                     android:layout_below="@id/to_label"
-                    android:padding="8dp"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"/>
+                    style="@style/button"/>
 
             <TextView
                     android:layout_below="@id/to_label"
