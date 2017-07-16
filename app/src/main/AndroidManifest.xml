@@ -23,6 +23,7 @@
             android:name="org.walleth.activities.qrscan.QRScanActivity"
             android:theme="@style/AppThemeNoActionbar"/>
 
+        <activity android:name="org.walleth.activities.SwitchNetworkActivity"/>
         <activity android:name="org.walleth.activities.RequestActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>
         <activity android:name="org.walleth.activities.DebugWallethActivity"/>

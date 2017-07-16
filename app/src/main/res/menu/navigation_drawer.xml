@@ -2,6 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
+            android:id="@+id/menu_switch_network"
+            android:title="@string/nav_drawer_switch_network"
+            android:icon="@drawable/ic_assistant_photo"/>
+
+    <item
             android:id="@+id/menu_edit"
             android:title="@string/nav_drawer_edit_account"
             android:icon="@drawable/ic_editor_mode_edit"/>

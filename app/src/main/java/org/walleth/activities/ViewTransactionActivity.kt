@@ -122,7 +122,7 @@ class ViewTransactionActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_etherscan -> {
-            val url = networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforTransaction(transaction!!.transaction.txHash!!)
+            val url = networkDefinitionProvider.currentDefinition.getBlockExplorer().getURLforTransaction(transaction!!.transaction.txHash!!)
             startActivityFromURL(url)
             true
         }

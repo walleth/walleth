@@ -43,10 +43,10 @@ class FileBackedTokenProvider(context: Context, val networkDefinitionProvider: N
 
     override var currentToken = ETH_TOKEN
 
-    override fun getAllTokens() = holder.tokenDefinitions[networkDefinitionProvider.networkDefinition.getNetworkName()]!!.toList()
+    override fun getAllTokens() = holder.tokenDefinitions[networkDefinitionProvider.currentDefinition.getNetworkName()]!!.toList()
 
     override fun addToken(tokenDescriptor: TokenDescriptor) {
-        holder.tokenDefinitions[networkDefinitionProvider.networkDefinition.getNetworkName()]!!.add(tokenDescriptor)
+        holder.tokenDefinitions[networkDefinitionProvider.currentDefinition.getNetworkName()]!!.add(tokenDescriptor)
         save()
     }
 

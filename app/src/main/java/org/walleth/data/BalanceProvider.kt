@@ -17,4 +17,8 @@ open class BalanceProvider : SimpleObserveable() {
             promoteChange()
         }
     }
+
+    fun clear() {
+        balanceMap.clear()
+    }
 }

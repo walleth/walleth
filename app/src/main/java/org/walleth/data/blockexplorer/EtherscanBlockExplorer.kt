@@ -2,12 +2,13 @@ package org.walleth.data.blockexplorer
 
 import org.kethereum.model.Address
 
-open class EtherscanBlockExplorer : BlockExplorer {
+class EtherscanBlockExplorer(val prefix: String) {
 
-    open val base = "https://etherscan.io/"
+    val baseAPIURL by lazy { "https://" + (if (prefix.isBlank()) "api" else prefix) + ".etherscan.io/" }
+    val baseURL by lazy { "https://$prefix.etherscan.io/" }
 
-    override fun getURLforAddress(address: Address) = "$base/address/${address.hex}"
-    override fun getURLforTransaction(transactionHash: String) = "$base/tx/$transactionHash"
-    override fun getURLforBlock(blockNum: Long) ="$base/block/$blockNum"
+    fun getURLforAddress(address: Address) = "$baseURL/address/${address.hex}"
+    fun getURLforTransaction(transactionHash: String) = "$baseURL/tx/$transactionHash"
+    fun getURLforBlock(blockNum: Long) = "$baseURL/block/$blockNum"
 
 }

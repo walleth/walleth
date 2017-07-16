@@ -60,7 +60,7 @@ class EditAccountActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_etherscan -> {
-            startActivityFromURL(networkDefinitionProvider.networkDefinition.getBlockExplorer().getURLforAddress(keyStore.getCurrentAddress()))
+            startActivityFromURL(networkDefinitionProvider.currentDefinition.getBlockExplorer().getURLforAddress(keyStore.getCurrentAddress()))
             true
         }
         android.R.id.home -> {

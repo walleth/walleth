@@ -60,7 +60,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
                             .show()
                 } else {
                     createTransaction(gethTransaction, signatureData, {
-                        val chainId = BigInt(networkDefinitionProvider.networkDefinition.chainId)
+                        val chainId = BigInt(networkDefinitionProvider.currentDefinition.chainId)
                         gethTransaction.getFrom(chainId).toKethereumAddress()
                     })
                 }

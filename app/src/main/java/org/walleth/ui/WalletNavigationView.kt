@@ -14,12 +14,14 @@ import org.walleth.R
 import org.walleth.activities.*
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.NetworkDefinitionProvider
 
 class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationView(context, attrs), ChangeObserver {
 
     var headerView: View? = null
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
 
     override fun observeChange() {
 
@@ -29,6 +31,8 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
                 header.accountName.text = it.name
             }
 
+            val networkName = networkDefinitionProvider.currentDefinition.getNetworkName()
+            menu.findItem(R.id.menu_switch_network).title = "Network: $networkName (switch)"
             menu.findItem(R.id.menu_save).setVisible(keyStore.hasKeyForForAddress(keyStore.getCurrentAddress()))
         }
     }
@@ -44,6 +48,10 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
         setNavigationItemSelectedListener {
             rootView.drawer_layout.closeDrawers()
             when (it.itemId) {
+                R.id.menu_switch_network -> {
+                    context.startActivityFromClass(SwitchNetworkActivity::class.java)
+                    true
+                }
                 R.id.menu_debug -> {
                     context.startActivityFromClass(DebugWallethActivity::class.java)
                     true
@@ -83,6 +91,7 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
 
         addressBook.registerChangeObserverWithInitialObservation(this)
         keyStore.registerChangeObserver(this)
+        networkDefinitionProvider.registerChangeObserver(this)
     }
 
 
@@ -90,6 +99,7 @@ class WalletNavigationView(context: Context, attrs: AttributeSet) : NavigationVi
         super.onDetachedFromWindow()
         addressBook.unRegisterChangeObserver(this)
         keyStore.unRegisterChangeObserver(this)
+        networkDefinitionProvider.registerChangeObserver(this)
     }
 
 }

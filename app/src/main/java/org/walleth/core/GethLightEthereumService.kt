@@ -95,7 +95,7 @@ class GethLightEthereumService : Service() {
             val ethereumNode = Geth.newNode(path, NodeConfig().apply {
                 val bootNodes = Enodes()
 
-                val network = networkDefinitionProvider.networkDefinition
+                val network = networkDefinitionProvider.currentDefinition
 
                 network.bootNodes.forEach {
                     bootNodes.append(Enode(it))

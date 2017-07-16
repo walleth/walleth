@@ -97,6 +97,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="saf_activity_not_found_problem">No App found to handle ACTION_OPEN_DOCUMENT - please report this as a problem to your phone-/ROM-provider</string>
     <string name="transaction_to_use_hint">Transaction to use</string>
     <string name="no_funds_after_fee">No funds left with the given fee</string>
+    <string name="nav_drawer_switch_network">Switch network</string>
     <string name="nav_drawer_edit_account">Edit account</string>
     <string name="nav_drawer_switch_account">Switch account</string>
     <string name="nav_drawer_export_key">Export key</string>

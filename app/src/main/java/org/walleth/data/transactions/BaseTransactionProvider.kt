@@ -7,12 +7,10 @@ import java.util.concurrent.ConcurrentLinkedQueue
 
 open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
 
-
+    protected val transactionMap = mutableMapOf<String, TransactionWithState>()
     protected val pendingTransactions = ConcurrentLinkedQueue<TransactionWithState>()
 
     override fun getPendingTransactions() = pendingTransactions.toList()
-
-
     override fun popPendingTransaction() = pendingTransactions.poll()
 
 
@@ -25,7 +23,10 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
 
     val txListLock = Any()
 
-    protected val transactionMap = mutableMapOf<String, TransactionWithState>()
+    override fun clear() {
+        transactionMap.clear()
+        pendingTransactions.clear()
+    }
 
     override fun getTransactionForHash(hash: String) = synchronized(txListLock) {
         transactionMap[hash.toUpperCase()]

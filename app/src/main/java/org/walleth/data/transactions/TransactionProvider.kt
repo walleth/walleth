@@ -34,4 +34,5 @@ interface TransactionProvider : Observeable {
 
     fun updateTransaction(oldTxHash: String, transaction: TransactionWithState)
 
+    fun clear()
 }
