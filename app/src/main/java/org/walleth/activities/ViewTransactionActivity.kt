@@ -73,11 +73,11 @@ class ViewTransactionActivity : AppCompatActivity() {
             }
 
             if (!it.state.relayedEtherscan && !it.state.relayedLightClient) {
-                if (it.transaction.signatureData != null) {
-                    rlp_header.text = "Signed RLP"
+                rlp_header.setText(if (it.transaction.signatureData != null) {
+                    R.string.signed_rlp_header_text
                 } else {
-                    rlp_header.text = "Unsigned RLP"
-                }
+                    R.string.unsigned_rlp_header_text
+                })
                 rlp_image.setImageBitmap(QRCode.from(it.transaction.encodeRLP().toHexString()).bitmap())
             } else {
                 rlp_image.visibility = View.GONE

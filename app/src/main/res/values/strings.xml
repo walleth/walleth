@@ -106,4 +106,6 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="connect_trezor_message"><![CDATA[Connect your TREZOR.<br/>If you have none: <a href=\"https://shop.trezor.io?a=walleth.org\">get one</a>]]></string>
     <string name="activity_subtitle_get_trezor_address">Get TREZOR Address</string>
     <string name="activity_subtitle_sign_with_trezor">Sign with TREZOR</string>
+    <string name="signed_rlp_header_text">Signed RLP</string>
+    <string name="unsigned_rlp_header_text">Unsigned RLP</string>
 </resources>
