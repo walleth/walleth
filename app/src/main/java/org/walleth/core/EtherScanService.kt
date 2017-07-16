@@ -9,7 +9,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import okhttp3.*
 import org.json.JSONObject
-import org.kethereum.functions.toHexString
+import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
 import org.walleth.BuildConfig
 import org.walleth.data.BalanceProvider
@@ -18,6 +18,7 @@ import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionWithState
+import org.walleth.khex.toHexString
 import org.walleth.ui.ChangeObserver
 import java.io.IOException
 import java.lang.NumberFormatException
@@ -78,28 +79,27 @@ class EtherScanService : Service() {
 
     private fun relayTransactionsIfNeeded() {
         transactionProvider.getAllTransactions().forEach {
-            if (it.transaction.signedRLP != null) {
+            if (it.transaction.signatureData != null) {
                 relayTransaction(it)
             }
         }
     }
 
     private fun relayTransaction(transaction: TransactionWithState) {
-        transaction.transaction.signedRLP?.let {
-            getEtherscanResult("module=proxy&action=eth_sendRawTransaction&hex=" + it.fold("0x", { s: String, byte: Byte -> s + byte.toHexString() })) {
-                if (it.has("result")) {
-                    transaction.transaction.txHash = it.getString("result")
-                } else if (it.has("error")) {
-                    val error= it.getJSONObject("error")
-                    if (error.has("message") && !error.getString("message").startsWith("known")) {
-                        transaction.state.error = it.toString()
-                    }
-                } else {
+
+        getEtherscanResult("module=proxy&action=eth_sendRawTransaction&hex=" + transaction.transaction.encodeRLP().toHexString("")) {
+            if (it.has("result")) {
+                transaction.transaction.txHash = it.getString("result")
+            } else if (it.has("error")) {
+                val error = it.getJSONObject("error")
+                if (error.has("message") && !error.getString("message").startsWith("known")) {
                     transaction.state.error = it.toString()
                 }
-                transaction.state.eventLog = transaction.state.eventLog ?: "" + "relayed via EtherScan"
-                transaction.transaction.signedRLP = null
+            } else {
+                transaction.state.error = it.toString()
             }
+            transaction.state.eventLog = transaction.state.eventLog ?: "" + "relayed via EtherScan"
+            transaction.state.relayedEtherscan = true
         }
     }
 
@@ -136,7 +136,8 @@ class EtherScanService : Service() {
                     getEtherscanResult("module=proxy&action=eth_blockNumber") {
                         balanceProvider.setBalance(Address(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, currentToken)
                     }
-                } catch(e: NumberFormatException) {}
+                } catch(e: NumberFormatException) {
+                }
             }
         }
     }

@@ -7,13 +7,13 @@ import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.Account
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
-import org.kethereum.functions.hexToByteArray
 import org.kethereum.model.Address
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.SimpleObserveable
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.kethereum.geth.toKethereumAddress
+import org.walleth.khex.hexToByteArray
 import java.io.File
 
 class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), WallethKeyStore {

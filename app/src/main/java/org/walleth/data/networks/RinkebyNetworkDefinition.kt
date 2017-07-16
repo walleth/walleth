@@ -1,6 +1,6 @@
 package org.walleth.data.networks
 
-import org.kethereum.rpc.ETHEREUM_NETWORK_RINKEBY
+import org.kethereum.ETHEREUM_NETWORK_RINKEBY
 import org.walleth.data.blockexplorer.EtherscanRinkebyBlockExplorer
 
 class RinkebyNetworkDefinition : NetworkDefinition {

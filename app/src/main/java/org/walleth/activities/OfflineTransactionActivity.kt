@@ -9,26 +9,25 @@ import android.view.MenuItem
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_relay.*
 import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
-import org.kethereum.functions.hexToByteArray
 import org.kethereum.model.Address
+import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
-import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.transactions.TransactionJSON
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
+import org.walleth.kethereum.geth.extractSignatureData
 import org.walleth.kethereum.geth.toKethereumAddress
+import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
 
 class OfflineTransactionActivity : AppCompatActivity() {
@@ -49,11 +48,9 @@ class OfflineTransactionActivity : AppCompatActivity() {
             try {
                 val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
                 val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
-                val json = gethTransaction.encodeJSON()
-                val adapter = Moshi.Builder().build().adapter(TransactionJSON::class.java)
-                val fromJson = adapter.fromJson(json)!!
+                val signatureData = gethTransaction.extractSignatureData()
 
-                if (fromJson.r == "0x0" && fromJson.v == "0x0" && fromJson.s == "0x0") {
+                if (signatureData == null) {
                     AlertDialog.Builder(this)
                             .setMessage("Unsigned transaction found - do you intend to sign with the current account? You will see the transaction details afterwards")
                             .setNegativeButton(android.R.string.cancel, null)
@@ -62,7 +59,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
                             })
                             .show()
                 } else {
-                    createTransaction(gethTransaction, transactionRLP.toList(), {
+                    createTransaction(gethTransaction, signatureData, {
                         val chainId = BigInt(networkDefinitionProvider.networkDefinition.chainId)
                         gethTransaction.getFrom(chainId).toKethereumAddress()
                     })
@@ -73,7 +70,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
         }
     }
 
-    private fun createTransaction(gethTransaction: org.ethereum.geth.Transaction, signedRLP: List<Byte>?, from: () -> Address) {
+    private fun createTransaction(gethTransaction: org.ethereum.geth.Transaction, signatureData: SignatureData?, from: () -> Address) {
         try {
             val transaction = Transaction(
                     value = BigInteger(gethTransaction.value.toString()),
@@ -82,19 +79,14 @@ class OfflineTransactionActivity : AppCompatActivity() {
 
                     nonce = BigInteger(gethTransaction.nonce.toString()),
                     txHash = gethTransaction.hash.hex,
-                    signedRLP = signedRLP
+                    signatureData = signatureData
             )
-            val transactionState = TransactionState(needsSigningConfirmation = signedRLP == null)
+            val transactionState = TransactionState(needsSigningConfirmation = signatureData == null)
             transactionProvider.addTransaction(TransactionWithState(transaction, transactionState))
 
-            Log.i("encodeJSON" + gethTransaction.encodeJSON())
+            startActivity(getTransactionActivityIntentForHash(gethTransaction.hash.hex))
+            finish()
 
-            if (gethTransaction.sigHash == null) {
-                alert("signed transaction")
-            } else {
-                startActivity(getTransactionActivityIntentForHash(gethTransaction.hash.hex))
-                finish()
-            }
         } catch (e: Exception) {
             if (e.message == "invalid transaction v, r, s values") {
                 AlertDialog.Builder(this)

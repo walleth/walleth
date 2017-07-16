@@ -12,7 +12,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_view_transaction.*
 import net.glxn.qrgen.android.QRCode
-import org.kethereum.functions.toHexString
+import org.kethereum.functions.encodeRLP
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
@@ -23,6 +23,7 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.functions.resolveNameFromAddressBook
+import org.walleth.khex.toHexString
 
 class ViewTransactionActivity : AppCompatActivity() {
 
@@ -71,12 +72,13 @@ class ViewTransactionActivity : AppCompatActivity() {
                 from_to.text = it.transaction.from.resolveNameFromAddressBook(addressBook)
             }
 
-            if (it.transaction.signedRLP != null) {
-                rlp_header.text = "Signed RLP"
-                rlp_image.setImageBitmap(QRCode.from(it.transaction.signedRLP!!.toHexString()).bitmap())
-            } else if (it.transaction.unSignedRLP != null) {
-                rlp_header.text = "Unsigned RLP"
-                rlp_image.setImageBitmap(QRCode.from(it.transaction.unSignedRLP!!.toHexString()).bitmap())
+            if (!it.state.relayedEtherscan && !it.state.relayedLightClient) {
+                if (it.transaction.signatureData != null) {
+                    rlp_header.text = "Signed RLP"
+                } else {
+                    rlp_header.text = "Unsigned RLP"
+                }
+                rlp_image.setImageBitmap(QRCode.from(it.transaction.encodeRLP().toHexString()).bitmap())
             } else {
                 rlp_image.visibility = View.GONE
                 rlp_header.visibility = View.GONE

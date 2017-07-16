@@ -108,8 +108,8 @@ dependencies {
 
     compile "org.ethereum:geth:1.6.7"
 
-    compile 'com.github.ligi.kethereum:functions:0.16'
-    compile 'com.github.ligi.kethereum:bip44:0.16'
+    compile "com.github.ligi.kethereum:functions:$kethereum_version"
+    compile "com.github.ligi.kethereum:bip44:$kethereum_version"
 
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.17'

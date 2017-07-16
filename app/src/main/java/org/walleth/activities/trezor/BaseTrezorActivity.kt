@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.activity_trezor.*
 import kotlinx.android.synthetic.main.password_input.view.*
 import kotlinx.android.synthetic.main.pinput.view.*
 import org.kethereum.bip44.BIP44
-import org.kethereum.functions.toHexString
 import org.kethereum.model.Address
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.setVisibility
@@ -33,6 +32,7 @@ import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionProvider
+import org.walleth.khex.toHexString
 
 
 abstract class BaseTrezorActivity : AppCompatActivity() {

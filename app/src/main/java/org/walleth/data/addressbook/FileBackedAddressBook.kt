@@ -5,6 +5,7 @@ import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types
 import okio.Okio
+import org.kethereum.model.Address
 import java.io.File
 
 class FileBackedAddressBook(val context: Context) : BaseAddressBook(), AddressBook {
@@ -17,7 +18,8 @@ class FileBackedAddressBook(val context: Context) : BaseAddressBook(), AddressBo
     init {
         if (file.exists()) {
             adapter.fromJson(Okio.buffer(Okio.source(file)))?.forEach {
-                setEntry(it)
+                // we need to recreate the address to get the hex from cleanHex again
+                super.setEntry(it.copy(address = Address(it.address.cleanHex)))
             }
         }
     }

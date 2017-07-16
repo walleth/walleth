@@ -3,8 +3,8 @@ package org.walleth.data.tokens
 import android.content.Context
 import com.squareup.moshi.Moshi
 import okio.Okio
-import org.kethereum.rpc.ETHEREUM_NETWORK_MAIN
-import org.kethereum.rpc.ETHEREUM_NETWORK_RINKEBY
+import org.kethereum.ETHEREUM_NETWORK_MAIN
+import org.kethereum.ETHEREUM_NETWORK_RINKEBY
 import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.networks.NetworkDefinitionProvider

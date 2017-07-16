@@ -10,6 +10,7 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.*
+import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
 import org.walleth.R
 import org.walleth.activities.MainActivity
@@ -20,10 +21,10 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
-import org.walleth.kethereum.geth.toGethAddr
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionSource
 import org.walleth.data.transactions.TransactionWithState
+import org.walleth.kethereum.geth.toGethAddr
 import org.walleth.ui.ChangeObserver
 import java.io.File
 import java.math.BigInteger
@@ -181,12 +182,11 @@ class GethLightEthereumService : Service() {
 
     private fun executeTransaction(transaction: TransactionWithState, client: EthereumClient, ethereumContext: Context) {
         try {
-            transaction.transaction.signedRLP?.let {
-                val transactionWithSignature = Geth.newTransactionFromRLP(it.toByteArray())
-                client.sendTransaction(ethereumContext, transactionWithSignature)
-                transaction.state.ref = TransactionSource.WALLETH_PROCESSED
-            }
-
+            val rlp = transaction.transaction.encodeRLP()
+            val transactionWithSignature = Geth.newTransactionFromRLP(rlp)
+            client.sendTransaction(ethereumContext, transactionWithSignature)
+            transaction.state.ref = TransactionSource.WALLETH_PROCESSED
+            transaction.state.relayedLightClient = true
         } catch (e: Exception) {
             transaction.state.error = e.message
         }

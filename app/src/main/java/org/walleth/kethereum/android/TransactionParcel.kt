@@ -12,7 +12,6 @@ class TransactionParcel(val transaction: Transaction) : Parcelable {
             value = BigInteger(parcel.readString()),
             from = Address(parcel.readString()),
             txHash = parcel.readValue(null) as String?,
-            sigHash = parcel.readValue(null) as String?,
             to = (parcel.readValue(null) as String?)?.let { Address(it) },
             nonce = (parcel.readValue(null) as String?)?.let { BigInteger(it) },
             creationEpochSecond = parcel.readValue(null) as Long?,
@@ -24,7 +23,6 @@ class TransactionParcel(val transaction: Transaction) : Parcelable {
         dest.writeString(transaction.value.toString())
         dest.writeString(transaction.from.hex)
         dest.writeValue(transaction.txHash)
-        dest.writeValue(transaction.sigHash)
         dest.writeValue(transaction.to?.hex)
         dest.writeValue(transaction.nonce?.toString())
         dest.writeValue(transaction.creationEpochSecond)

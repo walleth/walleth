@@ -8,6 +8,8 @@ import java.math.BigInteger
 
 data class TransactionState(var needsSigningConfirmation: Boolean = false,
                             var ref: TransactionSource = WALLETH,
+                            var relayedLightClient: Boolean = false,
+                            var relayedEtherscan: Boolean = false,
                             var eventLog: String? = null,
                             var error: String? = null)
 

@@ -1,12 +1,12 @@
 package org.walleth.core
 
 import org.json.JSONArray
-import org.kethereum.functions.hexToByteArray
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
 import org.walleth.data.transactions.TransactionSource
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
+import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
 
 fun parseEtherScanTransactions(jsonArray: JSONArray): List<TransactionWithState> {

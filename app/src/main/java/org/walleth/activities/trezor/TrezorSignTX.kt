@@ -8,8 +8,6 @@ import com.google.protobuf.ByteString
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
 import org.kethereum.bip44.BIP44
-import org.kethereum.functions.encodeRLP
-import org.kethereum.functions.hexToByteArray
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.ligi.kaxtui.alert
@@ -17,6 +15,7 @@ import org.walleth.R.string
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
 import org.walleth.kethereum.android.TransactionParcel
+import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
 
 
@@ -57,9 +56,6 @@ class TrezorSignTX : BaseTrezorActivity() {
                     s = BigInteger(res.signatureS.toByteArray()),
                     v = res.signatureV.toByte()
             )
-
-            val encodeRLP = transaction.encodeRLP()
-            transaction.signedRLP = encodeRLP.toList()
 
             transactionProvider.addPendingTransaction(TransactionWithState(transaction, TransactionState()))
 

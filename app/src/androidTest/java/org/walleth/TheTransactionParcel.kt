@@ -26,8 +26,7 @@ class TheTransactionParcel {
                 gasLimit = BigInteger("123"),
                 gasPrice = BigInteger("123542"),
                 input = listOf(1, 2, 3, 4, 2),
-                txHash = "0xfoo",
-                sigHash = "0xBar")
+                txHash = "0xfoo")
         testTransactionParcel(transactionBefore)
     }
 
