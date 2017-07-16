@@ -108,4 +108,6 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="activity_subtitle_sign_with_trezor">Sign with TREZOR</string>
     <string name="signed_rlp_header_text">Signed RLP</string>
     <string name="unsigned_rlp_header_text">Unsigned RLP</string>
+    <string name="snackbar_after_address_copy">Address copied to clipboard</string>
+    <string name="ethereum_address">Ethereum Address</string>
 </resources>

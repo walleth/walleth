@@ -93,9 +93,9 @@ class ViewTransactionActivity : AppCompatActivity() {
 
                 copy_address.setOnClickListener {
                     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                    val clip = ClipData.newPlainText("Ethereum Address", ensured_relevant_address.hex)
+                    val clip = ClipData.newPlainText(getString(R.string.ethereum_address), ensured_relevant_address.hex)
                     clipboard.primaryClip = clip
-                    Snackbar.make(fab, "Address copied to clipboard", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(fab, R.string.snackbar_after_address_copy, Snackbar.LENGTH_LONG).show()
                 }
             }
 
