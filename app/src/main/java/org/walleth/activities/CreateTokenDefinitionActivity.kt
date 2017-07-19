@@ -11,11 +11,10 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_token.*
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.TokenDescriptor
-import org.walleth.iac.BarCodeIntentIntegrator
-import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
 
 class CreateTokenDefinitionActivity : AppCompatActivity() {
 
@@ -73,7 +72,7 @@ class CreateTokenDefinitionActivity : AppCompatActivity() {
             true
         }
         R.id.menu_scan -> {
-            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
+            startScanActivityForResult(this)
             true
         }
         else -> super.onOptionsItemSelected(item)

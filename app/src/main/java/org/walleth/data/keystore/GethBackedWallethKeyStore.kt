@@ -7,13 +7,13 @@ import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.Account
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
-import org.kethereum.functions.fromHexToByteArray
+import org.kethereum.functions.hexToByteArray
 import org.kethereum.model.Address
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.SimpleObserveable
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.toKethereumAddress
+import org.walleth.kethereum.geth.toKethereumAddress
 import java.io.File
 
 class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), WallethKeyStore {
@@ -70,7 +70,7 @@ class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), Wal
     }
 
     override fun importECDSAKey(key: String, storePassword: String)
-            = keyStore.importECDSAKey(fromHexToByteArray(key), storePassword)?.address?.toKethereumAddress()
+            = keyStore.importECDSAKey(key.hexToByteArray(), storePassword)?.address?.toKethereumAddress()
 
     override fun importJSONKey(json: String, importPassword: String, storePassword: String)
             = keyStore.importKey(json.toByteArray(), importPassword, storePassword)?.address?.toKethereumAddress()

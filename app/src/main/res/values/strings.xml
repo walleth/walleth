@@ -1,11 +1,14 @@
 <resources>
     <string name="app_name">WALLΞTH</string>
-    <string name="welcome">Welcome,\n\n there was no account for you yet - so one was created. Note - this one is not secured with any password for easy use - so only use it as a hot walleth for a few beverages.</string>
+    <string name="welcome">Welcome,\n\n there was no account for you yet - so one was created. Note - this one is not secured with any password for easy use - so only use it as a hot walleth for a few beverages. Also be aware that this alpha operates currently on the rinkeby network only.</string>
     <string name="request_transaction_subtitle">Request Transaction</string>
     <string name="edit_account_subtitle">Edit Account</string>
     <string name="switch_account_subtitle">Switch Account</string>
     <string name="address_book_subtitle">Address book</string>
     <string name="transaction_subtitle">Transaction details</string>
+
+    <string name="scan_instructions">Center a QR code inside the frame.</string>
+    <string name="no_camera_permission">WALLΞTH does not have permission to access the camera.</string>
 
     <string name="request_subtitle">Request</string>
     <string name="drawer_open">open</string>
@@ -99,4 +102,8 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="nav_drawer_export_key">Export key</string>
     <string name="nav_drawer_import_key">Import key</string>
     <string name="nav_drawer_settings">Settings</string>
+    <string name="nonce_invalid">we need a nonce</string>
+    <string name="connect_trezor_message"><![CDATA[Connect your TREZOR.<br/>If you have none: <a href=\"https://shop.trezor.io?a=walleth.org\">get one</a>]]></string>
+    <string name="activity_subtitle_get_trezor_address">Get TREZOR Address</string>
+    <string name="activity_subtitle_sign_with_trezor">Sign with TREZOR</string>
 </resources>

@@ -1,7 +1,9 @@
 package org.walleth
 
-import android.app.Application
+import android.content.Context
 import android.content.Intent
+import android.support.multidex.MultiDex
+import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
 import com.chibatching.kotpref.Kotpref
 import com.github.salomonbrys.kodein.*
@@ -28,7 +30,9 @@ import org.walleth.data.tokens.FileBackedTokenProvider
 import org.walleth.data.transactions.BaseTransactionProvider
 import org.walleth.data.transactions.TransactionProvider
 
-open class App : Application(), KodeinAware {
+
+
+open class App : MultiDexApplication(), KodeinAware {
 
     override val kodein by Kodein.lazy {
         bind<OkHttpClient>() with singleton { OkHttpClient.Builder().build() }
@@ -46,6 +50,11 @@ open class App : Application(), KodeinAware {
         bind<WallethKeyStore>() with singleton { GethBackedWallethKeyStore(this@App) }
         bind<Settings>() with singleton { KotprefSettings }
         bind<TokenProvider>() with singleton { FileBackedTokenProvider(this@App, instance()) }
+    }
+
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
     }
 
     override fun onCreate() {

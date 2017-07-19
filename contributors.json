@@ -1,0 +1,28 @@
+[
+  {
+    "nick": "ligi",
+    "eth": "0xfdf1210fc262c73d0436236a0e07be419babbbc4",
+    "role": [
+      "code",
+      "org",
+      "concept",
+      "root"
+    ],
+    "url": "http://ligi.de"
+  },
+  {
+    "name": "Michael Cook",
+    "eth": "0xbE27686a93c54Af2f55f16e8dE9E6Dc5dccE915e",
+    "role": [
+      "art"
+    ],
+    "url": "https://cookicons.co/"
+  },
+  {
+    "nick": "zaeleus",
+    "eth": "0xB98e578BB98AaE413314FF31D30EE1C9bcF7f708",
+    "role": [
+      "code"
+    ]
+  }
+]

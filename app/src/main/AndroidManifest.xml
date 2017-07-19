@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="org.walleth">
 
+    <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_LOGS"/>
 
@@ -18,10 +19,16 @@
         <service android:name="org.walleth.core.EtherScanService"/>
         <service android:name="org.walleth.core.GethTransactionSigner"/>
 
+        <activity
+            android:name="org.walleth.activities.qrscan.QRScanActivity"
+            android:theme="@style/AppThemeNoActionbar"/>
+
         <activity android:name="org.walleth.activities.RequestActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>
         <activity android:name="org.walleth.activities.DebugWallethActivity"/>
         <activity android:name="org.walleth.activities.OfflineTransactionActivity"/>
+        <activity android:name="org.walleth.activities.trezor.TrezorSignTX"/>
+        <activity android:name="org.walleth.activities.trezor.TrezorGetAddress"/>
         <activity android:name="org.walleth.activities.ImportActivity"/>
         <activity android:name="org.walleth.activities.ExportKeyActivity"/>
         <activity android:name="org.walleth.activities.EditAccountActivity"/>

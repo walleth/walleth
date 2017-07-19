@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -9,19 +10,22 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_account_create.*
+import org.kethereum.functions.ERC67
+import org.kethereum.functions.isERC67String
 import org.kethereum.functions.isValid
 import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string.*
+import org.walleth.activities.qrscan.startScanActivityForResult
+import org.walleth.activities.trezor.TrezorGetAddress
+import org.walleth.activities.trezor.getAddressResult
+import org.walleth.activities.trezor.getPATHResult
+import org.walleth.activities.trezor.hasAddressResult
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.iac.BarCodeIntentIntegrator
-import org.walleth.iac.BarCodeIntentIntegrator.QR_CODE_TYPES
-import org.walleth.iac.ERC67
-import org.walleth.iac.isERC67String
 
 private val HEX_INTENT_EXTRA_KEY = "HEX"
 fun Context.startCreateAccountActivity(hex: String) {
@@ -32,9 +36,12 @@ fun Context.startCreateAccountActivity(hex: String) {
 
 class CreateAccountActivity : AppCompatActivity() {
 
+    val REQUEST_CODE_TREZOR = 7965
+
     val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     var lastCreatedAddress: Address? = null
+    var trezorPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,11 +68,17 @@ class CreateAccountActivity : AppCompatActivity() {
                         name = nameInput.text.toString(),
                         address = Address(hex),
                         note = noteInput.text.toString(),
+                        trezorDerivationPath = trezorPath,
                         isNotificationWanted = notify_checkbox.isChecked)
                 )
                 finish()
             }
         }
+
+        add_trezor.setOnClickListener {
+            startActivityForResult(Intent(this, TrezorGetAddress::class.java), REQUEST_CODE_TREZOR)
+        }
+
         new_address_button.setOnClickListener {
             cleanupGeneratedKeyWhenNeeded()
             val newAddress = keyStore.newAddress(DEFAULT_PASSWORD)
@@ -75,7 +88,7 @@ class CreateAccountActivity : AppCompatActivity() {
         }
 
         camera_button.setOnClickListener {
-            BarCodeIntentIntegrator(this).initiateScan(QR_CODE_TYPES)
+            startScanActivityForResult(this)
         }
     }
 
@@ -87,12 +100,22 @@ class CreateAccountActivity : AppCompatActivity() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data != null && data.hasExtra("SCAN_RESULT")) {
-            hexInput.setText(if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
-                data.getStringExtra("SCAN_RESULT")
-            } else {
-                ERC67(data.getStringExtra("SCAN_RESULT")).getHex()
-            })
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        if (data != null) {
+            if (data.hasExtra("SCAN_RESULT")) {
+                hexInput.setText(if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
+                    data.getStringExtra("SCAN_RESULT")
+                } else {
+                    ERC67(data.getStringExtra("SCAN_RESULT")).getHex()
+                })
+            }
+            if (data.hasAddressResult()) {
+                trezorPath = data.getPATHResult()
+                hexInput.setText(data.getAddressResult())
+            }
         }
     }
 

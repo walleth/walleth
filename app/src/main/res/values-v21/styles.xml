@@ -1,0 +1,7 @@
+<resources>
+    <style name="password_textinputlayout">
+        <item name="passwordToggleDrawable">@drawable/asl_password_visibility</item>
+        <item name="passwordToggleTint">?colorControlNormal</item>
+        <item name="passwordToggleEnabled">true</item>
+    </style>
+</resources>

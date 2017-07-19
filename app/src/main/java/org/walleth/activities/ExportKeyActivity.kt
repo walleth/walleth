@@ -40,7 +40,6 @@ class ExportKeyActivity : AppCompatActivity() {
         supportActionBar?.subtitle = getString(R.string.export_account_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        generate()
         qrcode_image.setVisibility(false)
         show_qr_switch.setOnCheckedChangeListener { _, isChecked ->
             qrcode_image.setVisibility(isChecked)
@@ -48,7 +47,19 @@ class ExportKeyActivity : AppCompatActivity() {
 
         password_input.doAfterEdit {
             generate()
+            checkConfirmation()
         }
+
+        password_input_confirmation.doAfterEdit {
+            checkConfirmation()
+        }
+
+        checkConfirmation()
+        generate()
+    }
+
+    private fun checkConfirmation() {
+        confirmation_warning.setVisibility(password_input.text.toString() != password_input_confirmation.text.toString())
     }
 
     private fun generate() {
@@ -113,8 +124,8 @@ class ExportKeyActivity : AppCompatActivity() {
         val encode = Base64.encodeToString(bos.toByteArray(), Base64.DEFAULT)
 
         // Generate an HTML document on the fly:
-        val htmlDocument = "<html><body><h1>" + getString(R.string.paper_wallet_title)+"</h1>" +
-                "<p><font size='21'>"+getString(R.string.paper_wallet_text)+"</font></p>" +
+        val htmlDocument = "<html><body><h1>" + getString(R.string.paper_wallet_title) + "</h1>" +
+                "<p><font size='21'>" + getString(R.string.paper_wallet_text) + "</font></p>" +
                 "<center><img width=\"80%\" src=\"data:image/png;base64,$encode\"/></center></body></html>"
         webView.loadDataWithBaseURL(null, htmlDocument, "text/HTML", "UTF-8", null)
 

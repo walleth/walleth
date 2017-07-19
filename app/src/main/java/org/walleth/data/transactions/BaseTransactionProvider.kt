@@ -2,6 +2,7 @@ package org.walleth.data.transactions
 
 import org.kethereum.model.Address
 import org.walleth.data.SimpleObserveable
+import java.math.BigInteger
 import java.util.concurrent.ConcurrentLinkedQueue
 
 open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
@@ -20,7 +21,7 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
         promoteChange()
     }
 
-    override fun getLastNonceForAddress(address: Address) = getTransactionsForAddress(address).filter { it.transaction.from == address }.fold(-1L, { i: Long, transaction: TransactionWithState -> Math.max(i, transaction.transaction.nonce ?: -1) })
+    override fun getLastNonceForAddress(address: Address) = getTransactionsForAddress(address).filter { it.transaction.from == address }.fold(BigInteger("-1"), { i: BigInteger, transaction: TransactionWithState -> i.max(transaction.transaction.nonce ?: BigInteger("-1")) })
 
     val txListLock = Any()
 
@@ -50,6 +51,7 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
             if (needsUpdate) promoteChange()
         }
     }
+
     override fun addTransaction(transaction: TransactionWithState) {
         synchronized(txListLock) {
             val txHash = transaction.transaction.txHash

@@ -23,7 +23,6 @@ import org.walleth.R
 import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.exchangerate.isETH
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.iac.toERC67String
 import java.math.BigDecimal
 
 class RequestActivity : AppCompatActivity() {

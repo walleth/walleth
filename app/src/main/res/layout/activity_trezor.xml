@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="org.walleth.activities.MainActivity">
+
+    <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/trezor_connect_indicator"
+            app:srcCompat="@drawable/trezor_connect"
+            android:layout_centerInParent="true"
+            android:layout_width="128dp"
+            android:layout_height="128dp"/>
+
+    <TextView
+            android:id="@+id/trezor_status_text"
+            android:text="Please connect your TREZOR"
+            android:layout_below="@id/trezor_connect_indicator"
+            android:layout_centerHorizontal="true"
+            android:fontFamily="sans-serif"
+            android:textSize="18dp"
+            android:gravity="center_horizontal"
+            android:padding="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+</RelativeLayout>
