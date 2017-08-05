@@ -105,6 +105,7 @@ configurations {
 dependencies {
     compile 'com.android.support:multidex:1.0.2'
     androidTestCompile  'com.android.support:multidex:1.0.2'
+    androidTestCompile  'com.android.support:multidex-instrumentation:1.0.2'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
