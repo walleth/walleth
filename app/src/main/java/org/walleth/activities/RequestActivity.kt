@@ -15,11 +15,13 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
 import net.glxn.qrgen.android.QRCode
-import org.kethereum.functions.toERC67String
+import org.kethereum.model.Address
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
+import org.walleth.data.exchangerate.TokenProvider
+import org.walleth.data.exchangerate.isETH
 import org.walleth.data.keystore.WallethKeyStore
 import java.math.BigDecimal
 
@@ -27,6 +29,7 @@ class RequestActivity : AppCompatActivity() {
 
     lateinit var currentERC67String: String
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val tokenProvider: TokenProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,14 +55,30 @@ class RequestActivity : AppCompatActivity() {
     }
 
     private fun refreshQR() {
-        val relevantAddress = keyStore.getCurrentAddress()
-        currentERC67String = relevantAddress.toERC67String()
 
-        if (add_value_checkbox.isChecked) {
-            try {
-                currentERC67String = relevantAddress.toERC67String(BigDecimal(value_input_edittext.text.toString()))
-            } catch (e: NumberFormatException) {
+        if(tokenProvider.currentToken.isETH()) {
+
+            val relevantAddress = keyStore.getCurrentAddress()
+            currentERC67String = relevantAddress.toERC67String()
+
+            if (add_value_checkbox.isChecked) {
+                try {
+                    currentERC67String = relevantAddress.toERC67String(BigDecimal(value_input_edittext.text.toString()))
+                } catch (e: NumberFormatException) {
+                }
             }
+        }else{
+            val relevantAddress = Address(tokenProvider.currentToken.address)
+            currentERC67String = relevantAddress.toERC67String()
+            if (add_value_checkbox.isChecked) {
+                try {
+                    currentERC67String = currentERC67String + "?function=transfer(address " +
+                            keyStore.getCurrentAddress().hex + ", uint " +
+                            value_input_edittext.text.toString() + ")"
+                } catch (e: NumberFormatException) {
+                }
+            }
+
         }
 
         receive_qrcode.setImageBitmap(QRCode.from(currentERC67String).bitmap())
