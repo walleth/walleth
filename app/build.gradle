@@ -148,8 +148,8 @@ dependencies {
     androidTestCompile "org.mockito:mockito-core:2.8.47"
     androidTestCompile 'com.linkedin.dexmaker:dexmaker-mockito:2.2.0'
 
-    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:2.2.2'
-    androidTestCompile 'com.github.ligi:trulesk:0.19'
+    androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.0'
+    androidTestCompile 'com.github.ligi:trulesk:0.20'
 
     testCompile 'junit:junit:4.12'
     testCompile 'com.google.truth:truth:0.34'
