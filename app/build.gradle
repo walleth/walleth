@@ -8,14 +8,14 @@ apply plugin: 'com.getkeepsafe.dexcount'
 def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.3"
+    compileSdkVersion 26
+    buildToolsVersion "26.0.1"
 
     defaultConfig {
         applicationId "org.walleth"
 
         minSdkVersion 15
-        targetSdkVersion 25
+        targetSdkVersion 26
 
         versionCode 17
         versionName "0.17"
@@ -104,8 +104,8 @@ configurations {
 
 dependencies {
     compile 'com.android.support:multidex:1.0.2'
-    androidTestCompile  'com.android.support:multidex:1.0.2'
-    androidTestCompile  'com.android.support:multidex-instrumentation:1.0.2'
+    androidTestCompile 'com.android.support:multidex:1.0.2'
+    androidTestCompile 'com.android.support:multidex-instrumentation:1.0.2'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
@@ -168,41 +168,64 @@ if (hasProperty("isCI")) {
 
     dependencyVerification {
         verify = [
-
-
-                'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
+                'com.android.support:multidex:7cd48755c7cfdb6dd2d21cbb02236ec390f6ac91cde87eb62f475b259ab5301d',
+                'com.github.ligi.kethereum:erc55:b10d21873d68144fec7e534b9f0ef89cd5c3f1d236ea539b61851b59084f1bd7',
+                'com.github.ligi.kethereum:functions:9af9d5209069c57121bc6dc5e0c7279cdce5c13b8b9537be7fb83edeac5cfeb6',
+                'com.github.ligi.kethereum:bip44:845ff4198272194f9d1a5dace82ccb16a550f2578cf668ce21d0cd18f7483a76',
                 'com.github.ligi:KAXT:4cfe2b683dacff9575799edb63a3d46ff647761bf76cb17702150856471538bc',
+                'com.github.ligi:KAXTUI:7bd3745979d8db21010846303339e2debec5ab77c5c9323f136d70c093c1017a',
+                'com.github.salomonbrys.kodein:kodein:6727cb851a73a82fd5ded29877739749f7f89c26a23ababaf9a06d7cf9aa7bee',
+                'com.github.salomonbrys.kodein:kodein-android:98b1998e2477eb715720ddf7f016a1b828ceb87c1f11ce72dad3d518629a0330',
+                'com.github.ligi.kethereum:model:6feca5e1b2ecbc9237ad8f404fe9af08ac815ccbf837257a2c195f186c7db5d7',
+                'com.github.ligi.kethereum:rlp:846bbcfa9a1989548152b9d9f633022d0d8e1d60b23aaee903cafa60ecb72a69',
+                'com.github.ligi.kethereum:keccak_shortcut:f0dfabde52804e84a3b469df88b3a59d78d6c7ff8a01866dcee1c96ad283dc69',
+                'com.github.salomonbrys.kodein:kodein-core:4876960b936d6becb00e7b5c614ba9f4be2b7d5d22a8a2433583d87373c342f8',
+                'com.github.walleth:keccak:1c03589f2f883dacf343689a5311f1ecf13710f115ac755e18277b70e5357435',
+                'com.github.walleth:khex:a3a93680c8b0bd60ef226651ad5eb401fa18f65d0941c3ea6464b8adfa693d1e',
+                'org.jetbrains.kotlin:kotlin-stdlib:7d587b9c81e2a6f532f1347976facafd079b8fd91e6c61217add60b28e35406f',
+                'org.ethereum:geth:5efa57bd3d67b1321f7ab5da0a6b52f279da77676358a8b64d8b4d71f5a00f82',
+                'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
+                'com.github.trezor.trezor-android:trezor-lib:6ac8601798e851191a1c33673d8b804b836cdfd9788b289a41ec9c3655b3e91c',
+                'com.github.kenglxn.QRGen:android:7670317f4ec37cf2bb24b7d3932da83daafa2956e77cd2e92dccce86a66816d9',
+                'com.github.kenglxn.QRGen:core:1db3f51189a71bb37ee0e97081a353b6c6b203ee73bb93c4372aa76e94f9d701',
+                'com.google.zxing:core:bba7724e02a997cec38213af77133ee8e24b0d5cf5fa7ecbc16a4fa93f11ee0d',
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
                 'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',
                 'com.squareup.okhttp3:okhttp:c1d57f913f74f61d424d4250a92723ba9a61affc12a0ab194d84cc179b472841',
-                'com.github.salomonbrys.kodein:kodein:6727cb851a73a82fd5ded29877739749f7f89c26a23ababaf9a06d7cf9aa7bee',
-                'com.github.salomonbrys.kodein:kodein-android:98b1998e2477eb715720ddf7f016a1b828ceb87c1f11ce72dad3d518629a0330',
-                'com.android.support:appcompat-v7:ac1ebbc46589195dda3e0b1becfe410bafd75bdf3edd1cd9acf04850f3895830',
-                'com.android.support:design:a3e83064fe99d0a4369f9b46d8bfbe77d0c3022fffdee4be3ac3857b87cc89e3',
-                'com.android.support:cardview-v7:defc17032ffa600a82e1c7d96bb574aa5ed64e2b57e28414a245da7d6db0c666',
-                'com.android.support:recyclerview-v7:375974a8724e359d97d77fa8522c614f813a3ac4583c1807f154a3f9a054b0a1',
-                'com.android.support:preference-v14:970904d676ea886d0be459e7e5e36c0db650daefea5bbe80cc59146091905be5',
+                'com.android.support:design:def9bb97ef186b431f50dde31bdf20a59557bd9701375092f524a8c75973e4b0',
+                'com.android.support:preference-v14:70d6c495ff9a2c527213e90b93f06331a7c4731c2857887a4f4fe0776b6a3d25',
+                'com.android.support:preference-v7:b815eed1265382bf848c193662ca2e0287e53b5a1323d4564adfdcd1b2d386ba',
+                'com.android.support:appcompat-v7:c19ed817942e2472dd42b83c83e74098ff3c1ec33a5997f4422182b1900c1360',
+                'com.android.support:cardview-v7:2385aed03aac5279e930776d87c02d6907b8ccbed3b5c2f4131dbeed5aa80d00',
+                'com.android.support:recyclerview-v7:2ed379b43a2fb3805614fe75310cbaedcd45671589204f26e277f2ae73673358',
                 'com.chibatching.kotpref:kotpref:af6df531f6344f3cba0ea91bcf13c15fca4dc7ee819ace03ed1a244d39ffcb51',
+                'com.squareup.moshi:moshi:91e9c49dc282f1e22570ad3cff7178b00a22180749c8427083ec9be2322c064e',
                 'com.github.ligi:ExtraCompats:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
+                'com.google.firebase:firebase-core:5bada1df52cef9ea7e5235cc956066050e155408bdd09b1ef051e56a24719da6',
                 'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
-                'com.android.support:support-v4:07d389154bcf73b47e514964df1578136b26cba78257b8a577a3ccb54beff0ae',
-                'com.github.kenglxn.QRGen:android:7670317f4ec37cf2bb24b7d3932da83daafa2956e77cd2e92dccce86a66816d9',
-                'com.github.kenglxn.QRGen:core:1db3f51189a71bb37ee0e97081a353b6c6b203ee73bb93c4372aa76e94f9d701',
+                'com.android.support:transition:8868cf7d8ffaf3418803e24cb86e19d1e14a102e7750611d374ca64bbbd4614b',
+                'com.google.firebase:firebase-analytics:08f31410a360ff7a89377aa5cb92cbf9d828fc1762fd6f9763687e72699cc4c6',
+                'com.google.firebase:firebase-analytics-impl:51be41be81ada9e55c2edd0c9a39bf00178398183990ac873a23c94280a6a897',
+                'com.google.firebase:firebase-iid:7398bcef69d9aa39f4021ea2ed404ba9c8a2d131d73b10fa7c4ee3d8cd0803a4',
+                'com.google.firebase:firebase-common:609bbd12cb71d9739d922f3571f3afb6ac0aba1daa64a37f0c37b6af98ba40a5',
+                'com.google.android.gms:play-services-tasks:f0b0a8bbd007f226ac49f0e9cc9712952acbc01ce377d08d1a8c4f8d8c6e6e37',
+                'com.google.android.gms:play-services-basement:76d87a4afcea71987d4087f85d989a06366f4e146ebb066ebbe8ba612d71c4e3',
+                'com.android.support:support-v4:b97d6b9b974b243723d56830237649c79124fd9e496396e740f5c6c133142c4f',
+                'com.android.support:animated-vector-drawable:2a7a8fe5f71be6f96762a1f006ae0efcc2408f58e7279db1103438211107ec56',
+                'com.android.support:support-fragment:6217e744dd5750d09378e652f00abf19e0d220c51111901f3228eec815538ad9',
+                'com.android.support:support-core-ui:7af6ad3e06a22319001df934bcfa7dfb9d27fe2e969e617d73d9b539ec9efd63',
+                'com.android.support:support-vector-drawable:b4f5793f1ac9a69f9ddc97a763fb4dff8bc1a512251b6cb6cd7d92be6cf3dd14',
+                'com.android.support:support-media-compat:70b5601ee1b8affaee2d39f3c083e4ef9c0c824a67e4d6e5d3d922fc5ea3fdb1',
+                'com.android.support:support-core-utils:52bdc2a82d36f33f5565c69b52a6e3d7a5834f039c9ac01bc768ae32290874e0',
+                'com.android.support:support-compat:ccfbafada1611360c938be48fa44ecdb53e700745d29fd8d97d6656cb0fda425',
+                'com.android.support:support-annotations:32f220ee1c4bfd3dab995548be1a3598993a61e945196d04aa50cec702fa38e4',
+                'com.google.protobuf:protobuf-java:f3411ade77523d5f0d013d4f25c36879e66f0c5e1e4310f7096d54d0d2553554',
+                'com.jakewharton.timber:timber:d553d3d3e883ce7d061f1b21b95d6ee0840f3bfbf6d3bd51c5671f0b0f0b0091',
+                'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102',
                 'com.squareup.okio:okio:734269c3ebc5090e3b23566db558f421f0b4027277c79ad5d176b8ec168bb850',
-                'com.github.salomonbrys.kodein:kodein-core:4876960b936d6becb00e7b5c614ba9f4be2b7d5d22a8a2433583d87373c342f8',
-                'com.android.support:transition:36c688825a8c0e6e879e18886de83dc90673322822d5b606ee302f70fb558e16',
-                'com.android.support:support-annotations:aedf76962584adfaed2bd3fcaa22406461c4310237fc27e301128edaa2dba2fa',
-                'com.android.support:support-compat:e02d781268dc60aab6638d8dc20156ea11ca20b962d294b85e6f1e8418cabfa7',
-                'com.android.support:support-core-ui:6182278a6653e6c111c888963626cbb16f2d0022571cb239760475119e0b92a8',
-                'com.android.support:preference-v7:b37d8193c65cf8eb3c4ba9cbfc6d5c96042177901622717fb089290bef784a58',
-                'com.google.zxing:core:bba7724e02a997cec38213af77133ee8e24b0d5cf5fa7ecbc16a4fa93f11ee0d',
-                'com.android.support:support-media-compat:cbed07d07e0e84fdb4b75712f5fd946229a8af155933c9a92e41db64d00791e0',
-                'com.android.support:support-core-utils:32fac02eb2c20a77fa3e3bc3ede62392a19613f72b8f8e10f5dfa84bb4c89ea1',
-                'com.android.support:support-fragment:541d6393c1e024453aca2a14f31bea0c7270ff4e2a02783f3528aa426367444d',
-                'com.android.support:support-vector-drawable:13728f337f36d1c02d52198a6c20724edb447a0875454d829f95cb9eb4aa293b',
-                'com.android.support:animated-vector-drawable:4bc46edf1946b32d518b41416d1734e915e0cbb28021de3b340527419b070691',
         ]
     }
+
 }
 if (includeFirebase) {
     apply plugin: 'com.google.gms.google-services'
