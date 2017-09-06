@@ -182,7 +182,7 @@ if (hasProperty("isCI")) {
                 'com.github.salomonbrys.kodein:kodein-core:4876960b936d6becb00e7b5c614ba9f4be2b7d5d22a8a2433583d87373c342f8',
                 'com.github.walleth:keccak:1c03589f2f883dacf343689a5311f1ecf13710f115ac755e18277b70e5357435',
                 'com.github.walleth:khex:a3a93680c8b0bd60ef226651ad5eb401fa18f65d0941c3ea6464b8adfa693d1e',
-                'org.jetbrains.kotlin:kotlin-stdlib:7d587b9c81e2a6f532f1347976facafd079b8fd91e6c61217add60b28e35406f',
+                'org.jetbrains.kotlin:kotlin-stdlib:073a3ee1de8b6f37707bcefdb13282429b3fd7bf6675a9dbd92e46b6fd388d8c',
                 'org.ethereum:geth:5efa57bd3d67b1321f7ab5da0a6b52f279da77676358a8b64d8b4d71f5a00f82',
                 'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
                 'com.github.trezor.trezor-android:trezor-lib:6ac8601798e851191a1c33673d8b804b836cdfd9788b289a41ec9c3655b3e91c',
