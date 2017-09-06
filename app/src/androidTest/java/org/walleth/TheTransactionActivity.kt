@@ -30,7 +30,7 @@ class TheTransactionActivity {
     fun nonceIsDisplayedCorrectly() {
         TestApp.transactionProvider.addTransaction(TransactionWithState(Transaction(ETH_IN_WEI, DEFAULT_TEST_ADDRESS, DEFAULT_TEST_ADDRESS, nonce = DEFAULT_NONCE, txHash = "0xFOO"), TransactionState()))
 
-        rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash("0xFOO"))
+        rule.launchActivity(InstrumentationRegistry.getTargetContext().getTransactionActivityIntentForHash("0xFOO"))
 
         onView(withId(R.id.nonce)).check(matches(withText("11")))
     }
@@ -40,7 +40,7 @@ class TheTransactionActivity {
         val transaction = Transaction(ETH_IN_WEI, from = DEFAULT_TEST_ADDRESS, to = Room77, nonce = DEFAULT_NONCE, txHash = "0xFOO12")
         TestApp.transactionProvider.addTransaction(TransactionWithState(transaction, TransactionState()))
 
-        rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash(transaction.txHash!!))
+        rule.launchActivity(InstrumentationRegistry.getTargetContext().getTransactionActivityIntentForHash(transaction.txHash!!))
 
         onView(withId(R.id.from_to_title)).check(matches(withText(R.string.transaction_to_label)))
         onView(withId(R.id.from_to)).check(matches(withText("Room77")))
@@ -50,12 +50,12 @@ class TheTransactionActivity {
     @Test
     fun isLabeledFromWhenWeReceive() {
         val transaction = Transaction(ETH_IN_WEI, from = ShapeShift, to = DEFAULT_TEST_ADDRESS, nonce = DEFAULT_NONCE, txHash = "0xFOO21")
-        TestApp.transactionProvider.addTransaction(TransactionWithState(transaction, TransactionState()))
+         TestApp.transactionProvider.addTransaction(TransactionWithState(transaction, TransactionState()))
 
-        rule.launchActivity(InstrumentationRegistry.getContext().getTransactionActivityIntentForHash(transaction.txHash!!))
+         rule.launchActivity(InstrumentationRegistry.getTargetContext().getTransactionActivityIntentForHash(transaction.txHash!!))
 
-        onView(withId(R.id.from_to_title)).check(matches(withText(R.string.transaction_from_label)))
-        onView(withId(R.id.from_to)).check(matches(withText("ShapeShift")))
+         onView(withId(R.id.from_to_title)).check(matches(withText(R.string.transaction_from_label)))
+         onView(withId(R.id.from_to)).check(matches(withText("ShapeShift")))
     }
 
 
