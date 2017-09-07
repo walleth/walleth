@@ -127,7 +127,7 @@ dependencies {
     compile 'com.jakewharton:process-phoenix:2.0.0'
 
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
-    compile 'com.squareup.okhttp3:okhttp:3.8.1'
+    compile 'com.squareup.okhttp3:okhttp:3.9.0'
 
     compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
     compile 'com.github.salomonbrys.kodein:kodein-android:4.1.0'
@@ -191,7 +191,6 @@ if (hasProperty("isCI")) {
                 'com.google.zxing:core:bba7724e02a997cec38213af77133ee8e24b0d5cf5fa7ecbc16a4fa93f11ee0d',
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
                 'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',
-                'com.squareup.okhttp3:okhttp:c1d57f913f74f61d424d4250a92723ba9a61affc12a0ab194d84cc179b472841',
                 'com.android.support:design:def9bb97ef186b431f50dde31bdf20a59557bd9701375092f524a8c75973e4b0',
                 'com.android.support:preference-v14:70d6c495ff9a2c527213e90b93f06331a7c4731c2857887a4f4fe0776b6a3d25',
                 'com.android.support:preference-v7:b815eed1265382bf848c193662ca2e0287e53b5a1323d4564adfdcd1b2d386ba',
