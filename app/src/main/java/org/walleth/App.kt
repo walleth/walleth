@@ -2,6 +2,7 @@ package org.walleth
 
 import android.content.Context
 import android.content.Intent
+import android.os.StrictMode
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
@@ -30,8 +31,6 @@ import org.walleth.data.tokens.FileBackedTokenProvider
 import org.walleth.data.transactions.BaseTransactionProvider
 import org.walleth.data.transactions.TransactionProvider
 
-
-
 open class App : MultiDexApplication(), KodeinAware {
 
     override val kodein by Kodein.lazy {
@@ -59,6 +58,14 @@ open class App : MultiDexApplication(), KodeinAware {
 
     override fun onCreate() {
         super.onCreate()
+
+        if (BuildConfig.DEBUG) {
+            StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+                    .detectAll()
+                    .penaltyLog()
+                    .penaltyDeath()
+                    .build())
+        }
 
         Kotpref.init(this)
         TraceDroid.init(this)
