@@ -17,9 +17,11 @@ class FileBackedAddressBook(val context: Context) : BaseAddressBook(), AddressBo
 
     init {
         if (file.exists()) {
-            adapter.fromJson(Okio.buffer(Okio.source(file)))?.forEach {
-                // we need to recreate the address to get the hex from cleanHex again
-                super.setEntry(it.copy(address = Address(it.address.cleanHex)))
+            Okio.buffer(Okio.source(file)).use { buffer ->
+                adapter.fromJson(buffer)?.forEach {
+                    // we need to recreate the address to get the hex from cleanHex again
+                    super.setEntry(it.copy(address = Address(it.address.cleanHex)))
+                }
             }
         }
     }
