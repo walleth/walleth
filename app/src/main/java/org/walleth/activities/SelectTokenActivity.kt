@@ -10,13 +10,17 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list.*
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
+import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
-import org.walleth.data.exchangerate.TokenProvider
+import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.ui.TokenListAdapter
 
 class SelectTokenActivity : AppCompatActivity()  {
 
-    val tokenProvider: TokenProvider by LazyKodein(appKodein).instance()
+    val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     val settings: Settings by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,7 +41,7 @@ class SelectTokenActivity : AppCompatActivity()  {
     override fun onResume() {
         super.onResume()
 
-        recycler_view.adapter = TokenListAdapter(tokenProvider , this)
+        recycler_view.adapter = TokenListAdapter(currentTokenProvider , appDatabase.tokens.allForChain(networkDefinitionProvider.value!!.chain), this)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

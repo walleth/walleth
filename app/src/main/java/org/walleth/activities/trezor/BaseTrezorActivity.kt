@@ -28,7 +28,7 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
-import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.AppDatabase
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionProvider
@@ -42,8 +42,8 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
     abstract fun handleAddress(address: Address)
     abstract fun getTaskSpecificMessage(): GeneratedMessageV3?
 
-    val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
 
@@ -75,7 +75,6 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         trezor_status_text.movementMethod = LinkMovementMethod()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        handler.post(mainRunnable)
     }
 
     protected fun enterNewState(newState: STATES) {

@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.tests
 
 import android.support.test.espresso.Espresso.closeSoftKeyboard
 import android.support.test.espresso.Espresso.onView
@@ -10,6 +10,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
+import org.walleth.R
 import org.walleth.activities.SelectReferenceActivity
 import org.walleth.infrastructure.TestApp
 

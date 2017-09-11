@@ -10,6 +10,9 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_account_create.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.functions.ERC67
 import org.kethereum.functions.isERC67String
@@ -23,8 +26,8 @@ import org.walleth.activities.trezor.TrezorGetAddress
 import org.walleth.activities.trezor.getAddressResult
 import org.walleth.activities.trezor.getPATHResult
 import org.walleth.activities.trezor.hasAddressResult
+import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
-import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
 
@@ -39,8 +42,8 @@ class CreateAccountActivity : AppCompatActivity() {
 
     val REQUEST_CODE_TREZOR = 7965
 
-    val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     var lastCreatedAddress: Address? = null
     var trezorPath: String? = null
 
@@ -65,14 +68,16 @@ class CreateAccountActivity : AppCompatActivity() {
                 alert(title = alert_problem_title, message = please_enter_name)
             } else {
                 lastCreatedAddress = null // prevent cleanup
-                addressBook.setEntry(AddressBookEntry(
-                        name = nameInput.text.toString(),
-                        address = Address(hex),
-                        note = noteInput.text.toString(),
-                        trezorDerivationPath = trezorPath,
-                        isNotificationWanted = notify_checkbox.isChecked)
-                )
-                finish()
+                async(UI) {
+                    async(CommonPool) { appDatabase.addressBook.upsert(AddressBookEntry(
+                            name = nameInput.text.toString(),
+                            address = Address(hex),
+                            note = noteInput.text.toString(),
+                            trezorDerivationPath = trezorPath,
+                            isNotificationWanted = notify_checkbox.isChecked)
+                    )}.await()
+                    finish()
+                }
             }
         }
 

@@ -1,22 +1,18 @@
 package org.walleth.core
 
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Binder
 import android.os.SystemClock
-import android.support.v7.app.NotificationCompat
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import org.ethereum.geth.*
+import org.ethereum.geth.Context
+import org.ethereum.geth.EthereumClient
+import org.ethereum.geth.Geth
+import org.ethereum.geth.Node
 import org.kethereum.functions.encodeRLP
-import org.kethereum.model.Address
-import org.walleth.R
-import org.walleth.activities.MainActivity
-import org.walleth.data.BalanceProvider
 import org.walleth.data.config.Settings
-import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -24,10 +20,7 @@ import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionSource
 import org.walleth.data.transactions.TransactionWithState
-import org.walleth.kethereum.geth.toGethAddr
-import org.walleth.ui.ChangeObserver
 import java.io.File
-import java.math.BigInteger
 
 
 class GethLightEthereumService : Service() {
@@ -48,7 +41,6 @@ class GethLightEthereumService : Service() {
 
     val lazyKodein = LazyKodein(appKodein)
 
-    val balanceProvider: BalanceProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
     val syncProgress: SyncProgressProvider by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
@@ -60,7 +52,7 @@ class GethLightEthereumService : Service() {
     var finishedSyncing = false
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-
+        /*
         if (intent.action == STOP_SERVICE_ACTION) {
             isRunning = false
             return START_NOT_STICKY
@@ -71,7 +63,7 @@ class GethLightEthereumService : Service() {
         val pendingStopIntent = PendingIntent.getService(baseContext, 0, gethStopIntent(), 0)
         val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, MainActivity::class.java), 0)
 
-        val notification = NotificationCompat.Builder(this).apply {
+        val notification = NotificationCompat.Builder(this).navigationView {
             setContentTitle("WALLETH Geth")
             setContentText("light client running")
             setContentIntent(contentIntent)
@@ -92,7 +84,7 @@ class GethLightEthereumService : Service() {
 
             val ethereumContext = Context()
 
-            val ethereumNode = Geth.newNode(path, NodeConfig().apply {
+            val ethereumNode = Geth.newNode(path, NodeConfig().navigationView {
                 val bootNodes = Enodes()
 
                 val network = networkDefinitionProvider.currentDefinition
@@ -154,7 +146,7 @@ class GethLightEthereumService : Service() {
             stopForeground(true)
             stopSelf()
         }).start()
-
+*/
         return START_NOT_STICKY
     }
 

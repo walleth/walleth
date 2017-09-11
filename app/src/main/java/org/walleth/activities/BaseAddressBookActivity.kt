@@ -10,14 +10,13 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list.*
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
-import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.AppDatabase
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.ui.AddressAdapter
 
 abstract class BaseAddressBookActivity : AppCompatActivity() {
 
-    val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -33,13 +32,6 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
             startActivityFromClass(CreateAccountActivity::class.java)
         }
     }
-
-    override fun onResume() {
-        super.onResume()
-        recycler_view.adapter = getAdapter()
-    }
-
-    abstract fun getAdapter(): AddressAdapter
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {

@@ -5,10 +5,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.walleth.R
-import org.walleth.data.exchangerate.TokenProvider
+import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.Token
 
-class TokenListAdapter(val tokenProvider: TokenProvider, val activity: Activity) : RecyclerView.Adapter<TokenViewHolder>() {
-    val tokenList = tokenProvider.getAllTokens()
+class TokenListAdapter(val tokenProvider: CurrentTokenProvider, val tokenList: List<Token>, val activity: Activity) : RecyclerView.Adapter<TokenViewHolder>() {
 
     override fun getItemCount() = tokenList.size
 

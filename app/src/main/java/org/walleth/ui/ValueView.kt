@@ -11,16 +11,16 @@ import kotlinx.android.synthetic.main.value.view.*
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.config.Settings
-import org.walleth.data.exchangerate.ETH_TOKEN
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.tokens.TokenDescriptor
+import org.walleth.data.tokens.Token
+import org.walleth.data.tokens.isETH
 import org.walleth.functions.toValueString
 import java.math.BigInteger
 
 open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
-    val exchangeRateProvider: ExchangeRateProvider by LazyKodein(appKodein).instance()
-    val settings: Settings by LazyKodein(appKodein).instance()
+    private val exchangeRateProvider: ExchangeRateProvider by LazyKodein(appKodein).instance()
+    private val settings: Settings by LazyKodein(appKodein).instance()
 
     open val layoutRes = R.layout.value
 
@@ -30,11 +30,11 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         LayoutInflater.from(context).inflate(layoutRes, this, true)
     }
 
-    fun setValue(int: BigInteger, token: TokenDescriptor) {
+    fun setValue(int: BigInteger, token: Token) {
 
-        val exChangeRate = exchangeRateProvider.getExchangeString(int, settings.currentFiat)
+        if (token.isETH()) {
+            val exChangeRate = exchangeRateProvider.getExchangeString(int, settings.currentFiat)
 
-        if (token == ETH_TOKEN) {
             current_fiat_symbol.text = settings.currentFiat
             if (exChangeRate != null) {
                 current_fiat.text = exChangeRate
@@ -45,8 +45,8 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
         current_token_symbol.text = token.name
 
-        current_fiat_symbol.setVisibility(token == ETH_TOKEN)
-        current_fiat.setVisibility(token == ETH_TOKEN)
+        current_fiat_symbol.setVisibility(token.isETH())
+        current_fiat.setVisibility(token.isETH())
 
         current_eth.text = int.toValueString(token)
     }

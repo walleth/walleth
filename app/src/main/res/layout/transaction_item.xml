@@ -9,6 +9,11 @@
         app:cardMaxElevation="8dp">
 
 
+    <android.support.v7.widget.AppCompatImageView
+            android:id="@+id/transaction_state_indicator"
+            style="@style/indicator_icon"
+            app:srcCompat="@drawable/ic_lock_open_black_24dp"/>
+
     <LinearLayout
             android:padding="8dp"
             android:background="?selectableItemBackgroundBorderless"

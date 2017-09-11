@@ -26,7 +26,7 @@ fun Transaction.toGethTransaction(): org.ethereum.geth.Transaction = Geth.newTra
 
 fun org.ethereum.geth.Transaction.toKetherumTransaction(networkDefinitionProvider: NetworkDefinition) = Transaction(
         to = to.toKethereumAddress(),
-        from = getFrom(Geth.newBigInt(networkDefinitionProvider.chainId)).toKethereumAddress(),
+        from = getFrom(Geth.newBigInt(networkDefinitionProvider.chain.id)).toKethereumAddress(),
         value = value.toBigInteger(),
         nonce = BigInteger.valueOf(nonce),
         txHash = hash.hex,

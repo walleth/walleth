@@ -7,22 +7,20 @@ import android.widget.FrameLayout
 import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
 import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
 import org.walleth.R
-import org.walleth.data.addressbook.AddressBook
-import org.walleth.data.exchangerate.TokenProvider
+import org.walleth.data.AppDatabase
 import org.walleth.data.transactions.TransactionWithState
 
 enum class TransactionAdapterDirection {
     INCOMMING, OUTGOING
 }
 
-class TransactionRecyclerAdapter(val transactionList: List<TransactionWithState>,
-                                 val addressBook: AddressBook,
-                                 val tokenProvider: TokenProvider,
-                                 val direction: TransactionAdapterDirection) : RecyclerView.Adapter<TransactionViewHolder>() {
+class TransactionRecyclerAdapter(private val transactionList: List<TransactionWithState>,
+                                 val appDatabase: AppDatabase,
+                                 private val direction: TransactionAdapterDirection) : RecyclerView.Adapter<TransactionViewHolder>() {
 
     override fun getItemCount() = transactionList.size
 
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(transactionList[position], addressBook,tokenProvider)
+    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(transactionList[position], appDatabase)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.transaction_item, null)

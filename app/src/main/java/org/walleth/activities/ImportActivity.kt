@@ -15,14 +15,17 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.threeten.bp.LocalDateTime
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
+import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
-import org.walleth.data.addressbook.AddressBook
 import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.keystore.WallethKeyStore
 
 enum class KeyType {
@@ -42,7 +45,7 @@ class ImportActivity : AppCompatActivity() {
 
     val READ_REQUEST_CODE = 42
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val addressBook: AddressBook by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,19 +81,26 @@ class ImportActivity : AppCompatActivity() {
                         .setTitle(getString(R.string.dialog_title_success))
 
                 if (importKey != null) {
-                    val oldEntry = addressBook.getEntryForName(importKey)
-                    val accountName = if (account_name.text.isBlank()) {
-                        oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
-                    } else {
-                        account_name.text
+                    appDatabase.addressBook.getByAddressAsync(importKey) { oldEntry ->
+                        val accountName = if (account_name.text.isBlank()) {
+                            oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
+                        } else {
+                            account_name.text
+                        }
+                        val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
+
+
+                        async(CommonPool) {
+                            appDatabase.addressBook.upsert(AddressBookEntry(name = accountName.toString(), address = importKey, note = note, isNotificationWanted = false, trezorDerivationPath = null))
+                        }
                     }
-                    val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
-                    addressBook.setEntry(AddressBookEntry(accountName.toString(), importKey, note))
+
                 }
-            } catch(e: Exception) {
+            } catch (e: Exception) {
                 alertBuilder
                         .setMessage(e.message)
                         .setTitle(getString(R.string.dialog_title_error))
+                        .show()
             }
             alertBuilder.setPositiveButton(android.R.string.ok, null).show()
         }
@@ -99,7 +109,7 @@ class ImportActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_import, menu)
-        menu.findItem(R.id.menu_open).isVisible = Build.VERSION.SDK_INT>=19
+        menu.findItem(R.id.menu_open).isVisible = Build.VERSION.SDK_INT >= 19
         return super.onCreateOptionsMenu(menu)
     }
 

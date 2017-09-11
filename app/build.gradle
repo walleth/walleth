@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'spoon'
 apply plugin: 'com.getkeepsafe.dexcount'
 
-def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
+def includeFirebase = hasProperty("isCI") || hasProperty("firebase") || true
 
 android {
     compileSdkVersion 26
@@ -144,6 +145,13 @@ dependencies {
     compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.github.ligi:ExtraCompats:0.4'
 
+    compile "android.arch.lifecycle:extensions:1.0.0-beta1"
+
+    compile "android.arch.persistence.room:runtime:1.0.0-beta1"
+    kapt "android.arch.persistence.room:compiler:1.0.0-beta1"
+
+    kapt "android.arch.lifecycle:compiler:1.0.0-beta1"
+
     androidTestCompile 'com.google.truth:truth:0.35'
 
     androidTestCompile "org.mockito:mockito-core:2.8.47"
@@ -192,33 +200,17 @@ if (hasProperty("isCI")) {
                 'com.google.zxing:core:bba7724e02a997cec38213af77133ee8e24b0d5cf5fa7ecbc16a4fa93f11ee0d',
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
                 'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',
-                'com.android.support:design:def9bb97ef186b431f50dde31bdf20a59557bd9701375092f524a8c75973e4b0',
-                'com.android.support:preference-v14:70d6c495ff9a2c527213e90b93f06331a7c4731c2857887a4f4fe0776b6a3d25',
-                'com.android.support:preference-v7:b815eed1265382bf848c193662ca2e0287e53b5a1323d4564adfdcd1b2d386ba',
-                'com.android.support:appcompat-v7:c19ed817942e2472dd42b83c83e74098ff3c1ec33a5997f4422182b1900c1360',
-                'com.android.support:cardview-v7:2385aed03aac5279e930776d87c02d6907b8ccbed3b5c2f4131dbeed5aa80d00',
-                'com.android.support:recyclerview-v7:2ed379b43a2fb3805614fe75310cbaedcd45671589204f26e277f2ae73673358',
                 'com.chibatching.kotpref:kotpref:af6df531f6344f3cba0ea91bcf13c15fca4dc7ee819ace03ed1a244d39ffcb51',
                 'com.squareup.moshi:moshi:91e9c49dc282f1e22570ad3cff7178b00a22180749c8427083ec9be2322c064e',
                 'com.github.ligi:ExtraCompats:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
                 'com.google.firebase:firebase-core:5bada1df52cef9ea7e5235cc956066050e155408bdd09b1ef051e56a24719da6',
                 'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
-                'com.android.support:transition:8868cf7d8ffaf3418803e24cb86e19d1e14a102e7750611d374ca64bbbd4614b',
                 'com.google.firebase:firebase-analytics:08f31410a360ff7a89377aa5cb92cbf9d828fc1762fd6f9763687e72699cc4c6',
                 'com.google.firebase:firebase-analytics-impl:51be41be81ada9e55c2edd0c9a39bf00178398183990ac873a23c94280a6a897',
                 'com.google.firebase:firebase-iid:7398bcef69d9aa39f4021ea2ed404ba9c8a2d131d73b10fa7c4ee3d8cd0803a4',
                 'com.google.firebase:firebase-common:609bbd12cb71d9739d922f3571f3afb6ac0aba1daa64a37f0c37b6af98ba40a5',
                 'com.google.android.gms:play-services-tasks:f0b0a8bbd007f226ac49f0e9cc9712952acbc01ce377d08d1a8c4f8d8c6e6e37',
                 'com.google.android.gms:play-services-basement:76d87a4afcea71987d4087f85d989a06366f4e146ebb066ebbe8ba612d71c4e3',
-                'com.android.support:support-v4:b97d6b9b974b243723d56830237649c79124fd9e496396e740f5c6c133142c4f',
-                'com.android.support:animated-vector-drawable:2a7a8fe5f71be6f96762a1f006ae0efcc2408f58e7279db1103438211107ec56',
-                'com.android.support:support-fragment:6217e744dd5750d09378e652f00abf19e0d220c51111901f3228eec815538ad9',
-                'com.android.support:support-core-ui:7af6ad3e06a22319001df934bcfa7dfb9d27fe2e969e617d73d9b539ec9efd63',
-                'com.android.support:support-vector-drawable:b4f5793f1ac9a69f9ddc97a763fb4dff8bc1a512251b6cb6cd7d92be6cf3dd14',
-                'com.android.support:support-media-compat:70b5601ee1b8affaee2d39f3c083e4ef9c0c824a67e4d6e5d3d922fc5ea3fdb1',
-                'com.android.support:support-core-utils:52bdc2a82d36f33f5565c69b52a6e3d7a5834f039c9ac01bc768ae32290874e0',
-                'com.android.support:support-compat:ccfbafada1611360c938be48fa44ecdb53e700745d29fd8d97d6656cb0fda425',
-                'com.android.support:support-annotations:32f220ee1c4bfd3dab995548be1a3598993a61e945196d04aa50cec702fa38e4',
                 'com.google.protobuf:protobuf-java:f3411ade77523d5f0d013d4f25c36879e66f0c5e1e4310f7096d54d0d2553554',
                 'com.jakewharton.timber:timber:d553d3d3e883ce7d061f1b21b95d6ee0840f3bfbf6d3bd51c5671f0b0f0b0091',
                 'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102',
@@ -232,3 +224,9 @@ if (includeFirebase) {
 }
 
 apply plugin: 'com.github.ben-manes.versions'
+
+kotlin {
+    experimental {
+        coroutines "enable"
+    }
+}

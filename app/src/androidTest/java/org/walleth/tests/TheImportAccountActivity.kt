@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.tests
 
 import android.support.test.espresso.Espresso.closeSoftKeyboard
 import android.support.test.espresso.Espresso.onView
@@ -10,6 +10,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
+import org.walleth.R
 import org.walleth.activities.ImportActivity
 import org.walleth.infrastructure.TestApp
 
@@ -17,8 +18,8 @@ class TheImportAccountActivity {
 
     @get:Rule
     var rule = TruleskActivityRule(ImportActivity::class.java) {
-        TestApp.balanceProvider.reset()
-        TestApp.addressBookWithEntries.reset()
+        TestApp.testDatabase.balances.deleteAll()
+        TestApp.testDatabase.addressBook.deleteAll()
     }
 
     @Test
@@ -63,7 +64,7 @@ class TheImportAccountActivity {
 
         onView(withId(R.id.fab)).perform(click())
 
-        val accountName = TestApp.addressBookWithEntries.getEntryForName(TestApp.keyStore.import_result_address)!!.name
+        val accountName = TestApp.testDatabase.addressBook.byAddress(TestApp.keyStore.import_result_address)?.name
 
         assertThat(accountName).isEqualTo("Imported")
     }
@@ -77,7 +78,7 @@ class TheImportAccountActivity {
 
         onView(withId(R.id.fab)).perform(click())
 
-        val accountName = TestApp.addressBookWithEntries.getEntryForName(TestApp.keyStore.import_result_address)!!.name
+        val accountName = TestApp.testDatabase.addressBook.byAddress(TestApp.keyStore.import_result_address)?.name
 
         assertThat(accountName).isEqualTo("new name")
     }

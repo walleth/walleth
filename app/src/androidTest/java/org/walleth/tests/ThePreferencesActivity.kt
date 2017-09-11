@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.tests
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.click
@@ -10,6 +10,7 @@ import android.support.test.espresso.matcher.ViewMatchers.withText
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskIntentRule
+import org.walleth.R
 import org.walleth.activities.PreferenceActivity
 import org.walleth.activities.SelectReferenceActivity
 

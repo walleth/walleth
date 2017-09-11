@@ -18,7 +18,8 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
-import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.AppDatabase
+import org.walleth.data.addressbook.AddressBookDAO
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.ui.ChangeObserver
 
@@ -32,7 +33,8 @@ class TransactionNotificationService : Service(), KodeinInjected {
     val lazyKodein = LazyKodein(appKodein)
 
     val transactionProvider: TransactionProvider by lazyKodein.instance()
-    val addressBook: AddressBook by lazyKodein.instance()
+    val appDatabase: AppDatabase by lazyKodein.instance()
+    val addressBook by lazy { appDatabase.addressBook }
 
     fun Transaction.isNotifyWorthyTransaction(): Boolean {
 
@@ -43,8 +45,8 @@ class TransactionNotificationService : Service(), KodeinInjected {
         return LocalDateTime.now().atZone(ZoneOffset.systemDefault()).toEpochSecond() - (creationEpochSecond ?: 0) < 60
     }
 
-    fun AddressBook.isEntryRelevant(address: Address) =
-            getEntryForName(address).let { (it != null && it.isNotificationWanted) }
+
+    private fun AddressBookDAO.isEntryRelevant(address: Address) = byAddress(address).let { (it != null && it.isNotificationWanted) }
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

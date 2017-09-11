@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.tests
 
 import android.os.Parcel
 import com.google.common.truth.Truth.assertThat

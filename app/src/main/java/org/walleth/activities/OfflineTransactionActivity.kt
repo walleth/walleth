@@ -21,6 +21,7 @@ import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.BaseCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionState
@@ -35,6 +36,7 @@ class OfflineTransactionActivity : AppCompatActivity() {
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    val currentAddressProvider : BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,12 +57,12 @@ class OfflineTransactionActivity : AppCompatActivity() {
                             .setMessage("Unsigned transaction found - do you intend to sign with the current account? You will see the transaction details afterwards")
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.ok, { _, _ ->
-                                createTransaction(gethTransaction, null, { keyStore.getCurrentAddress() })
+                                createTransaction(gethTransaction, null, { currentAddressProvider.getCurrent() })
                             })
                             .show()
                 } else {
                     createTransaction(gethTransaction, signatureData, {
-                        val chainId = BigInt(networkDefinitionProvider.currentDefinition.chainId)
+                        val chainId = BigInt(networkDefinitionProvider.value!!.chain.id)
                         gethTransaction.getFrom(chainId).toKethereumAddress()
                     })
                 }

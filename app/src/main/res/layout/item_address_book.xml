@@ -9,11 +9,8 @@
         app:cardMaxElevation="8dp">
 
     <android.support.v7.widget.AppCompatImageView
-            android:layout_gravity="top|right"
-            android:padding="8dp"
             android:id="@+id/key_indicator"
-            android:layout_width="32dp"
-            android:layout_height="32dp"/>
+            style="@style/indicator_icon"/>
 
     <LinearLayout
             android:layout_width="wrap_content"

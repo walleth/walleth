@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.DialogInterface.OnClickListener
 import android.content.Intent
 import android.os.Bundle
+import com.github.salomonbrys.kodein.LazyKodein
+import com.github.salomonbrys.kodein.android.appKodein
+import com.github.salomonbrys.kodein.instance
 import com.google.protobuf.ByteString
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
@@ -12,6 +15,8 @@ import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.ligi.kaxtui.alert
 import org.walleth.R.string
+import org.walleth.data.addressbook.getByAddressAsync
+import org.walleth.data.networks.BaseCurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
 import org.walleth.kethereum.android.TransactionParcel
@@ -41,7 +46,7 @@ class TrezorSignTX : BaseTrezorActivity() {
             .setNonce(ByteString.copyFrom(transaction.nonce!!.toByteArray().removeLeadingZero()))
             .setGasPrice(ByteString.copyFrom(transaction.gasPrice.toByteArray().removeLeadingZero()))
             .setGasLimit(ByteString.copyFrom(transaction.gasLimit.toByteArray().removeLeadingZero()))
-            .setChainId(networkDefinitionProvider.currentDefinition.chainId.toInt())
+            .setChainId(networkDefinitionProvider.value!!.chain.id.toInt())
             .setDataLength(transaction.input.size)
             .setDataInitialChunk(ByteString.copyFrom(transaction.input.toByteArray()))
             .addAllAddressN(currentBIP44!!.toIntList())
@@ -64,12 +69,14 @@ class TrezorSignTX : BaseTrezorActivity() {
     }
 
     val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX").transaction }
+    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        currentBIP44 = addressBook.getEntryForName(keyStore.getCurrentAddress())?.trezorDerivationPath?.let {
-            BIP44.fromPath(it)
-        } ?: throw IllegalArgumentException("Starting TREZOR Activity")
+        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
+            currentBIP44 = it?.trezorDerivationPath?.let { BIP44.fromPath(it) } ?: throw IllegalArgumentException("Starting TREZOR Activity")
+            handler.post(mainRunnable)
+        }
         supportActionBar?.subtitle = getString(string.activity_subtitle_sign_with_trezor)
     }
 

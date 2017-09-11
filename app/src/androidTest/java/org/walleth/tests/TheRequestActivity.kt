@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.tests
 
 import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.onView

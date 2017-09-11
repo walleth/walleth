@@ -20,12 +20,13 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.addressbook.AddressBook
-import org.walleth.data.exchangerate.ETH_TOKEN
+import org.walleth.data.AppDatabase
+import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.BaseCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.transactions.TransactionProvider
-import org.walleth.functions.resolveNameFromAddressBook
 import org.walleth.khex.toHexString
 
 
@@ -41,8 +42,9 @@ class ViewTransactionActivity : AppCompatActivity() {
 
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    val currentAddressProvider : BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    val addressBook: AddressBook by LazyKodein(appKodein).instance()
     val transaction by lazy {
         transactionProvider.getTransactionForHash(intent.getStringExtra(HASH_KEY))
     }
@@ -71,9 +73,9 @@ class ViewTransactionActivity : AppCompatActivity() {
                 finish()
             }
 
-            fee_value_view.setValue(it.transaction.gasLimit * it.transaction.gasPrice, ETH_TOKEN)
+            fee_value_view.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
 
-            val relevant_address = if (it.transaction.from == keyStore.getCurrentAddress()) {
+            val relevant_address = if (it.transaction.from == currentAddressProvider.getCurrent()) {
                 from_to_title.setText(R.string.transaction_to_label)
                 it.transaction.to
             } else {
@@ -82,10 +84,11 @@ class ViewTransactionActivity : AppCompatActivity() {
             }
 
             relevant_address?.let { ensured_relevant_address ->
-                val name = ensured_relevant_address.resolveNameFromAddressBook(addressBook)
-                from_to.text = name
+                appDatabase.addressBook.resolveNameAsync(ensured_relevant_address) { name ->
+                    from_to.text = name
 
-                add_address.setVisibility(name == ensured_relevant_address.hex)
+                    add_address.setVisibility(name == ensured_relevant_address.hex)
+                }
 
                 add_address.setOnClickListener {
                     startCreateAccountActivity(ensured_relevant_address.hex)
@@ -112,7 +115,7 @@ class ViewTransactionActivity : AppCompatActivity() {
                 rlp_header.visibility = View.GONE
             }
 
-            value_view.setValue(it.transaction.value, ETH_TOKEN)
+            value_view.setValue(it.transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
         } ?: alert("transaction not found " + intent.getStringExtra(HASH_KEY))
 
     }
@@ -122,7 +125,7 @@ class ViewTransactionActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_etherscan -> {
-            val url = networkDefinitionProvider.currentDefinition.getBlockExplorer().getURLforTransaction(transaction!!.transaction.txHash!!)
+            val url = networkDefinitionProvider.value!!.getBlockExplorer().getURLforTransaction(transaction!!.transaction.txHash!!)
             startActivityFromURL(url)
             true
         }

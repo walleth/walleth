@@ -25,12 +25,15 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.BaseCurrentAddressProvider
 import java.io.ByteArrayOutputStream
 
 
 class ExportKeyActivity : AppCompatActivity() {
 
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+
     lateinit var keyJSON: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +67,7 @@ class ExportKeyActivity : AppCompatActivity() {
 
     private fun generate() {
         Thread(Runnable {
-            keyJSON = keyStore.exportCurrentKey(unlockPassword = "default", exportPassword = password_input.text.toString())
+            keyJSON = keyStore.exportKey(address = currentAddressProvider.getCurrent(), unlockPassword = "default", exportPassword = password_input.text.toString())
 
             val point = Point()
             windowManager.defaultDisplay.getSize(point)

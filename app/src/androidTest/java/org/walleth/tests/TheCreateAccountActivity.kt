@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.tests
 
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.*
@@ -10,6 +10,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.kethereum.model.Address
 import org.ligi.trulesk.TruleskActivityRule
+import org.walleth.R
 import org.walleth.activities.CreateAccountActivity
 import org.walleth.infrastructure.TestApp
 
@@ -80,7 +81,7 @@ class TheCreateAccountActivity {
 
         onView(withId(R.id.fab)).perform(closeSoftKeyboard(), click())
 
-        val tested = TestApp.addressBookWithEntries.getEntryForName(Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
+        val tested = TestApp.testDatabase.addressBook.byAddress(Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
 
         assertThat(tested).isNotNull()
         assertThat(tested!!.name).isEqualTo("nameProbe")

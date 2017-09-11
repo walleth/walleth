@@ -2,7 +2,7 @@ package org.walleth.data.networks
 
 import org.walleth.data.blockexplorer.EtherscanBlockExplorer
 
-abstract class BaseNetworkDefinition : NetworkDefinition{
+abstract class BaseNetworkDefinition : NetworkDefinition {
 
     abstract val etherscan_prefix: String
 

@@ -36,7 +36,8 @@
 
     </android.support.design.widget.CoordinatorLayout>
 
-    <org.walleth.ui.WalletNavigationView
+    <fragment
+            android:name="org.walleth.ui.WalletNavigationFragment"
             android:id="@+id/navigationView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

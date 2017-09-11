@@ -1,15 +1,15 @@
 package org.walleth.data.keystore
 
 import org.kethereum.model.Address
-import org.walleth.data.Observeable
 
-interface WallethKeyStore : Observeable {
+interface WallethKeyStore {
 
-    fun getCurrentAddress(): Address
-    fun setCurrentAddress(address: Address)
     fun importJSONKey(json: String, importPassword: String, storePassword: String): Address?
     fun importECDSAKey(key: String, storePassword: String): Address?
-    fun exportCurrentKey(unlockPassword: String, exportPassword: String): String
+    fun exportKey(address: Address, unlockPassword: String, exportPassword: String): String
+
+    fun getAddressByIndex(index: Int): Address
+    fun getAddressCount(): Int
 
     fun newAddress(password: String): Address
     fun deleteKey(address: Address, password: String)

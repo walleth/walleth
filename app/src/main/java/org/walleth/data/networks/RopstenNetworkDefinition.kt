@@ -5,7 +5,7 @@ import org.kethereum.ETHEREUM_NETWORK_ROPSTEN
 class RopstenNetworkDefinition : BaseNetworkDefinition() {
 
     override val etherscan_prefix = "ropsten"
-    override val chainId = 3L
+    override val chain = ChainDefinition(3L)
 
     override fun getNetworkName() = ETHEREUM_NETWORK_ROPSTEN
 

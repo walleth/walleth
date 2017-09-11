@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.tests
 
 import android.content.Intent
 import android.support.test.InstrumentationRegistry
@@ -6,6 +6,7 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import org.junit.Test
+import org.walleth.R
 import org.walleth.activities.KeyType
 import org.walleth.activities.getKeyImportIntent
 

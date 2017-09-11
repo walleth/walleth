@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -20,20 +21,23 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.activities.trezor.startTrezorActivity
-import org.walleth.data.BalanceProvider
+import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
 import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
 import org.walleth.data.DEFAULT_GAS_PRICE
-import org.walleth.data.addressbook.AddressBook
-import org.walleth.data.exchangerate.ETH_TOKEN
-import org.walleth.data.exchangerate.TokenProvider
-import org.walleth.data.exchangerate.isETH
+import org.walleth.data.addressbook.getByAddressAsync
+import org.walleth.data.addressbook.resolveName
+import org.walleth.data.balances.Balance
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.getEthTokenForChain
+import org.walleth.data.tokens.isETH
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.TransactionWithState
 import org.walleth.functions.decimalsInZeroes
-import org.walleth.functions.resolveNameFromAddressBook
 import org.walleth.kethereum.android.TransactionParcel
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -47,9 +51,11 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val addressBook: AddressBook by LazyKodein(appKodein).instance()
-    val balanceProvider: BalanceProvider by LazyKodein(appKodein).instance()
-    val tokenProvider: TokenProvider by LazyKodein(appKodein).instance()
+    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    var currentBalance: Balance? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         data?.let {
@@ -76,23 +82,70 @@ class CreateTransactionActivity : AppCompatActivity() {
         supportActionBar?.subtitle = "Transfer"
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        fab.setImageResource(if (isTrezorTransaction()) R.drawable.trezor_icon_black else R.drawable.ic_action_done)
+        appDatabase.balances.getBalanceLive(currentAddressProvider.getCurrent(), currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain).observe(this, Observer {
+            currentBalance = it
+        })
+        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
+            val isTrezorTransaction = it?.trezorDerivationPath != null
+            fab.setImageResource(if (isTrezorTransaction) R.drawable.trezor_icon_black else R.drawable.ic_action_done)
+
+            fab.setOnClickListener {
+
+                if (currentERC67String == null) {
+                    alert("address must be specified")
+                } else if (currentAmount == null) {
+                    alert("amount must be specified")
+                } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalance!!.balance) {
+                    alert("Not enough funds for this transaction with the given amount plus fee")
+                } else if (nonce_input.text.isBlank()) {
+                    alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
+                } else {
+                    val transaction = if (currentTokenProvider.currentToken.isETH()) Transaction(
+                            creationEpochSecond = System.currentTimeMillis() / 1000,
+                            value = currentAmount!!,
+                            to = ERC67(currentERC67String!!).address,
+                            from = currentAddressProvider.getCurrent()
+                    ) else Transaction(
+                            creationEpochSecond = System.currentTimeMillis() / 1000,
+                            value = ZERO,
+                            to = currentTokenProvider.currentToken.address,
+                            from = currentAddressProvider.getCurrent(),
+                            input = createTokenTransferTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
+                    )
+
+                    transaction.nonce = nonce_input.asBigInit()
+                    transaction.gasPrice = gas_price_input.asBigInit()
+                    transaction.gasLimit = gas_limit_input.asBigInit()
+
+                    when {
+                        keyStore.hasKeyForForAddress(currentAddressProvider.getCurrent()) -> {
+                            transactionProvider.addPendingTransaction(TransactionWithState(transaction, TransactionState()))
+                        }
+                        isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
+                    }
+                    finish()
+                }
+            }
+
+        }
+
+
 
         gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
 
-        if (tokenProvider.currentToken.isETH()) {
+        if (currentTokenProvider.currentToken.isETH()) {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
         } else {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
         }
 
         sweep_button.setOnClickListener {
-            val balance = balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)!!.balance
+            val balance = currentBalance!!.balance
             val amountAfterFee = balance - gas_price_input.asBigInit() * gas_limit_input.asBigInit()
             if (amountAfterFee < ZERO) {
                 alert(R.string.no_funds_after_fee)
             } else {
-                amount_input.setText(BigDecimal(amountAfterFee).divide(BigDecimal("1" + tokenProvider.currentToken.decimalsInZeroes())).toString())
+                amount_input.setText(BigDecimal(amountAfterFee).divide(BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
             }
         }
 
@@ -117,7 +170,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             nonce_title.visibility = View.VISIBLE
             nonce_input_container.visibility = View.VISIBLE
         }
-        nonce_input.setText((transactionProvider.getLastNonceForAddress(keyStore.getCurrentAddress()) + ONE).toString())
+        nonce_input.setText((transactionProvider.getLastNonceForAddress(currentAddressProvider.getCurrent()) + ONE).toString())
         refreshFee()
         setToFromURL(currentERC67String, false)
 
@@ -132,50 +185,13 @@ class CreateTransactionActivity : AppCompatActivity() {
 
         amount_input.doAfterEdit {
             setAmountFromETHString(it.toString())
-            amount_value.setValue(currentAmount ?: ZERO, tokenProvider.currentToken)
+            amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
         }
 
-        amount_value.setValue(currentAmount ?: ZERO, tokenProvider.currentToken)
+        amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
 
-        fab.setOnClickListener {
-            if (currentERC67String == null) {
-                alert("address must be specified")
-            } else if (currentAmount == null) {
-                alert("amount must be specified")
-            } else if (tokenProvider.currentToken == ETH_TOKEN && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)!!.balance) {
-                alert("Not enough funds for this transaction with the given amount plus fee")
-            } else if (nonce_input.text.isBlank()) {
-                alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
-            } else {
-                val transaction = if (tokenProvider.currentToken.isETH()) Transaction(
-                        creationEpochSecond = System.currentTimeMillis() / 1000,
-                        value = currentAmount!!,
-                        to = ERC67(currentERC67String!!).address,
-                        from = keyStore.getCurrentAddress()
-                ) else Transaction(
-                        creationEpochSecond = System.currentTimeMillis() / 1000,
-                        value = ZERO,
-                        to = Address(tokenProvider.currentToken.address),
-                        from = keyStore.getCurrentAddress(),
-                        input = createTokenTransferTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
-                )
 
-                transaction.nonce = nonce_input.asBigInit()
-                transaction.gasPrice = gas_price_input.asBigInit()
-                transaction.gasLimit = gas_limit_input.asBigInit()
-
-                when {
-                    keyStore.hasKeyForForAddress(keyStore.getCurrentAddress()) -> {
-                        transactionProvider.addPendingTransaction(TransactionWithState(transaction, TransactionState()))
-                    }
-                    isTrezorTransaction() -> startTrezorActivity(TransactionParcel(transaction))
-                }
-                finish()
-            }
-        }
     }
-
-    private fun isTrezorTransaction() = addressBook.getEntryForName(keyStore.getCurrentAddress())?.trezorDerivationPath != null
 
     fun TextView.asBigInit() = BigInteger(text.toString())
 
@@ -185,12 +201,12 @@ class CreateTransactionActivity : AppCompatActivity() {
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
-        fee_value_view.setValue(fee, ETH_TOKEN)
+        fee_value_view.setValue(fee, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
     }
 
     private fun setAmountFromETHString(it: String) {
         currentAmount = try {
-            (BigDecimal(it) * BigDecimal("1" + tokenProvider.currentToken.decimalsInZeroes())).toBigInteger()
+            (BigDecimal(it) * BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toBigInteger()
         } catch (e: NumberFormatException) {
             ZERO
         }
@@ -209,9 +225,9 @@ class CreateTransactionActivity : AppCompatActivity() {
         if (currentERC67String != null && ERC67(currentERC67String!!).isValid()) {
             val erc67 = ERC67(currentERC67String!!)
 
-            to_address.text = Address(erc67.getHex()).resolveNameFromAddressBook(addressBook)
+            to_address.text = appDatabase.addressBook.resolveName(Address(erc67.getHex()))
             erc67.getValue()?.let {
-                amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + tokenProvider.currentToken.decimalsInZeroes())).toString())
+                amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
                 setAmountFromETHString(it)
                 currentAmount = currentERC67String?.let { BigInteger(ERC67(it).getValue()) }
             }

@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -9,18 +10,19 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_token.*
+import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
-import org.walleth.data.exchangerate.TokenProvider
+import org.walleth.data.AppDatabase
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.tokens.TokenDescriptor
+import org.walleth.data.tokens.Token
+
 
 class CreateTokenDefinitionActivity : AppCompatActivity() {
 
-
-    val tokenProvider: TokenProvider by LazyKodein(appKodein).instance()
-    val networkProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,13 +43,17 @@ class CreateTokenDefinitionActivity : AppCompatActivity() {
             } else if (newTokenAddress.isBlank()) {
                 alert("Please enter a valid address")
             } else {
+                networkDefinitionProvider.observe(this, Observer { networkDefinition ->
+                    if (networkDefinition == null)
+                        throw IllegalStateException("NetworkDefinition should not be null")
 
-                tokenProvider.addToken(TokenDescriptor(
-                        name = newTokenName,
-                        address = newTokenAddress,
-                        decimals = newDecimals
-                ))
-
+                    appDatabase.tokens.upsert(Token(
+                            name = newTokenName,
+                            address = Address(newTokenAddress),
+                            decimals = newDecimals,
+                            chain = networkDefinition.chain
+                    ))
+                })
                 finish()
             }
         }

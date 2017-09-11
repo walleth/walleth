@@ -16,21 +16,22 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
 import net.glxn.qrgen.android.QRCode
 import org.kethereum.functions.toERC67String
-import org.kethereum.model.Address
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
-import org.walleth.data.exchangerate.TokenProvider
-import org.walleth.data.exchangerate.isETH
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.isETH
 import java.math.BigDecimal
 
 class RequestActivity : AppCompatActivity() {
 
     lateinit var currentERC67String: String
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val tokenProvider: TokenProvider by LazyKodein(appKodein).instance()
+    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,9 +58,9 @@ class RequestActivity : AppCompatActivity() {
 
     private fun refreshQR() {
 
-        if(tokenProvider.currentToken.isETH()) {
+        if (currentTokenProvider.currentToken.isETH()) {
 
-            val relevantAddress = keyStore.getCurrentAddress()
+            val relevantAddress = currentAddressProvider.getCurrent()
             currentERC67String = relevantAddress.toERC67String()
 
             if (add_value_checkbox.isChecked) {
@@ -68,13 +69,13 @@ class RequestActivity : AppCompatActivity() {
                 } catch (e: NumberFormatException) {
                 }
             }
-        }else{
-            val relevantAddress = Address(tokenProvider.currentToken.address)
-            currentERC67String = relevantAddress.toERC67String()
+        } else {
+            val relevantAddress = currentTokenProvider.currentToken.address
+            currentERC67String = relevantAddress!!.toERC67String()
             if (add_value_checkbox.isChecked) {
                 try {
                     currentERC67String = currentERC67String + "?function=transfer(address " +
-                            keyStore.getCurrentAddress().hex + ", uint " +
+                            currentAddressProvider.getCurrent().hex + ", uint " +
                             value_input_edittext.text.toString() + ")"
                 } catch (e: NumberFormatException) {
                 }
@@ -104,7 +105,7 @@ class RequestActivity : AppCompatActivity() {
         R.id.menu_copy -> {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             clipboard.primaryClip = ClipData.newPlainText("Ethereum Address", currentERC67String)
-            Snackbar.make(receive_qrcode,"Copied to clipboard",Snackbar.LENGTH_LONG).show()
+            Snackbar.make(receive_qrcode, "Copied to clipboard", Snackbar.LENGTH_LONG).show()
             true
         }
         android.R.id.home -> {

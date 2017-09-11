@@ -1,5 +1,7 @@
 package org.walleth.activities
 
+import android.arch.lifecycle.LiveData
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -27,19 +29,19 @@ import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
-import org.walleth.data.BalanceAtBlock
-import org.walleth.data.BalanceProvider
-import org.walleth.data.addressbook.AddressBook
+import org.walleth.data.AppDatabase
+import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
-import org.walleth.data.exchangerate.TokenProvider
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
+import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.ui.ChangeObserver
 import org.walleth.ui.TransactionAdapterDirection.INCOMMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
-import java.math.BigInteger
 
 
 class MainActivity : AppCompatActivity() {
@@ -48,14 +50,17 @@ class MainActivity : AppCompatActivity() {
 
     val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
-    val balanceProvider: BalanceProvider by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
-    val tokenProvider: TokenProvider by lazyKodein.instance()
     val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
-    val addressBook: AddressBook by lazyKodein.instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
+    val appDatabase: AppDatabase by lazyKodein.instance()
     val settings: Settings by lazyKodein.instance()
+    val currentTokenProvider: CurrentTokenProvider by lazyKodein.instance()
+    val currentAddressProvider: BaseCurrentAddressProvider by lazyKodein.instance()
     var lastNightMode: Int? = null
+
+    var balanceLiveData: LiveData<Balance>? = null
 
     override fun onResume() {
         super.onResume()
@@ -65,58 +70,6 @@ class MainActivity : AppCompatActivity() {
             return
         }
         lastNightMode = settings.getNightMode()
-
-        syncProgressProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
-            override fun observeChange() {
-                runOnUiThread {
-                    val progress = syncProgressProvider.currentSyncProgress
-
-                    if (progress.isSyncing) {
-                        val percent = ((progress.currentBlock.toDouble() / progress.highestBlock) * 100).toInt()
-                        supportActionBar?.subtitle = "Block ${progress.currentBlock}/${progress.highestBlock} ($percent%)"
-                    }
-                }
-            }
-        })
-
-        transactionProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
-            override fun observeChange() {
-                val allTransactions = transactionProvider.getTransactionsForAddress(keyStore.getCurrentAddress())
-                val incomingTransactions = allTransactions.filter { it.transaction.to == keyStore.getCurrentAddress() }.sortedByDescending { it.transaction.creationEpochSecond }
-                val outgoingTransactions = allTransactions.filter { it.transaction.from == keyStore.getCurrentAddress() }.sortedByDescending { it.transaction.creationEpochSecond }
-
-                val hasNoTransactions = incomingTransactions.size + outgoingTransactions.size == 0
-
-                runOnUiThread {
-                    transaction_recycler_out.adapter = TransactionRecyclerAdapter(outgoingTransactions, addressBook, tokenProvider, OUTGOING)
-                    transaction_recycler_in.adapter = TransactionRecyclerAdapter(incomingTransactions, addressBook, tokenProvider, INCOMMING)
-
-                    empty_view_container.setVisibility(hasNoTransactions)
-
-                    send_container.setVisibility(!hasNoTransactions, INVISIBLE)
-
-                    transaction_recycler_in.setVisibility(!hasNoTransactions)
-                    transaction_recycler_out.setVisibility(!hasNoTransactions)
-
-                }
-            }
-        })
-        balanceProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
-            override fun observeChange() {
-                var balanceForAddress = BalanceAtBlock(balance = BigInteger("0"), block = 0, tokenDescriptor = tokenProvider.currentToken)
-                balanceProvider.getBalanceForAddress(keyStore.getCurrentAddress(), tokenProvider.currentToken)?.let {
-                    balanceForAddress = it
-                }
-
-                runOnUiThread {
-                    value_view.setValue(balanceForAddress.balance, tokenProvider.currentToken)
-
-                    if (!syncProgressProvider.currentSyncProgress.isSyncing) {
-                        supportActionBar?.subtitle = "Block " + balanceForAddress.block
-                    }
-                }
-            }
-        })
     }
 
     fun String.isJSONKey() = try {
@@ -218,6 +171,97 @@ class MainActivity : AppCompatActivity() {
 
         current_token_symbol.setOnClickListener {
             startActivityFromClass(SelectTokenActivity::class)
+        }
+
+        networkDefinitionProvider.observe(this, Observer {
+            setCurrentBalanceObserver()
+        })
+
+
+        syncProgressProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
+            override fun observeChange() {
+                runOnUiThread {
+                    val progress = syncProgressProvider.currentSyncProgress
+
+                    if (progress.isSyncing) {
+                        val percent = ((progress.currentBlock.toDouble() / progress.highestBlock) * 100).toInt()
+                        supportActionBar?.subtitle = "Block ${progress.currentBlock}/${progress.highestBlock} ($percent%)"
+                    }
+                }
+            }
+        })
+
+        transactionProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
+            override fun observeChange() {
+                val currentAddress = currentAddressProvider.value
+                if (currentAddress != null) {
+                    val allTransactions = transactionProvider.getTransactionsForAddress(currentAddress)
+                    val incomingTransactions = allTransactions.filter { it.transaction.to == currentAddress }.sortedByDescending { it.transaction.creationEpochSecond }
+                    val outgoingTransactions = allTransactions.filter { it.transaction.from == currentAddress }.sortedByDescending { it.transaction.creationEpochSecond }
+
+                    val hasNoTransactions = incomingTransactions.size + outgoingTransactions.size == 0
+
+                    runOnUiThread {
+                        transaction_recycler_out.adapter = TransactionRecyclerAdapter(outgoingTransactions, appDatabase, OUTGOING)
+                        transaction_recycler_in.adapter = TransactionRecyclerAdapter(incomingTransactions, appDatabase, INCOMMING)
+
+                        empty_view_container.setVisibility(hasNoTransactions)
+
+                        send_container.setVisibility(!hasNoTransactions, INVISIBLE)
+
+                        transaction_recycler_in.setVisibility(!hasNoTransactions)
+                        transaction_recycler_out.setVisibility(!hasNoTransactions)
+
+                    }
+                }
+            }
+        })
+
+
+        currentAddressProvider.observe(this, Observer { _ ->
+            setCurrentBalanceObserver()
+        })
+//
+        /*
+        balanceProvider.registerChangeObserverWithInitialObservation(object : ChangeObserver {
+            override fun observeChange() {
+                var balanceForAddress = Balance(balance = BigInteger("0"), block = 0, token = currentTokenProvider.currentToken)
+                val address = currentAddressProvider.value
+                if (address != null) {
+                    balanceProvider.getBalanceForAddress(address, currentTokenProvider.currentToken)?.let {
+                        balanceForAddress = it
+                    }
+
+                    runOnUiThread {
+
+
+                        if (!syncProgressProvider.currentSyncProgress.isSyncing) {
+                            supportActionBar?.subtitle = "Block " + balanceForAddress.block
+                        }
+                    }
+                }
+            }
+        })
+        */
+
+    }
+
+
+    private val balanceObserver = Observer<Balance> {
+        it?.let { balance ->
+            balance.chain
+            value_view.setValue(balance.balance, currentTokenProvider.currentToken)
+            supportActionBar?.subtitle = "Block " + it.block
+
+        }
+    }
+
+    private fun setCurrentBalanceObserver() {
+        val currentAddress = currentAddressProvider.value
+        if (currentAddress !=null) {
+            balanceLiveData?.removeObserver(balanceObserver)
+            balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain)
+            balanceLiveData?.observe(this, balanceObserver)
         }
     }
 

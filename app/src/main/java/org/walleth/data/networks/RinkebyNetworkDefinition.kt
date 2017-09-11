@@ -5,7 +5,7 @@ import org.kethereum.ETHEREUM_NETWORK_RINKEBY
 class RinkebyNetworkDefinition : BaseNetworkDefinition() {
 
     override val etherscan_prefix = ETHEREUM_NETWORK_RINKEBY
-    override val chainId = 4L
+    override val chain = ChainDefinition(4L)
 
     override fun getNetworkName() = ETHEREUM_NETWORK_RINKEBY
 

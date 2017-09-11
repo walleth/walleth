@@ -1,6 +1,7 @@
 package org.walleth.core
 
-import android.app.Service
+import android.arch.lifecycle.LifecycleService
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Binder
 import android.os.SystemClock
@@ -12,61 +13,73 @@ import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
 import org.walleth.BuildConfig
-import org.walleth.data.BalanceProvider
-import org.walleth.data.exchangerate.ETH_TOKEN
-import org.walleth.data.exchangerate.TokenProvider
+import org.walleth.data.AppDatabase
+import org.walleth.data.balances.Balance
+import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.BaseCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.isETH
 import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionWithState
 import org.walleth.khex.toHexString
 import org.walleth.ui.ChangeObserver
 import java.io.IOException
-import java.lang.NumberFormatException
 import java.math.BigInteger
 
-class EtherScanService : Service() {
+class EtherScanService : LifecycleService() {
 
-    val binder by lazy { Binder() }
-    override fun onBind(intent: Intent) = binder
+    private val binder by lazy { Binder() }
+
+    override fun onBind(intent: Intent): Binder {
+        super.onBind(intent)
+        return binder
+    }
 
     val lazyKodein = LazyKodein(appKodein)
 
     val okHttpClient: OkHttpClient by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
     val transactionProvider: TransactionProvider by lazyKodein.instance()
-    val balanceProvider: BalanceProvider by lazyKodein.instance()
-    val tokenProvider: TokenProvider by lazyKodein.instance()
+    val currentAddressProvider: BaseCurrentAddressProvider by lazyKodein.instance()
+    val tokenProvider: CurrentTokenProvider by lazyKodein.instance()
+    val appDatabase: AppDatabase by lazyKodein.instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
 
+    var shortcut = false
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+
+        val shortcutChangeObserver: ChangeObserver = object : ChangeObserver {
+            override fun observeChange() {
+                shortcut = true
+            }
+        }
+
+        transactionProvider.registerChangeObserver(shortcutChangeObserver)
+        currentAddressProvider.observe(this, Observer {
+            shortcut = true
+        })
+        networkDefinitionProvider.observe(this, Observer {
+            shortcut = true
+        })
 
         Thread({
 
-            var shortcut = false
-
-            val shortcutChangeObserver: ChangeObserver = object : ChangeObserver {
-                override fun observeChange() {
-                    shortcut = true
-                }
-            }
-
-            transactionProvider.registerChangeObserver(shortcutChangeObserver)
-            keyStore.registerChangeObserver(shortcutChangeObserver)
-            networkDefinitionProvider.registerChangeObserver(shortcutChangeObserver)
-
             while (true) {
-                tryFetchFromEtherScan(keyStore.getCurrentAddress().hex)
+                val currentAddress = currentAddressProvider.value
 
-                relayTransactionsIfNeeded()
+                if (currentAddress != null) {
+                    tryFetchFromEtherScan(currentAddress.hex)
 
+                    relayTransactionsIfNeeded()
+                }
                 var i = 0
                 while (i < 100 && !shortcut) {
                     SystemClock.sleep(100)
                     i++
                 }
-
-                shortcut = false
             }
         }).start()
 
@@ -84,20 +97,23 @@ class EtherScanService : Service() {
 
     private fun relayTransaction(transaction: TransactionWithState) {
 
-        getEtherscanResult("module=proxy&action=eth_sendRawTransaction&hex=" + transaction.transaction.encodeRLP().toHexString("")) {
-            if (it.has("result")) {
-                transaction.transaction.txHash = it.getString("result")
-            } else if (it.has("error")) {
-                val error = it.getJSONObject("error")
+        val url = "module=proxy&action=eth_sendRawTransaction&hex=" + transaction.transaction.encodeRLP().toHexString("")
+        val result = getEtherscanResult(url)
+
+        if (result != null) {
+            if (result.has("result")) {
+                transaction.transaction.txHash = result.getString("result")
+            } else if (result.has("error")) {
+                val error = result.getJSONObject("error")
 
                 if (error.has("message") &&
                         !error.getString("message").startsWith("known") &&
                         error.getString("message") != "Transaction with the same hash was already imported."
                         ) {
-                    transaction.state.error = it.toString()
+                    transaction.state.error = result.toString()
                 }
             } else {
-                transaction.state.error = it.toString()
+                transaction.state.error = result.toString()
             }
             transaction.state.eventLog = transaction.state.eventLog ?: "" + "relayed via EtherScan"
             transaction.state.relayedEtherscan = true
@@ -109,36 +125,38 @@ class EtherScanService : Service() {
         queryTransactions(addressHex)
     }
 
-    fun queryTransactions(addressHex: String) {
-
-        getEtherscanResult("module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc") {
-
-            val jsonArray = it.getJSONArray("result")
+    private fun queryTransactions(addressHex: String) {
+        val etherscanResult = getEtherscanResult("module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc")
+        if (etherscanResult != null) {
+            val jsonArray = etherscanResult.getJSONArray("result")
             val transactions = parseEtherScanTransactions(jsonArray)
             transactionProvider.addTransactions(transactions)
         }
-
     }
 
     fun queryEtherscanForBalance(addressHex: String) {
 
         val currentToken = tokenProvider.currentToken
-        if (currentToken == ETH_TOKEN) {
-            getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest") {
-                val balance = BigInteger(it.getString("result"))
-                getEtherscanResult("module=proxy&action=eth_blockNumber") {
-                    balanceProvider.setBalance(Address(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, ETH_TOKEN)
-                }
+        val blockNum = getEtherscanResult("module=proxy&action=eth_blockNumber")?.getString("result")?.replace("0x", "")?.toLong(16)
+
+        if (blockNum != null) {
+            val balanceString =if (currentToken.isETH()) {
+                 getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest")?.getString("result")
+
+            } else {
+                getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest")?.getString("result")
+
             }
-        } else {
-            getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest") {
-                try {
-                    val balance = BigInteger(it.getString("result"))
-                    getEtherscanResult("module=proxy&action=eth_blockNumber") {
-                        balanceProvider.setBalance(Address(addressHex), it.getString("result").replace("0x", "").toLong(16), balance, currentToken)
-                    }
-                } catch(e: NumberFormatException) {
-                }
+
+            if (balanceString != null) {
+                appDatabase.balances.upsertIfNewerBlock(
+                        Balance(address = Address(addressHex),
+                                block = blockNum,
+                                balance = BigInteger(balanceString),
+                                tokenAddress = currentToken.address,
+                                chain = networkDefinitionProvider.getCurrent().chain
+                                )
+                )
             }
         }
     }
@@ -156,11 +174,21 @@ class EtherScanService : Service() {
     }
 
 
-    fun getEtherscanResult(requestString: String, successCallback: (responseJSON: JSONObject) -> Unit) {
-        val baseURL = networkDefinitionProvider.currentDefinition.getBlockExplorer().baseAPIURL
+    fun getEtherscanResult(requestString: String): JSONObject? {
+        val baseURL = networkDefinitionProvider.value!!.getBlockExplorer().baseAPIURL
         val urlString = "$baseURL/api?$requestString&apikey=$" + BuildConfig.ETHERSCAN_APIKEY
         val url = Request.Builder().url(urlString).build()
         val newCall: Call = okHttpClient.newCall(url)
-        newCall.enqueueOnlySuccess(successCallback)
+
+        return try {
+            newCall.execute().body().use { it?.string() }.let {
+                JSONObject(it)
+            }
+        } catch (ioe: IOException) {
+            ioe.printStackTrace()
+            null
+        }
+
     }
+
 }

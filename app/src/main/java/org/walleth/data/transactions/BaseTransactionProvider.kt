@@ -15,7 +15,7 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
 
 
     override fun addPendingTransaction(transaction: TransactionWithState) {
-        pendingTransactions.add(transaction)
+        pendingTransactions.add(transaction.apply { state.isPending = true })
         promoteChange()
     }
 
@@ -45,8 +45,9 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
             for (transaction in transactions) {
                 val txHash = transaction.transaction.txHash
                 if (txHash != null) {
-                    needsUpdate = needsUpdate || (!transactionMap.containsKey(txHash.toUpperCase()) || transactionMap[txHash.toUpperCase()] != transaction)
-                    transactionMap[txHash.toUpperCase()] = transaction
+                    val newTransaction = transaction.apply { state.isPending = false }
+                    needsUpdate = needsUpdate || (!transactionMap.containsKey(txHash.toUpperCase()) || transactionMap[txHash.toUpperCase()] != newTransaction)
+                    transactionMap[txHash.toUpperCase()] = newTransaction
                 }
             }
             if (needsUpdate) promoteChange()
@@ -57,8 +58,9 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
         synchronized(txListLock) {
             val txHash = transaction.transaction.txHash
             if (txHash != null) {
-                val noUpdate = (transactionMap.containsKey(txHash.toUpperCase()) && transactionMap[txHash.toUpperCase()] == transaction)
-                transactionMap[txHash.toUpperCase()] = transaction
+                val newTransaction = transaction.apply { state.isPending = false }
+                val noUpdate = (transactionMap.containsKey(txHash.toUpperCase()) && transactionMap[txHash.toUpperCase()] == newTransaction)
+                transactionMap[txHash.toUpperCase()] = newTransaction
                 if (!noUpdate) promoteChange()
             }
 
@@ -70,7 +72,7 @@ open class BaseTransactionProvider : SimpleObserveable(), TransactionProvider {
             if (oldTxHash.toUpperCase() != transaction.transaction.txHash!!.toUpperCase()) {
                 transactionMap.remove(oldTxHash.toUpperCase())
             }
-            transactionMap[transaction.transaction.txHash!!.toUpperCase()] = transaction
+            transactionMap[transaction.transaction.txHash!!.toUpperCase()] = transaction.apply { state.isPending = false }
             promoteChange()
         }
     }
