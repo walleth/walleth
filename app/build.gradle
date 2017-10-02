@@ -118,7 +118,7 @@ dependencies {
     compile "com.github.ligi.kethereum:erc55:$kethereum_version"
 
     compile 'com.github.ligi:tracedroid:1.4'
-    compile 'com.github.ligi:KAXT:0.17'
+    compile 'com.github.ligi:KAXT:0.18'
     compile 'com.github.ligi:KAXTUI:0.4'
     compile 'com.github.trezor.trezor-android:trezor-lib:v1.0.6'
 
@@ -181,7 +181,7 @@ if (hasProperty("isCI")) {
                 'com.github.ligi.kethereum:erc55:b10d21873d68144fec7e534b9f0ef89cd5c3f1d236ea539b61851b59084f1bd7',
                 'com.github.ligi.kethereum:functions:9af9d5209069c57121bc6dc5e0c7279cdce5c13b8b9537be7fb83edeac5cfeb6',
                 'com.github.ligi.kethereum:bip44:845ff4198272194f9d1a5dace82ccb16a550f2578cf668ce21d0cd18f7483a76',
-                'com.github.ligi:KAXT:4cfe2b683dacff9575799edb63a3d46ff647761bf76cb17702150856471538bc',
+
                 'com.github.ligi:KAXTUI:7bd3745979d8db21010846303339e2debec5ab77c5c9323f136d70c093c1017a',
                 'com.github.salomonbrys.kodein:kodein:6727cb851a73a82fd5ded29877739749f7f89c26a23ababaf9a06d7cf9aa7bee',
                 'com.github.salomonbrys.kodein:kodein-android:98b1998e2477eb715720ddf7f016a1b828ceb87c1f11ce72dad3d518629a0330',
