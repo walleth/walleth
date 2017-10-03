@@ -5,6 +5,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
+import org.kethereum.model.createTransactionWithDefaults
 import org.walleth.kethereum.android.TransactionParcel
 import java.math.BigInteger
 
@@ -14,14 +15,14 @@ class TheTransactionParcel {
     @Test
     fun normalTransactionSurvives() {
 
-        val transactionBefore = Transaction(BigInteger("10"), Address("0xab"), Address("0xcd"), nonce = DEFAULT_NONCE)
+        val transactionBefore = createTransactionWithDefaults(value = BigInteger("10"), from = Address("0xab"), to = Address("0xcd"), nonce = DEFAULT_NONCE)
         testTransactionParcel(transactionBefore)
     }
 
     @Test
     fun customTransactionSurvives() {
 
-        val transactionBefore = Transaction(BigInteger("1000"), Address("0xab"), Address("0xcd"),
+        val transactionBefore = createTransactionWithDefaults(value = BigInteger("1000"), from = Address("0xab"), to = Address("0xcd"),
                 creationEpochSecond = 10L,
                 gasLimit = BigInteger("123"),
                 gasPrice = BigInteger("123542"),
@@ -33,7 +34,7 @@ class TheTransactionParcel {
     @Test
     fun transactionWithNullFieldsSurvives() {
 
-        val transactionBefore = Transaction(BigInteger("0"), Address("0xab"), null)
+        val transactionBefore = createTransactionWithDefaults(value = BigInteger("0"), from = Address("0xab"), to = null)
         testTransactionParcel(transactionBefore)
     }
 

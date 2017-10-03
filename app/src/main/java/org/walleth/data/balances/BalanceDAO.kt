@@ -6,7 +6,7 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import org.kethereum.model.Address
-import org.walleth.data.networks.ChainDefinition
+import org.kethereum.model.ChainDefinition
 
 fun BalanceDAO.upsertIfNewerBlock(entry: Balance) {
     val oldBalance = getBalance(entry.address, entry.tokenAddress, entry.chain)

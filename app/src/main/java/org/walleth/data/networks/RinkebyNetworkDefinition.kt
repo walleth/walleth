@@ -1,6 +1,7 @@
 package org.walleth.data.networks
 
 import org.kethereum.ETHEREUM_NETWORK_RINKEBY
+import org.kethereum.model.ChainDefinition
 
 class RinkebyNetworkDefinition : BaseNetworkDefinition() {
 

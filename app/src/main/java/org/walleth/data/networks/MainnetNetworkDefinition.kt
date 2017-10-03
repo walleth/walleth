@@ -1,6 +1,7 @@
 package org.walleth.data.networks
 
 import org.kethereum.ETHEREUM_NETWORK_MAIN
+import org.kethereum.model.ChainDefinition
 
 class MainnetNetworkDefinition : BaseNetworkDefinition() {
 

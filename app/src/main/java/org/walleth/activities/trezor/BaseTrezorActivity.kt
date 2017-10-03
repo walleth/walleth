@@ -31,7 +31,6 @@ import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.transactions.TransactionProvider
 import org.walleth.khex.toHexString
 
 
@@ -44,7 +43,6 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
 
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
 
     val inflater by lazy { LayoutInflater.from(this)!! }

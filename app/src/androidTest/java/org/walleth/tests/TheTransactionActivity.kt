@@ -7,14 +7,15 @@ import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
 import org.junit.Rule
 import org.junit.Test
-import org.kethereum.model.Transaction
+import org.kethereum.model.ChainDefinition
+import org.kethereum.model.createTransactionWithDefaults
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.transactions.TransactionState
-import org.walleth.data.transactions.TransactionWithState
+import org.walleth.data.transactions.toEntity
 import org.walleth.infrastructure.TestApp
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 import org.walleth.testdata.Room77
@@ -24,13 +25,24 @@ import java.math.BigInteger
 
 class TheTransactionActivity {
 
+
     @get:Rule
     var rule = TruleskActivityRule(ViewTransactionActivity::class.java, false)
 
     private val DEFAULT_NONCE = BigInteger("11")
+    private val DEFAULT_CHAIN = ChainDefinition(4)
+    private val DEFAULT_TX = createTransactionWithDefaults(value = ETH_IN_WEI,
+            from = DEFAULT_TEST_ADDRESS,
+            to = DEFAULT_TEST_ADDRESS,
+            nonce = DEFAULT_NONCE,
+            txHash = "0xFOO",
+            chain = DEFAULT_CHAIN
+    )
+
     @Test
     fun nonceIsDisplayedCorrectly() {
-        TestApp.transactionProvider.addTransaction(TransactionWithState(Transaction(ETH_IN_WEI, DEFAULT_TEST_ADDRESS, DEFAULT_TEST_ADDRESS, nonce = DEFAULT_NONCE, txHash = "0xFOO"), TransactionState()))
+
+        TestApp.testDatabase.transactions.upsert(DEFAULT_TX.toEntity(null, TransactionState()))
         TestApp.testDatabase.addressBook.addTestAddresses()
         rule.launchActivity(InstrumentationRegistry.getTargetContext().getTransactionActivityIntentForHash("0xFOO"))
 
@@ -40,8 +52,8 @@ class TheTransactionActivity {
     @Test
     fun isLabeledToWhenWeReceive() {
         TestApp.testDatabase.addressBook.addTestAddresses()
-        val transaction = Transaction(ETH_IN_WEI, from = DEFAULT_TEST_ADDRESS, to = Room77, nonce = DEFAULT_NONCE, txHash = "0xFOO12")
-        TestApp.transactionProvider.addTransaction(TransactionWithState(transaction, TransactionState()))
+        val transaction = DEFAULT_TX.copy(from = DEFAULT_TEST_ADDRESS, to = Room77)
+        TestApp.testDatabase.transactions.upsert(transaction.toEntity(null, TransactionState()))
         rule.launchActivity(InstrumentationRegistry.getTargetContext().getTransactionActivityIntentForHash(transaction.txHash!!))
 
         onView(withId(R.id.from_to_title)).check(matches(withText(R.string.transaction_to_label)))
@@ -52,8 +64,8 @@ class TheTransactionActivity {
     @Test
     fun isLabeledFromWhenWeReceive() {
         TestApp.testDatabase.addressBook.addTestAddresses()
-        val transaction = Transaction(ETH_IN_WEI, from = ShapeShift, to = DEFAULT_TEST_ADDRESS, nonce = DEFAULT_NONCE, txHash = "0xFOO21")
-        TestApp.transactionProvider.addTransaction(TransactionWithState(transaction, TransactionState()))
+        val transaction = DEFAULT_TX.copy(from = ShapeShift, to = DEFAULT_TEST_ADDRESS)
+        TestApp.testDatabase.transactions.upsert(transaction.toEntity(null, TransactionState()))
         rule.launchActivity(InstrumentationRegistry.getTargetContext().getTransactionActivityIntentForHash(transaction.txHash!!))
 
         onView(withId(R.id.from_to_title)).check(matches(withText(R.string.transaction_from_label)))

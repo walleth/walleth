@@ -5,12 +5,11 @@ import org.ethereum.geth.Account
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
 import org.kethereum.model.Address
-import org.walleth.data.SimpleObserveable
 import org.walleth.kethereum.geth.toKethereumAddress
 import org.walleth.khex.hexToByteArray
 import java.io.File
 
-class GethBackedWallethKeyStore(val context: Context) : SimpleObserveable(), WallethKeyStore {
+class GethBackedWallethKeyStore(val context: Context) : WallethKeyStore {
 
     private val keyStoreFile by lazy { File(context.filesDir, "keystore") }
     val keyStore by lazy { KeyStore(keyStoreFile.absolutePath, Geth.LightScryptN, Geth.LightScryptP) }

@@ -14,18 +14,18 @@ import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
-import org.kethereum.model.Transaction
+import org.kethereum.model.createTransactionWithDefaults
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.activities.qrscan.startScanActivityForResult
+import org.walleth.data.AppDatabase
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionState
-import org.walleth.data.transactions.TransactionWithState
+import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.geth.extractSignatureData
 import org.walleth.kethereum.geth.toKethereumAddress
 import org.walleth.khex.hexToByteArray
@@ -33,10 +33,10 @@ import java.math.BigInteger
 
 class OfflineTransactionActivity : AppCompatActivity() {
 
-    val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    val currentAddressProvider : BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,17 +74,17 @@ class OfflineTransactionActivity : AppCompatActivity() {
 
     private fun createTransaction(gethTransaction: org.ethereum.geth.Transaction, signatureData: SignatureData?, from: () -> Address) {
         try {
-            val transaction = Transaction(
+            val transaction = createTransactionWithDefaults(
                     value = BigInteger(gethTransaction.value.toString()),
                     from = from.invoke(),
                     to = gethTransaction.to!!.toKethereumAddress(),
 
                     nonce = BigInteger(gethTransaction.nonce.toString()),
-                    txHash = gethTransaction.hash.hex,
-                    signatureData = signatureData
+                    txHash = gethTransaction.hash.hex
             )
             val transactionState = TransactionState(needsSigningConfirmation = signatureData == null)
-            transactionProvider.addTransaction(TransactionWithState(transaction, transactionState))
+
+            appDatabase.transactions.upsert(transaction.toEntity(signatureData,transactionState))
 
             startActivity(getTransactionActivityIntentForHash(gethTransaction.hash.hex))
             finish()

@@ -1,100 +1,104 @@
 package org.walleth.core
 
-import android.app.Service
+import android.arch.lifecycle.LifecycleService
+import android.arch.lifecycle.Observer
 import android.content.Intent
-import android.os.Binder
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import org.ethereum.geth.Geth
 import org.kethereum.functions.encodeRLP
+import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.config.Settings
 import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.transactions.TransactionProvider
+import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.TransactionSource
-import org.walleth.data.transactions.TransactionWithState
+import org.walleth.data.transactions.getTransactionToSignWithGethLive
+import org.walleth.data.transactions.setHash
 import org.walleth.kethereum.geth.extractSignatureData
 import org.walleth.kethereum.geth.toGethAddr
 import org.walleth.kethereum.geth.toGethTransaction
-import org.walleth.ui.ChangeObserver
 import java.math.BigInteger.ONE
+import java.math.BigInteger.ZERO
 
 
-class GethTransactionSigner : Service() {
-
-    val binder by lazy { Binder() }
-    override fun onBind(intent: Intent) = binder
+class GethTransactionSigner : LifecycleService() {
 
     val lazyKodein = LazyKodein(appKodein)
 
-    val transactionProvider: TransactionProvider by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
+    val appDatabase: AppDatabase by lazyKodein.instance()
     val settings: Settings by lazyKodein.instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
-        val changeObserver: ChangeObserver = object : ChangeObserver {
-            override fun observeChange() {
-                transactionProvider.popPendingTransaction()?.let {
-                    signTransaction(it)
-                }
-
-                transactionProvider.getAllTransactions().forEach {
-                    if (it.state.ref == TransactionSource.WALLETH) {
-                        signTransaction(it)
-                    }
-                }
-            }
+    val observer = Observer<List<TransactionEntity>> {
+        it?.forEach {
+            signTransaction(it)
         }
+    }
 
-        transactionProvider.registerChangeObserver(changeObserver)
+    val liveData by lazy { appDatabase.transactions.getTransactionToSignWithGethLive() }
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
+
+        if (!liveData.hasObservers()) {
+            liveData.observe(this, observer)
+        }
 
         return START_STICKY
     }
 
-    private fun signTransaction(transaction: TransactionWithState) {
-        if (transaction.state.needsSigningConfirmation) {
-            return
+    private fun signTransaction(transaction: TransactionEntity) = async(CommonPool) {
+        if (transaction.transactionState.needsSigningConfirmation) {
+            return@async
         }
 
-        val previousTxHash = transaction.transaction.txHash
+        val oldHash=transaction.hash
+        transaction.transactionState.source = TransactionSource.WALLETH
 
-        transaction.state.ref = TransactionSource.WALLETH_PROCESSED
+        transaction.transaction.from?.let { notNullFrom ->
+            if (transaction.transaction.nonce == null) {
+                val lastNonce = appDatabase.transactions.getNonceForAddress(notNullFrom, networkDefinitionProvider.getCurrent().chain)
+                transaction.transaction.nonce = lastNonce.max() ?: ZERO + ONE
+            }
 
-        if (transaction.transaction.nonce == null) {
-            transaction.transaction.nonce = transactionProvider.getLastNonceForAddress(transaction.transaction.from) + ONE
+            val newTransaction = transaction.transaction.toGethTransaction()
+            val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
+            val accounts = gethKeystore.accounts
+
+            val index = (0..(accounts.size() - 1)).firstOrNull {
+                accounts.get(it).address.hex.toUpperCase() == notNullFrom.hex.toUpperCase()
+            }
+
+            if (transaction.signatureData != null) { // coming from TREZOR
+                val newTransactionFromRLP = Geth.newTransactionFromRLP(transaction.transaction.encodeRLP())
+                transaction.setHash(newTransactionFromRLP.hash.hex)
+            } else if (index == null) {
+                transaction.transactionState.error = "No key for sending account"
+                transaction.setHash(newTransaction.hash.hex)
+            } else {
+                gethKeystore.unlock(accounts.get(index), DEFAULT_PASSWORD)
+
+                val signHash = gethKeystore.signHash(notNullFrom.toGethAddr(), newTransaction.sigHash.bytes)
+                val transactionWithSignature = newTransaction.withSignature(signHash)
+
+                transaction.setHash(transactionWithSignature.hash.hex)
+                transaction.signatureData = transactionWithSignature.extractSignatureData()
+
+            }
+
         }
-
-        val newTransaction = transaction.transaction.toGethTransaction()
-        val gethKeystore = (keyStore as GethBackedWallethKeyStore).keyStore
-        val accounts = gethKeystore.accounts
-        val index = (0..(accounts.size() - 1)).firstOrNull { accounts.get(it).address.hex.toUpperCase() == transaction.transaction.from.hex.toUpperCase() }
-
-        if (transaction.transaction.signatureData != null) { // coming from TREZOR
-            val newTransactionFromRLP = Geth.newTransactionFromRLP(transaction.transaction.encodeRLP())
-            transaction.transaction.txHash = newTransactionFromRLP.hash.hex
-        } else if (index == null) {
-            transaction.state.error = "No key for sending account"
-            transaction.transaction.txHash = newTransaction.hash.hex
-        } else {
-            gethKeystore.unlock(accounts.get(index), DEFAULT_PASSWORD)
-
-            val signHash = gethKeystore.signHash(transaction.transaction.from.toGethAddr(), newTransaction.sigHash.bytes)
-            val transactionWithSignature = newTransaction.withSignature(signHash)
-
-            transaction.transaction.txHash = transactionWithSignature.hash.hex
-            transaction.transaction.signatureData = transactionWithSignature.extractSignatureData()
+        async(CommonPool) {
+            appDatabase.transactions.deleteByHash(oldHash)
+            transaction.transactionState.gethSignProcessed = true
+            appDatabase.transactions.upsert(transaction)
 
         }
-
-        if (previousTxHash != null) {
-            transactionProvider.updateTransaction(previousTxHash, transaction)
-        } else {
-            transactionProvider.addTransaction(transaction)
-        }
-
     }
 
 }

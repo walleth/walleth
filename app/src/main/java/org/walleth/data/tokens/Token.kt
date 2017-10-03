@@ -2,8 +2,8 @@ package org.walleth.data.tokens
 
 import android.arch.persistence.room.Entity
 import org.kethereum.model.Address
-import org.walleth.data.networks.ChainDefinition
 import org.walleth.data.networks.NetworkDefinition
+import org.kethereum.model.ChainDefinition
 
 fun Token.isETH() = address.hex == "0x0"
 

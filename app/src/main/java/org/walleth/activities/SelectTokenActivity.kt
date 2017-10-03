@@ -42,7 +42,7 @@ class SelectTokenActivity : AppCompatActivity()  {
     override fun onResume() {
         super.onResume()
 
-        appDatabase.tokens.allForChain(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
+        appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
             if (allTokens!=null) {
                 recycler_view.adapter = TokenListAdapter(currentTokenProvider, allTokens, this)
             }

@@ -1,6 +1,7 @@
 package org.walleth.data.networks
 
 import org.kethereum.ETHEREUM_NETWORK_ROPSTEN
+import org.kethereum.model.ChainDefinition
 
 class RopstenNetworkDefinition : BaseNetworkDefinition() {
 

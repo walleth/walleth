@@ -11,10 +11,13 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_transaction.*
-import org.kethereum.functions.ERC67
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
+import org.kethereum.erc67.ERC67
 import org.kethereum.functions.createTokenTransferTransactionInput
+import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
-import org.kethereum.model.Transaction
+import org.kethereum.model.createTransactionWithDefaults
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
@@ -26,18 +29,18 @@ import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
 import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
 import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.addressbook.getByAddressAsync
-import org.walleth.data.addressbook.resolveName
+import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.tokens.isETH
-import org.walleth.data.transactions.TransactionProvider
 import org.walleth.data.transactions.TransactionState
-import org.walleth.data.transactions.TransactionWithState
+import org.walleth.data.transactions.toEntity
 import org.walleth.functions.decimalsInZeroes
+import org.walleth.keccak_shortcut.keccak
 import org.walleth.kethereum.android.TransactionParcel
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -49,9 +52,8 @@ class CreateTransactionActivity : AppCompatActivity() {
     var currentERC67String: String? = null
     var currentAmount: BigInteger? = null
 
-    val transactionProvider: TransactionProvider by LazyKodein(appKodein).instance()
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
     val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
@@ -100,28 +102,30 @@ class CreateTransactionActivity : AppCompatActivity() {
                 } else if (nonce_input.text.isBlank()) {
                     alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
                 } else {
-                    val transaction = if (currentTokenProvider.currentToken.isETH()) Transaction(
-                            creationEpochSecond = System.currentTimeMillis() / 1000,
+                    val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
                             value = currentAmount!!,
                             to = ERC67(currentERC67String!!).address,
                             from = currentAddressProvider.getCurrent()
-                    ) else Transaction(
+                    ) else createTransactionWithDefaults(
                             creationEpochSecond = System.currentTimeMillis() / 1000,
                             value = ZERO,
                             to = currentTokenProvider.currentToken.address,
                             from = currentAddressProvider.getCurrent(),
                             input = createTokenTransferTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
-                    )
+                    )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
 
                     transaction.nonce = nonce_input.asBigInit()
                     transaction.gasPrice = gas_price_input.asBigInit()
                     transaction.gasLimit = gas_limit_input.asBigInit()
+                    transaction.txHash = transaction.encodeRLP().keccak()
 
                     when {
-                        keyStore.hasKeyForForAddress(currentAddressProvider.getCurrent()) -> {
-                            transactionProvider.addPendingTransaction(TransactionWithState(transaction, TransactionState()))
-                        }
+
                         isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
+                        else -> async(CommonPool) {
+                            appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                        }
+
                     }
                     finish()
                 }
@@ -170,7 +174,14 @@ class CreateTransactionActivity : AppCompatActivity() {
             nonce_title.visibility = View.VISIBLE
             nonce_input_container.visibility = View.VISIBLE
         }
-        nonce_input.setText((transactionProvider.getLastNonceForAddress(currentAddressProvider.getCurrent()) + ONE).toString())
+
+        appDatabase.transactions.getNonceForAddressLive(currentAddressProvider.getCurrent(), networkDefinitionProvider.getCurrent().chain).observe(this, Observer {
+            nonce_input.setText(if (it != null && !it.isEmpty()) {
+                it.max()!! + ONE
+            } else {
+                ZERO
+            }.toString())
+        })
         refreshFee()
         setToFromURL(currentERC67String, false)
 
@@ -225,7 +236,10 @@ class CreateTransactionActivity : AppCompatActivity() {
         if (currentERC67String != null && ERC67(currentERC67String!!).isValid()) {
             val erc67 = ERC67(currentERC67String!!)
 
-            to_address.text = appDatabase.addressBook.resolveName(Address(erc67.getHex()))
+            appDatabase.addressBook.resolveNameAsync(Address(erc67.getHex())) {
+                to_address.text = it
+            }
+
             erc67.getValue()?.let {
                 amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
                 setAmountFromETHString(it)

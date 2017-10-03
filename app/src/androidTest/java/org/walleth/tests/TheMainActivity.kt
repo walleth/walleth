@@ -16,6 +16,7 @@ import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.balances.Balance
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.infrastructure.TestApp
+import org.walleth.testdata.loadTestData
 import java.math.BigInteger.ZERO
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -24,21 +25,18 @@ class TheMainActivity {
     val currentNetwork = TestApp.networkDefinitionProvider.getCurrent()
 
     @get:Rule
-    var rule = TruleskActivityRule(MainActivity::class.java) {
-        TestApp.testDatabase.balances.deleteAll()
+    var rule = TruleskActivityRule(MainActivity::class.java, false)
 
-        TestApp.transactionProvider.reset()
-    }
-
-    @Test
-    fun activityStarts() {
-        // TODO investigate why when we delete this test the other ones fail - weird room problem
-        rule.screenShot("balance_one")
-    }
 
     @Test
     fun behavesCorrectlyNoTransactions() {
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ZERO))
+        TestApp.testDatabase.runInTransaction {
+            TestApp.testDatabase.balances.deleteAll()
+            TestApp.testDatabase.transactions.deleteAll()
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ZERO))
+        }
+
+        rule.launchActivity()
 
         onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))
                 .check(matches(withText("0")))
@@ -55,8 +53,13 @@ class TheMainActivity {
     @Test
     fun behavesCorrectlyWhenBalanceIsOneWithTransactions() {
 
-        TestApp.transactionProvider.load()
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ETH_IN_WEI))
+        TestApp.testDatabase.runInTransaction {
+            TestApp.testDatabase.balances.deleteAll()
+            TestApp.testDatabase.transactions.deleteAll()
+            TestApp.testDatabase.transactions.loadTestData(currentNetwork.chain)
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ETH_IN_WEI))
+        }
+        rule.launchActivity()
 
         onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))
                 .check(matches(withText("1")))

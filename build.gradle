@@ -3,7 +3,7 @@ buildscript {
         kotlin_version = '1.1.51'
         support_version = '26.1.0'
         firebase_version = '10.2.6'
-        kethereum_version = '0.20'
+        kethereum_version = '0.25'
     }
 
     repositories {

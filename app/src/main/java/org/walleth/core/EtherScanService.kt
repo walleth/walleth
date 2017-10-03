@@ -8,6 +8,8 @@ import android.os.SystemClock
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import okhttp3.*
 import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
@@ -18,14 +20,12 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
-import org.walleth.data.transactions.TransactionProvider
-import org.walleth.data.transactions.TransactionWithState
+import org.walleth.data.transactions.TransactionEntity
 import org.walleth.khex.toHexString
-import org.walleth.ui.ChangeObserver
 import java.io.IOException
 import java.math.BigInteger
 
@@ -42,8 +42,7 @@ class EtherScanService : LifecycleService() {
 
     val okHttpClient: OkHttpClient by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
-    val transactionProvider: TransactionProvider by lazyKodein.instance()
-    val currentAddressProvider: BaseCurrentAddressProvider by lazyKodein.instance()
+    val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
     val tokenProvider: CurrentTokenProvider by lazyKodein.instance()
     val appDatabase: AppDatabase by lazyKodein.instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
@@ -52,13 +51,10 @@ class EtherScanService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        val shortcutChangeObserver: ChangeObserver = object : ChangeObserver {
-            override fun observeChange() {
-                shortcut = true
-            }
-        }
 
-        transactionProvider.registerChangeObserver(shortcutChangeObserver)
+        appDatabase.transactions.getTransactionsLive().observe(this@EtherScanService, Observer {
+            shortcut = true
+        })
         currentAddressProvider.observe(this, Observer {
             shortcut = true
         })
@@ -74,7 +70,6 @@ class EtherScanService : LifecycleService() {
                 if (currentAddress != null) {
                     tryFetchFromEtherScan(currentAddress.hex)
 
-                    relayTransactionsIfNeeded()
                 }
                 var i = 0
                 while (i < 100 && !shortcut) {
@@ -85,39 +80,41 @@ class EtherScanService : LifecycleService() {
         }).start()
 
 
+        relayTransactionsIfNeeded()
         return START_STICKY
     }
 
     private fun relayTransactionsIfNeeded() {
-        transactionProvider.getAllTransactions().forEach {
-            if (it.transaction.signatureData != null) {
-                relayTransaction(it)
-            }
-        }
+        appDatabase.transactions.getAllToRelayLive().observe(this, Observer {
+            it?.let { it.filter { it.signatureData != null && !it.transactionState.relayedEtherscan }.forEach { relayTransaction(it) } }
+        })
     }
 
-    private fun relayTransaction(transaction: TransactionWithState) {
+    private fun relayTransaction(transaction: TransactionEntity) {
+        async(CommonPool) {
+            val url = "module=proxy&action=eth_sendRawTransaction&hex=" + transaction.transaction.encodeRLP(transaction.signatureData).toHexString("0x")
+            val result = getEtherscanResult(url)
 
-        val url = "module=proxy&action=eth_sendRawTransaction&hex=" + transaction.transaction.encodeRLP().toHexString("")
-        val result = getEtherscanResult(url)
+            if (result != null) {
+                if (result.has("result")) {
+                    transaction.transaction.txHash = result.getString("result")
+                } else if (result.has("error")) {
+                    val error = result.getJSONObject("error")
 
-        if (result != null) {
-            if (result.has("result")) {
-                transaction.transaction.txHash = result.getString("result")
-            } else if (result.has("error")) {
-                val error = result.getJSONObject("error")
-
-                if (error.has("message") &&
-                        !error.getString("message").startsWith("known") &&
-                        error.getString("message") != "Transaction with the same hash was already imported."
-                        ) {
-                    transaction.state.error = result.toString()
+                    if (error.has("message") &&
+                            !error.getString("message").startsWith("known") &&
+                            error.getString("message") != "Transaction with the same hash was already imported."
+                            ) {
+                        transaction.transactionState.error = result.toString()
+                    }
+                } else {
+                    transaction.transactionState.error = result.toString()
                 }
-            } else {
-                transaction.state.error = result.toString()
+                transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "relayed via EtherScan"
+                transaction.transactionState.relayedEtherscan = true
+                appDatabase.transactions.deleteByHash(transaction.hash)
+                appDatabase.transactions.upsert(transaction)
             }
-            transaction.state.eventLog = transaction.state.eventLog ?: "" + "relayed via EtherScan"
-            transaction.state.relayedEtherscan = true
         }
     }
 
@@ -130,8 +127,15 @@ class EtherScanService : LifecycleService() {
         val etherscanResult = getEtherscanResult("module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc")
         if (etherscanResult != null) {
             val jsonArray = etherscanResult.getJSONArray("result")
-            val transactions = parseEtherScanTransactions(jsonArray)
-            transactionProvider.addTransactions(transactions)
+            val newTransactions = parseEtherScanTransactions(jsonArray, networkDefinitionProvider.getCurrent().chain)
+
+            newTransactions.forEach {
+                val oldEntry = appDatabase.transactions.getByHash(it.hash)
+                if (oldEntry == null || oldEntry.transactionState.isPending) {
+                    appDatabase.transactions.upsert(it)
+                }
+            }
+
         }
     }
 
@@ -141,8 +145,8 @@ class EtherScanService : LifecycleService() {
         val blockNum = getEtherscanResult("module=proxy&action=eth_blockNumber")?.getString("result")?.replace("0x", "")?.toLong(16)
 
         if (blockNum != null) {
-            val balanceString =if (currentToken.isETH()) {
-                 getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest")?.getString("result")
+            val balanceString = if (currentToken.isETH()) {
+                getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest")?.getString("result")
 
             } else {
                 getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest")?.getString("result")
@@ -159,7 +163,7 @@ class EtherScanService : LifecycleService() {
                                     chain = networkDefinitionProvider.getCurrent().chain
                             )
                     )
-                } catch (e:NumberFormatException) {
+                } catch (e: NumberFormatException) {
                     Log.i("could not parse number " + balanceString)
                 }
             }

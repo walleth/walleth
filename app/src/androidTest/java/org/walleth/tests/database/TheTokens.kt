@@ -2,7 +2,7 @@ package org.walleth.tests.database
 
 import com.google.common.truth.Truth
 import org.junit.Test
-import org.walleth.data.networks.ChainDefinition
+import org.kethereum.model.ChainDefinition
 import org.walleth.data.tokens.Token
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2

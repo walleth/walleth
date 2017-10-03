@@ -1,8 +1,10 @@
 package org.walleth.data.transactions
 
+enum class TransactionFlag {
+    GETH_PROCESSED,
+}
 enum class TransactionSource {
     WALLETH,
-    WALLETH_PROCESSED,
     GETH,
     ETHERSCAN
 }

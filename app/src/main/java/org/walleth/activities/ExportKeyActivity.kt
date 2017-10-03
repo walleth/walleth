@@ -25,14 +25,14 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import java.io.ByteArrayOutputStream
 
 
 class ExportKeyActivity : AppCompatActivity() {
 
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
     lateinit var keyJSON: String
     override fun onCreate(savedInstanceState: Bundle?) {

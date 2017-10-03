@@ -2,7 +2,10 @@ package org.walleth.data
 
 import android.arch.persistence.room.TypeConverter
 import org.kethereum.model.Address
-import org.walleth.data.networks.ChainDefinition
+import org.kethereum.model.ChainDefinition
+import org.walleth.data.transactions.TransactionSource
+import org.walleth.khex.hexToByteArray
+import org.walleth.khex.toHexString
 import java.math.BigInteger
 import java.util.*
 
@@ -41,4 +44,23 @@ class RoomTypeConverters {
 
     @TypeConverter
     fun bigIntegerToString(bigInteger: BigInteger?) = bigInteger?.toString()
+
+
+    /** TransactionSource */
+
+    @TypeConverter
+    fun fromTransactionSourceString(value: String) = TransactionSource.valueOf(value)
+
+    @TypeConverter
+    fun toTransactionSourceString(value: TransactionSource) = value.toString()
+
+
+    /** List<Byte> **/
+
+    @TypeConverter
+    fun fromByteArrayString(value: String) = value.hexToByteArray().toList()
+
+    @TypeConverter
+    fun toTransactionSourceString(value: List<Byte>) = value.toByteArray().toHexString()
+
 }

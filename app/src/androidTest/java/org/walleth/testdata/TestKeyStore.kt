@@ -1,11 +1,10 @@
 package org.walleth.testdata
 
 import org.kethereum.model.Address
-import org.walleth.data.SimpleObserveable
 import org.walleth.data.keystore.WallethKeyStore
 import java.util.*
 
-class TestKeyStore : SimpleObserveable(), WallethKeyStore {
+class TestKeyStore : WallethKeyStore {
 
     val addresses = mutableListOf<Address>()
 

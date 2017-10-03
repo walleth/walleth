@@ -2,11 +2,11 @@ package org.walleth.core
 
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.app.Service
+import android.arch.lifecycle.LifecycleService
+import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
-import android.os.Binder
-import android.support.v7.app.NotificationCompat
+import android.support.v4.app.NotificationCompat
 import com.github.salomonbrys.kodein.KodeinInjected
 import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.LazyKodein
@@ -20,25 +20,20 @@ import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookDAO
-import org.walleth.data.transactions.TransactionProvider
-import org.walleth.ui.ChangeObserver
 
-class TransactionNotificationService : Service(), KodeinInjected {
+class TransactionNotificationService : LifecycleService(), KodeinInjected {
 
     override val injector = KodeinInjector()
 
-    val binder by lazy { Binder() }
-    override fun onBind(intent: Intent) = binder
-
     val lazyKodein = LazyKodein(appKodein)
 
-    val transactionProvider: TransactionProvider by lazyKodein.instance()
     val appDatabase: AppDatabase by lazyKodein.instance()
     val addressBook by lazy { appDatabase.addressBook }
 
     fun Transaction.isNotifyWorthyTransaction(): Boolean {
 
-        if (!(addressBook.isEntryRelevant(from) || addressBook.isEntryRelevant(to!!))) {
+        val myFrom = from
+        if (myFrom == null || !(addressBook.isEntryRelevant(myFrom) || addressBook.isEntryRelevant(to!!))) {
             return false
         }
 
@@ -50,38 +45,37 @@ class TransactionNotificationService : Service(), KodeinInjected {
 
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        super.onStartCommand(intent, flags, startId)
 
-        transactionProvider.registerChangeObserver(object : ChangeObserver {
-            override fun observeChange() {
-                val transactions = transactionProvider.getAllTransactions()
-                        .filter { it.transaction.isNotifyWorthyTransaction() }
+        appDatabase.transactions.getTransactionsLive().observe(this, Observer {
+            val relevantTransactions = it?.filter { it.transaction.isNotifyWorthyTransaction() }
 
-                if (!transactions.isEmpty()) {
-                    val relevantTransaction = transactions.first()
-                    relevantTransaction.transaction.txHash?.let {
+            if (relevantTransactions != null && relevantTransactions.isNotEmpty()) {
+                val relevantTransaction = relevantTransactions.first()
+                relevantTransaction.transaction.txHash?.let {
 
-                        val transactionIntent = baseContext.getTransactionActivityIntentForHash(it)
-                        val contentIntent = PendingIntent.getActivity(baseContext, 0, transactionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+                    val transactionIntent = baseContext.getTransactionActivityIntentForHash(it)
+                    val contentIntent = PendingIntent.getActivity(baseContext, 0, transactionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-                        val notification = NotificationCompat.Builder(baseContext).apply {
-                            setContentTitle("WALLETH Transaction")
-                            setContentText("Got transaction")
-                            setAutoCancel(true)
-                            setContentIntent(contentIntent)
-                            if (addressBook.isEntryRelevant(relevantTransaction.transaction.from)) {
-                                setSmallIcon(R.drawable.notification_minus)
-                            } else {
-                                setSmallIcon(R.drawable.notification_plus)
-                            }
+                    val notification = NotificationCompat.Builder(baseContext, "transactions").apply {
+                        setContentTitle("WALLETH Transaction")
+                        setContentText("Got transaction")
+                        setAutoCancel(true)
+                        setContentIntent(contentIntent)
+                        val myFrom = relevantTransaction.transaction.from
+                        // TODO better handle from==null
+                        if (myFrom == null || addressBook.isEntryRelevant(myFrom)) {
+                            setSmallIcon(R.drawable.notification_minus)
+                        } else {
+                            setSmallIcon(R.drawable.notification_plus)
+                        }
 
-                        }.build()
+                    }.build()
 
-                        val notificationService = baseContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-                        notificationService.notify(111, notification)
-                    }
+                    val notificationService = baseContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                    notificationService.notify(111, notification)
                 }
             }
-
         })
 
         return START_STICKY

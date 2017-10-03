@@ -2,7 +2,7 @@ package org.walleth.data.balances
 
 import android.arch.persistence.room.Entity
 import org.kethereum.model.Address
-import org.walleth.data.networks.ChainDefinition
+import org.kethereum.model.ChainDefinition
 import java.math.BigInteger
 
 @Entity(tableName = "balances", primaryKeys = arrayOf("address", "chain", "tokenAddress"))

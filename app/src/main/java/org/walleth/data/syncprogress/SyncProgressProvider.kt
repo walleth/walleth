@@ -1,15 +1,10 @@
 package org.walleth.data.syncprogress
 
-import org.walleth.data.SimpleObserveable
+import android.arch.lifecycle.MutableLiveData
 
-class SyncProgressProvider : SimpleObserveable() {
+class SyncProgressProvider : MutableLiveData<WallethSyncProgress>() {
 
-    var currentSyncProgress = WallethSyncProgress(false, 0L, 0L)
-
-    fun setSyncProgress(syncProgress: WallethSyncProgress) {
-        if (currentSyncProgress != syncProgress) {
-            currentSyncProgress = syncProgress
-            promoteChange()
-        }
+    init {
+        value = WallethSyncProgress(false, 0L, 0L)
     }
 }

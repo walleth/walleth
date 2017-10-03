@@ -5,7 +5,7 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
 
-class InitializingCurrentAddressProvider(keyStore: WallethKeyStore,appDatabase: AppDatabase) : BaseCurrentAddressProvider() {
+class InitializingCurrentAddressProvider(keyStore: WallethKeyStore,appDatabase: AppDatabase) : CurrentAddressProvider() {
 
     init {
         Thread {

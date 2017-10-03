@@ -18,7 +18,6 @@ import org.ligi.tracedroid.TraceDroid
 import org.walleth.core.EtherScanService
 import org.walleth.core.GethLightEthereumService
 import org.walleth.core.GethTransactionSigner
-import org.walleth.core.TransactionNotificationService
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.config.KotprefSettings
@@ -27,13 +26,11 @@ import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.InitializingCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.transactions.BaseTransactionProvider
-import org.walleth.data.transactions.TransactionProvider
 
 open class App : MultiDexApplication(), KodeinAware {
 
@@ -49,12 +46,11 @@ open class App : MultiDexApplication(), KodeinAware {
     open fun createKodein(): Kodein.Module {
 
         return Kodein.Module {
-            bind<TransactionProvider>() with singleton { BaseTransactionProvider() }
             bind<ExchangeRateProvider>() with singleton { CryptoCompareExchangeProvider(this@App, instance()) }
             bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
             bind<WallethKeyStore>() with singleton { gethBackedWallethKeyStore }
             bind<Settings>() with singleton { KotprefSettings }
-            bind<BaseCurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance()) }
+            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance()) }
             bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
 
             bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
@@ -118,7 +114,7 @@ open class App : MultiDexApplication(), KodeinAware {
         }
         startService(Intent(this, GethTransactionSigner::class.java))
         startService(Intent(this, EtherScanService::class.java))
-        startService(Intent(this, TransactionNotificationService::class.java))
+        //startService(Intent(this, TransactionNotificationService::class.java))
     }
 
     companion object {

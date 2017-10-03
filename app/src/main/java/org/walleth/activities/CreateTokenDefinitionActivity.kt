@@ -10,6 +10,9 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_token.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -47,14 +50,19 @@ class CreateTokenDefinitionActivity : AppCompatActivity() {
                     if (networkDefinition == null)
                         throw IllegalStateException("NetworkDefinition should not be null")
 
-                    appDatabase.tokens.upsert(Token(
-                            name = newTokenName,
-                            address = Address(newTokenAddress),
-                            decimals = newDecimals,
-                            chain = networkDefinition.chain
-                    ))
+                    async(UI) {
+                        async(CommonPool) {
+                            appDatabase.tokens.upsert(Token(
+                                    name = newTokenName,
+                                    address = Address(newTokenAddress),
+                                    decimals = newDecimals,
+                                    chain = networkDefinition.chain
+                            ))
+                        }.await()
+                        finish()
+                    }
                 })
-                finish()
+
             }
         }
     }

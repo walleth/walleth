@@ -3,9 +3,9 @@ package org.walleth.tests.database
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.kethereum.model.Address
+import org.kethereum.model.ChainDefinition
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
-import org.walleth.data.networks.ChainDefinition
 import java.math.BigInteger
 
 class TheBalanceProvider : AbstractDatabaseTest() {

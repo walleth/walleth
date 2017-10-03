@@ -16,9 +16,9 @@ import org.kethereum.model.SignatureData
 import org.ligi.kaxtui.alert
 import org.walleth.R.string
 import org.walleth.data.addressbook.getByAddressAsync
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
-import org.walleth.data.transactions.TransactionWithState
+import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
@@ -31,8 +31,8 @@ fun Context.startTrezorActivity(transactionParcel: TransactionParcel) {
 class TrezorSignTX : BaseTrezorActivity() {
 
     override fun handleAddress(address: Address) {
-        if (address != transaction.from) {
-            alert("TREZOR reported different source Address. $address is not ${transaction.from}", onOKListener = OnClickListener { _, _ ->
+        if (address != transaction.transaction.from) {
+            alert("TREZOR reported different source Address. $address is not ${transaction.transaction.from}", onOKListener = OnClickListener { _, _ ->
                 finish()
             })
         } else {
@@ -41,14 +41,14 @@ class TrezorSignTX : BaseTrezorActivity() {
     }
 
     override fun getTaskSpecificMessage() = TrezorMessage.EthereumSignTx.newBuilder()
-            .setTo(ByteString.copyFrom(transaction.to!!.hex.hexToByteArray()))
-            .setValue(ByteString.copyFrom(transaction.value.toByteArray().removeLeadingZero()))
-            .setNonce(ByteString.copyFrom(transaction.nonce!!.toByteArray().removeLeadingZero()))
-            .setGasPrice(ByteString.copyFrom(transaction.gasPrice.toByteArray().removeLeadingZero()))
-            .setGasLimit(ByteString.copyFrom(transaction.gasLimit.toByteArray().removeLeadingZero()))
+            .setTo(ByteString.copyFrom(transaction.transaction.to!!.hex.hexToByteArray()))
+            .setValue(ByteString.copyFrom(transaction.transaction.value.toByteArray().removeLeadingZero()))
+            .setNonce(ByteString.copyFrom(transaction.transaction.nonce!!.toByteArray().removeLeadingZero()))
+            .setGasPrice(ByteString.copyFrom(transaction.transaction.gasPrice.toByteArray().removeLeadingZero()))
+            .setGasLimit(ByteString.copyFrom(transaction.transaction.gasLimit.toByteArray().removeLeadingZero()))
             .setChainId(networkDefinitionProvider.value!!.chain.id.toInt())
-            .setDataLength(transaction.input.size)
-            .setDataInitialChunk(ByteString.copyFrom(transaction.input.toByteArray()))
+            .setDataLength(transaction.transaction.input.size)
+            .setDataInitialChunk(ByteString.copyFrom(transaction.transaction.input.toByteArray()))
             .addAllAddressN(currentBIP44!!.toIntList())
             .build()!!
 
@@ -56,20 +56,20 @@ class TrezorSignTX : BaseTrezorActivity() {
     override fun handleExtraMessage(res: Message?) {
         if (res is TrezorMessage.EthereumTxRequest) {
 
-            transaction.signatureData = SignatureData(
+            val signatureData = SignatureData(
                     r = BigInteger(res.signatureR.toByteArray()),
                     s = BigInteger(res.signatureS.toByteArray()),
                     v = res.signatureV.toByte()
             )
 
-            transactionProvider.addPendingTransaction(TransactionWithState(transaction, TransactionState()))
+            appDatabase.transactions.upsert(transaction.transaction.toEntity(signatureData,TransactionState()))
 
             finish()
         }
     }
 
-    val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX").transaction }
-    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
+    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

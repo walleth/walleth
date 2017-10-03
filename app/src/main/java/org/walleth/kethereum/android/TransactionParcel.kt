@@ -4,11 +4,12 @@ import android.os.Parcel
 import android.os.Parcelable
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
+import org.kethereum.model.createTransactionWithDefaults
 import java.math.BigInteger
 
 class TransactionParcel(val transaction: Transaction) : Parcelable {
 
-    constructor(parcel: Parcel) : this(Transaction(
+    constructor(parcel: Parcel) : this(createTransactionWithDefaults(
             value = BigInteger(parcel.readString()),
             from = Address(parcel.readString()),
             txHash = parcel.readValue(null) as String?,
@@ -21,7 +22,7 @@ class TransactionParcel(val transaction: Transaction) : Parcelable {
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(transaction.value.toString())
-        dest.writeString(transaction.from.hex)
+        dest.writeString(transaction.from?.hex)
         dest.writeValue(transaction.txHash)
         dest.writeValue(transaction.to?.hex)
         dest.writeValue(transaction.nonce?.toString())

@@ -14,25 +14,22 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.transactions.TransactionProvider
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
-import org.walleth.testdata.TransactionProviderWithTestData
 
 class TestApp : App() {
 
     override fun createKodein() = Kodein.Module {
-        bind<TransactionProvider>() with singleton { transactionProvider }
         bind<ExchangeRateProvider>() with singleton { fixedValueExchangeProvider }
         bind<SyncProgressProvider>() with singleton {
             SyncProgressProvider().apply {
-                setSyncProgress(WallethSyncProgress(true, 42000, 42042))
+                value = WallethSyncProgress(true, 42000, 42042)
             }
         }
         bind<WallethKeyStore>() with singleton { keyStore }
@@ -44,10 +41,10 @@ class TestApp : App() {
                 `when`(startupWarningDone).thenReturn(true)
             }
         }
-        bind<BaseCurrentAddressProvider>() with singleton { currentAddressProvider }
+        bind<CurrentAddressProvider>() with singleton { currentAddressProvider }
         bind<NetworkDefinitionProvider>() with singleton { networkDefinitionProvider }
         bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
-        bind<AppDatabase>() with singleton {  testDatabase }
+        bind<AppDatabase>() with singleton { testDatabase }
     }
 
     override fun executeCodeWeWillIgnoreInTests() = Unit
@@ -57,7 +54,6 @@ class TestApp : App() {
     }
 
     companion object {
-        val transactionProvider = TransactionProviderWithTestData()
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
         val keyStore = TestKeyStore()
         val currentAddressProvider = DefaultCurrentAddressProvider()
@@ -65,7 +61,7 @@ class TestApp : App() {
 
         lateinit var testDatabase: AppDatabase
         fun resetDB(context: Context) {
-            testDatabase  = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
+            testDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
         }
 
     }

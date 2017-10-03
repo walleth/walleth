@@ -9,8 +9,10 @@ import org.walleth.data.balances.Balance;
 import org.walleth.data.balances.BalanceDAO;
 import org.walleth.data.tokens.Token;
 import org.walleth.data.tokens.TokenDAO;
+import org.walleth.data.transactions.TransactionDAO;
+import org.walleth.data.transactions.TransactionEntity;
 
-@Database(entities = {AddressBookEntry.class, Token.class, Balance.class}, version = 1)
+@Database(entities = {AddressBookEntry.class, Token.class, Balance.class, TransactionEntity.class}, version = 1)
 @TypeConverters({RoomTypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -18,6 +20,7 @@ public abstract class AppDatabase extends RoomDatabase {
 
     public abstract TokenDAO getTokens();
 
-    public abstract BalanceDAO getBalances();
+    public abstract TransactionDAO getTransactions();
 
+    public abstract BalanceDAO getBalances();
 }

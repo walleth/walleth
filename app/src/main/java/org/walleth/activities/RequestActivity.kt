@@ -15,13 +15,13 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
 import net.glxn.qrgen.android.QRCode
-import org.kethereum.functions.toERC67String
+import org.kethereum.erc67.toERC67String
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
 import java.math.BigDecimal
@@ -30,7 +30,7 @@ class RequestActivity : AppCompatActivity() {
 
     lateinit var currentERC67String: String
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
     val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {

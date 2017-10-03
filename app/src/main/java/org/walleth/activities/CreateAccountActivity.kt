@@ -14,8 +14,8 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.erc55.withERC55Checksum
-import org.kethereum.functions.ERC67
-import org.kethereum.functions.isERC67String
+import org.kethereum.erc67.ERC67
+import org.kethereum.erc67.isERC67String
 import org.kethereum.functions.isValid
 import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
@@ -68,17 +68,22 @@ class CreateAccountActivity : AppCompatActivity() {
                 alert(title = alert_problem_title, message = please_enter_name)
             } else {
                 lastCreatedAddress = null // prevent cleanup
+
                 async(UI) {
-                    async(CommonPool) { appDatabase.addressBook.upsert(AddressBookEntry(
-                            name = nameInput.text.toString(),
-                            address = Address(hex),
-                            note = noteInput.text.toString(),
-                            trezorDerivationPath = trezorPath,
-                            isNotificationWanted = notify_checkbox.isChecked)
-                    )}.await()
+                    async(CommonPool) {
+                        appDatabase.addressBook.upsert(AddressBookEntry(
+                                name = nameInput.text.toString(),
+                                address = Address(hex),
+                                note = noteInput.text.toString(),
+                                trezorDerivationPath = trezorPath,
+                                isNotificationWanted = notify_checkbox.isChecked)
+                        )
+                    }.await()
                     finish()
                 }
+
             }
+
         }
 
         add_trezor.setOnClickListener {
@@ -129,6 +134,7 @@ class CreateAccountActivity : AppCompatActivity() {
     fun setAddressFromExternalApplyingChecksum(addressHex: String) {
         hexInput.setText(Address(addressHex).withERC55Checksum().hex)
     }
+
     override fun onPause() {
         super.onPause()
         cleanupGeneratedKeyWhenNeeded()

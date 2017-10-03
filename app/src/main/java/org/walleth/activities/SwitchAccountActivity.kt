@@ -7,12 +7,12 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list.*
 import org.walleth.R
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
 
 class SwitchAccountActivity : BaseAddressBookActivity() {
 
-    private val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

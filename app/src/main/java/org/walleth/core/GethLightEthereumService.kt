@@ -17,9 +17,7 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
-import org.walleth.data.transactions.TransactionProvider
-import org.walleth.data.transactions.TransactionSource
-import org.walleth.data.transactions.TransactionWithState
+import org.walleth.data.transactions.TransactionEntity
 import java.io.File
 
 
@@ -41,7 +39,6 @@ class GethLightEthereumService : Service() {
 
     val lazyKodein = LazyKodein(appKodein)
 
-    val transactionProvider: TransactionProvider by lazyKodein.instance()
     val syncProgress: SyncProgressProvider by lazyKodein.instance()
     val keyStore: WallethKeyStore by lazyKodein.instance()
     val settings: Settings by lazyKodein.instance()
@@ -109,7 +106,7 @@ class GethLightEthereumService : Service() {
             val changeObserver: ChangeObserver = object : ChangeObserver {
                 override fun observeChange() {
                     transactionProvider.getAllTransactions().forEach {
-                        if (it.state.ref == TransactionSource.WALLETH) {
+                        if (it.state.source == TransactionSource.WALLETH) {
                             executeTransaction(it, ethereumNode.ethereumClient, ethereumContext)
                         }
                     }
@@ -157,14 +154,14 @@ class GethLightEthereumService : Service() {
             if (ethereumSyncProgress != null) {
                 isSyncing = true
                 val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
-                syncProgress.setSyncProgress(newSyncProgress)
+                syncProgress.value = newSyncProgress
             } else {
-                syncProgress.setSyncProgress(WallethSyncProgress())
+                syncProgress.value = WallethSyncProgress()
                 if (isSyncing) {
                     finishedSyncing = true
                 }
             }
-        } catch(e: Exception) {
+        } catch (e: Exception) {
             e.printStackTrace()
         }
 
@@ -172,15 +169,15 @@ class GethLightEthereumService : Service() {
     }
 
 
-    private fun executeTransaction(transaction: TransactionWithState, client: EthereumClient, ethereumContext: Context) {
+    private fun executeTransaction(transaction: TransactionEntity, client: EthereumClient, ethereumContext: Context) {
         try {
             val rlp = transaction.transaction.encodeRLP()
             val transactionWithSignature = Geth.newTransactionFromRLP(rlp)
             client.sendTransaction(ethereumContext, transactionWithSignature)
-            transaction.state.ref = TransactionSource.WALLETH_PROCESSED
-            transaction.state.relayedLightClient = true
+            //transaction.transactionState.source = TransactionSource.WALLETH_PROCESSED
+            transaction.transactionState.relayedLightClient = true
         } catch (e: Exception) {
-            transaction.state.error = e.message
+            transaction.transactionState.error = e.message
         }
     }
 

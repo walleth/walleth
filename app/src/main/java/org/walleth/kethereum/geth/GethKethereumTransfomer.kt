@@ -6,7 +6,6 @@ import org.json.JSONObject
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
-import org.walleth.data.networks.NetworkDefinition
 import org.walleth.functions.toGethInteger
 import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
@@ -23,18 +22,6 @@ fun Transaction.toGethTransaction(): org.ethereum.geth.Transaction = Geth.newTra
         gasPrice.toGethInteger(),
         input.toByteArray()
 )
-
-fun org.ethereum.geth.Transaction.toKetherumTransaction(networkDefinitionProvider: NetworkDefinition) = Transaction(
-        to = to.toKethereumAddress(),
-        from = getFrom(Geth.newBigInt(networkDefinitionProvider.chain.id)).toKethereumAddress(),
-        value = value.toBigInteger(),
-        nonce = BigInteger.valueOf(nonce),
-        txHash = hash.hex,
-        gasPrice = gasPrice.toBigInteger(),
-        gasLimit = BigInteger.valueOf(gas),
-        signatureData = extractSignatureData()
-)
-
 
 fun String.hexToBigInteger() = BigInteger(replace("0x", ""), 16)
 

@@ -16,7 +16,7 @@ import org.walleth.R
 import org.walleth.activities.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.BaseCurrentAddressProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 
 class WalletNavigationFragment : LifecycleFragment() {
@@ -30,7 +30,7 @@ class WalletNavigationFragment : LifecycleFragment() {
 
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    val currentAddressProvider: BaseCurrentAddressProvider by LazyKodein(appKodein).instance()
+    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {

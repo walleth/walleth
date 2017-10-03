@@ -3,32 +3,27 @@ package org.walleth.ui
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.FrameLayout.LayoutParams.MATCH_PARENT
-import android.widget.FrameLayout.LayoutParams.WRAP_CONTENT
 import org.walleth.R
 import org.walleth.data.AppDatabase
-import org.walleth.data.transactions.TransactionWithState
+import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.transactions.TransactionEntity
 
 enum class TransactionAdapterDirection {
     INCOMMING, OUTGOING
 }
 
-class TransactionRecyclerAdapter(private val transactionList: List<TransactionWithState>,
+class TransactionRecyclerAdapter(private val transactionList: List<TransactionEntity>,
                                  val appDatabase: AppDatabase,
-                                 private val direction: TransactionAdapterDirection) : RecyclerView.Adapter<TransactionViewHolder>() {
+                                 private val direction: TransactionAdapterDirection,
+                                 val networkDefinitionProvider: NetworkDefinitionProvider) : RecyclerView.Adapter<TransactionViewHolder>() {
 
     override fun getItemCount() = transactionList.size
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(transactionList[position], appDatabase)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.transaction_item, null)
-        val layoutParams = FrameLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
-        val margin = parent.context.resources.getDimension(R.dimen.rythm).toInt()
-        layoutParams.setMargins(0, margin, 0, margin)
-        itemView.layoutParams = layoutParams
-        return TransactionViewHolder(itemView,direction)
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.transaction_item, parent,false)
+        return TransactionViewHolder(itemView,direction,networkDefinitionProvider)
     }
 
 }

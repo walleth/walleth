@@ -28,6 +28,12 @@ android {
         buildConfigField "String", "ETHERSCAN_APIKEY", '"' + file('../.ci/etherscan.apikey').text + '"'
 
         multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
     }
 
     buildTypes {
@@ -116,6 +122,7 @@ dependencies {
     compile "com.github.ligi.kethereum:functions:$kethereum_version"
     compile "com.github.ligi.kethereum:bip44:$kethereum_version"
     compile "com.github.ligi.kethereum:erc55:$kethereum_version"
+    compile "com.github.ligi.kethereum:erc67:$kethereum_version"
 
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.18'
@@ -144,13 +151,14 @@ dependencies {
 
     compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.github.ligi:ExtraCompats:0.4'
+    compile 'com.github.ligi:KRoom:0.4'
 
-    compile "android.arch.lifecycle:extensions:1.0.0-beta1"
+    compile "android.arch.lifecycle:extensions:1.0.0-beta2"
 
-    compile "android.arch.persistence.room:runtime:1.0.0-beta1"
-    kapt "android.arch.persistence.room:compiler:1.0.0-beta1"
+    compile "android.arch.persistence.room:runtime:1.0.0-beta2"
+    kapt "android.arch.persistence.room:compiler:1.0.0-beta2"
 
-    kapt "android.arch.lifecycle:compiler:1.0.0-beta1"
+    kapt "android.arch.lifecycle:compiler:1.0.0-beta2"
 
     androidTestCompile 'com.google.truth:truth:0.36'
 
@@ -178,16 +186,10 @@ if (hasProperty("isCI")) {
     dependencyVerification {
         verify = [
                 'com.android.support:multidex:7cd48755c7cfdb6dd2d21cbb02236ec390f6ac91cde87eb62f475b259ab5301d',
-                'com.github.ligi.kethereum:erc55:b10d21873d68144fec7e534b9f0ef89cd5c3f1d236ea539b61851b59084f1bd7',
-                'com.github.ligi.kethereum:functions:9af9d5209069c57121bc6dc5e0c7279cdce5c13b8b9537be7fb83edeac5cfeb6',
-                'com.github.ligi.kethereum:bip44:845ff4198272194f9d1a5dace82ccb16a550f2578cf668ce21d0cd18f7483a76',
 
                 'com.github.ligi:KAXTUI:7bd3745979d8db21010846303339e2debec5ab77c5c9323f136d70c093c1017a',
                 'com.github.salomonbrys.kodein:kodein:6727cb851a73a82fd5ded29877739749f7f89c26a23ababaf9a06d7cf9aa7bee',
                 'com.github.salomonbrys.kodein:kodein-android:98b1998e2477eb715720ddf7f016a1b828ceb87c1f11ce72dad3d518629a0330',
-                'com.github.ligi.kethereum:model:6feca5e1b2ecbc9237ad8f404fe9af08ac815ccbf837257a2c195f186c7db5d7',
-                'com.github.ligi.kethereum:rlp:846bbcfa9a1989548152b9d9f633022d0d8e1d60b23aaee903cafa60ecb72a69',
-                'com.github.ligi.kethereum:keccak_shortcut:f0dfabde52804e84a3b469df88b3a59d78d6c7ff8a01866dcee1c96ad283dc69',
                 'com.github.salomonbrys.kodein:kodein-core:4876960b936d6becb00e7b5c614ba9f4be2b7d5d22a8a2433583d87373c342f8',
                 'com.github.walleth:keccak:1c03589f2f883dacf343689a5311f1ecf13710f115ac755e18277b70e5357435',
                 'com.github.walleth:khex:a3a93680c8b0bd60ef226651ad5eb401fa18f65d0941c3ea6464b8adfa693d1e',

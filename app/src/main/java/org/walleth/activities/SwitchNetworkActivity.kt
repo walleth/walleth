@@ -12,13 +12,11 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.AllNetworkDefinitions
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.transactions.TransactionProvider
 import org.walleth.ui.NetworkAdapter
 
 open class SwitchNetworkActivity : AppCompatActivity() {
 
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    val transactionPovider: TransactionProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +50,6 @@ open class SwitchNetworkActivity : AppCompatActivity() {
 
     fun getAdapter() = NetworkAdapter(AllNetworkDefinitions) {
         networkDefinitionProvider.setCurrent(it)
-        transactionPovider.clear()
         finish()
     }
 
