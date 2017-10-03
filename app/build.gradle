@@ -140,7 +140,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:preference-v14:$support_version"
 
-    compile "com.chibatching.kotpref:kotpref:2.1.2"
+    compile "com.chibatching.kotpref:kotpref:2.2.0"
 
     compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.github.ligi:ExtraCompats:0.4'
@@ -200,7 +200,7 @@ if (hasProperty("isCI")) {
                 'com.google.zxing:core:bba7724e02a997cec38213af77133ee8e24b0d5cf5fa7ecbc16a4fa93f11ee0d',
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
                 'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',
-                'com.chibatching.kotpref:kotpref:af6df531f6344f3cba0ea91bcf13c15fca4dc7ee819ace03ed1a244d39ffcb51',
+
                 'com.squareup.moshi:moshi:91e9c49dc282f1e22570ad3cff7178b00a22180749c8427083ec9be2322c064e',
                 'com.github.ligi:ExtraCompats:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
                 'com.google.firebase:firebase-core:5bada1df52cef9ea7e5235cc956066050e155408bdd09b1ef051e56a24719da6',

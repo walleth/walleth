@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -41,7 +42,12 @@ class SelectTokenActivity : AppCompatActivity()  {
     override fun onResume() {
         super.onResume()
 
-        recycler_view.adapter = TokenListAdapter(currentTokenProvider , appDatabase.tokens.allForChain(networkDefinitionProvider.value!!.chain), this)
+        appDatabase.tokens.allForChain(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
+            if (allTokens!=null) {
+                recycler_view.adapter = TokenListAdapter(currentTokenProvider, allTokens, this)
+            }
+        })
+
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

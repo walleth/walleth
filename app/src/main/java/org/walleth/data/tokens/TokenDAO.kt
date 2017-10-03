@@ -1,5 +1,6 @@
 package org.walleth.data.tokens
 
+import android.arch.lifecycle.LiveData
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
@@ -14,7 +15,7 @@ interface TokenDAO {
     fun all(): List<Token>
 
     @Query("SELECT * FROM tokens WHERE chain = :chain")
-    fun allForChain(chain: ChainDefinition): List<Token>
+    fun allForChain(chain: ChainDefinition): LiveData<List<Token>>
 
     @Query("SELECT * FROM tokens WHERE address = :address")
     fun forAddress(address: Address): Token?
