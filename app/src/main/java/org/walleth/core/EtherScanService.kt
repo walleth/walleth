@@ -12,6 +12,7 @@ import okhttp3.*
 import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
+import org.ligi.tracedroid.logging.Log
 import org.walleth.BuildConfig
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
@@ -149,14 +150,18 @@ class EtherScanService : LifecycleService() {
             }
 
             if (balanceString != null) {
-                appDatabase.balances.upsertIfNewerBlock(
-                        Balance(address = Address(addressHex),
-                                block = blockNum,
-                                balance = BigInteger(balanceString),
-                                tokenAddress = currentToken.address,
-                                chain = networkDefinitionProvider.getCurrent().chain
-                                )
-                )
+                try {
+                    appDatabase.balances.upsertIfNewerBlock(
+                            Balance(address = Address(addressHex),
+                                    block = blockNum,
+                                    balance = BigInteger(balanceString),
+                                    tokenAddress = currentToken.address,
+                                    chain = networkDefinitionProvider.getCurrent().chain
+                            )
+                    )
+                } catch (e:NumberFormatException) {
+                    Log.i("could not parse number " + balanceString)
+                }
             }
         }
     }
