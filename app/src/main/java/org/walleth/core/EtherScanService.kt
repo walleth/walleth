@@ -21,6 +21,7 @@ import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
@@ -93,7 +94,7 @@ class EtherScanService : LifecycleService() {
     private fun relayTransaction(transaction: TransactionEntity) {
         async(CommonPool) {
             val url = "module=proxy&action=eth_sendRawTransaction&hex=" + transaction.transaction.encodeRLP(transaction.signatureData).toHexString("0x")
-            val result = getEtherscanResult(url)
+            val result = getEtherscanResult(url, networkDefinitionProvider.value!!)
 
             if (result != null) {
                 if (result.has("result")) {
@@ -124,53 +125,57 @@ class EtherScanService : LifecycleService() {
     }
 
     private fun queryTransactions(addressHex: String) {
-        val etherscanResult = getEtherscanResult("module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc")
-        if (etherscanResult != null) {
-            val jsonArray = etherscanResult.getJSONArray("result")
-            val newTransactions = parseEtherScanTransactions(jsonArray, networkDefinitionProvider.getCurrent().chain)
+        networkDefinitionProvider.value?.let { currentNetwork ->
+            val etherscanResult = getEtherscanResult("module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc", currentNetwork)
+            if (etherscanResult != null) {
+                val jsonArray = etherscanResult.getJSONArray("result")
+                val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain)
 
-            newTransactions.forEach {
-                val oldEntry = appDatabase.transactions.getByHash(it.hash)
-                if (oldEntry == null || oldEntry.transactionState.isPending) {
-                    appDatabase.transactions.upsert(it)
+                newTransactions.forEach {
+                    val oldEntry = appDatabase.transactions.getByHash(it.hash)
+                    if (oldEntry == null || oldEntry.transactionState.isPending) {
+                        appDatabase.transactions.upsert(it)
+                    }
                 }
-            }
 
+            }
         }
     }
 
     fun queryEtherscanForBalance(addressHex: String) {
 
-        val currentToken = tokenProvider.currentToken
-        val etherscanResult = getEtherscanResult("module=proxy&action=eth_blockNumber")
+        networkDefinitionProvider.value?.let { currentNetwork ->
+            val currentToken = tokenProvider.currentToken
+            val etherscanResult = getEtherscanResult("module=proxy&action=eth_blockNumber", currentNetwork)
 
-        if (etherscanResult?.has("result") != true) {
-            Log.i("Cannot parse " + etherscanResult)
-            return
-        }
-        val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLong(16)
-
-        if (blockNum != null) {
-            val balanceString = if (currentToken.isETH()) {
-                getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest")?.getString("result")
-
-            } else {
-                getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest")?.getString("result")
-
+            if (etherscanResult?.has("result") != true) {
+                Log.i("Cannot parse " + etherscanResult)
+                return
             }
+            val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLong(16)
 
-            if (balanceString != null) {
-                try {
-                    appDatabase.balances.upsertIfNewerBlock(
-                            Balance(address = Address(addressHex),
-                                    block = blockNum,
-                                    balance = BigInteger(balanceString),
-                                    tokenAddress = currentToken.address,
-                                    chain = networkDefinitionProvider.getCurrent().chain
-                            )
-                    )
-                } catch (e: NumberFormatException) {
-                    Log.i("could not parse number " + balanceString)
+            if (blockNum != null) {
+                val balanceString = if (currentToken.isETH()) {
+                    getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest", currentNetwork)?.getString("result")
+
+                } else {
+                    getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest",currentNetwork)?.getString("result")
+
+                }
+
+                if (balanceString != null) {
+                    try {
+                        appDatabase.balances.upsertIfNewerBlock(
+                                Balance(address = Address(addressHex),
+                                        block = blockNum,
+                                        balance = BigInteger(balanceString),
+                                        tokenAddress = currentToken.address,
+                                        chain = currentNetwork.chain
+                                )
+                        )
+                    } catch (e: NumberFormatException) {
+                        Log.i("could not parse number " + balanceString)
+                    }
                 }
             }
         }
@@ -189,8 +194,8 @@ class EtherScanService : LifecycleService() {
     }
 
 
-    fun getEtherscanResult(requestString: String): JSONObject? {
-        val baseURL = networkDefinitionProvider.value!!.getBlockExplorer().baseAPIURL
+    fun getEtherscanResult(requestString: String, networkDefinition: NetworkDefinition): JSONObject? {
+        val baseURL = networkDefinition.getBlockExplorer().baseAPIURL
         val urlString = "$baseURL/api?$requestString&apikey=$" + BuildConfig.ETHERSCAN_APIKEY
         val url = Request.Builder().url(urlString).build()
         val newCall: Call = okHttpClient.newCall(url)

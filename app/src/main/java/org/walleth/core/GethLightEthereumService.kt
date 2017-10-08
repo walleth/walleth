@@ -144,8 +144,8 @@ class GethLightEthereumService : LifecycleService() {
                         val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, gethAddress, p0.number)
                         appDatabase.balances.upsert(Balance(
                                 address = address,
-                                tokenAddress = getEthTokenForChain(networkDefinitionProvider.getCurrent()).address,
-                                chain = networkDefinitionProvider.getCurrent().chain,
+                                tokenAddress = getEthTokenForChain(network).address,
+                                chain =network.chain,
                                 balance = BigInteger(balance.string()),
                                 block = p0.number))
                     }
