@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         if (!settings.startupWarningDone) {
-            alert(title = "Special Awareness", message = "Please note this is one alpha on the rinkeby test-network. Please do not work with real values yet!")
+            alert(title = "Special Awareness", message = "Please note this is one alpha. Please do not work with important accounts and a lot of ether yet!")
             settings.startupWarningDone = true
         }
 
