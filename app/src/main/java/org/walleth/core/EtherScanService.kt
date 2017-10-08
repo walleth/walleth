@@ -142,7 +142,13 @@ class EtherScanService : LifecycleService() {
     fun queryEtherscanForBalance(addressHex: String) {
 
         val currentToken = tokenProvider.currentToken
-        val blockNum = getEtherscanResult("module=proxy&action=eth_blockNumber")?.getString("result")?.replace("0x", "")?.toLong(16)
+        val etherscanResult = getEtherscanResult("module=proxy&action=eth_blockNumber")
+
+        if (etherscanResult?.has("result") != true) {
+            Log.i("Cannot parse " + etherscanResult)
+            return
+        }
+        val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLong(16)
 
         if (blockNum != null) {
             val balanceString = if (currentToken.isETH()) {
