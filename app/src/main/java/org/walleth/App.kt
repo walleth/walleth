@@ -3,6 +3,7 @@ package org.walleth
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
@@ -110,7 +111,10 @@ open class App : MultiDexApplication(), KodeinAware {
 
     open fun executeCodeWeWillIgnoreInTests() {
         if (KotprefSettings.isLightClientWanted()) {
-            startService(Intent(this, GethLightEthereumService::class.java))
+            Handler().postDelayed({
+                startService(Intent(this, GethLightEthereumService::class.java))
+            },2000)
+
         }
         startService(Intent(this, GethTransactionSigner::class.java))
         startService(Intent(this, EtherScanService::class.java))

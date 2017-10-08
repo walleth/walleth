@@ -23,6 +23,9 @@ interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE source = :source AND gethSignProcessed = :gethProcessed")
     fun getBySourceFlagLive(source: TransactionSource, gethProcessed: Boolean): LiveData<List<TransactionEntity>>
 
+    @Query("SELECT * FROM transactions WHERE source = :source")
+    fun getAllForSource(source: TransactionSource): LiveData<List<TransactionEntity>>
+
     @Query("SELECT * FROM transactions WHERE \"to\" = :address COLLATE NOCASE AND chain=:chain ORDER BY creationEpochSecond DESC")
     fun getIncomingTransactionsForAddress(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
 
