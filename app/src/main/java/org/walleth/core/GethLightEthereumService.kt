@@ -107,6 +107,8 @@ class GethLightEthereumService : LifecycleService() {
                     bootstrapNodes = bootNodes
                 }
 
+                ethereumNetworkID = network.chain.id
+
                 if (!network.genesis.isEmpty()) {
                     ethereumGenesis = when (network.chain.id) {
                         1L -> Geth.mainnetGenesis()
