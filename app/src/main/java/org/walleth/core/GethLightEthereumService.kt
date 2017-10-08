@@ -96,13 +96,16 @@ class GethLightEthereumService : LifecycleService() {
             val subPath = File(path, "chain" + network.chain.id.toString())
             subPath.mkdirs()
             val ethereumNode = Geth.newNode(subPath.absolutePath, NodeConfig().apply {
-                val bootNodes = Enodes()
 
-                network.bootNodes.forEach {
-                    bootNodes.append(Enode(it))
+                if (network.bootNodes.isEmpty()) {
+                    val bootNodes = Enodes()
+
+                    network.bootNodes.forEach {
+                        bootNodes.append(Enode(it))
+                    }
+
+                    bootstrapNodes = bootNodes
                 }
-
-                bootstrapNodes = bootNodes
 
                 if (!network.genesis.isEmpty()) {
                     ethereumGenesis = when (network.chain.id) {
