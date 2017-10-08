@@ -105,7 +105,12 @@ class GethLightEthereumService : LifecycleService() {
                 bootstrapNodes = bootNodes
 
                 if (!network.genesis.isEmpty()) {
-                    ethereumGenesis = network.genesis
+                    ethereumGenesis = when (network.chain.id) {
+                        1L -> Geth.mainnetGenesis()
+                        3L -> Geth.testnetGenesis()
+                        4L -> Geth.rinkebyGenesis()
+                        else -> throw (IllegalStateException("NO genesis"))
+                    }
                 }
 
                 if (!network.statsSuffix.isEmpty()) {
