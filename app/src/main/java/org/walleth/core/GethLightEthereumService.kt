@@ -4,8 +4,10 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.arch.lifecycle.LifecycleService
+import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import android.os.SystemClock
 import android.support.v4.app.NotificationCompat
 import com.github.salomonbrys.kodein.LazyKodein
@@ -16,13 +18,18 @@ import org.kethereum.functions.encodeRLP
 import org.walleth.R
 import org.walleth.activities.MainActivity
 import org.walleth.data.AppDatabase
+import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
+import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.transactions.TransactionEntity
+import org.walleth.kethereum.geth.toGethAddr
 import java.io.File
+import java.math.BigInteger
 
 
 class GethLightEthereumService : LifecycleService() {
@@ -45,7 +52,8 @@ class GethLightEthereumService : LifecycleService() {
     val keyStore: WallethKeyStore by lazyKodein.instance()
     val settings: Settings by lazyKodein.instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
-    protected val path by lazy { File(baseContext.filesDir, ".ethereum_rb").absolutePath }
+    val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
+    private val path by lazy { File(baseContext.cacheDir, ".ethereum").absolutePath }
     val notificationManager by lazy { getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager }
 
     var isSyncing = false
@@ -79,45 +87,57 @@ class GethLightEthereumService : LifecycleService() {
                 .build()
 
         startForeground(NOTIFICATION_ID, notification)
-
+        val handler = Handler()
         Thread({
 
             val ethereumContext = Context()
 
-            val ethereumNode = Geth.newNode(path, NodeConfig().apply {
+            val network = networkDefinitionProvider.getCurrent()
+            val subPath = File(path, "chain" + network.chain.id.toString())
+            subPath.mkdirs()
+            val ethereumNode = Geth.newNode(subPath.absolutePath, NodeConfig().apply {
                 val bootNodes = Enodes()
-
-                val network = networkDefinitionProvider.getCurrent()
 
                 network.bootNodes.forEach {
                     bootNodes.append(Enode(it))
                 }
 
                 bootstrapNodes = bootNodes
-                ethereumGenesis = network.genesis
-                ethereumNetworkID = 4
-                ethereumNetStats = settings.getStatsName() + ":Respect my authoritah!@stats.rinkeby.io"
+
+                if (!network.genesis.isEmpty()) {
+                    ethereumGenesis = network.genesis
+                }
+
+                if (!network.statsSuffix.isEmpty()) {
+                    ethereumNetStats = settings.getStatsName() + network.statsSuffix
+                }
             })
 
             ethereumNode.start()
 
             while (isRunning && !finishedSyncing) {
                 SystemClock.sleep(1000)
-//                syncTick(ethereumNode, ethereumContext)
+                syncTick(ethereumNode, ethereumContext)
             }
-/*
-            appDatabase.transactions.getAllToRelayLive().observe(this, Observer {
+            val transactionsLiveData = appDatabase.transactions.getAllToRelayLive()
+            val transactionObserver = Observer<List<TransactionEntity>> {
                 it?.forEach {
                     executeTransaction(it, ethereumNode.ethereumClient, ethereumContext)
                 }
-            })
-*/
-            /*try {
+            }
+            transactionsLiveData.observe(this, transactionObserver)
+            try {
                 ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
                     override fun onNewHead(p0: Header) {
-                        val address = keyStore.getCurrentAddress().toGethAddr()
-                        val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, address, p0.number)
-                        balanceProvider.setBalance(Address(address.hex), p0.number, BigInteger(balance.string()), ETH_TOKEN)
+                        val address = currentAddressProvider.getCurrent()
+                        val gethAddress = address.toGethAddr()
+                        val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, gethAddress, p0.number)
+                        appDatabase.balances.upsert(Balance(
+                                address = address,
+                                tokenAddress = getEthTokenForChain(networkDefinitionProvider.getCurrent()).address,
+                                chain = networkDefinitionProvider.getCurrent().chain,
+                                balance = BigInteger(balance.string()),
+                                block = p0.number))
                     }
 
                     override fun onError(p0: String?) {}
@@ -129,16 +149,19 @@ class GethLightEthereumService : LifecycleService() {
             } catch (e: Exception) {
                 org.ligi.tracedroid.logging.Log.e("node error", e)
             }
-*/
+
             org.ligi.tracedroid.logging.Log.i("FinishedSyncing")
             while (isRunning) {
                 syncTick(ethereumNode, ethereumContext)
             }
 
-            //transactionProvider.unRegisterChangeObserver(changeObserver)
-            ethereumNode.stop()
-            stopForeground(true)
-            stopSelf()
+            handler.post {
+                transactionsLiveData.removeObserver(transactionObserver)
+                ethereumNode.stop()
+                stopForeground(true)
+                stopSelf()
+            }
+
         }).start()
         return START_NOT_STICKY
     }
@@ -150,9 +173,9 @@ class GethLightEthereumService : LifecycleService() {
             if (ethereumSyncProgress != null) {
                 isSyncing = true
                 val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
-                syncProgress.postValue( newSyncProgress)
+                syncProgress.postValue(newSyncProgress)
             } else {
-                syncProgress.postValue( WallethSyncProgress())
+                syncProgress.postValue(WallethSyncProgress())
                 if (isSyncing) {
                     finishedSyncing = true
                 }

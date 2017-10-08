@@ -10,4 +10,5 @@ interface NetworkDefinition {
     val chain: ChainDefinition
     val genesis: String
     val bootNodes: List<String>
+    val statsSuffix: String
 }
