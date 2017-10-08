@@ -75,6 +75,7 @@
         </ScrollView>
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/transaction_recycler_in"
+                android:visibility="gone"
                 android:paddingRight="8dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -82,6 +83,7 @@
 
         <android.support.v7.widget.RecyclerView
                 android:id="@+id/transaction_recycler_out"
+                android:visibility="gone"
                 android:paddingLeft="8dp"
                 android:layout_width="0dp"
                 android:layout_weight="1"
