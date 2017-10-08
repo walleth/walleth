@@ -1,5 +1,7 @@
 package org.walleth.data.networks
 
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
@@ -8,7 +10,7 @@ import org.walleth.data.keystore.WallethKeyStore
 class InitializingCurrentAddressProvider(keyStore: WallethKeyStore,appDatabase: AppDatabase) : CurrentAddressProvider() {
 
     init {
-        Thread {
+        async(CommonPool) {
             if (keyStore.getAddressCount() > 0) {
                 postValue(keyStore.getAddressByIndex(0))
             } else {
@@ -22,7 +24,7 @@ class InitializingCurrentAddressProvider(keyStore: WallethKeyStore,appDatabase: 
                         trezorDerivationPath = null
                 ))
             }
-        }.start()
+        }
 
     }
 
