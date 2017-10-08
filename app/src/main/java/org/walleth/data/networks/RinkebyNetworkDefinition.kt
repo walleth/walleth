@@ -3,10 +3,12 @@ package org.walleth.data.networks
 import org.kethereum.ETHEREUM_NETWORK_RINKEBY
 import org.kethereum.model.ChainDefinition
 
+val RINKEBY_CHAIN_ID = 4L
+
 class RinkebyNetworkDefinition : BaseNetworkDefinition() {
 
     override val etherscan_prefix = ETHEREUM_NETWORK_RINKEBY
-    override val chain = ChainDefinition(4L)
+    override val chain = ChainDefinition(RINKEBY_CHAIN_ID)
 
     override fun getNetworkName() = ETHEREUM_NETWORK_RINKEBY
 

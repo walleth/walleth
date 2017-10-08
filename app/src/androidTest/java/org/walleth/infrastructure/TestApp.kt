@@ -16,6 +16,7 @@ import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.RINKEBY_CHAIN_ID
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.CurrentTokenProvider
@@ -33,14 +34,7 @@ class TestApp : App() {
             }
         }
         bind<WallethKeyStore>() with singleton { keyStore }
-        bind<Settings>() with singleton {
-
-            mock(Settings::class.java).apply {
-                `when`(currentFiat).thenReturn("EUR")
-                `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
-                `when`(startupWarningDone).thenReturn(true)
-            }
-        }
+        bind<Settings>() with singleton { settings }
         bind<CurrentAddressProvider>() with singleton { currentAddressProvider }
         bind<NetworkDefinitionProvider>() with singleton { networkDefinitionProvider }
         bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
@@ -56,8 +50,15 @@ class TestApp : App() {
     companion object {
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
         val keyStore = TestKeyStore()
-        val currentAddressProvider = DefaultCurrentAddressProvider()
-        val networkDefinitionProvider = NetworkDefinitionProvider()
+        val settings = mock(Settings::class.java).apply {
+            `when`(currentFiat).thenReturn("EUR")
+            `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
+            `when`(startupWarningDone).thenReturn(true)
+            `when`(chain).thenReturn(RINKEBY_CHAIN_ID)
+
+        }
+        val currentAddressProvider = DefaultCurrentAddressProvider(settings)
+        val networkDefinitionProvider = NetworkDefinitionProvider(settings)
 
         lateinit var testDatabase: AppDatabase
         fun resetDB(context: Context) {

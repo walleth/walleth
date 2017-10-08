@@ -51,11 +51,12 @@ open class App : MultiDexApplication(), KodeinAware {
             bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
             bind<WallethKeyStore>() with singleton { gethBackedWallethKeyStore }
             bind<Settings>() with singleton { KotprefSettings }
-            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance()) }
+
             bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
 
             bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
-            bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider() }
+            bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
+            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance()) }
         }
     }
 
@@ -113,7 +114,7 @@ open class App : MultiDexApplication(), KodeinAware {
         if (KotprefSettings.isLightClientWanted()) {
             Handler().postDelayed({
                 startService(Intent(this, GethLightEthereumService::class.java))
-            },2000)
+            }, 2000)
 
         }
         startService(Intent(this, GethTransactionSigner::class.java))
