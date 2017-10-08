@@ -117,7 +117,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile "org.ethereum:geth:1.6.7"
+    compile "org.ethereum:geth:1.7.1"
 
     compile "com.github.ligi.kethereum:functions:$kethereum_version"
     compile "com.github.ligi.kethereum:bip44:$kethereum_version"
@@ -194,7 +194,6 @@ if (hasProperty("isCI")) {
                 'com.github.walleth:keccak:1c03589f2f883dacf343689a5311f1ecf13710f115ac755e18277b70e5357435',
                 'com.github.walleth:khex:a3a93680c8b0bd60ef226651ad5eb401fa18f65d0941c3ea6464b8adfa693d1e',
 
-                'org.ethereum:geth:5efa57bd3d67b1321f7ab5da0a6b52f279da77676358a8b64d8b4d71f5a00f82',
                 'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
                 'com.github.trezor.trezor-android:trezor-lib:6ac8601798e851191a1c33673d8b804b836cdfd9788b289a41ec9c3655b3e91c',
                 'com.github.kenglxn.QRGen:android:7670317f4ec37cf2bb24b7d3932da83daafa2956e77cd2e92dccce86a66816d9',

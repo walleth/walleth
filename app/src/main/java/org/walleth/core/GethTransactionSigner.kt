@@ -58,7 +58,7 @@ class GethTransactionSigner : LifecycleService() {
             return@async
         }
 
-        val oldHash=transaction.hash
+        val oldHash = transaction.hash
         transaction.transactionState.source = TransactionSource.WALLETH
 
         transaction.transaction.from?.let { notNullFrom ->
@@ -85,7 +85,7 @@ class GethTransactionSigner : LifecycleService() {
                 gethKeystore.unlock(accounts.get(index), DEFAULT_PASSWORD)
 
                 val signHash = gethKeystore.signHash(notNullFrom.toGethAddr(), newTransaction.sigHash.bytes)
-                val transactionWithSignature = newTransaction.withSignature(signHash)
+                val transactionWithSignature = newTransaction.withSignature(signHash, null)
 
                 transaction.setHash(transactionWithSignature.hash.hex)
                 transaction.signatureData = transactionWithSignature.extractSignatureData()
