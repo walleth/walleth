@@ -50,6 +50,9 @@ interface TransactionDAO {
     @Query("SELECT * from transactions WHERE hash = :hash COLLATE NOCASE")
     fun getByHashLive(hash: String): LiveData<TransactionEntity>
 
-    @Query("DELETE FROM balances")
+    @Query("DELETE FROM transactions WHERE hash = :hash COLLATE NOCASE")
+    fun deleteByHash(hash: String)
+
+    @Query("DELETE FROM transactions")
     fun deleteAll()
 }

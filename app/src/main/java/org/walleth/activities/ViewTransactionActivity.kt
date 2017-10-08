@@ -15,9 +15,11 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_view_transaction.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import net.glxn.qrgen.android.QRCode
 import org.kethereum.functions.encodeRLP
-import org.kethereum.model.Transaction
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
@@ -45,7 +47,7 @@ class ViewTransactionActivity : AppCompatActivity() {
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    var transaction: Transaction? = null
+    var txEntity: TransactionEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -58,7 +60,8 @@ class ViewTransactionActivity : AppCompatActivity() {
 
         appDatabase.transactions.getByHashLive(intent.getStringExtra(HASH_KEY)).observe(this, Observer<TransactionEntity> {
             if (it != null) {
-                transaction = it.transaction
+                txEntity = it
+                invalidateOptionsMenu()
                 val transaction = it.transaction
 
                 supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
@@ -127,10 +130,27 @@ class ViewTransactionActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?)
             = super.onCreateOptionsMenu(menu.apply { menuInflater.inflate(R.menu.menu_transaction, menu) })
 
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        menu?.findItem(R.id.menu_delete)?.isVisible = txEntity?.transactionState?.isPending ?: false
+        return super.onPrepareOptionsMenu(menu)
+    }
+
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.menu_delete -> {
+            txEntity?.hash?.let {
+                async(UI) {
+                    async(CommonPool) {
+                        appDatabase.transactions.deleteByHash(it)
+                    }.await()
+                    finish()
+                }
+            }
+            true
+        }
+
         R.id.menu_etherscan -> {
-            transaction?.let {
-                val url = networkDefinitionProvider.value!!.getBlockExplorer().getURLforTransaction(it.txHash!!)
+            txEntity?.let {
+                val url = networkDefinitionProvider.value!!.getBlockExplorer().getURLforTransaction(it.transaction.txHash!!)
                 startActivityFromURL(url)
             }
             true
