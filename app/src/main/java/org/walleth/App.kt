@@ -4,6 +4,7 @@ import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.os.StrictMode
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
@@ -69,12 +70,11 @@ open class App : MultiDexApplication(), KodeinAware {
         super.onCreate()
 
         if (BuildConfig.DEBUG) {
-            /*StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
+            StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
                     .detectAll()
                     .penaltyLog()
                     .penaltyDeath()
                     .build())
-                    */
         }
 
         Kotpref.init(this)
