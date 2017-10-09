@@ -5,6 +5,7 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'spoon'
 apply plugin: 'com.getkeepsafe.dexcount'
+apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
 def includeFirebase = hasProperty("isCI") || hasProperty("firebase") || true
 
@@ -223,4 +224,7 @@ kotlin {
     experimental {
         coroutines "enable"
     }
+}
+androidExtensions {
+    experimental = true
 }
