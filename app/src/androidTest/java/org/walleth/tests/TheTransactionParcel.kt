@@ -4,6 +4,7 @@ import android.os.Parcel
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.kethereum.model.Address
+import org.kethereum.model.ChainDefinition
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
 import org.walleth.kethereum.android.TransactionParcel
@@ -12,17 +13,24 @@ import java.math.BigInteger
 class TheTransactionParcel {
 
     val DEFAULT_NONCE = BigInteger("42")
+    private fun createTx() = createTransactionWithDefaults(
+            from = Address("0xab"),
+            to = Address("0xcd"),
+            value = BigInteger("10"),
+            chain = ChainDefinition(4L)
+    )
+
     @Test
     fun normalTransactionSurvives() {
 
-        val transactionBefore = createTransactionWithDefaults(value = BigInteger("10"), from = Address("0xab"), to = Address("0xcd"), nonce = DEFAULT_NONCE)
+        val transactionBefore = createTx().copy(to = Address("0xcd"), nonce = DEFAULT_NONCE)
         testTransactionParcel(transactionBefore)
     }
 
     @Test
     fun customTransactionSurvives() {
 
-        val transactionBefore = createTransactionWithDefaults(value = BigInteger("1000"), from = Address("0xab"), to = Address("0xcd"),
+        val transactionBefore = createTx().copy(
                 creationEpochSecond = 10L,
                 gasLimit = BigInteger("123"),
                 gasPrice = BigInteger("123542"),
@@ -34,7 +42,7 @@ class TheTransactionParcel {
     @Test
     fun transactionWithNullFieldsSurvives() {
 
-        val transactionBefore = createTransactionWithDefaults(value = BigInteger("0"), from = Address("0xab"), to = null)
+        val transactionBefore = createTx().copy(to = null)
         testTransactionParcel(transactionBefore)
     }
 

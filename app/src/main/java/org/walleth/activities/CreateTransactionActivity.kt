@@ -31,7 +31,6 @@ import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
@@ -49,15 +48,14 @@ import java.math.BigInteger.ZERO
 
 class CreateTransactionActivity : AppCompatActivity() {
 
-    var currentERC67String: String? = null
-    var currentAmount: BigInteger? = null
+    private var currentERC67String: String? = null
+    private var currentAmount: BigInteger? = null
 
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    var currentBalance: Balance? = null
+    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
+    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private var currentBalance: Balance? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         data?.let {

@@ -10,6 +10,9 @@ import com.github.salomonbrys.kodein.instance
 import com.google.protobuf.ByteString
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
@@ -61,10 +64,12 @@ class TrezorSignTX : BaseTrezorActivity() {
                     s = BigInteger(res.signatureS.toByteArray()),
                     v = res.signatureV.toByte()
             )
-
-            appDatabase.transactions.upsert(transaction.transaction.toEntity(signatureData,TransactionState()))
-
-            finish()
+            async(UI) {
+                async(CommonPool) {
+                    appDatabase.transactions.upsert(transaction.transaction.toEntity(signatureData, TransactionState()))
+                }.await()
+                finish()
+            }
         }
     }
 

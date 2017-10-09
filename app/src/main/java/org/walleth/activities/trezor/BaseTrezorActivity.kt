@@ -6,7 +6,6 @@ import android.os.Handler
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
-import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
@@ -24,6 +23,7 @@ import kotlinx.android.synthetic.main.pinput.view.*
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.ligi.compat.HtmlCompat
+import org.ligi.kaxt.inflate
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -44,8 +44,6 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-
-    val inflater by lazy { LayoutInflater.from(this)!! }
 
     val manager by lazy { TrezorManager(this) }
     val handler = Handler()
@@ -73,6 +71,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         trezor_status_text.movementMethod = LinkMovementMethod()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        handler.post(mainRunnable)
     }
 
     protected fun enterNewState(newState: STATES) {
@@ -127,27 +126,26 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         }
     }
 
-    protected open fun getMessageForState(): GeneratedMessageV3 {
-        return when (state) {
-            INIT, REQUEST_PERMISSION -> TrezorMessage.Initialize.getDefaultInstance()
-            READ_ADDRESS -> TrezorMessage.EthereumGetAddress.newBuilder()
-                    .addAllAddressN(currentBIP44!!.toIntList())
-                    .build()
-            PIN_REQUEST -> TrezorMessage.PinMatrixAck.newBuilder().setPin(currentSecret).build()
-            PWD_REQUEST -> TrezorMessage.PassphraseAck.newBuilder().setPassphrase(currentSecret).build()
-            BUTTON_ACK -> TrezorMessage.ButtonAck.getDefaultInstance()
-            CANCEL -> TrezorMessage.Cancel.newBuilder().build()
-            PROCESS_TASK -> getTaskSpecificMessage()!!
-        }
+    protected open fun getMessageForState(): GeneratedMessageV3 = when (state) {
+        INIT, REQUEST_PERMISSION -> TrezorMessage.Initialize.getDefaultInstance()
+        READ_ADDRESS -> TrezorMessage.EthereumGetAddress.newBuilder()
+                .addAllAddressN(currentBIP44!!.toIntList())
+                .build()
+        PIN_REQUEST -> TrezorMessage.PinMatrixAck.newBuilder().setPin(currentSecret).build()
+        PWD_REQUEST -> TrezorMessage.PassphraseAck.newBuilder().setPassphrase(currentSecret).build()
+        BUTTON_ACK -> TrezorMessage.ButtonAck.getDefaultInstance()
+        CANCEL -> TrezorMessage.Cancel.newBuilder().build()
+        PROCESS_TASK -> getTaskSpecificMessage()!!
     }
 
+
     protected fun showPassPhraseDialog() {
-        val input_layout = layoutInflater.inflate(R.layout.password_input, null)
+        val inputLayout = inflate(R.layout.password_input)
         AlertDialog.Builder(this)
-                .setView(input_layout)
+                .setView(inputLayout)
                 .setTitle("Please enter your passphrase")
                 .setPositiveButton(android.R.string.ok, { _, _ ->
-                    currentSecret = input_layout.password_input.text.toString()
+                    currentSecret = inputLayout.password_input.text.toString()
                     state = PWD_REQUEST
                     handler.post(mainRunnable)
                 })
@@ -161,7 +159,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
 
 
     private fun showPINDialog() {
-        val view = inflater.inflate(R.layout.pinput, null)
+        val view = inflate(R.layout.pinput)
         var dialogPin = ""
         val displayPin = {
             view.pin_textview.text = (0..(dialogPin.length - 1)).map { "*" }.joinToString("")

@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.hd_derivation_select.view.*
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.ligi.kaxt.doAfterEdit
+import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.kethereum.android.TransactionParcel
@@ -23,15 +24,14 @@ fun Intent.getPATHResult() = getStringExtra(ADDRESS_PATH)
 
 class TrezorGetAddress : BaseTrezorActivity() {
 
-    var isDerivationDialogShown = false
-
     val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX").transaction }
 
-    val initialBIP44 = BIP44.fromPath("m/44'/60'/0'/0/0")
-    var currentAddress: Address? = null
+    private var isDerivationDialogShown = false
+    private val initialBIP44 = BIP44.fromPath("m/44'/60'/0'/0/0")
+    private var currentAddress: Address? = null
 
-    val currentDerivationDialogView by lazy {
-        inflater.inflate(R.layout.hd_derivation_select, null)!!
+    private val currentDerivationDialogView by lazy {
+        inflate(R.layout.hd_derivation_select)
     }
 
     override fun handleAddress(address: Address) {
