@@ -74,7 +74,6 @@ open class App : MultiDexApplication(), KodeinAware {
             StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
                     .detectAll()
                     .penaltyLog()
-                    .penaltyDeath()
                     .build())
         }
 
