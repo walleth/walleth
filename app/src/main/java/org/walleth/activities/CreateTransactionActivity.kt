@@ -97,7 +97,7 @@ class CreateTransactionActivity : AppCompatActivity() {
                     alert("address must be specified")
                 } else if (currentAmount == null) {
                     alert("amount must be specified")
-                } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalance?.balance?: ZERO) {
+                } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
                     alert("Not enough funds for this transaction with the given amount plus fee")
                 } else if (nonce_input.text.isBlank()) {
                     alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
@@ -144,7 +144,7 @@ class CreateTransactionActivity : AppCompatActivity() {
         }
 
         sweep_button.setOnClickListener {
-            val balance = currentBalance!!.balance
+            val balance = currentBalanceSafely()
             val amountAfterFee = balance - gas_price_input.asBigInit() * gas_limit_input.asBigInit()
             if (amountAfterFee < ZERO) {
                 alert(R.string.no_funds_after_fee)
@@ -203,6 +203,8 @@ class CreateTransactionActivity : AppCompatActivity() {
 
 
     }
+
+    private fun currentBalanceSafely() = currentBalance?.balance ?: ZERO
 
     fun TextView.asBigInit() = BigInteger(text.toString())
 
