@@ -44,6 +44,7 @@ open class App : MultiDexApplication(), KodeinAware {
 
     private val gethBackedWallethKeyStore = GethBackedWallethKeyStore(this)
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    val settings: Settings by LazyKodein(appKodein).instance()
 
     open fun createKodein(): Kodein.Module {
 
@@ -84,34 +85,47 @@ open class App : MultiDexApplication(), KodeinAware {
         applyNightMode(kodein.instance())
         executeCodeWeWillIgnoreInTests()
 
-        async(CommonPool) {
-            appDatabase.addressBook.upsert(listOf(AddressBookEntry(
-                    name = "Michael Cook",
-                    address = Address("0xbE27686a93c54Af2f55f16e8dE9E6Dc5dccE915e"),
-                    note = "Icon designer - please tip him well if you want things to look nice",
-                    isNotificationWanted = false,
-                    trezorDerivationPath = null
-            ), AddressBookEntry(
-                    name = "LIGI",
-                    address = Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4"),
-                    note = "Developer & Ideator - send some ETH if you like this project and want it to continue",
-                    isNotificationWanted = false,
-                    trezorDerivationPath = null
+        if (!settings.addressBookInitialized) {
+            settings.addressBookInitialized = true
 
-            ), AddressBookEntry(
-                    name = "Faucet",
-                    address = Address("0x31b98d14007bdee637298086988a0bbd31184523"),
-                    note = "The source of some rinkeby ether",
-                    isNotificationWanted = false,
-                    trezorDerivationPath = null
-            )))
+            async(CommonPool) {
+                val keyCount = gethBackedWallethKeyStore.keyStore.accounts.size()
+                (0 until keyCount).forEach {
+                    val account = gethBackedWallethKeyStore.keyStore.accounts.get(it)
+                    appDatabase.addressBook.upsert(AddressBookEntry(
+                            name = "Default" + if (keyCount > 1) it else "",
+                            address = Address(account.address.hex),
+                            note = "default account with key",
+                            isNotificationWanted = false,
+                            trezorDerivationPath = null
+                    ))
+                }
+                appDatabase.addressBook.upsert(listOf(AddressBookEntry(
+                        name = "Michael Cook",
+                        address = Address("0xbE27686a93c54Af2f55f16e8dE9E6Dc5dccE915e"),
+                        note = "Icon designer - please tip him well if you want things to look nice",
+                        isNotificationWanted = false,
+                        trezorDerivationPath = null
+                ), AddressBookEntry(
+                        name = "LIGI",
+                        address = Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4"),
+                        note = "Developer & Ideator - send some ETH if you like this project and want it to continue",
+                        isNotificationWanted = false,
+                        trezorDerivationPath = null
 
-
+                ), AddressBookEntry(
+                        name = "Faucet",
+                        address = Address("0x31b98d14007bdee637298086988a0bbd31184523"),
+                        note = "The source of some rinkeby ether",
+                        isNotificationWanted = false,
+                        trezorDerivationPath = null
+                )))
+            }
         }
     }
 
     open fun executeCodeWeWillIgnoreInTests() {
-        if (KotprefSettings.isLightClientWanted()) {
+        if (settings.isLightClientWanted()) {
             Handler().postDelayed({
                 startService(Intent(this, GethLightEthereumService::class.java))
             }, 2000)

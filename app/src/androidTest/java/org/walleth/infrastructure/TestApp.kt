@@ -55,6 +55,7 @@ class TestApp : App() {
             `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
             `when`(startupWarningDone).thenReturn(true)
             `when`(chain).thenReturn(RINKEBY_CHAIN_ID)
+            `when`(isLightClientWanted()).thenReturn(false)
 
         }
         val currentAddressProvider = DefaultCurrentAddressProvider(settings)

@@ -15,6 +15,7 @@ object KotprefSettings : KotprefModel(), Settings {
 
     override var chain by longPref(RINKEBY_CHAIN_ID)
     override var accountAddress by nullableStringPref(null)
+    override var addressBookInitialized by booleanPref(false)
 
     private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 
@@ -23,7 +24,7 @@ object KotprefSettings : KotprefModel(), Settings {
 
     override fun getStatsName() = sharedPreferences.getString(context.getString(R.string.key_prefs_stats_username), createRandomUsername())
 
-    fun isLightClientWanted() = sharedPreferences.getBoolean(context.getString(R.string.key_prefs_start_light), false)
+    override fun isLightClientWanted() = sharedPreferences.getBoolean(context.getString(R.string.key_prefs_start_light), false)
 
     override fun getNightMode()
             = when (sharedPreferences.getString(context.getString(R.string.key_prefs_day_night), context.getString(R.string.default_day_night))) {
