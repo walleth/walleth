@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1f2603ab6f337b165e8372622d22a0f0",
+    "identityHash": "ba992af53d86b3643f9ac6a5838d528d",
     "entities": [
       {
         "tableName": "addressbook",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`address` TEXT NOT NULL, `name` TEXT NOT NULL, `note` TEXT, `is_notification_wanted` INTEGER NOT NULL, `trezor_derivation_path` TEXT, PRIMARY KEY(`address`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`address` TEXT NOT NULL, `name` TEXT NOT NULL, `note` TEXT, `is_notification_wanted` INTEGER NOT NULL, `trezor_derivation_path` TEXT, `starred` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `fromUser` INTEGER NOT NULL, PRIMARY KEY(`address`))",
         "fields": [
           {
             "fieldPath": "address",
@@ -37,6 +37,24 @@
             "columnName": "trezor_derivation_path",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "starred",
+            "columnName": "starred",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromUser",
+            "columnName": "fromUser",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -300,7 +318,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1f2603ab6f337b165e8372622d22a0f0\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"ba992af53d86b3643f9ac6a5838d528d\")"
     ]
   }
 }

@@ -19,5 +19,11 @@ data class AddressBookEntry(
         var isNotificationWanted: Boolean = false,
 
         @ColumnInfo(name = "trezor_derivation_path")
-        var trezorDerivationPath: String? = null
+        var trezorDerivationPath: String? = null,
+
+        var starred: Boolean = false,
+
+        var deleted: Boolean = false,
+
+        var fromUser: Boolean = false
 )
