@@ -34,10 +34,10 @@ interface AddressBookDAO {
     @Query("SELECT * FROM addressbook WHERE is_notification_wanted")
     fun allThatWantNotificationsLive(): LiveData<List<AddressBookEntry>>
 
-    @Query("SELECT * FROM addressbook where address = :address")
+    @Query("SELECT * FROM addressbook where address = :address COLLATE NOCASE")
     fun byAddressLiveData(address: Address): LiveData<AddressBookEntry?>
 
-    @Query("SELECT * FROM addressbook where address = :address")
+    @Query("SELECT * FROM addressbook where address = :address COLLATE NOCASE")
     fun byAddress(address: Address): AddressBookEntry?
 
     @Query("DELETE FROM addressbook")
