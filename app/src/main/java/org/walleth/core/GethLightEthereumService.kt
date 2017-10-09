@@ -112,8 +112,10 @@ class GethLightEthereumService : LifecycleService() {
 
                 ethereumNetworkID = network.chain.id
 
-                if (!network.genesis.isEmpty()) {
-                    ethereumGenesis = when (network.chain.id) {
+                ethereumGenesis = if (!network.genesis.isEmpty()) {
+                    network.genesis
+                } else {
+                    when (network.chain.id) {
                         1L -> Geth.mainnetGenesis()
                         3L -> Geth.testnetGenesis()
                         4L -> Geth.rinkebyGenesis()
@@ -127,7 +129,7 @@ class GethLightEthereumService : LifecycleService() {
             }
             val ethereumNode = Geth.newNode(subPath.absolutePath, nodeConfig)
 
-            Log.i("Starting Node for " + nodeConfig.ethereumNetworkID )
+            Log.i("Starting Node for " + nodeConfig.ethereumNetworkID)
             ethereumNode.start()
             isRunning = true
             while (shouldRun && !finishedSyncing) {
