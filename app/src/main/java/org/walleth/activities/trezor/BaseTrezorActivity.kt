@@ -102,14 +102,12 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
                     is TrezorMessage.EthereumAddress -> handleAddress(Address(res.address.toByteArray().toHexString()))
 
                     is TrezorMessage.Failure -> {
-                        if (res.code == TrezorType.FailureType.Failure_PinInvalid) {
-                            alert("Pin invalid", "Error", OnClickListener { _, _ ->
+                        when {
+                            res.code == TrezorType.FailureType.Failure_PinInvalid -> alert("Pin invalid", "Error", OnClickListener { _, _ ->
                                 finish()
                             })
-                        } else if (res.code == TrezorType.FailureType.Failure_ActionCancelled) {
-                            finish()
-                        } else {
-                            alert(res.message)
+                            res.code == TrezorType.FailureType.Failure_ActionCancelled -> finish()
+                            else -> alert(res.message)
                         }
                     }
 
