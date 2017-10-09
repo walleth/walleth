@@ -107,7 +107,7 @@ class ViewTransactionActivity : AppCompatActivity() {
                 }
 
 
-                if (!it.transactionState.relayedEtherscan && !it.transactionState.relayedLightClient) {
+                if (it.transactionState.isPending && (!it.transactionState.relayedEtherscan && !it.transactionState.relayedLightClient)) {
                     rlp_header.setText(if (it.signatureData != null) {
                         R.string.signed_rlp_header_text
                     } else {
