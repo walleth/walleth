@@ -15,6 +15,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import org.ethereum.geth.*
 import org.kethereum.functions.encodeRLP
+import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.MainActivity
 import org.walleth.data.AppDatabase
@@ -40,8 +41,10 @@ class GethLightEthereumService : LifecycleService() {
             action = STOP_SERVICE_ACTION
         }
 
+        var shouldRun = false
         var isRunning = false
     }
+
 
     val NOTIFICATION_ID = 101
 
@@ -53,7 +56,7 @@ class GethLightEthereumService : LifecycleService() {
     val settings: Settings by lazyKodein.instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
     val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
-    private val path by lazy { File(baseContext.cacheDir, ".ethereum").absolutePath }
+    private val path by lazy { File(baseContext.cacheDir, "ethereumdata").absolutePath }
     val notificationManager by lazy { getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager }
 
     var isSyncing = false
@@ -62,11 +65,11 @@ class GethLightEthereumService : LifecycleService() {
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
         if (intent.action == STOP_SERVICE_ACTION) {
-            isRunning = false
+            shouldRun = false
             return START_NOT_STICKY
         }
 
-        isRunning = true
+        shouldRun = true
 
         val pendingStopIntent = PendingIntent.getService(baseContext, 0, gethStopIntent(), 0)
         val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, MainActivity::class.java), 0)
@@ -95,7 +98,7 @@ class GethLightEthereumService : LifecycleService() {
             val network = networkDefinitionProvider.getCurrent()
             val subPath = File(path, "chain" + network.chain.id.toString())
             subPath.mkdirs()
-            val ethereumNode = Geth.newNode(subPath.absolutePath, NodeConfig().apply {
+            val nodeConfig = NodeConfig().apply {
 
                 if (network.bootNodes.isEmpty()) {
                     val bootNodes = Enodes()
@@ -121,11 +124,13 @@ class GethLightEthereumService : LifecycleService() {
                 if (!network.statsSuffix.isEmpty()) {
                     ethereumNetStats = settings.getStatsName() + network.statsSuffix
                 }
-            })
+            }
+            val ethereumNode = Geth.newNode(subPath.absolutePath, nodeConfig)
 
+            Log.i("Starting Node for " + nodeConfig.ethereumNetworkID )
             ethereumNode.start()
-
-            while (isRunning && !finishedSyncing) {
+            isRunning = true
+            while (shouldRun && !finishedSyncing) {
                 SystemClock.sleep(1000)
                 syncTick(ethereumNode, ethereumContext)
             }
@@ -145,7 +150,7 @@ class GethLightEthereumService : LifecycleService() {
                         appDatabase.balances.upsert(Balance(
                                 address = address,
                                 tokenAddress = getEthTokenForChain(network).address,
-                                chain =network.chain,
+                                chain = network.chain,
                                 balance = BigInteger(balance.string()),
                                 block = p0.number))
                     }
@@ -161,7 +166,7 @@ class GethLightEthereumService : LifecycleService() {
             }
 
             org.ligi.tracedroid.logging.Log.i("FinishedSyncing")
-            while (isRunning) {
+            while (shouldRun) {
                 syncTick(ethereumNode, ethereumContext)
             }
 
@@ -170,6 +175,7 @@ class GethLightEthereumService : LifecycleService() {
                 ethereumNode.stop()
                 stopForeground(true)
                 stopSelf()
+                isRunning = false
             }
 
         }).start()

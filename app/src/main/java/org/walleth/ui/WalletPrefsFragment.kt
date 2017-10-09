@@ -1,6 +1,7 @@
 package org.walleth.ui
 
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -9,6 +10,10 @@ import android.support.v7.preference.PreferenceFragmentCompat
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
 import org.ligi.kaxt.recreateWhenPossible
 import org.walleth.App
 import org.walleth.R
@@ -48,6 +53,17 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
                     context.startService(context.gethStopIntent())
                 } else {
                     context.startService(Intent(context, GethLightEthereumService::class.java))
+                }
+                async(UI) {
+                    val alert = AlertDialog.Builder(getContext())
+                            .setCancelable(false)
+                            .setMessage("Please wait").show()
+                    async(CommonPool) {
+                        while (GethLightEthereumService.isRunning != GethLightEthereumService.shouldRun) {
+                            delay(100)
+                        }
+                    }.await()
+                    alert.dismiss()
                 }
             }
 
