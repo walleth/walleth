@@ -15,9 +15,10 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.ui.TokenListAdapter
 
-class SelectTokenActivity : AppCompatActivity()  {
+class SelectTokenActivity : AppCompatActivity() {
 
     val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
     val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
@@ -37,17 +38,13 @@ class SelectTokenActivity : AppCompatActivity()  {
         fab.setOnClickListener {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
-    }
-
-    override fun onResume() {
-        super.onResume()
-
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
-            if (allTokens!=null) {
-                recycler_view.adapter = TokenListAdapter(currentTokenProvider, allTokens, this)
+            val tkns = mutableListOf(getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+            if (allTokens != null) {
+                tkns.addAll(allTokens)
             }
+            recycler_view.adapter = TokenListAdapter(currentTokenProvider, tkns, this)
         })
-
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

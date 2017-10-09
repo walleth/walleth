@@ -41,6 +41,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.TransactionAdapterDirection.INCOMMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
+import java.math.BigInteger.ZERO
 
 
 class MainActivity : AppCompatActivity() {
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
         lastNightMode = settings.getNightMode()
+        setCurrentBalanceObserver()
     }
 
     fun String.isJSONKey() = try {
@@ -243,11 +245,13 @@ class MainActivity : AppCompatActivity() {
 
 
     private val balanceObserver = Observer<Balance> {
-        it?.let { balance ->
-            balance.chain
-            value_view.setValue(balance.balance, currentTokenProvider.currentToken)
-            supportActionBar?.subtitle = "Block " + it.block
 
+        if (it!=null) {
+            value_view.setValue(it.balance, currentTokenProvider.currentToken)
+            supportActionBar?.subtitle = "Block " + it.block
+        } else {
+            value_view.setValue(ZERO, currentTokenProvider.currentToken)
+            supportActionBar?.subtitle = "No data"
         }
     }
 
