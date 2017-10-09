@@ -24,7 +24,16 @@ object KotprefSettings : KotprefModel(), Settings {
     private fun createRandomUsername()
             = context.getString(R.string.default_stats_username) + " " + BigInteger(130, SecureRandom()).toString(32).substring(0, 5)
 
-    override fun getStatsName() = sharedPreferences.getString(context.getString(R.string.key_prefs_stats_username), createRandomUsername())
+    override fun getStatsName(): String {
+        val key = context.getString(R.string.key_prefs_stats_username)
+        val string = sharedPreferences.getString(key, null)
+        if (string != null) {
+            return string
+        }
+        val newName = createRandomUsername()
+        sharedPreferences.edit().putString(key,newName).apply()
+        return newName
+    }
 
     override fun isLightClientWanted() = sharedPreferences.getBoolean(context.getString(R.string.key_prefs_start_light), false)
 
