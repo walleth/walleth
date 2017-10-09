@@ -97,7 +97,7 @@ class CreateTransactionActivity : AppCompatActivity() {
                     alert("address must be specified")
                 } else if (currentAmount == null) {
                     alert("amount must be specified")
-                } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalance!!.balance) {
+                } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalance?.balance?: ZERO) {
                     alert("Not enough funds for this transaction with the given amount plus fee")
                 } else if (nonce_input.text.isBlank()) {
                     alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
