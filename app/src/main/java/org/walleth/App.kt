@@ -108,7 +108,8 @@ open class App : MultiDexApplication(), KodeinAware {
                                     starred = false,
                                     showInList = true,
                                     fromUser = false,
-                                    chain = chain
+                                    chain = chain,
+                                    order = 0
                             )
 
 

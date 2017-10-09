@@ -18,7 +18,8 @@ class TheTokens : AbstractDatabaseTest() {
             chain = CHAIN1,
             fromUser = false,
             showInList = false,
-            starred = false)
+            starred = false,
+            order = 0)
 
     @Test
     fun isEmptyInitially() {

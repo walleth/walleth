@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "5b71c6cbb756088282d806512f816090",
+    "identityHash": "69f0e249ef6c98ce372fba3cc978085b",
     "entities": [
       {
         "tableName": "addressbook",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`address` TEXT NOT NULL, `name` TEXT NOT NULL, `note` TEXT, `is_notification_wanted` INTEGER NOT NULL, `trezor_derivation_path` TEXT, `starred` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `fromUser` INTEGER NOT NULL, PRIMARY KEY(`address`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`address` TEXT NOT NULL, `name` TEXT NOT NULL, `note` TEXT, `is_notification_wanted` INTEGER NOT NULL, `trezor_derivation_path` TEXT, `starred` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `fromUser` INTEGER NOT NULL, `order` INTEGER NOT NULL, PRIMARY KEY(`address`))",
         "fields": [
           {
             "fieldPath": "address",
@@ -55,6 +55,12 @@
             "columnName": "fromUser",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -68,7 +74,7 @@
       },
       {
         "tableName": "tokens",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `symbol` TEXT NOT NULL, `address` TEXT NOT NULL, `decimals` INTEGER NOT NULL, `chain` TEXT NOT NULL, `showInList` INTEGER NOT NULL, `starred` INTEGER NOT NULL, `fromUser` INTEGER NOT NULL, PRIMARY KEY(`address`, `chain`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `symbol` TEXT NOT NULL, `address` TEXT NOT NULL, `decimals` INTEGER NOT NULL, `chain` TEXT NOT NULL, `showInList` INTEGER NOT NULL, `starred` INTEGER NOT NULL, `fromUser` INTEGER NOT NULL, `order` INTEGER NOT NULL, PRIMARY KEY(`address`, `chain`))",
         "fields": [
           {
             "fieldPath": "name",
@@ -115,6 +121,12 @@
           {
             "fieldPath": "fromUser",
             "columnName": "fromUser",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
             "affinity": "INTEGER",
             "notNull": true
           }
@@ -324,7 +336,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5b71c6cbb756088282d806512f816090\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"69f0e249ef6c98ce372fba3cc978085b\")"
     ]
   }
 }

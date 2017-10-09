@@ -15,7 +15,8 @@ fun getEthTokenForChain(networkDefinition: NetworkDefinition) = Token(
         chain = networkDefinition.chain,
         showInList = true,
         starred = false,
-        fromUser = false
+        fromUser = false,
+        order = 0
 )
 
 @Entity(tableName = "tokens", primaryKeys = arrayOf("address", "chain"))
@@ -27,5 +28,6 @@ data class Token(
         val chain: ChainDefinition,
         val showInList: Boolean,
         val starred: Boolean,
-        val fromUser: Boolean
+        val fromUser: Boolean,
+        val order:Int
 )

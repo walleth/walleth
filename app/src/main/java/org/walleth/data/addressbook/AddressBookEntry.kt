@@ -25,5 +25,7 @@ data class AddressBookEntry(
 
         var deleted: Boolean = false,
 
-        var fromUser: Boolean = false
+        var fromUser: Boolean = false,
+
+        var order: Int = 0
 )

@@ -60,7 +60,8 @@ class CreateTokenDefinitionActivity : AppCompatActivity() {
                                     chain = networkDefinition.chain,
                                     showInList = true,
                                     starred = true,
-                                    fromUser = true
+                                    fromUser = true,
+                                    order = 0
                             ))
                         }.await()
                         finish()
