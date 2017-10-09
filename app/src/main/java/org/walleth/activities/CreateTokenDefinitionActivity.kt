@@ -54,6 +54,7 @@ class CreateTokenDefinitionActivity : AppCompatActivity() {
                         async(CommonPool) {
                             appDatabase.tokens.upsert(Token(
                                     name = newTokenName,
+                                    symbol = newTokenName,
                                     address = Address(newTokenAddress),
                                     decimals = newDecimals,
                                     chain = networkDefinition.chain,

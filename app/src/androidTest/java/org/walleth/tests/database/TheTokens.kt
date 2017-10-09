@@ -12,6 +12,7 @@ class TheTokens : AbstractDatabaseTest() {
     val CHAIN1 = ChainDefinition(1L)
     val CHAIN2 = ChainDefinition(2L)
     val DEFAULT_TOKEN = Token(name = "foo",
+            symbol = "foo",
             decimals = 1,
             address = DEFAULT_TEST_ADDRESS,
             chain = CHAIN1,

@@ -34,7 +34,7 @@ class TestApp : App() {
             }
         }
         bind<WallethKeyStore>() with singleton { keyStore }
-        bind<Settings>() with singleton { settings }
+        bind<Settings>() with singleton { mySettings }
         bind<CurrentAddressProvider>() with singleton { currentAddressProvider }
         bind<NetworkDefinitionProvider>() with singleton { networkDefinitionProvider }
         bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
@@ -50,16 +50,17 @@ class TestApp : App() {
     companion object {
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
         val keyStore = TestKeyStore()
-        val settings = mock(Settings::class.java).apply {
+        val mySettings = mock(Settings::class.java).apply {
             `when`(currentFiat).thenReturn("EUR")
             `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
             `when`(startupWarningDone).thenReturn(true)
             `when`(chain).thenReturn(RINKEBY_CHAIN_ID)
             `when`(isLightClientWanted()).thenReturn(false)
-
+            `when`(addressInitVersion).thenReturn(Integer.MAX_VALUE)
+            `when`(tokensInitVersion).thenReturn(Integer.MAX_VALUE)
         }
-        val currentAddressProvider = DefaultCurrentAddressProvider(settings)
-        val networkDefinitionProvider = NetworkDefinitionProvider(settings)
+        val currentAddressProvider = DefaultCurrentAddressProvider(mySettings)
+        val networkDefinitionProvider = NetworkDefinitionProvider(mySettings)
 
         lateinit var testDatabase: AppDatabase
         fun resetDB(context: Context) {

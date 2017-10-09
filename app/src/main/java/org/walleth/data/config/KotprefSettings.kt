@@ -15,7 +15,9 @@ object KotprefSettings : KotprefModel(), Settings {
 
     override var chain by longPref(RINKEBY_CHAIN_ID)
     override var accountAddress by nullableStringPref(null)
-    override var addressBookInitialized by booleanPref(false)
+
+    override var addressInitVersion by intPref(0)
+    override var tokensInitVersion by intPref(0)
 
     private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 

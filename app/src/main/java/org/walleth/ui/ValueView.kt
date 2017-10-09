@@ -43,7 +43,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
             }
         }
 
-        current_token_symbol.text = token.name
+        current_token_symbol.text = token.symbol
 
         current_fiat_symbol.setVisibility(token.isETH())
         current_fiat.setVisibility(token.isETH())

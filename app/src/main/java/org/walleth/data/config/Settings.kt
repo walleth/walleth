@@ -6,7 +6,9 @@ interface Settings {
 
     var chain: Long
     var accountAddress: String?
-    var addressBookInitialized: Boolean
+
+    var addressInitVersion: Int
+    var tokensInitVersion: Int
 
     fun isLightClientWanted(): Boolean
     fun getNightMode(): Int

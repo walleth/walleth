@@ -25,4 +25,8 @@ interface TokenDAO {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(entry: Token)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    fun addIfNotPresent(entries: List<Token>)
+
 }
