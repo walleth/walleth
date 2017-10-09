@@ -121,7 +121,7 @@ class ViewTransactionActivity : AppCompatActivity() {
 
                 value_view.setValue(it.transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
 
-                details.setText(" " + it.transaction.txHash + " " + it.hash)
+                details.text = it.transaction.txHash
             }
         })
 
