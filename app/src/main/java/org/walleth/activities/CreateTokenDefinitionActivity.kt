@@ -56,7 +56,10 @@ class CreateTokenDefinitionActivity : AppCompatActivity() {
                                     name = newTokenName,
                                     address = Address(newTokenAddress),
                                     decimals = newDecimals,
-                                    chain = networkDefinition.chain
+                                    chain = networkDefinition.chain,
+                                    showInList = true,
+                                    starred = true,
+                                    fromUser = true
                             ))
                         }.await()
                         finish()

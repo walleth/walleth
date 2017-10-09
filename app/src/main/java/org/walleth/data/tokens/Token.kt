@@ -2,17 +2,28 @@ package org.walleth.data.tokens
 
 import android.arch.persistence.room.Entity
 import org.kethereum.model.Address
-import org.walleth.data.networks.NetworkDefinition
 import org.kethereum.model.ChainDefinition
+import org.walleth.data.networks.NetworkDefinition
 
 fun Token.isETH() = address.hex == "0x0"
 
-fun getEthTokenForChain(networkDefinition: NetworkDefinition) = Token("ETH", decimals = 18, address = Address("0x0"), chain = networkDefinition.chain)
+fun getEthTokenForChain(networkDefinition: NetworkDefinition) = Token(
+        "ETH",
+        decimals = 18,
+        address = Address("0x0"),
+        chain = networkDefinition.chain,
+        showInList = true,
+        starred = false,
+        fromUser = false
+)
 
 @Entity(tableName = "tokens", primaryKeys = arrayOf("address", "chain"))
 data class Token(
         val name: String,
-        val decimals: Int,
         val address: Address,
-        val chain: ChainDefinition
+        val decimals: Int,
+        val chain: ChainDefinition,
+        val showInList: Boolean,
+        val starred: Boolean,
+        val fromUser: Boolean
 )

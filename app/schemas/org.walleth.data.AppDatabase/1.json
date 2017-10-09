@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a3efad62f564b666fc052dcaa07dc0eb",
+    "identityHash": "1f2603ab6f337b165e8372622d22a0f0",
     "entities": [
       {
         "tableName": "addressbook",
@@ -50,11 +50,17 @@
       },
       {
         "tableName": "tokens",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `decimals` INTEGER NOT NULL, `address` TEXT NOT NULL, `chain` TEXT NOT NULL, PRIMARY KEY(`address`, `chain`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `address` TEXT NOT NULL, `decimals` INTEGER NOT NULL, `chain` TEXT NOT NULL, `showInList` INTEGER NOT NULL, `starred` INTEGER NOT NULL, `fromUser` INTEGER NOT NULL, PRIMARY KEY(`address`, `chain`))",
         "fields": [
           {
             "fieldPath": "name",
             "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
             "affinity": "TEXT",
             "notNull": true
           },
@@ -65,15 +71,27 @@
             "notNull": true
           },
           {
-            "fieldPath": "address",
-            "columnName": "address",
+            "fieldPath": "chain",
+            "columnName": "chain",
             "affinity": "TEXT",
             "notNull": true
           },
           {
-            "fieldPath": "chain",
-            "columnName": "chain",
-            "affinity": "TEXT",
+            "fieldPath": "showInList",
+            "columnName": "showInList",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "starred",
+            "columnName": "starred",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromUser",
+            "columnName": "fromUser",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -282,7 +300,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a3efad62f564b666fc052dcaa07dc0eb\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1f2603ab6f337b165e8372622d22a0f0\")"
     ]
   }
 }
