@@ -100,7 +100,9 @@ class EtherScanService : LifecycleService() {
             if (result != null) {
                 val oldHash = transaction.hash
                 if (result.has("result")) {
-                    transaction.setHash(result.getString("result"))
+                    val newHash = result.getString("result")
+
+                    transaction.setHash(if (!newHash.startsWith("0x")) "0x" + newHash else newHash)
                 } else if (result.has("error")) {
                     val error = result.getJSONObject("error")
 
@@ -162,7 +164,7 @@ class EtherScanService : LifecycleService() {
                     getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest", currentNetwork)?.getString("result")
 
                 } else {
-                    getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest",currentNetwork)?.getString("result")
+                    getEtherscanResult("module=account&action=tokenbalance&contractaddress=${currentToken.address}&address=$addressHex&tag=latest", currentNetwork)?.getString("result")
 
                 }
 
