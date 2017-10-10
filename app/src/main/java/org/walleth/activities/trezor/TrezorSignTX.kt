@@ -36,7 +36,8 @@ class TrezorSignTX : BaseTrezorActivity() {
 
     override fun handleAddress(address: Address) {
         if (address != transaction.transaction.from) {
-            alert("TREZOR reported different source Address. $address is not ${transaction.transaction.from}", onOKListener = OnClickListener { _, _ ->
+            val message = "TREZOR reported different source Address. $address is not ${transaction.transaction.from}"
+            alert(message, onOKListener = OnClickListener { _, _ ->
                 finish()
             })
         } else {
