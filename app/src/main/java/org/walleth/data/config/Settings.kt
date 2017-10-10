@@ -10,6 +10,8 @@ interface Settings {
     var addressInitVersion: Int
     var tokensInitVersion: Int
 
+    var currentGoVerbosity: Int
+
     fun isLightClientWanted(): Boolean
     fun getNightMode(): Int
     fun getStatsName(): String

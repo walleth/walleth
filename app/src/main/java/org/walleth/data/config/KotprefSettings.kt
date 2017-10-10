@@ -19,6 +19,8 @@ object KotprefSettings : KotprefModel(), Settings {
     override var addressInitVersion by intPref(0)
     override var tokensInitVersion by intPref(0)
 
+    override var currentGoVerbosity by intPref(3)
+
     private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 
     private fun createRandomUsername()
