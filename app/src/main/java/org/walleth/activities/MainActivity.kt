@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         setCurrentBalanceObserver()
     }
 
-    fun String.isJSONKey() = try {
+    private fun String.isJSONKey() = try {
         JSONObject(this).let {
             it.has("address") && (it.has("crypto") || it.has("Crypto"))
         }
@@ -180,10 +180,10 @@ class MainActivity : AppCompatActivity() {
         })
 
         fun refresh() {
-            val incommingSize = transaction_recycler_in.adapter?.itemCount ?: 0
+            val incomingSize = transaction_recycler_in.adapter?.itemCount ?: 0
             val outgoingSize = transaction_recycler_out.adapter?.itemCount ?: 0
 
-            val hasTransactions = incommingSize + outgoingSize > 0
+            val hasTransactions = incomingSize + outgoingSize > 0
             empty_view_container.setVisibility(!hasTransactions)
             transaction_recycler_out.setVisibility(hasTransactions)
             transaction_recycler_in.setVisibility(hasTransactions)
