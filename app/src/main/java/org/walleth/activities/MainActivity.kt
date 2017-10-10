@@ -32,7 +32,6 @@ import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -46,20 +45,18 @@ import java.math.BigInteger.ZERO
 
 class MainActivity : AppCompatActivity() {
 
-    val lazyKodein = LazyKodein(appKodein)
+    private val lazyKodein = LazyKodein(appKodein)
 
-    val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
+    private val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
-    val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
-    val keyStore: WallethKeyStore by lazyKodein.instance()
-    val appDatabase: AppDatabase by lazyKodein.instance()
-    val settings: Settings by lazyKodein.instance()
-    val currentTokenProvider: CurrentTokenProvider by lazyKodein.instance()
-    val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
-    var lastNightMode: Int? = null
-
-    var balanceLiveData: LiveData<Balance>? = null
+    private val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
+    private val appDatabase: AppDatabase by lazyKodein.instance()
+    private val settings: Settings by lazyKodein.instance()
+    private val currentTokenProvider: CurrentTokenProvider by lazyKodein.instance()
+    private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
+    private var lastNightMode: Int? = null
+    private var balanceLiveData: LiveData<Balance>? = null
 
     override fun onResume() {
         super.onResume()
@@ -246,7 +243,7 @@ class MainActivity : AppCompatActivity() {
 
     private val balanceObserver = Observer<Balance> {
 
-        if (it!=null) {
+        if (it != null) {
             value_view.setValue(it.balance, currentTokenProvider.currentToken)
             supportActionBar?.subtitle = "Block " + it.block
         } else {
