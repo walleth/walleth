@@ -17,6 +17,7 @@ import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.ligi.kaxtui.alert
+import org.ligi.kroom.inTransaction
 import org.walleth.R.string
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.networks.CurrentAddressProvider
@@ -59,6 +60,7 @@ class TrezorSignTX : BaseTrezorActivity() {
     override fun handleExtraMessage(res: Message?) {
         if (res is TrezorMessage.EthereumTxRequest) {
 
+            val oldHash = transaction.transaction.txHash
             val signatureData = SignatureData(
                     r = BigInteger(res.signatureR.toByteArray()),
                     s = BigInteger(res.signatureS.toByteArray()),
@@ -66,7 +68,10 @@ class TrezorSignTX : BaseTrezorActivity() {
             )
             async(UI) {
                 async(CommonPool) {
-                    appDatabase.transactions.upsert(transaction.transaction.toEntity(signatureData, TransactionState()))
+                    appDatabase.inTransaction {
+                        oldHash?.let { transactions.deleteByHash(it) }
+                        transactions.upsert(transaction.transaction.toEntity(signatureData, TransactionState()))
+                    }
                 }.await()
                 finish()
             }
