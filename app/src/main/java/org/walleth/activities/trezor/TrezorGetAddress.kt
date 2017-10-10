@@ -51,6 +51,11 @@ class TrezorGetAddress : BaseTrezorActivity() {
         supportActionBar?.subtitle = getString(R.string.activity_subtitle_get_trezor_address)
     }
 
+    override fun onResume() {
+        super.onResume()
+        handler.post(mainRunnable)
+    }
+
     override fun handleExtraMessage(res: Message?) = Unit // we ony care for addresses
     override fun getTaskSpecificMessage(): GeneratedMessageV3? = null // and have no specific task
 

@@ -34,6 +34,9 @@ fun Context.startTrezorActivity(transactionParcel: TransactionParcel) {
 
 class TrezorSignTX : BaseTrezorActivity() {
 
+    private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
+    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+
     override fun handleAddress(address: Address) {
         if (address != transaction.transaction.from) {
             val message = "TREZOR reported different source Address. $address is not ${transaction.transaction.from}"
@@ -79,15 +82,18 @@ class TrezorSignTX : BaseTrezorActivity() {
         }
     }
 
-    val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    override fun onResume() {
+        super.onResume()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
         appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
             currentBIP44 = it?.trezorDerivationPath?.let { BIP44.fromPath(it) } ?: throw IllegalArgumentException("Starting TREZOR Activity")
             handler.post(mainRunnable)
         }
+
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         supportActionBar?.subtitle = getString(string.activity_subtitle_sign_with_trezor)
     }
 

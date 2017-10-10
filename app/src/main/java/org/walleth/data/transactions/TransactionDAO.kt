@@ -27,10 +27,16 @@ interface TransactionDAO {
     fun getAllForSource(source: TransactionSource): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions WHERE \"to\" = :address COLLATE NOCASE AND chain=:chain ORDER BY creationEpochSecond DESC")
-    fun getIncomingTransactionsForAddress(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
+    fun getIncomingTransactionsForAddressOnChainOrdered(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE  AND chain=:chain ORDER BY creationEpochSecond DESC")
-    fun getOutgoingTransactionsForAddress(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
+    fun getOutgoingTransactionsForAddressOnChainOrdered(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
+
+    @Query("SELECT * FROM transactions WHERE \"to\" IN(:addresses) COLLATE NOCASE OR  \"from\" IN(:addresses) COLLATE NOCASE ")
+    fun getAllTransactionsForAddressLive(addresses: List<Address>): LiveData<List<TransactionEntity>>
+
+    @Query("SELECT * FROM transactions WHERE \"to\" IN(:addresses) COLLATE NOCASE OR  \"from\" IN(:addresses) COLLATE NOCASE ")
+    fun getAllTransactionsForAddress(addresses: List<Address>): List<TransactionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(transactionEntity: TransactionEntity)

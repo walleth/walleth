@@ -3,58 +3,46 @@ package org.walleth.core
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.arch.lifecycle.LifecycleService
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.support.v4.app.NotificationCompat
-import com.github.salomonbrys.kodein.KodeinInjected
-import com.github.salomonbrys.kodein.KodeinInjector
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import org.kethereum.model.Address
-import org.kethereum.model.Transaction
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.AddressBookDAO
+import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.transactions.TransactionEntity
 
-class TransactionNotificationService : LifecycleService(), KodeinInjected {
+class TransactionNotificationService : LifecycleService() {
 
-    override val injector = KodeinInjector()
+    private val lazyKodein = LazyKodein(appKodein)
 
-    val lazyKodein = LazyKodein(appKodein)
+    private val appDatabase: AppDatabase by lazyKodein.instance()
 
-    val appDatabase: AppDatabase by lazyKodein.instance()
-    val addressBook by lazy { appDatabase.addressBook }
-
-    fun Transaction.isNotifyWorthyTransaction(): Boolean {
-
-        val myFrom = from
-        if (myFrom == null || !(addressBook.isEntryRelevant(myFrom) || addressBook.isEntryRelevant(to!!))) {
-            return false
-        }
-
-        return LocalDateTime.now().atZone(ZoneOffset.systemDefault()).toEpochSecond() - (creationEpochSecond ?: 0) < 60
-    }
-
-
-    private fun AddressBookDAO.isEntryRelevant(address: Address) = byAddress(address).let { (it != null && it.isNotificationWanted) }
-
+    private val allThatWantNotificationsLive by lazy { appDatabase.addressBook.allThatWantNotificationsLive() }
+    private var liveDataAllNotifications: LiveData<List<TransactionEntity>>? = null
+    private var addressesToNotify: List<Address> = emptyList()
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        appDatabase.transactions.getTransactionsLive().observe(this, Observer {
-            val relevantTransactions = it?.filter { it.transaction.isNotifyWorthyTransaction() }
+        val allTransactionsToNotifyObserver = Observer<List<TransactionEntity>> {
+            it?.let { allTransactionsToNotify ->
+                val relevantTransaction = allTransactionsToNotify.firstOrNull() {
+                    val currentEpochSeconds = LocalDateTime.now().atZone(ZoneOffset.systemDefault()).toEpochSecond()
+                    val isRecent = currentEpochSeconds - (it.transaction.creationEpochSecond ?: 0) < 60
+                    !it.transactionState.isPending && isRecent
+                }
 
-            if (relevantTransactions != null && relevantTransactions.isNotEmpty()) {
-                val relevantTransaction = relevantTransactions.first()
-                relevantTransaction.transaction.txHash?.let {
-
-                    val transactionIntent = baseContext.getTransactionActivityIntentForHash(it)
+                if (relevantTransaction!=null) {
+                    val transactionIntent = baseContext.getTransactionActivityIntentForHash(relevantTransaction.hash)
                     val contentIntent = PendingIntent.getActivity(baseContext, 0, transactionIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
                     val notification = NotificationCompat.Builder(baseContext, "transactions").apply {
@@ -64,7 +52,7 @@ class TransactionNotificationService : LifecycleService(), KodeinInjected {
                         setContentIntent(contentIntent)
                         val myFrom = relevantTransaction.transaction.from
                         // TODO better handle from==null
-                        if (myFrom == null || addressBook.isEntryRelevant(myFrom)) {
+                        if (myFrom == null || addressesToNotify.contains(myFrom)) {
                             setSmallIcon(R.drawable.notification_minus)
                         } else {
                             setSmallIcon(R.drawable.notification_plus)
@@ -76,7 +64,18 @@ class TransactionNotificationService : LifecycleService(), KodeinInjected {
                     notificationService.notify(111, notification)
                 }
             }
-        })
+        }
+
+        val allThatWantNotificationObserver = Observer<List<AddressBookEntry>> { addressesToNotify ->
+            if (addressesToNotify != null) {
+                liveDataAllNotifications?.removeObserver(allTransactionsToNotifyObserver)
+                liveDataAllNotifications = appDatabase.transactions.getAllTransactionsForAddressLive(addressesToNotify.map { it.address })
+                liveDataAllNotifications?.observe(this, allTransactionsToNotifyObserver)
+            }
+
+        }
+        allThatWantNotificationsLive.removeObserver(allThatWantNotificationObserver)
+        allThatWantNotificationsLive.observe(this, allThatWantNotificationObserver)
 
         return START_STICKY
     }

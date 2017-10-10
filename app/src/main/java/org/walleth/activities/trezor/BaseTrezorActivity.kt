@@ -71,7 +71,6 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         trezor_status_text.movementMethod = LinkMovementMethod()
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        handler.post(mainRunnable)
     }
 
     protected fun enterNewState(newState: STATES) {

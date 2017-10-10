@@ -23,6 +23,7 @@ import org.ligi.tracedroid.logging.Log
 import org.walleth.core.EtherScanService
 import org.walleth.core.GethLightEthereumService
 import org.walleth.core.GethTransactionSigner
+import org.walleth.core.TransactionNotificationService
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.config.KotprefSettings
@@ -172,7 +173,7 @@ open class App : MultiDexApplication(), KodeinAware {
         }
         startService(Intent(this, GethTransactionSigner::class.java))
         startService(Intent(this, EtherScanService::class.java))
-        //startService(Intent(this, TransactionNotificationService::class.java))
+        startService(Intent(this, TransactionNotificationService::class.java))
     }
 
     companion object {

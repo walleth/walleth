@@ -220,8 +220,8 @@ class MainActivity : AppCompatActivity() {
 
             currentAddressProvider.value?.let { currentAddress ->
                 val currentChain = networkDefinitionProvider.getCurrent().chain
-                incomingTransactionsForAddress = appDatabase.transactions.getIncomingTransactionsForAddress(currentAddress, currentChain)
-                outgoingTransactionsForAddress = appDatabase.transactions.getOutgoingTransactionsForAddress(currentAddress, currentChain)
+                incomingTransactionsForAddress = appDatabase.transactions.getIncomingTransactionsForAddressOnChainOrdered(currentAddress, currentChain)
+                outgoingTransactionsForAddress = appDatabase.transactions.getOutgoingTransactionsForAddressOnChainOrdered(currentAddress, currentChain)
 
                 incomingTransactionsForAddress?.observe(this, incomingTransactionsObserver)
                 outgoingTransactionsForAddress?.observe(this, outgoingTransactionsObserver)
