@@ -47,7 +47,7 @@ open class App : MultiDexApplication(), KodeinAware {
         import(createKodein())
     }
 
-    private val gethBackedWallethKeyStore = GethBackedWallethKeyStore(this)
+    private val gethBackedWallethKeyStore by lazy { GethBackedWallethKeyStore(this) }
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     val settings: Settings by LazyKodein(appKodein).instance()
 

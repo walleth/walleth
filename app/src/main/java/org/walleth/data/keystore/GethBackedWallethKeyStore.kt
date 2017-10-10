@@ -11,8 +11,8 @@ import java.io.File
 
 class GethBackedWallethKeyStore(val context: Context) : WallethKeyStore {
 
-    private val keyStoreFile by lazy { File(context.filesDir, "keystore") }
-    val keyStore by lazy { KeyStore(keyStoreFile.absolutePath, Geth.LightScryptN, Geth.LightScryptP) }
+    private val keyStoreFile = File(context.filesDir, "keystore")
+    val keyStore = KeyStore(keyStoreFile.absolutePath, Geth.LightScryptN, Geth.LightScryptP)
 
     override fun newAddress(password: String) =
             keyStore.newAccount(password).address.toKethereumAddress()
