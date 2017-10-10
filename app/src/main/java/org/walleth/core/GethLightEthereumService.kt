@@ -76,8 +76,8 @@ class GethLightEthereumService : LifecycleService() {
 
 
         if (Build.VERSION.SDK_INT > 25) {
-            val channel = NotificationChannel("geth", "Channel name", NotificationManager.IMPORTANCE_HIGH)
-            channel.description = "Channel description"
+            val channel = NotificationChannel("geth", "Geth Service", NotificationManager.IMPORTANCE_HIGH)
+            channel.description = "View and Stop Geth Service"
             notificationManager.createNotificationChannel(channel)
         }
 

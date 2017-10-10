@@ -32,10 +32,10 @@ interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE  AND chain=:chain ORDER BY creationEpochSecond DESC")
     fun getOutgoingTransactionsForAddressOnChainOrdered(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE \"to\" IN(:addresses) COLLATE NOCASE OR  \"from\" IN(:addresses) COLLATE NOCASE ")
+    @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses)")
     fun getAllTransactionsForAddressLive(addresses: List<Address>): LiveData<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE \"to\" IN(:addresses) COLLATE NOCASE OR  \"from\" IN(:addresses) COLLATE NOCASE ")
+    @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses)")
     fun getAllTransactionsForAddress(addresses: List<Address>): List<TransactionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
