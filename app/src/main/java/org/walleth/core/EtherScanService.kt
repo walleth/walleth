@@ -26,6 +26,7 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
 import org.walleth.data.transactions.TransactionEntity
+import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
 import java.io.IOException
 import java.math.BigInteger
@@ -97,8 +98,9 @@ class EtherScanService : LifecycleService() {
             val result = getEtherscanResult(url, networkDefinitionProvider.value!!)
 
             if (result != null) {
+                val oldHash = transaction.hash
                 if (result.has("result")) {
-                    transaction.transaction.txHash = result.getString("result")
+                    transaction.setHash(result.getString("result"))
                 } else if (result.has("error")) {
                     val error = result.getJSONObject("error")
 
@@ -113,7 +115,8 @@ class EtherScanService : LifecycleService() {
                 }
                 transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "relayed via EtherScan"
                 transaction.transactionState.relayedEtherscan = true
-                appDatabase.transactions.deleteByHash(transaction.hash)
+
+                appDatabase.transactions.deleteByHash(oldHash)
                 appDatabase.transactions.upsert(transaction)
             }
         }
