@@ -100,14 +100,14 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
                     is TrezorMessage.ButtonRequest -> enterNewState(BUTTON_ACK)
                     is TrezorMessage.Features -> enterNewState(READ_ADDRESS)
                     is TrezorMessage.EthereumAddress -> handleAddress(Address(res.address.toByteArray().toHexString()))
-
                     is TrezorMessage.Failure -> {
                         when {
                             res.code == TrezorType.FailureType.Failure_PinInvalid -> alert("Pin invalid", "Error", OnClickListener { _, _ ->
                                 finish()
                             })
+                            res.code == TrezorType.FailureType.Failure_UnexpectedMessage -> Unit
                             res.code == TrezorType.FailureType.Failure_ActionCancelled -> finish()
-                            else -> alert(res.message)
+                            else -> alert("problem: " + res.message + " " + res.code)
                         }
                     }
 
