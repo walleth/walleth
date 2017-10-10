@@ -147,7 +147,7 @@ open class App : MultiDexApplication(), KodeinAware {
                         trezorDerivationPath = null
                 ), AddressBookEntry(
                         name = "LIGI",
-                        address = Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4"),
+                        address = Address("0x381e247bef0ebc21b6611786c665dd5514dcc31f"),
                         note = "Developer & Ideator - send some ETH if you like this project and want it to continue",
                         isNotificationWanted = false,
                         trezorDerivationPath = null
