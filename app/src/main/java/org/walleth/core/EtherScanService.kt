@@ -3,14 +3,15 @@ package org.walleth.core
 import android.arch.lifecycle.LifecycleService
 import android.arch.lifecycle.Observer
 import android.content.Intent
-import android.os.Binder
 import android.os.SystemClock
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
-import okhttp3.*
+import okhttp3.Call
+import okhttp3.OkHttpClient
+import okhttp3.Request
 import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
@@ -19,7 +20,6 @@ import org.walleth.BuildConfig
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -33,26 +33,19 @@ import java.math.BigInteger
 
 class EtherScanService : LifecycleService() {
 
-    private val binder by lazy { Binder() }
+    private val lazyKodein = LazyKodein(appKodein)
 
-    override fun onBind(intent: Intent): Binder {
-        super.onBind(intent)
-        return binder
-    }
+    private val okHttpClient: OkHttpClient by lazyKodein.instance()
+    private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
+    private val tokenProvider: CurrentTokenProvider by lazyKodein.instance()
+    private val appDatabase: AppDatabase by lazyKodein.instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
 
-    val lazyKodein = LazyKodein(appKodein)
 
-    val okHttpClient: OkHttpClient by lazyKodein.instance()
-    val keyStore: WallethKeyStore by lazyKodein.instance()
-    val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
-    val tokenProvider: CurrentTokenProvider by lazyKodein.instance()
-    val appDatabase: AppDatabase by lazyKodein.instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
-
-    var shortcut = false
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
+        var shortcut = false
 
         appDatabase.transactions.getTransactionsLive().observe(this@EtherScanService, Observer {
             shortcut = true
@@ -124,7 +117,7 @@ class EtherScanService : LifecycleService() {
         }
     }
 
-    fun tryFetchFromEtherScan(addressHex: String) {
+    private fun tryFetchFromEtherScan(addressHex: String) {
         queryEtherscanForBalance(addressHex)
         queryTransactions(addressHex)
     }
@@ -147,7 +140,7 @@ class EtherScanService : LifecycleService() {
         }
     }
 
-    fun queryEtherscanForBalance(addressHex: String) {
+    private fun queryEtherscanForBalance(addressHex: String) {
 
         networkDefinitionProvider.value?.let { currentNetwork ->
             val currentToken = tokenProvider.currentToken
@@ -186,20 +179,7 @@ class EtherScanService : LifecycleService() {
         }
     }
 
-    fun Call.enqueueOnlySuccess(success: (it: JSONObject) -> Unit) {
-        enqueue(object : Callback {
-            override fun onFailure(call: Call?, e: IOException) {
-                e.printStackTrace()
-            }
-
-            override fun onResponse(call: Call?, response: Response) {
-                response.body()?.let { it.use { success(JSONObject(it.string())) } }
-            }
-        })
-    }
-
-
-    fun getEtherscanResult(requestString: String, networkDefinition: NetworkDefinition): JSONObject? {
+    private fun getEtherscanResult(requestString: String, networkDefinition: NetworkDefinition): JSONObject? {
         val baseURL = networkDefinition.getBlockExplorer().baseAPIURL
         val urlString = "$baseURL/api?$requestString&apikey=$" + BuildConfig.ETHERSCAN_APIKEY
         val url = Request.Builder().url(urlString).build()
