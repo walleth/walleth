@@ -44,7 +44,7 @@ class TheAddressBook : AbstractDatabaseTest() {
         database.addressBook.upsert(entry)
         database.addressBook.upsert(AddressBookEntry(DEFAULT_TEST_ADDRESS3,"notificationNotWanted2",isNotificationWanted = false))
 
-        assertThat(database.addressBook.allThatWantNotifications().first().name).isEqualTo("notificationWanted")
+        assertThat(database.addressBook.allThatWantNotifications()).containsExactly(entry)
     }
 
 
