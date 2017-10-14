@@ -29,27 +29,26 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
 import org.walleth.data.AppDatabase
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.khex.toHexString
 
 
 abstract class BaseTrezorActivity : AppCompatActivity() {
 
-    var currentBIP44: BIP44? = null
     abstract fun handleExtraMessage(res: Message?)
     abstract fun handleAddress(address: Address)
     abstract fun getTaskSpecificMessage(): GeneratedMessageV3?
 
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    protected var currentBIP44: BIP44? = null
+    protected val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    protected val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
 
-    val manager by lazy { TrezorManager(this) }
-    val handler = Handler()
-    var currentSecret = ""
+    protected val handler = Handler()
+    private val manager by lazy { TrezorManager(this) }
 
-    enum class STATES {
+    private var currentSecret = ""
+
+    protected enum class STATES {
         REQUEST_PERMISSION,
         INIT,
         PIN_REQUEST,
@@ -60,7 +59,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         CANCEL
     }
 
-    var state: STATES = INIT
+    private var state: STATES = INIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -78,7 +77,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         handler.post(mainRunnable)
     }
 
-    val mainRunnable: Runnable = object : Runnable {
+    protected val mainRunnable: Runnable = object : Runnable {
         override fun run() {
             if (manager.tryConnectDevice()) {
 
