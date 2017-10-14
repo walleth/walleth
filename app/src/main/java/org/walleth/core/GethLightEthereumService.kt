@@ -21,7 +21,6 @@ import org.walleth.activities.MainActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -32,6 +31,7 @@ import org.walleth.kethereum.geth.toGethAddr
 import java.io.File
 import java.math.BigInteger
 
+private const val NOTIFICATION_ID = 101
 
 class GethLightEthereumService : LifecycleService() {
 
@@ -45,22 +45,18 @@ class GethLightEthereumService : LifecycleService() {
         var isRunning = false
     }
 
+    private val lazyKodein = LazyKodein(appKodein)
 
-    val NOTIFICATION_ID = 101
-
-    val lazyKodein = LazyKodein(appKodein)
-
-    val syncProgress: SyncProgressProvider by lazyKodein.instance()
-    val appDatabase: AppDatabase by lazyKodein.instance()
-    val keyStore: WallethKeyStore by lazyKodein.instance()
-    val settings: Settings by lazyKodein.instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
-    val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
+    private val syncProgress: SyncProgressProvider by lazyKodein.instance()
+    private val appDatabase: AppDatabase by lazyKodein.instance()
+    private val settings: Settings by lazyKodein.instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
+    private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
     private val path by lazy { File(baseContext.cacheDir, "ethereumdata").absolutePath }
-    val notificationManager by lazy { getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager }
+    private val notificationManager by lazy { getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager }
 
-    var isSyncing = false
-    var finishedSyncing = false
+    private var isSyncing = false
+    private var finishedSyncing = false
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
@@ -92,7 +88,7 @@ class GethLightEthereumService : LifecycleService() {
         startForeground(NOTIFICATION_ID, notification)
         val handler = Handler()
         Thread({
-
+            Geth.setVerbosity(settings.currentGoVerbosity.toLong())
             val ethereumContext = Context()
 
             val network = networkDefinitionProvider.getCurrent()
