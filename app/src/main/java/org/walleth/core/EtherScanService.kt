@@ -3,12 +3,12 @@ package org.walleth.core
 import android.arch.lifecycle.LifecycleService
 import android.arch.lifecycle.Observer
 import android.content.Intent
-import android.os.SystemClock
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -57,22 +57,20 @@ class EtherScanService : LifecycleService() {
             shortcut = true
         })
 
-        Thread({
+        async(CommonPool) {
 
             while (true) {
-                val currentAddress = currentAddressProvider.value
-
-                if (currentAddress != null) {
-                    tryFetchFromEtherScan(currentAddress.hex)
-
+                currentAddressProvider.value?.let {
+                    tryFetchFromEtherScan(it.hex)
                 }
+
                 var i = 0
                 while (i < 100 && !shortcut) {
-                    SystemClock.sleep(100)
+                    delay(100)
                     i++
                 }
             }
-        }).start()
+        }
 
 
         relayTransactionsIfNeeded()
@@ -147,7 +145,7 @@ class EtherScanService : LifecycleService() {
             val etherscanResult = getEtherscanResult("module=proxy&action=eth_blockNumber", currentNetwork)
 
             if (etherscanResult?.has("result") != true) {
-                Log.i("Cannot parse " + etherscanResult)
+                Log.w("Cannot parse " + etherscanResult)
                 return
             }
             val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLong(16)
