@@ -120,10 +120,10 @@ dependencies {
 
     compile "org.ethereum:geth:1.7.1"
 
-    compile "com.github.ligi.kethereum:functions:$kethereum_version"
-    compile "com.github.ligi.kethereum:bip44:$kethereum_version"
-    compile "com.github.ligi.kethereum:erc55:$kethereum_version"
-    compile "com.github.ligi.kethereum:erc67:$kethereum_version"
+    compile "com.github.walleth.kethereum:functions:$kethereum_version"
+    compile "com.github.walleth.kethereum:bip44:$kethereum_version"
+    compile "com.github.walleth.kethereum:erc55:$kethereum_version"
+    compile "com.github.walleth.kethereum:erc67:$kethereum_version"
 
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.18'
@@ -192,7 +192,6 @@ if (hasProperty("isCI")) {
                 'com.github.salomonbrys.kodein:kodein:6727cb851a73a82fd5ded29877739749f7f89c26a23ababaf9a06d7cf9aa7bee',
                 'com.github.salomonbrys.kodein:kodein-android:98b1998e2477eb715720ddf7f016a1b828ceb87c1f11ce72dad3d518629a0330',
                 'com.github.salomonbrys.kodein:kodein-core:4876960b936d6becb00e7b5c614ba9f4be2b7d5d22a8a2433583d87373c342f8',
-                'com.github.walleth:keccak:1c03589f2f883dacf343689a5311f1ecf13710f115ac755e18277b70e5357435',
                 'com.github.walleth:khex:a3a93680c8b0bd60ef226651ad5eb401fa18f65d0941c3ea6464b8adfa693d1e',
 
                 'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',

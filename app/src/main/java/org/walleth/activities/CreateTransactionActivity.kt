@@ -16,6 +16,7 @@ import kotlinx.coroutines.experimental.async
 import org.kethereum.erc67.ERC67
 import org.kethereum.functions.createTokenTransferTransactionInput
 import org.kethereum.functions.encodeRLP
+import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.Address
 import org.kethereum.model.createTransactionWithDefaults
 import org.ligi.kaxt.doAfterEdit
@@ -39,8 +40,8 @@ import org.walleth.data.tokens.isETH
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.functions.decimalsInZeroes
-import org.walleth.keccak_shortcut.keccak
 import org.walleth.kethereum.android.TransactionParcel
+import org.walleth.khex.toHexString
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ONE
@@ -115,7 +116,7 @@ class CreateTransactionActivity : AppCompatActivity() {
                     transaction.nonce = nonce_input.asBigInit()
                     transaction.gasPrice = gas_price_input.asBigInit()
                     transaction.gasLimit = gas_limit_input.asBigInit()
-                    transaction.txHash = transaction.encodeRLP().keccak()
+                    transaction.txHash = transaction.encodeRLP().keccak().toHexString()
 
                     when {
 
