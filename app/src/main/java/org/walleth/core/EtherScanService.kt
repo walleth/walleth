@@ -12,6 +12,7 @@ import kotlinx.coroutines.experimental.delay
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.json.JSONException
 import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
@@ -183,15 +184,17 @@ class EtherScanService : LifecycleService() {
         val url = Request.Builder().url(urlString).build()
         val newCall: Call = okHttpClient.newCall(url)
 
-        return try {
+        try {
             newCall.execute().body().use { it?.string() }.let {
-                JSONObject(it)
+                return JSONObject(it)
             }
         } catch (ioe: IOException) {
             ioe.printStackTrace()
-            null
+        } catch (jsonException: JSONException) {
+            jsonException.printStackTrace()
         }
 
+        return null
     }
 
 }
