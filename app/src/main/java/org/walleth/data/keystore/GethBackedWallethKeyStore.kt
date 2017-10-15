@@ -1,7 +1,6 @@
 package org.walleth.data.keystore
 
 import android.content.Context
-import org.ethereum.geth.Account
 import org.ethereum.geth.Geth
 import org.ethereum.geth.KeyStore
 import org.kethereum.model.Address
@@ -17,14 +16,10 @@ class GethBackedWallethKeyStore(val context: Context) : WallethKeyStore {
     override fun newAddress(password: String) =
             keyStore.newAccount(password).address.toKethereumAddress()
 
-    fun getAccountForAddress(wallethAddress: Address): Account? {
-        val index = (0..(keyStore.accounts.size() - 1)).firstOrNull { keyStore.accounts.get(it).address.hex.equals(wallethAddress.hex, ignoreCase = true) }
+    private fun getAccountForAddress(wallethAddress: Address)= getIndexForAddress(wallethAddress)?.let { keyStore.accounts.get(it) }
 
-        return if (index != null)
-            keyStore.accounts.get(index)
-        else
-            null
-    }
+    private fun getIndexForAddress(wallethAddress: Address) =
+            (0..(keyStore.accounts.size() - 1)).firstOrNull { keyStore.accounts.get(it).address.hex.equals(wallethAddress.hex, ignoreCase = true) }
 
     override fun hasKeyForForAddress(wallethAddress: Address)
             = getAccountForAddress(wallethAddress) != null
