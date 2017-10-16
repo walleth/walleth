@@ -26,7 +26,7 @@ class TransactionViewHolder(itemView: View, private val direction: TransactionAd
 
         val transaction = transactionWithState.transaction
 
-        val relevantAddress = if (direction == TransactionAdapterDirection.INCOMMING) {
+        val relevantAddress = if (direction == TransactionAdapterDirection.INCOMING) {
             transaction.from
         } else {
             transaction.to

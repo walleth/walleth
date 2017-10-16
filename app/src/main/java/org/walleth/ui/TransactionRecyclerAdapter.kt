@@ -9,7 +9,7 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionEntity
 
 enum class TransactionAdapterDirection {
-    INCOMMING, OUTGOING
+    INCOMING, OUTGOING
 }
 
 class TransactionRecyclerAdapter(private val transactionList: List<TransactionEntity>,

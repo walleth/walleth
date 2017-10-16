@@ -35,7 +35,7 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.transactions.TransactionEntity
-import org.walleth.ui.TransactionAdapterDirection.INCOMMING
+import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
 import java.math.BigInteger.ZERO
@@ -186,7 +186,7 @@ class MainActivity : AppCompatActivity() {
         val incomingTransactionsObserver = Observer<List<TransactionEntity>> {
 
             if (it != null) {
-                transaction_recycler_in.adapter = TransactionRecyclerAdapter(it, appDatabase, INCOMMING, networkDefinitionProvider)
+                transaction_recycler_in.adapter = TransactionRecyclerAdapter(it, appDatabase, INCOMING, networkDefinitionProvider)
                 transaction_recycler_in.setVisibility(!it.isEmpty())
                 refresh()
             }
