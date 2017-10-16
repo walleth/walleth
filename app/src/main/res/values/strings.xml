@@ -111,4 +111,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="unsigned_rlp_header_text">Unsigned RLP</string>
     <string name="snackbar_after_address_copy">Address copied to clipboard</string>
     <string name="ethereum_address">Ethereum Address</string>
+    <string name="onboarding_warning_message">Please note this is application is in alpha. Please do not work with important accounts and a lot of ether yet!</string>
+    <string name="onboarding_warning_title">Special Awareness</string>
+    <string name="onboard_showcase_message">Please click the arrow to fund this account</string>
 </resources>

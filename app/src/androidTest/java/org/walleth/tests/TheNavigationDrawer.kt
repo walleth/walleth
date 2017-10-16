@@ -11,6 +11,7 @@ import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
+import org.mockito.Mockito.`when`
 import org.walleth.R
 import org.walleth.activities.MainActivity
 import org.walleth.data.addressbook.AddressBookEntry
@@ -21,15 +22,18 @@ class TheNavigationDrawer {
     @get:Rule
     var rule = TruleskActivityRule(MainActivity::class.java, false)
 
-
     @Test
     fun navigationDrawerIsUsuallyNotShown() {
+        `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
+
         rule.launchActivity()
         onView(withId(R.id.navigationView)).check(matches(not(isDisplayed())))
     }
 
     @Test
     fun navigationDrawerOpensWhenRequested() {
+        `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
+
         rule.launchActivity()
         onView(withId(R.id.drawer_layout)).perform(open())
         onView(withId(R.id.navigationView)).check(matches(isDisplayed()))
@@ -37,6 +41,8 @@ class TheNavigationDrawer {
 
     @Test
     fun testNameIsDisplayedCorrectly() {
+        `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
+
         async(UI) {
             async(CommonPool) {
                 TestApp.testDatabase.addressBook.upsert(AddressBookEntry(name = "espresso ligi", address = TestApp.currentAddressProvider.getCurrent()))

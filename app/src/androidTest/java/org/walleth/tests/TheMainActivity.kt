@@ -1,15 +1,21 @@
 package org.walleth.tests
 
 import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.action.ViewActions.click
+import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.espresso.matcher.ViewMatchers.Visibility.*
+import android.support.v7.app.AppCompatDelegate
+import com.github.amlcurran.showcaseview.ShowcaseView
 import org.hamcrest.Matchers.allOf
+import org.hamcrest.Matchers.containsString
 import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.ligi.trulesk.TruleskActivityRule
+import org.mockito.Mockito.`when`
 import org.walleth.R
 import org.walleth.activities.MainActivity
 import org.walleth.data.ETH_IN_WEI
@@ -27,9 +33,47 @@ class TheMainActivity {
     @get:Rule
     var rule = TruleskActivityRule(MainActivity::class.java, false)
 
+    @Test
+    fun onBoardingIsShown() {
+
+        TestApp.testDatabase.runInTransaction {
+            TestApp.testDatabase.balances.deleteAll()
+            TestApp.testDatabase.transactions.deleteAll()
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ZERO))
+        }
+
+        `when`(TestApp.mySettings.startupWarningDone).thenReturn(false)
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+
+        rule.launchActivity()
+
+        onView(withText(R.string.onboarding_warning_message)).check(matches(isDisplayed()))
+        onView(withClassName(containsString(ShowcaseView::class.java.name))).check(doesNotExist())
+        rule.screenShot("warning")
+
+        onView(withText(android.R.string.ok)).perform(click())
+
+        onView(withClassName(containsString(ShowcaseView::class.java.name))).check(matches(isDisplayed()))
+
+        rule.screenShot("warning")
+
+
+    }
+
+    @Test
+    fun onBoardingIsNotShown() {
+
+        `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
+
+        rule.launchActivity()
+
+        onView(withText(R.string.onboarding_warning_message)).check(doesNotExist())
+    }
 
     @Test
     fun behavesCorrectlyNoTransactions() {
+
+
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()

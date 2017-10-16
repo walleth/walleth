@@ -5,4 +5,5 @@
     <color name="colorAccent">#388E3C</color>
 
     <color name="warning">#ffcc0000</color>
+    <color name="textColor">?android:attr/textColorPrimary</color>
 </resources>

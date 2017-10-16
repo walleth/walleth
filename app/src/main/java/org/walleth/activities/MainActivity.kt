@@ -25,8 +25,6 @@ import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
-import org.ligi.tracedroid.TraceDroid
-import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
@@ -57,6 +55,7 @@ class MainActivity : AppCompatActivity() {
     private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
     private var lastNightMode: Int? = null
     private var balanceLiveData: LiveData<Balance>? = null
+    private val onboardingController by lazy { OnboardingController(this, settings) }
 
     override fun onResume() {
         super.onResume()
@@ -128,26 +127,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    fun refresh() {
+        val incomingSize = transaction_recycler_in.adapter?.itemCount ?: 0
+        val outgoingSize = transaction_recycler_out.adapter?.itemCount ?: 0
+
+        val hasTransactions = incomingSize + outgoingSize > 0
+        empty_view_container.setVisibility(!hasTransactions && !onboardingController.isShowing)
+        transaction_recycler_out.setVisibility(hasTransactions)
+        transaction_recycler_in.setVisibility(hasTransactions)
+        send_container.setVisibility(hasTransactions, INVISIBLE)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!settings.startupWarningDone) {
-            alert(title = "Special Awareness", message = "Please note this is one alpha. Please do not work with important accounts and a lot of ether yet!")
-            settings.startupWarningDone = true
-        }
-
-        if (TraceDroid.getStackTraceFiles().isNotEmpty()) {
-            TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", this)
-        }
-
         setContentView(R.layout.activity_main_in_drawer_container)
+
+        onboardingController.install()
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         drawer_layout.addDrawerListener(actionBarDrawerToggle)
 
         receive_container.setOnClickListener {
+            onboardingController.dismiss()
             startActivityFromClass(RequestActivity::class)
         }
 
@@ -179,16 +182,6 @@ class MainActivity : AppCompatActivity() {
             }
         })
 
-        fun refresh() {
-            val incomingSize = transaction_recycler_in.adapter?.itemCount ?: 0
-            val outgoingSize = transaction_recycler_out.adapter?.itemCount ?: 0
-
-            val hasTransactions = incomingSize + outgoingSize > 0
-            empty_view_container.setVisibility(!hasTransactions)
-            transaction_recycler_out.setVisibility(hasTransactions)
-            transaction_recycler_in.setVisibility(hasTransactions)
-            send_container.setVisibility(hasTransactions, INVISIBLE)
-        }
 
         val incomingTransactionsObserver = Observer<List<TransactionEntity>> {
 
