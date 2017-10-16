@@ -20,7 +20,6 @@ import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
@@ -28,10 +27,9 @@ import java.math.BigDecimal
 
 class RequestActivity : AppCompatActivity() {
 
-    lateinit var currentERC67String: String
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
+    private lateinit var currentERC67String: String
+    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,7 +69,7 @@ class RequestActivity : AppCompatActivity() {
             }
         } else {
             val relevantAddress = currentTokenProvider.currentToken.address
-            currentERC67String = relevantAddress!!.toERC67String()
+            currentERC67String = relevantAddress.toERC67String()
             if (add_value_checkbox.isChecked) {
                 try {
                     currentERC67String = currentERC67String + "?function=transfer(address " +
@@ -104,8 +102,8 @@ class RequestActivity : AppCompatActivity() {
         }
         R.id.menu_copy -> {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.primaryClip = ClipData.newPlainText("Ethereum Address", currentERC67String)
-            Snackbar.make(receive_qrcode, "Copied to clipboard", Snackbar.LENGTH_LONG).show()
+            clipboard.primaryClip = ClipData.newPlainText(getString(R.string.clipboard_copy_name), currentERC67String)
+            Snackbar.make(receive_qrcode, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
             true
         }
         android.R.id.home -> {
