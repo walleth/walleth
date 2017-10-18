@@ -5,7 +5,20 @@
 WALLΞTH
 =======
 
-The native Android Ethereum light client wallet
+Native Android Ethereum wallet.
+
+Features
+========
+
+ - Networks main(1), ropsten(3), rinkeby(4)
+ - Tokens(ERC-20)
+ - ERC-67 URLS
+ - ERC-55 Checksums 
+ - TREZOR Support
+ - watch only accounts 
+ - contains go-ethereum light client
+
+find more information on http://walleth.org
 
 References
 ==========
