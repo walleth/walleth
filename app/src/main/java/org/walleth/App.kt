@@ -90,8 +90,8 @@ open class App : MultiDexApplication(), KodeinAware {
         applyNightMode(kodein.instance())
         executeCodeWeWillIgnoreInTests()
 
-        if (settings.tokensInitVersion < 1) {
-            settings.tokensInitVersion = 1
+        if (settings.tokensInitVersion < 2) {
+            settings.tokensInitVersion = 2
 
             async(CommonPool) {
                 AllNetworkDefinitions.forEach {
