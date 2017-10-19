@@ -114,6 +114,9 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="onboarding_warning_message">Please note this is application is in alpha. Please do not work with important accounts and a lot of ether yet!</string>
     <string name="onboarding_warning_title">Special Awareness</string>
     <string name="onboard_showcase_message">Please click the arrow to fund this account</string>
+    <string name="deleted_account_snack">Deleted Account</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
     <string name="clipboard_copy_name">Ethereum Address</string>
+    <string name="undo">UNDO</string>
+    <string name="undelete_all">Undelete all</string>
 </resources>

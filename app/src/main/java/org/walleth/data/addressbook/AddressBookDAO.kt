@@ -28,6 +28,10 @@ interface AddressBookDAO {
     @Query("SELECT * FROM addressbook")
     fun all(): List<AddressBookEntry>
 
+    @Query("UPDATE addressbook SET deleted=0")
+    fun undeleteAll()
+
+
     @Query("SELECT * FROM addressbook WHERE is_notification_wanted")
     fun allThatWantNotifications(): List<AddressBookEntry>
 

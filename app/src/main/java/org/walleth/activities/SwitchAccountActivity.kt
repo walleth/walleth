@@ -11,6 +11,21 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
 
 class SwitchAccountActivity : BaseAddressBookActivity() {
+    override fun setupAdapter() {
+
+        appDatabase.addressBook.allLiveData().observe(this, Observer { items ->
+            if (items != null) {
+                notDeletedEntries = items.filter { !it.deleted }
+                deletedEntries = items.filter { it.deleted }
+
+                recycler_view.adapter = AddressAdapter(notDeletedEntries, keyStore) {
+                    currentAddressProvider.setCurrent(it.address)
+                    finish()
+                }
+            }
+        })
+
+    }
 
     private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
@@ -22,14 +37,6 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
 
     override fun onResume() {
         super.onResume()
-
-        appDatabase.addressBook.allLiveData().observe(this, Observer { lol2 ->
-            recycler_view.adapter = AddressAdapter(lol2!!, keyStore) {
-                currentAddressProvider.setCurrent(it.address)
-                finish()
-            }
-        })
-
-
+        refresh()
     }
 }
