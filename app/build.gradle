@@ -128,7 +128,7 @@ dependencies {
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 
     compile 'com.github.ligi:tracedroid:1.4'
-    compile 'com.github.ligi:KAXT:0.18'
+    compile 'com.github.ligi:KAXT:0.19'
     compile 'com.github.ligi:KAXTUI:0.4'
     compile 'com.github.trezor.trezor-android:trezor-lib:v1.0.6'
 
