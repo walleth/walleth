@@ -43,8 +43,8 @@ class TestApp : App() {
 
     override fun executeCodeWeWillIgnoreInTests() = Unit
     override fun onCreate() {
-        super.onCreate()
         resetDB(this)
+        super.onCreate()
     }
 
     companion object {

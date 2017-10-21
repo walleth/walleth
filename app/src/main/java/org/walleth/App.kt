@@ -15,11 +15,8 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import okhttp3.OkHttpClient
-import org.json.JSONArray
-import org.json.JSONObject
 import org.kethereum.model.Address
 import org.ligi.tracedroid.TraceDroid
-import org.ligi.tracedroid.logging.Log
 import org.walleth.core.EtherScanService
 import org.walleth.core.GethLightEthereumService
 import org.walleth.core.GethTransactionSigner
@@ -30,15 +27,14 @@ import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.initTokens
 import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
-import org.walleth.data.networks.AllNetworkDefinitions
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.InitializingCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.tokens.Token
 
 open class App : MultiDexApplication(), KodeinAware {
 
@@ -89,42 +85,7 @@ open class App : MultiDexApplication(), KodeinAware {
 
         applyNightMode(kodein.instance())
         executeCodeWeWillIgnoreInTests()
-
-        if (settings.tokensInitVersion < 2) {
-            settings.tokensInitVersion = 2
-
-            async(CommonPool) {
-                AllNetworkDefinitions.forEach {
-                    try {
-                        val chain = it.chain
-                        val open = assets.open("token_init/${chain.id}.json")
-                        val jsonArray = JSONArray(open.use { it.reader().readText() })
-
-                        val newTokens = (0 until jsonArray.length()).map { jsonArray.get(it) as JSONObject }.map {
-                            Token(
-                                    symbol = it.getString("symbol"),
-                                    name = it.getString("name"),
-                                    decimals = Integer.parseInt(it.getString("decimals")),
-                                    address = Address((it.getString("address"))),
-                                    starred = false,
-                                    showInList = true,
-                                    fromUser = false,
-                                    chain = chain,
-                                    order = 0
-                            )
-
-
-                        }
-                        appDatabase.tokens.addIfNotPresent(newTokens)
-                    } catch (ioe: Exception) {
-                        Log.e("Could not load Token " + ioe)
-                    }
-
-                }
-
-            }
-        }
-
+        initTokens(settings, assets, appDatabase)
         if (settings.addressInitVersion < 1) {
             settings.addressInitVersion = 1
 

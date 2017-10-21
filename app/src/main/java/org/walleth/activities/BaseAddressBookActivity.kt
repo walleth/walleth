@@ -82,7 +82,7 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.menu_tokenlist, menu)
+        menuInflater.inflate(R.menu.menu_address_list, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
