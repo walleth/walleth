@@ -23,7 +23,7 @@ interface TokenDAO {
     @Query("UPDATE tokens SET showInList=1")
     fun showAll()
 
-    @Query("SELECT * FROM tokens WHERE address = :address")
+    @Query("SELECT * FROM tokens WHERE address = :address COLLATE NOCASE")
     fun forAddress(address: Address): Token?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -36,9 +36,9 @@ class TransactionViewHolder(itemView: View, private val direction: TransactionAd
             appDatabase.addressBook.resolveNameAsync(transaction.getTokenTransferTo()) {
                 itemView.address.text = it
             }
-
-            if (relevantAddress != null) {
-                { appDatabase.tokens.forAddress(relevantAddress) }.asyncAwaitNonNull { token ->
+            val tokenAddress = transaction.to
+            if (tokenAddress != null) {
+                { appDatabase.tokens.forAddress(tokenAddress) }.asyncAwaitNonNull { token ->
                     itemView.difference.setValue(transaction.getTokenTransferValue(), token)
                 }
             }
