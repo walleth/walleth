@@ -37,7 +37,7 @@
         <TextView android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:id="@+id/address_hash"
-                  android:lines="1"
+                  android:singleLine="true"
                   android:ellipsize="middle"
                   android:fontFamily="sans-serif-condensed"
                   android:layout_alignParentRight="true"/>

@@ -36,7 +36,7 @@
             android:padding="8dp"
             android:fontFamily="sans-serif"
             android:textColor="@android:color/black"
-            android:lines="1"
+            android:singleLine="true"
             android:ellipsize="middle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
