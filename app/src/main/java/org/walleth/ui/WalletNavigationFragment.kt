@@ -1,9 +1,9 @@
 package org.walleth.ui
 
-import android.arch.lifecycle.LifecycleFragment
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.NavigationView
+import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.github.salomonbrys.kodein.LazyKodein
@@ -19,7 +19,7 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 
-class WalletNavigationFragment : LifecycleFragment() {
+class WalletNavigationFragment : Fragment() {
 
     private val navigationView by lazy {
         NavigationView(activity).apply {
@@ -51,8 +51,8 @@ class WalletNavigationFragment : LifecycleFragment() {
         navigationView.setNavigationItemSelectedListener {
             view!!.rootView.drawer_layout.closeDrawers()
             val classToStart = idToClassMap[it.itemId]
-            if (classToStart!=null) {
-                context.startActivityFromClass(classToStart)
+            if (classToStart != null) {
+                context?.startActivityFromClass(classToStart)
                 true
             } else {
                 false
@@ -60,7 +60,7 @@ class WalletNavigationFragment : LifecycleFragment() {
         }
 
         currentAddressProvider.observe(this, Observer {
-            appDatabase.addressBook.byAddressLiveData(it!!).observe(this@WalletNavigationFragment,Observer{ currentAddress ->
+            appDatabase.addressBook.byAddressLiveData(it!!).observe(this@WalletNavigationFragment, Observer { currentAddress ->
                 navigationView.getHeaderView(0).let { header ->
                     currentAddress?.let {
                         header.accountHash.text = it.address.hex
@@ -79,6 +79,6 @@ class WalletNavigationFragment : LifecycleFragment() {
 
     }
 
-    override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?, savedInstanceState: Bundle?) = navigationView
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?) = navigationView
 
 }
