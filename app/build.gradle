@@ -138,7 +138,7 @@ dependencies {
 
 
     compile 'com.github.kenglxn.QRGen:android:2.3.0'
-    compile 'com.google.zxing:core:3.3.0'
+    compile 'com.google.zxing:core:3.3.1'
 
     compile 'com.jakewharton:process-phoenix:2.0.0'
 
@@ -204,7 +204,6 @@ if (hasProperty("isCI")) {
                 'com.github.trezor.trezor-android:trezor-lib:6ac8601798e851191a1c33673d8b804b836cdfd9788b289a41ec9c3655b3e91c',
                 'com.github.kenglxn.QRGen:android:7670317f4ec37cf2bb24b7d3932da83daafa2956e77cd2e92dccce86a66816d9',
                 'com.github.kenglxn.QRGen:core:1db3f51189a71bb37ee0e97081a353b6c6b203ee73bb93c4372aa76e94f9d701',
-                'com.google.zxing:core:bba7724e02a997cec38213af77133ee8e24b0d5cf5fa7ecbc16a4fa93f11ee0d',
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
                 'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',
 
