@@ -24,8 +24,8 @@ import org.walleth.data.tokens.CurrentTokenProvider
 
 class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    val settings: Settings by LazyKodein(appKodein).instance()
-    val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
+    private val settings: Settings by LazyKodein(appKodein).instance()
+    private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
 
     override fun onResume() {
         super.onResume()
