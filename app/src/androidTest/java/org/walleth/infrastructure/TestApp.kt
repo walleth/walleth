@@ -56,7 +56,7 @@ class TestApp : App() {
             `when`(startupWarningDone).thenReturn(true)
             `when`(chain).thenReturn(RINKEBY_CHAIN_ID)
             `when`(isLightClientWanted()).thenReturn(false)
-            `when`(addressInitVersion).thenReturn(Integer.MAX_VALUE)
+            `when`(addressInitVersion).thenReturn(0)
             `when`(tokensInitVersion).thenReturn(0)
         }
         val currentAddressProvider = DefaultCurrentAddressProvider(mySettings)
