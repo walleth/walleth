@@ -241,16 +241,16 @@ class CreateTransactionActivity : AppCompatActivity() {
                 to_address.text = it
             }
 
-            erc67.getValue()?.let {
+            erc67.value?.let {
                 amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
                 setAmountFromETHString(it)
-                currentAmount = currentERC67String?.let { BigInteger(ERC67(it).getValue()) }
+                currentAmount = currentERC67String?.let { BigInteger(ERC67(it).value) }
             }
         } else {
             to_address.text = "no address selected"
 
             if (fromUser) {
-                alert("invalid address: \"$uri\" \n neither ERC67 nor plain hex")
+                alert("invalid address: \"$uri\" \n no or invalid ERC67 nor plain hex")
             }
         }
     }
