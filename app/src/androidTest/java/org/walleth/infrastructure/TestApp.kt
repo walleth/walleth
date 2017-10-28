@@ -57,7 +57,7 @@ class TestApp : App() {
             `when`(chain).thenReturn(RINKEBY_CHAIN_ID)
             `when`(isLightClientWanted()).thenReturn(false)
             `when`(addressInitVersion).thenReturn(Integer.MAX_VALUE)
-            `when`(tokensInitVersion).thenReturn(Integer.MAX_VALUE)
+            `when`(tokensInitVersion).thenReturn(0)
         }
         val currentAddressProvider = DefaultCurrentAddressProvider(mySettings)
         val networkDefinitionProvider = NetworkDefinitionProvider(mySettings)
