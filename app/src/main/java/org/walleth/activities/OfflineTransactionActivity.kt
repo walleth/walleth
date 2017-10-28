@@ -10,18 +10,21 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_relay.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
+import org.kethereum.eip155.extractChainID
 import org.kethereum.model.Address
+import org.kethereum.model.ChainDefinition
 import org.kethereum.model.SignatureData
 import org.kethereum.model.createTransactionWithDefaults
-import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionState
@@ -33,17 +36,16 @@ import java.math.BigInteger
 
 class OfflineTransactionActivity : AppCompatActivity() {
 
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_relay)
 
-        supportActionBar?.subtitle = "Relay transaction"
+        supportActionBar?.subtitle = getString(R.string.relay_transaction)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {
@@ -57,49 +59,51 @@ class OfflineTransactionActivity : AppCompatActivity() {
                             .setMessage("Unsigned transaction found - do you intend to sign with the current account? You will see the transaction details afterwards")
                             .setNegativeButton(android.R.string.cancel, null)
                             .setPositiveButton(android.R.string.ok, { _, _ ->
-                                createTransaction(gethTransaction, null, { currentAddressProvider.getCurrent() })
+                                createTransaction(gethTransaction, networkDefinitionProvider.getCurrent().chain.id,null, { currentAddressProvider.getCurrent() })
                             })
                             .show()
                 } else {
-                    createTransaction(gethTransaction, signatureData, {
-                        val chainId = BigInt(networkDefinitionProvider.value!!.chain.id)
-                        gethTransaction.getFrom(chainId).toKethereumAddress()
-                    })
+                    val extractChainID = signatureData.extractChainID()
+                    if (extractChainID == null) {
+                        alert("Transaction is not EIP155 signed - cannot extract ChainID")
+                    } else {
+                        createTransaction(gethTransaction, extractChainID.toLong(), signatureData, {
+                            val chainId = BigInt(extractChainID.toLong())
+                            gethTransaction.getFrom(chainId).toKethereumAddress()
+                        })
+                    }
                 }
             } catch (e: Exception) {
-                alert("Input not valid " + e.message)
+                alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
             }
         }
     }
 
-    private fun createTransaction(gethTransaction: org.ethereum.geth.Transaction, signatureData: SignatureData?, from: () -> Address) {
-        try {
-            val transaction = createTransactionWithDefaults(
-                    value = BigInteger(gethTransaction.value.toString()),
-                    from = from.invoke(),
-                    to = gethTransaction.to!!.toKethereumAddress(),
+    private fun createTransaction(gethTransaction: org.ethereum.geth.Transaction, chainId: Long, signatureData: SignatureData?, from: () -> Address) {
+        async(UI) {
+            try {
 
-                    nonce = BigInteger(gethTransaction.nonce.toString()),
-                    txHash = gethTransaction.hash.hex
-            )
-            val transactionState = TransactionState(needsSigningConfirmation = signatureData == null)
+                async(CommonPool) {
+                    val transaction = createTransactionWithDefaults(
+                            value = BigInteger(gethTransaction.value.toString()),
+                            from = from.invoke(),
+                            to = gethTransaction.to!!.toKethereumAddress(),
+                            chain = ChainDefinition(4L),
+                            nonce = BigInteger(gethTransaction.nonce.toString()),
+                            txHash = gethTransaction.hash.hex
+                    )
+                    val transactionState = TransactionState(needsSigningConfirmation = signatureData == null)
 
-            appDatabase.transactions.upsert(transaction.toEntity(signatureData,transactionState))
+                    appDatabase.transactions.upsert(transaction.toEntity(signatureData, transactionState))
 
-            startActivity(getTransactionActivityIntentForHash(gethTransaction.hash.hex))
-            finish()
+                }.await()
 
-        } catch (e: Exception) {
-            if (e.message == "invalid transaction v, r, s values") {
-                AlertDialog.Builder(this)
-                        .setMessage("This seems to be a transaction from myEtherWallet - unfortunately this is not yet supported - a PR is pending click on details if you are interested in the issue.")
-                        .setNegativeButton(android.R.string.ok, null)
-                        .setNeutralButton("details", { _, _ ->
-                            startActivityFromURL("https://github.com/ethereum/go-ethereum/issues/14599")
-                        })
-                        .show()
-            } else {
-                throw e
+                startActivity(getTransactionActivityIntentForHash(gethTransaction.hash.hex))
+                finish()
+
+
+            } catch (e: Exception) {
+                alert("Problem " + e.message)
             }
         }
     }

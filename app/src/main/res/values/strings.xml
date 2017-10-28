@@ -121,4 +121,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="undo">UNDO</string>
     <string name="undelete_all">Undelete all</string>
     <string name="decimals_in_list">Decimals: %s</string>
+    <string name="relay_transaction">Relay transaction</string>
+    <string name="input_not_valid_title">Problem with input</string>
+    <string name="input_not_valid_message">Input not valid. Reason: %s</string>
 </resources>
