@@ -14,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import org.kethereum.erc67.ERC67
+import org.kethereum.erc67.isERC67String
 import org.kethereum.functions.createTokenTransferTransactionInput
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
@@ -57,6 +58,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     private var currentBalance: Balance? = null
+    private var lastWarningURI: String? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         data?.let {
@@ -80,7 +82,11 @@ class CreateTransactionActivity : AppCompatActivity() {
             intent.data?.toString()
         }
 
-        supportActionBar?.subtitle = "Transfer"
+        if (savedInstanceState != null && savedInstanceState.containsKey("lastERC67")) {
+            lastWarningURI = savedInstanceState.getString("lastERC67")
+        }
+
+        supportActionBar?.subtitle = getString(R.string.create_transaction_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         appDatabase.balances.getBalanceLive(currentAddressProvider.getCurrent(), currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain).observe(this, Observer {
@@ -93,11 +99,11 @@ class CreateTransactionActivity : AppCompatActivity() {
             fab.setOnClickListener {
 
                 if (currentERC67String == null) {
-                    alert("address must be specified")
+                    alert(R.string.create_tx_error_address_must_be_specified)
                 } else if (currentAmount == null) {
-                    alert("amount must be specified")
+                    alert(R.string.create_tx_error_amount_must_be_specified)
                 } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
-                    alert("Not enough funds for this transaction with the given amount plus fee")
+                    alert(R.string.create_tx_error_not_enough_funds)
                 } else if (nonce_input.text.isBlank()) {
                     alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
                 } else {
@@ -205,7 +211,7 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     private fun currentBalanceSafely() = currentBalance?.balance ?: ZERO
 
-    fun TextView.asBigInit() = BigInteger(text.toString())
+    private fun TextView.asBigInit() = BigInteger(text.toString())
 
     private fun refreshFee() {
         val fee = try {
@@ -226,31 +232,39 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putString("ERC67", currentERC67String)
+        outState.putString("lastERC67", lastWarningURI)
         super.onSaveInstanceState(outState)
     }
 
     private fun setToFromURL(uri: String?, fromUser: Boolean) {
-        uri?.let {
-            currentERC67String = if (it.startsWith("0x")) "ethereum:$it" else uri
-        }
+        if (uri != null) {
 
-        if (currentERC67String != null && ERC67(currentERC67String!!).isValid()) {
-            val erc67 = ERC67(currentERC67String!!)
+            currentERC67String = if (uri.startsWith("0x")) "ethereum:$uri" else uri
 
-            appDatabase.addressBook.resolveNameAsync(Address(erc67.getHex())) {
-                to_address.text = it
-            }
+            if (ERC67(currentERC67String!!).isValid()) {
+                val erc67 = ERC67(currentERC67String!!)
 
-            erc67.value?.let {
-                amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
-                setAmountFromETHString(it)
-                currentAmount = currentERC67String?.let { BigInteger(ERC67(it).value) }
-            }
-        } else {
-            to_address.text = "no address selected"
+                appDatabase.addressBook.resolveNameAsync(Address(erc67.getHex())) {
+                    to_address.text = it
+                }
 
-            if (fromUser) {
-                alert("invalid address: \"$uri\" \n no or invalid ERC67 nor plain hex")
+                erc67.value?.let {
+                    amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
+                    setAmountFromETHString(it)
+                    currentAmount = currentERC67String?.let { BigInteger(ERC67(it).value) }
+                }
+            } else {
+                to_address.text = getString(R.string.no_address_selected)
+
+                if (fromUser || lastWarningURI != uri) {
+                    lastWarningURI = uri
+                    if (uri.isERC67String()) {
+                        alert(getString(R.string.create_tx_error_invalid_erc67_msg, uri), getString(R.string.create_tx_error_invalid_erc67_title))
+                    } else {
+                        alert(getString(R.string.create_tx_error_invalid_address, uri))
+                    }
+
+                }
             }
         }
     }

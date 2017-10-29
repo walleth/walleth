@@ -124,4 +124,12 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="relay_transaction">Relay transaction</string>
     <string name="input_not_valid_title">Problem with input</string>
     <string name="input_not_valid_message">Input not valid. Reason: %s</string>
+    <string name="no_address_selected">no address selected</string>
+    <string name="create_transaction_subtitle">Transfer</string>
+    <string name="create_tx_error_address_must_be_specified">address must be specified</string>
+    <string name="create_tx_error_amount_must_be_specified">amount must be specified</string>
+    <string name="create_tx_error_not_enough_funds">Not enough funds for this transaction with the given amount plus fee</string>
+    <string name="create_tx_error_invalid_erc67_msg">%s not valid ERC67</string>
+    <string name="create_tx_error_invalid_erc67_title">Invalid ERC67</string>
+    <string name="create_tx_error_invalid_address">%s is not a valid Ethereum-Address</string>
 </resources>
