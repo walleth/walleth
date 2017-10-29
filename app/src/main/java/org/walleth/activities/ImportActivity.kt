@@ -33,19 +33,20 @@ enum class KeyType {
 }
 
 
-private val KEY_INTENT_EXTRA_TYPE = "TYPE"
-private val KEY_INTENT_EXTRA_KEYCONTENT = "KEY"
+private const val KEY_INTENT_EXTRA_TYPE = "TYPE"
+private const val KEY_INTENT_EXTRA_KEYCONTENT = "KEY"
 
 fun Context.getKeyImportIntent(key: String, type: KeyType) = Intent(this, ImportActivity::class.java).apply {
     putExtra(KEY_INTENT_EXTRA_TYPE, type.toString())
     putExtra(KEY_INTENT_EXTRA_KEYCONTENT, key)
 }
 
+private const val READ_REQUEST_CODE = 42
+
 class ImportActivity : AppCompatActivity() {
 
-    val READ_REQUEST_CODE = 42
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
