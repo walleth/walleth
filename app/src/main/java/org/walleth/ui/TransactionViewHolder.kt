@@ -68,7 +68,7 @@ class TransactionViewHolder(itemView: View, private val direction: TransactionAd
                 when {
                     !transactionWithState.transactionState.isPending -> R.drawable.ic_lock_black_24dp
                     transactionWithState.signatureData == null -> R.drawable.ic_lock_open_black_24dp
-                    else -> R.drawable.ic_lock_outline_black_24dp
+                    else -> R.drawable.ic_lock_outline_24dp
                 }
         )
 

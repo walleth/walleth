@@ -130,6 +130,7 @@ dependencies {
     compile "com.github.walleth.kethereum:eip155:$kethereum_version"
     compile "com.github.walleth.kethereum:erc67:$kethereum_version"
     compile "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
+    compile "com.github.walleth.kethereum:rlp:$kethereum_version"
 
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 

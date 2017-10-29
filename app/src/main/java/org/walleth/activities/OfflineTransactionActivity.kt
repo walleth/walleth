@@ -1,8 +1,8 @@
 package org.walleth.activities
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -15,11 +15,11 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
+import org.json.JSONObject
 import org.kethereum.eip155.extractChainID
-import org.kethereum.model.Address
-import org.kethereum.model.ChainDefinition
-import org.kethereum.model.SignatureData
-import org.kethereum.model.createTransactionWithDefaults
+import org.kethereum.functions.encodeRLP
+import org.kethereum.keccakshortcut.keccak
+import org.kethereum.model.*
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
@@ -30,9 +30,27 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.geth.extractSignatureData
+import org.walleth.kethereum.geth.toBigInteger
 import org.walleth.kethereum.geth.toKethereumAddress
+import org.walleth.khex.clean0xPrefix
 import org.walleth.khex.hexToByteArray
+import org.walleth.khex.toHexString
 import java.math.BigInteger
+
+private const val KEY_CONTENT = "KEY_OFFLINE_TX_CONTENT"
+
+fun Context.getOfflineTransactionIntent(content: String) = Intent(this, OfflineTransactionActivity::class.java).apply {
+    putExtra(KEY_CONTENT, content)
+}
+
+fun String.isUnsignedTransactionJSON() = try {
+    JSONObject(this).let {
+        it.has("to") && it.has("from") && it.has("chainId") && it.has("nonce") && it.has("value")
+                && it.has("gasLimit") && it.has("gasPrice") && it.has("data") && it.has("nonce")
+    }
+} catch (e: Exception) {
+    false
+}
 
 class OfflineTransactionActivity : AppCompatActivity() {
 
@@ -49,56 +67,105 @@ class OfflineTransactionActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {
-            try {
-                val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
-                val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
-                val signatureData = gethTransaction.extractSignatureData()
+            execute()
+        }
 
-                if (signatureData == null) {
-                    AlertDialog.Builder(this)
-                            .setMessage("Unsigned transaction found - do you intend to sign with the current account? You will see the transaction details afterwards")
-                            .setNegativeButton(android.R.string.cancel, null)
-                            .setPositiveButton(android.R.string.ok, { _, _ ->
-                                createTransaction(gethTransaction, networkDefinitionProvider.getCurrent().chain.id,null, { currentAddressProvider.getCurrent() })
-                            })
-                            .show()
-                } else {
-                    val extractChainID = signatureData.extractChainID()
-                    if (extractChainID == null) {
-                        alert("Transaction is not EIP155 signed - cannot extract ChainID")
-                    } else {
-                        createTransaction(gethTransaction, extractChainID.toLong(), signatureData, {
-                            val chainId = BigInt(extractChainID.toLong())
-                            gethTransaction.getFrom(chainId).toKethereumAddress()
-                        })
-                    }
-                }
-            } catch (e: Exception) {
-                alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
+        intent.getStringExtra(KEY_CONTENT)?.let {
+            transaction_to_relay_hex.setText(it)
+            execute()
+        }
+
+    }
+
+    private fun execute() {
+        val content = transaction_to_relay_hex.text.toString()
+        if (content.isUnsignedTransactionJSON()) {
+            val json = JSONObject(content)
+            val from = json.getString("from")
+            val currentAccount = currentAddressProvider.getCurrent().hex
+            if (from.clean0xPrefix().toLowerCase() != currentAccount.clean0xPrefix().toLowerCase()) {
+                alert("The from field of the transaction ($from) does not match your current account ($currentAccount)")
+                return
             }
+            val chainId = json.getLong("chainId")
+            if (chainId != networkDefinitionProvider.getCurrent().chain.id) {
+                alert("The chainId of the transaction ($chainId) does not match your current chainId")
+                return
+            }
+
+            val to = json.getString("to")
+            val nonce = json.getString("nonce")
+            val value = json.getString("value")
+            val gasLimit = json.getString("gasLimit")
+            val gasPrice = json.getString("gasPrice")
+            val data = json.getString("data")
+
+            val transaction = createTransactionWithDefaults(
+                    value = BigInteger(value.clean0xPrefix(), 16),
+                    from = Address(from),
+                    to = Address(to),
+                    chain = ChainDefinition(chainId),
+                    nonce = BigInteger(nonce.clean0xPrefix(), 16),
+                    gasLimit = BigInteger(gasLimit.clean0xPrefix(), 16),
+                    gasPrice = BigInteger(gasPrice.clean0xPrefix(), 16),
+                    input = data.hexToByteArray().toList(),
+                    creationEpochSecond = System.currentTimeMillis() / 1000
+            )
+
+
+            transaction.txHash = transaction.encodeRLP().keccak().toHexString("0x")
+
+            createTransaction(transaction, null)
+
+        } else {
+            executeForRLP()
         }
     }
 
-    private fun createTransaction(gethTransaction: org.ethereum.geth.Transaction, chainId: Long, signatureData: SignatureData?, from: () -> Address) {
+    private fun executeForRLP() {
+        try {
+            val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
+            val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
+            val signatureData = gethTransaction.extractSignatureData()
+
+            if (signatureData == null) {
+                alert("Found RLP without signature - this is not supported anymore - the transaction source must be in JSON and include the chainID")
+            } else {
+                val extractChainID = signatureData.extractChainID()
+                val chainId = if (extractChainID == null) {
+                    BigInt(networkDefinitionProvider.getCurrent().chain.id)
+                } else {
+                    BigInt(extractChainID.toLong())
+                }
+                val transaction = createTransactionWithDefaults(
+                        value = BigInteger(gethTransaction.value.toString()),
+                        from = gethTransaction.getFrom(chainId).toKethereumAddress(),
+                        to = gethTransaction.to!!.toKethereumAddress(),
+                        chain = ChainDefinition(chainId.toBigInteger().toLong()),
+                        nonce = BigInteger(gethTransaction.nonce.toString()),
+                        creationEpochSecond = System.currentTimeMillis() / 1000,
+                        txHash = gethTransaction.hash.hex
+                )
+                createTransaction(transaction, signatureData)
+            }
+        } catch (e: Exception) {
+            alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
+        }
+    }
+
+    private fun createTransaction(transaction: Transaction, signatureData: SignatureData?) {
         async(UI) {
             try {
 
                 async(CommonPool) {
-                    val transaction = createTransactionWithDefaults(
-                            value = BigInteger(gethTransaction.value.toString()),
-                            from = from.invoke(),
-                            to = gethTransaction.to!!.toKethereumAddress(),
-                            chain = ChainDefinition(4L),
-                            nonce = BigInteger(gethTransaction.nonce.toString()),
-                            txHash = gethTransaction.hash.hex
-                    )
+
                     val transactionState = TransactionState(needsSigningConfirmation = signatureData == null)
 
                     appDatabase.transactions.upsert(transaction.toEntity(signatureData, transactionState))
 
                 }.await()
 
-                startActivity(getTransactionActivityIntentForHash(gethTransaction.hash.hex))
+                startActivity(getTransactionActivityIntentForHash(transaction.txHash!!))
                 finish()
 
 

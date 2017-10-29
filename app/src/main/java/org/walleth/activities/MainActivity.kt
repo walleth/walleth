@@ -95,6 +95,10 @@ class MainActivity : AppCompatActivity() {
                     startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
                 }
 
+                scanResult.isUnsignedTransactionJSON() -> {
+                    startActivity(getOfflineTransactionIntent(scanResult))
+                }
+
                 scanResult.startsWith("0x") -> {
                     AlertDialog.Builder(this)
                             .setTitle(R.string.select_action_messagebox_title)
