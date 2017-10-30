@@ -12,7 +12,6 @@ import org.ethereum.geth.Geth
 import org.kethereum.functions.encodeRLP
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
-import org.walleth.data.config.Settings
 import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -29,12 +28,11 @@ import java.math.BigInteger.ZERO
 
 class GethTransactionSigner : LifecycleService() {
 
-    val lazyKodein = LazyKodein(appKodein)
+    private val lazyKodein = LazyKodein(appKodein)
 
-    val keyStore: WallethKeyStore by lazyKodein.instance()
-    val appDatabase: AppDatabase by lazyKodein.instance()
-    val settings: Settings by lazyKodein.instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
+    private val keyStore: WallethKeyStore by lazyKodein.instance()
+    private val appDatabase: AppDatabase by lazyKodein.instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
 
     val observer = Observer<List<TransactionEntity>> {
         it?.forEach {
@@ -42,7 +40,7 @@ class GethTransactionSigner : LifecycleService() {
         }
     }
 
-    val liveData by lazy { appDatabase.transactions.getTransactionToSignWithGethLive() }
+    private val liveData by lazy { appDatabase.transactions.getTransactionToSignWithGethLive() }
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 

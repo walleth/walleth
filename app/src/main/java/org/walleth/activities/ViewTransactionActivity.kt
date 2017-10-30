@@ -31,7 +31,6 @@ import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameAsync
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.getEthTokenForChain
@@ -51,11 +50,10 @@ class ViewTransactionActivity : AppCompatActivity() {
         }
     }
 
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    var txEntity: TransactionEntity? = null
+    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    private var txEntity: TransactionEntity? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +91,7 @@ class ViewTransactionActivity : AppCompatActivity() {
 
                 fee_value_view.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
 
-                val relevant_address = if (it.transaction.from == currentAddressProvider.getCurrent()) {
+                val relevantAddress = if (it.transaction.from == currentAddressProvider.getCurrent()) {
                     from_to_title.setText(R.string.transaction_to_label)
                     it.transaction.to
                 } else {
@@ -101,7 +99,7 @@ class ViewTransactionActivity : AppCompatActivity() {
                     it.transaction.from
                 }
 
-                relevant_address?.let { ensured_relevant_address ->
+                relevantAddress?.let { ensured_relevant_address ->
                     appDatabase.addressBook.resolveNameAsync(ensured_relevant_address) { name ->
                         from_to.text = name
 
@@ -185,13 +183,13 @@ class ViewTransactionActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    fun BigInteger.toHexString() = this.toString(16).prepend0xPrefix()
+    private fun BigInteger.toHexString() = this.toString(16).prepend0xPrefix()
 }
 
 class AliasingDrawableWrapper(wrapped: Drawable) : DrawableWrapper(wrapped) {
 
     override fun draw(canvas: Canvas) {
-        val oldDrawFilter = canvas.getDrawFilter()
+        val oldDrawFilter = canvas.drawFilter
         canvas.drawFilter = DRAW_FILTER
         super.draw(canvas)
         canvas.drawFilter = oldDrawFilter
