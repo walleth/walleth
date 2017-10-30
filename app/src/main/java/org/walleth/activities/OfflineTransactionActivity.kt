@@ -22,7 +22,6 @@ import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.*
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.CurrentAddressProvider

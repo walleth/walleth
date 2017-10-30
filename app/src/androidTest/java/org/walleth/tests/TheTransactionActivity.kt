@@ -12,7 +12,7 @@ import org.kethereum.model.createTransactionWithDefaults
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
 import org.walleth.activities.ViewTransactionActivity
-import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
+import org.walleth.activities.getTransactionActivityIntentForHash
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity

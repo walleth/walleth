@@ -12,7 +12,7 @@ import org.kethereum.functions.getTokenTransferValue
 import org.kethereum.functions.isTokenTransfer
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
-import org.walleth.activities.ViewTransactionActivity.Companion.getTransactionActivityIntentForHash
+import org.walleth.activities.getTransactionActivityIntentForHash
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.networks.NetworkDefinitionProvider

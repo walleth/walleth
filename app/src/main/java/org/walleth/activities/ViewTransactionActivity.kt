@@ -29,20 +29,16 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.functions.setQRCode
-import org.walleth.khex.prepend0xPrefix
+import org.walleth.functions.toHexString
 import org.walleth.khex.toHexString
-import java.math.BigInteger
 
+private const val HASH_KEY = "TXHASH"
+fun Context.getTransactionActivityIntentForHash(hex: String)
+        = Intent(this, ViewTransactionActivity::class.java).apply {
+    putExtra(HASH_KEY, hex)
+}
 
 class ViewTransactionActivity : AppCompatActivity() {
-
-    companion object {
-        private val HASH_KEY = "TXHASH"
-        fun Context.getTransactionActivityIntentForHash(hex: String)
-                = Intent(this, ViewTransactionActivity::class.java).apply {
-            putExtra(HASH_KEY, hex)
-        }
-    }
 
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
@@ -176,6 +172,4 @@ class ViewTransactionActivity : AppCompatActivity() {
         }
         else -> super.onOptionsItemSelected(item)
     }
-
-    private fun BigInteger.toHexString() = this.toString(16).prepend0xPrefix()
 }
