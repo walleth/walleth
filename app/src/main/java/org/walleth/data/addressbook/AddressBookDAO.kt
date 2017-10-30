@@ -22,10 +22,10 @@ fun AddressBookDAO.getByAddressAsync(address: Address, callback: (name: AddressB
 @Dao
 interface AddressBookDAO {
 
-    @Query("SELECT * FROM addressbook")
+    @Query("SELECT * FROM addressbook ORDER BY name COLLATE NOCASE")
     fun allLiveData(): LiveData<List<AddressBookEntry>>
 
-    @Query("SELECT * FROM addressbook")
+    @Query("SELECT * FROM addressbook ORDER BY name COLLATE NOCASE")
     fun all(): List<AddressBookEntry>
 
     @Query("UPDATE addressbook SET deleted=0")
