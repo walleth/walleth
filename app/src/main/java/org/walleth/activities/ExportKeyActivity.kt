@@ -38,7 +38,8 @@ class ExportKeyActivity : AppCompatActivity() {
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
-    lateinit var keyJSON: String
+    private lateinit var keyJSON: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
