@@ -14,7 +14,6 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
-import net.glxn.qrgen.android.QRCode
 import org.kethereum.erc67.toERC67String
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
@@ -23,6 +22,7 @@ import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
+import org.walleth.functions.setQRCode
 import java.math.BigDecimal
 
 class RequestActivity : AppCompatActivity() {
@@ -81,7 +81,7 @@ class RequestActivity : AppCompatActivity() {
 
         }
 
-        receive_qrcode.setImageBitmap(QRCode.from(currentERC67String).bitmap())
+        receive_qrcode.setQRCode(currentERC67String)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

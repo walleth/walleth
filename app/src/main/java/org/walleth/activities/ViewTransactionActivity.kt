@@ -5,12 +5,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PaintFlagsDrawFilter
-import android.graphics.drawable.BitmapDrawable
-import android.graphics.drawable.Drawable
-import android.graphics.drawable.DrawableWrapper
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -24,7 +18,6 @@ import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
-import net.glxn.qrgen.android.QRCode
 import org.kethereum.functions.encodeRLP
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
@@ -35,6 +28,7 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.transactions.TransactionEntity
+import org.walleth.functions.setQRCode
 import org.walleth.khex.prepend0xPrefix
 import org.walleth.khex.toHexString
 import java.math.BigInteger
@@ -122,14 +116,14 @@ class ViewTransactionActivity : AppCompatActivity() {
                 if (it.transactionState.isPending && !it.transactionState.needsSigningConfirmation && (!it.transactionState.relayedEtherscan && !it.transactionState.relayedLightClient)) {
                     if (it.signatureData != null) {
                         rlp_header.setText(R.string.signed_rlp_header_text)
-                        rlp_image.setImageBitmap(QRCode.from(it.transaction.encodeRLP(it.signatureData).toHexString()).bitmap())
+                        rlp_image.setQRCode(it.transaction.encodeRLP(it.signatureData).toHexString())
                     } else {
                         rlp_header.setText(R.string.unsigned_rlp_header_text)
 
-                        rlp_image.setImageDrawable(AliasingDrawableWrapper(BitmapDrawable(resources, QRCode.from("""{
-"nonce":"${it.transaction.nonce?.toHexString()}","gasPrice":"${it.transaction.gasPrice?.toHexString()}","gasLimit":"${it.transaction.gasLimit.toHexString()}","to":"${it.transaction.to}","from":"${it.transaction.from}","value":"${it.transaction.value.toHexString()}","data":"${it.transaction.input.toHexString("0x")}","chainId":${it.transaction.chain?.id}
+                        rlp_image.setQRCode("""{
+"nonce":"${it.transaction.nonce?.toHexString()}","gasPrice":"${it.transaction.gasPrice.toHexString()}","gasLimit":"${it.transaction.gasLimit.toHexString()}","to":"${it.transaction.to}","from":"${it.transaction.from}","value":"${it.transaction.value.toHexString()}","data":"${it.transaction.input.toHexString("0x")}","chainId":${it.transaction.chain?.id}
                             }
-                            """).bitmap())))
+                            """)
                     }
                 } else {
                     rlp_image.visibility = View.GONE
@@ -184,18 +178,4 @@ class ViewTransactionActivity : AppCompatActivity() {
     }
 
     private fun BigInteger.toHexString() = this.toString(16).prepend0xPrefix()
-}
-
-class AliasingDrawableWrapper(wrapped: Drawable) : DrawableWrapper(wrapped) {
-
-    override fun draw(canvas: Canvas) {
-        val oldDrawFilter = canvas.drawFilter
-        canvas.drawFilter = DRAW_FILTER
-        super.draw(canvas)
-        canvas.drawFilter = oldDrawFilter
-    }
-
-    companion object {
-        private val DRAW_FILTER = PaintFlagsDrawFilter(Paint.FILTER_BITMAP_FLAG, 0)
-    }
 }
