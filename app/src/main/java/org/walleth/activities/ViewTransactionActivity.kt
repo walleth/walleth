@@ -112,7 +112,10 @@ class ViewTransactionActivity : AppCompatActivity() {
                 if (it.transactionState.isPending && !it.transactionState.needsSigningConfirmation && (!it.transactionState.relayedEtherscan && !it.transactionState.relayedLightClient)) {
                     if (it.signatureData != null) {
                         rlp_header.setText(R.string.signed_rlp_header_text)
-                        rlp_image.setQRCode(it.transaction.encodeRLP(it.signatureData).toHexString())
+                        rlp_image.setQRCode("""{
+                            "signedTransactionRLP":"${it.transaction.encodeRLP(it.signatureData).toHexString()}",
+                            "chainId":${it.transaction.chain?.id}
+                            }""")
                     } else {
                         rlp_header.setText(R.string.unsigned_rlp_header_text)
 

@@ -95,7 +95,7 @@ class MainActivity : AppCompatActivity() {
                     startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
                 }
 
-                scanResult.isUnsignedTransactionJSON() -> {
+                scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() -> {
                     startActivity(getOfflineTransactionIntent(scanResult))
                 }
 

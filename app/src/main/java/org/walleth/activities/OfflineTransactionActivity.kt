@@ -51,6 +51,15 @@ fun String.isUnsignedTransactionJSON() = try {
     false
 }
 
+fun String.isSignedTransactionJSON() = try {
+    JSONObject(this).let {
+        it.has("signedTransactionRLP") && it.has("chainId")
+    }
+} catch (e: Exception) {
+    false
+}
+
+
 class OfflineTransactionActivity : AppCompatActivity() {
 
     private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
@@ -116,6 +125,37 @@ class OfflineTransactionActivity : AppCompatActivity() {
 
             createTransaction(transaction, null)
 
+        } else if (content.isSignedTransactionJSON()) {
+            val json = JSONObject(content)
+
+            try {
+                val transactionRLP = json.getString("signedTransactionRLP").hexToByteArray()
+                val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
+                val signatureData = gethTransaction.extractSignatureData()
+
+                if (signatureData == null) {
+                    alert("Found unsigned TX - but must be signed")
+                } else {
+                    val extractChainID = signatureData.extractChainID()
+                    val chainId = if (extractChainID == null) {
+                        BigInt(networkDefinitionProvider.getCurrent().chain.id)
+                    } else {
+                        BigInt(extractChainID.toLong())
+                    }
+                    val transaction = createTransactionWithDefaults(
+                            value = BigInteger(gethTransaction.value.toString()),
+                            from = gethTransaction.getFrom(chainId).toKethereumAddress(),
+                            to = gethTransaction.to!!.toKethereumAddress(),
+                            chain = ChainDefinition(chainId.toBigInteger().toLong()),
+                            nonce = BigInteger(gethTransaction.nonce.toString()),
+                            creationEpochSecond = System.currentTimeMillis() / 1000,
+                            txHash = gethTransaction.hash.hex
+                    )
+                    createTransaction(transaction, signatureData)
+                }
+            } catch (e: Exception) {
+                alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
+            }
         } else {
             executeForRLP()
         }
