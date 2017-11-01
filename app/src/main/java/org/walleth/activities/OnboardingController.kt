@@ -17,6 +17,22 @@ import org.walleth.data.config.Settings
 
 class OnboardingController(val activity: MainActivity, val settings: Settings) {
 
+    private val showcaseView by lazy {
+        ShowcaseView.Builder(activity)
+                .setTarget(ViewTarget(R.id.receive_container, activity))
+                .setContentText(R.string.onboard_showcase_message)
+                .setContentTextPaint(contentPaint)
+                .build()
+    }
+
+    private val contentPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
+        textSize = activity.resources.getDimension(R.dimen.abc_text_size_title_material)
+        val typedValue = TypedValue()
+        val arr = activity.obtainStyledAttributes(typedValue.data, intArrayOf(android.R.attr.textColorPrimary))
+        val primaryColor = arr.getColor(0, -1)
+        color = primaryColor
+        arr.recycle()
+    }
     var isShowing = false
 
     fun install() {
@@ -28,21 +44,9 @@ class OnboardingController(val activity: MainActivity, val settings: Settings) {
                         isShowing = true
                         activity.refresh()
 
-                        val contentPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-                            textSize = activity.resources.getDimension(R.dimen.abc_text_size_title_material)
-                            val typedValue = TypedValue()
-                            val arr = activity.obtainStyledAttributes(typedValue.data, intArrayOf(android.R.attr.textColorPrimary))
-                            val primaryColor = arr.getColor(0, -1)
-                            color = primaryColor
-                            arr.recycle()
-                        }
+
 
                         activity.fab.hide()
-                        val showcaseView = ShowcaseView.Builder(activity)
-                                .setTarget(ViewTarget(R.id.receive_container, activity))
-                                .setContentText(R.string.onboard_showcase_message)
-                                .setContentTextPaint(contentPaint)
-                                .build()
 
                         showcaseView.setOnShowcaseEventListener(object : OnShowcaseEventListener {
                             override fun onShowcaseViewShow(p0: ShowcaseView?) {}
@@ -69,6 +73,7 @@ class OnboardingController(val activity: MainActivity, val settings: Settings) {
     fun dismiss() {
         if (isShowing) {
             isShowing = false
+            showcaseView.hide()
             activity.fab.show()
             activity.refresh()
         }
