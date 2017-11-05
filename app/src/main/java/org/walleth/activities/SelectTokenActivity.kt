@@ -11,10 +11,11 @@ import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.SearchView
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_list_search.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -42,7 +43,7 @@ class SelectTokenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list)
+        setContentView(R.layout.activity_list_search)
 
         async(CommonPool) {
             appDatabase.tokens.showAll()
@@ -56,6 +57,20 @@ class SelectTokenActivity : AppCompatActivity() {
         fab.setOnClickListener {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
+        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(p0: String?): Boolean {
+                return true;
+            }
+
+            override fun onQueryTextChange(p0: String?): Boolean {
+                if (p0 != null) {
+                    tokenListAdapter.filter(p0)
+                }
+                return true;
+            }
+
+        })
+
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
