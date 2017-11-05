@@ -58,13 +58,13 @@ class SelectTokenActivity : AppCompatActivity() {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
         search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(p0: String?): Boolean {
+            override fun onQueryTextSubmit(query: String?): Boolean {
                 return true;
             }
 
-            override fun onQueryTextChange(p0: String?): Boolean {
-                if (p0 != null) {
-                    tokenListAdapter.filter(p0)
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (newText != null) {
+                    tokenListAdapter.filter(newText)
                 }
                 return true;
             }

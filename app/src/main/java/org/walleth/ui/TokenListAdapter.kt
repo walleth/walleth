@@ -18,7 +18,7 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
 
     val tokenList = mutableListOf<Token>()
 
-    val sortedList = SortedList<Token>(Token::class.java, FilterTokenCallback(this))
+    val sortedList = SortedList<Token>(Token::class.java, TokenListAdapterCallback(this))
 
     override fun getItemCount() = sortedList.size()
 
@@ -35,8 +35,6 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
 
         tokenList.clear()
         tokenList.addAll(newTokenList)
-        sortedList.clear()
-        sortedList.addAll(newTokenList)
         diffResult.dispatchUpdatesTo(this)
     }
 
@@ -51,7 +49,7 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
         sortedList.endBatchedUpdates()
     }
 
-    class FilterTokenCallback(adapter: TokenListAdapter) : SortedListAdapterCallback<Token>(adapter) {
+    class TokenListAdapterCallback(adapter: TokenListAdapter) : SortedListAdapterCallback<Token>(adapter) {
         override fun areContentsTheSame(oldItem: Token?, newItem: Token?) = oldItem?.address == newItem?.address
 
         override fun compare(o1: Token?, o2: Token?): Int {
