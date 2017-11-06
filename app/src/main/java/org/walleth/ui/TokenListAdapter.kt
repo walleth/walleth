@@ -30,12 +30,13 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
     }
 
     fun updateTokenList(newTokenList: List<Token>) {
-        val diffCallback = TokenDiffCallback(tokenList, newTokenList)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-
         tokenList.clear()
         tokenList.addAll(newTokenList)
-        diffResult.dispatchUpdatesTo(this)
+
+        sortedList.beginBatchedUpdates()
+        sortedList.clear()
+        sortedList.addAll(newTokenList)
+        sortedList.endBatchedUpdates()
     }
 
     fun filter(search: String) {
@@ -63,16 +64,5 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
         }
 
         override fun areItemsTheSame(item1: Token?, item2: Token?) = item1?.address == item2?.address
-    }
-
-    class TokenDiffCallback(val old: List<Token>, val new: List<Token>) : DiffUtil.Callback() {
-        override fun areItemsTheSame(p0: Int, p1: Int) = old[p0] == new[p1]
-
-        override fun getOldListSize() = old.size
-
-        override fun getNewListSize() = new.size
-
-        override fun areContentsTheSame(p0: Int, p1: Int) = old[p0] == new[p1]
-
     }
 }
