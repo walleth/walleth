@@ -22,7 +22,11 @@ abstract class BaseExchangeProvider : ExchangeRateProvider {
         val exchangeRate = getExChangeRate(currencySymbol)!!
         val divided = BigDecimal(value).divide(BigDecimal(ETH_IN_WEI))
         val times = exchangeRate.times(divided)
-        String.format("%.2f", times)
+        if (times.scale() in 0..2) {
+            String.format("%.2f", times)
+        } else {
+            String.format("~%.2f", times)
+        }
     }
 
 }
