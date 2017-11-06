@@ -36,7 +36,7 @@ class CryptoCompareExchangeProvider(context: Context, val okHttpClient: OkHttpCl
     private fun setFromFile() {
         val json = JSONObject(Okio.buffer(Okio.source(lastDataFile)).use { it.readUtf8() })
         json.keys().forEach {
-            fiatInfoMap.put(it, FiatInfo(it, "", LocalTime.now(), BigDecimal(json.getDouble(it))))
+            fiatInfoMap.put(it, FiatInfo(it, "", LocalTime.now(), BigDecimal(json.getString(it))))
         }
     }
 
