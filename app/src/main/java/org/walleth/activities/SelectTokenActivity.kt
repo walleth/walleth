@@ -72,7 +72,7 @@ class SelectTokenActivity : AppCompatActivity() {
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
-                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList })
+                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, search.query)
                 showDelete = allTokens.any { !it.showInList }
             }
             invalidateOptionsMenu()

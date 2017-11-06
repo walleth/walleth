@@ -1,7 +1,6 @@
 package org.walleth.ui
 
 import android.app.Activity
-import android.support.v7.util.DiffUtil
 import android.support.v7.util.SortedList
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.util.SortedListAdapterCallback
@@ -29,24 +28,27 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
         holder.bind(sortedList[position])
     }
 
-    fun updateTokenList(newTokenList: List<Token>) {
+    fun updateTokenList(newTokenList: List<Token>, query: CharSequence) {
         tokenList.clear()
         tokenList.addAll(newTokenList)
 
-        sortedList.beginBatchedUpdates()
-        sortedList.clear()
-        sortedList.addAll(newTokenList)
-        sortedList.endBatchedUpdates()
+        filter(query)
     }
 
-    fun filter(search: String) {
+    fun filter(search: CharSequence) {
         sortedList.beginBatchedUpdates()
         sortedList.clear()
-        for (token in tokenList) {
-            if (token.symbol.contains(search, true) || token.name.contains(search, true)) {
-                sortedList.add(token)
+
+        if (search.isEmpty()) {
+            sortedList.addAll(tokenList)
+        } else {
+            for (token in tokenList) {
+                if (token.symbol.contains(search, true) || token.name.contains(search, true)) {
+                    sortedList.add(token)
+                }
             }
         }
+
         sortedList.endBatchedUpdates()
     }
 
