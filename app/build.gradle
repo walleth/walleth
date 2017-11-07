@@ -115,7 +115,7 @@ configurations {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.20-alpha-7"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.20-alpha-9"
     compile 'com.android.support:multidex:1.0.2'
     androidTestCompile 'com.android.support:multidex:1.0.2'
     androidTestCompile 'com.android.support:multidex-instrumentation:1.0.2'
