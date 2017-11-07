@@ -133,4 +133,6 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="create_tx_error_invalid_erc67_msg">%s not valid ERC67</string>
     <string name="create_tx_error_invalid_erc67_title">Invalid ERC67</string>
     <string name="create_tx_error_invalid_address">%s is not a valid Ethereum-Address</string>
+    <string name="default_account_name">Default Account</string>
+    <string name="new_address_note">This Account was created for you when WALLΞTH started for the first time</string>
 </resources>

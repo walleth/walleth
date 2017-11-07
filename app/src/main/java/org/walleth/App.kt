@@ -60,7 +60,7 @@ open class App : MultiDexApplication(), KodeinAware {
 
             bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
             bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
-            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance()) }
+            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance(),applicationContext) }
         }
     }
 
