@@ -4,7 +4,7 @@ buildscript {
         support_version = '26.1.0'
         firebase_version = '11.4.2'
         kethereum_version = '0.32'
-        arch_version = "1.0.0-rc1"
+        arch_version = "1.0.0"
     }
 
     repositories {
