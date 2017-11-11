@@ -29,7 +29,7 @@
             android:layout_below="@id/welcome_text"/>
 
     <CheckBox
-            android:text="Add Value"
+            android:text="@string/request_funds_add_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/receive_qrcode"
@@ -37,7 +37,7 @@
 
     <android.support.design.widget.TextInputLayout
             android:layout_below="@+id/add_value_checkbox"
-            android:id="@+id/value_inputlayout"
+            android:id="@+id/value_input_layout"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -47,7 +47,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/value_input_edittext"
                 android:inputType="numberDecimal"
-                android:hint="Value"
+                android:hint="@string/request_funds_value_hint"
         />
     </android.support.design.widget.TextInputLayout>
     <TextView
@@ -56,6 +56,6 @@
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif"
             android:paddingTop="16dp"
-            android:layout_below="@id/value_inputlayout"/>
+            android:layout_below="@id/value_input_layout"/>
 
 </RelativeLayout>

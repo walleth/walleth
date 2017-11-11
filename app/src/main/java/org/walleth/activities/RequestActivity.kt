@@ -20,6 +20,8 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.isNoTestNet
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
 import org.walleth.functions.setQRCode
@@ -30,6 +32,7 @@ class RequestActivity : AppCompatActivity() {
     private lateinit var currentERC67String: String
     private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
     private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,11 +44,17 @@ class RequestActivity : AppCompatActivity() {
 
         refreshQR()
 
-        request_hint.text = HtmlCompat.fromHtml(getString(R.string.request_hint))
+
+        val initText = getString(if (networkDefinitionProvider.getCurrent().isNoTestNet() ) {
+            R.string.request_hint_test_net
+        } else {
+            R.string.request_hint_no_test_net
+        })
+        request_hint.text = HtmlCompat.fromHtml(initText)
         request_hint.movementMethod = LinkMovementMethod()
 
         add_value_checkbox.setOnCheckedChangeListener { _, isChecked ->
-            value_inputlayout.setVisibility(isChecked)
+            value_input_layout.setVisibility(isChecked)
             refreshQR()
         }
 

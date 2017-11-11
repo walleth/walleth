@@ -45,12 +45,17 @@ You can find the source <a href="https://github.com/walleth">on github</a>
     <string name="import_json_subtitle">Import Key</string>
     <string name="export_account_subtitle">Export key</string>
 
-    <string name="request_hint"><![CDATA[
+    <string name="request_hint_test_net"><![CDATA[
 You might share this address with the hashtag <a href="https://twitter.com/search?q=%23walleth">#walleth</a> on social media to get test ether.
 <br/><a href="http://ligi.de">LIGI</a> will monitor twitter and has some test-ether collected since the launch of <a href="http://www.rinkeby.io">rinkeby</a>.
 <br/>Also you can pass on the test ether you got to users you see using this hashtag and exercise transactions this way.
 ]]>
 </string>
+
+    <string name="request_hint_no_test_net"><![CDATA[
+Unfortunately there is no faucet for the test-net. So if you want to try out things - better use the test-net..
+]]>
+    </string>
     <array name="day_night">
         <item>Day</item>
         <item>Night</item>
@@ -135,4 +140,6 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="create_tx_error_invalid_address">%s is not a valid Ethereum-Address</string>
     <string name="default_account_name">Default Account</string>
     <string name="new_address_note">This Account was created for you when WALLΞTH started for the first time</string>
+    <string name="request_funds_add_value">Add Value</string>
+    <string name="request_funds_value_hint">Value</string>
 </resources>
