@@ -7,7 +7,7 @@ import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_scan.*
 import org.walleth.R
 
-val REQUEST_CODE = 0x00006983
+const val REQUEST_CODE = 0x00006983
 
 fun startScanActivityForResult(activity: Activity, requestCode: Int = REQUEST_CODE) {
     val intent = Intent(activity, QRScanActivity::class.java)

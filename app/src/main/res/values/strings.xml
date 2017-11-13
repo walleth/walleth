@@ -142,4 +142,8 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="new_address_note">This Account was created for you when WALLΞTH started for the first time</string>
     <string name="request_funds_add_value">Add Value</string>
     <string name="request_funds_value_hint">Value</string>
+    <string name="trezor_custom_derivation_path">Custom</string>
+    <string name="trezor_account">%d.Account</string>
+    <string name="trezor_select_address">Select Address</string>
+    <string name="trezor_no_valid_input">No valid input</string>
 </resources>

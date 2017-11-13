@@ -7,7 +7,7 @@ import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
 import org.walleth.ui.ReticleView
 
-class Scanner(val videographer: Videographer) {
+class Scanner(private val videographer: Videographer) {
     fun scan() {
         videographer.capture(this::decode)
     }

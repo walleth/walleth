@@ -16,8 +16,8 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.kethereum.android.TransactionParcel
 
-private val ADDRESS_HEX_KEY = "address_hex"
-private val ADDRESS_PATH = "address_path"
+private const val ADDRESS_HEX_KEY = "address_hex"
+private const val ADDRESS_PATH = "address_path"
 fun Intent.hasAddressResult() = hasExtra(ADDRESS_HEX_KEY)
 fun Intent.getAddressResult() = getStringExtra(ADDRESS_HEX_KEY)
 fun Intent.getPATHResult() = getStringExtra(ADDRESS_PATH)
@@ -76,7 +76,7 @@ class TrezorGetAddress : BaseTrezorActivity() {
         for (i in 1..5) {
 
             val radioButton = RadioButton(this).apply {
-                text = "$i. Account"
+                text = getString(R.string.trezor_account, i)
                 val relevantBIP44 = myBIP44.copy()
                 setOnCheckedChangeListener { _, isChecked ->
                     if (isChecked) {
@@ -90,7 +90,7 @@ class TrezorGetAddress : BaseTrezorActivity() {
         }
 
         radioGroup.addView(RadioButton(this).apply {
-            text = "Custom"
+            text = getString(R.string.trezor_custom_derivation_path)
             setOnClickListener {
                 currentDerivationDialogView.derivation_text.isEnabled = true
             }
@@ -99,10 +99,10 @@ class TrezorGetAddress : BaseTrezorActivity() {
 
         AlertDialog.Builder(this)
                 .setView(currentDerivationDialogView)
-                .setTitle("Select Address")
+                .setTitle(R.string.trezor_select_address)
                 .setPositiveButton(android.R.string.ok, { _, _ ->
                     if (currentBIP44 == null || currentAddress == null) {
-                        alert("No valid input")
+                        alert(R.string.trezor_no_valid_input)
                     } else {
                         val resultIntent = Intent()
                         resultIntent.putExtra(ADDRESS_HEX_KEY, currentAddress!!.hex)
