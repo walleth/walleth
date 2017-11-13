@@ -8,6 +8,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
 import org.kethereum.functions.encodeRLP
 import org.walleth.data.AppDatabase
@@ -20,7 +21,6 @@ import org.walleth.data.transactions.TransactionSource
 import org.walleth.data.transactions.getTransactionToSignWithGethLive
 import org.walleth.data.transactions.setHash
 import org.walleth.kethereum.geth.extractSignatureData
-import org.walleth.kethereum.geth.toGethAddr
 import org.walleth.kethereum.geth.toGethTransaction
 import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
@@ -80,10 +80,12 @@ class GethTransactionSigner : LifecycleService() {
                 transaction.transactionState.error = "No key for sending account"
                 transaction.setHash(newTransaction.hash.hex)
             } else {
-                gethKeystore.unlock(accounts.get(index), DEFAULT_PASSWORD)
+                val relevantAddress = accounts.get(index)
+                gethKeystore.unlock(relevantAddress, DEFAULT_PASSWORD)
 
-                val signHash = gethKeystore.signHash(notNullFrom.toGethAddr(), newTransaction.sigHash.bytes)
-                val transactionWithSignature = newTransaction.withSignature(signHash, null)
+                val transactionWithSignature = gethKeystore.signTx(relevantAddress, newTransaction, BigInt(transaction.transaction.chain!!.id))
+
+                gethKeystore.lock(relevantAddress.address)
 
                 transaction.setHash(transactionWithSignature.hash.hex)
                 transaction.signatureData = transactionWithSignature.extractSignatureData()
