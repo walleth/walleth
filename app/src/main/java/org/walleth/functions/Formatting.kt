@@ -6,7 +6,7 @@ import java.math.BigInteger
 import java.math.MathContext
 import java.math.RoundingMode
 
-fun Token.decimalsInZeroes() = (0..(decimals - 1)).map { "0" }.joinToString("")
+fun Token.decimalsInZeroes() = "0".repeat (decimals)
 
 fun BigInteger.toValueString(token: Token): String {
     val inEther = BigDecimal(this).divide(BigDecimal("1" + token.decimalsInZeroes()))
