@@ -73,13 +73,13 @@ class GethLightEthereumService : LifecycleService() {
 
         if (Build.VERSION.SDK_INT > 25) {
             val channel = NotificationChannel("geth", "Geth Service", NotificationManager.IMPORTANCE_HIGH)
-            channel.description = "View and Stop Geth Service"
+            channel.description = getString(R.string.geth_service_notification_channel_description)
             notificationManager.createNotificationChannel(channel)
         }
 
         val notification = NotificationCompat.Builder(this, "geth")
-                .setContentTitle("WALLETH Geth")
-                .setContentText("light client running")
+                .setContentTitle(getString(R.string.geth_service_notification_title))
+                .setContentText(getString(R.string.geth_service_notification_text))
                 .setContentIntent(contentIntent)
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, "exit", pendingStopIntent)
                 .setSmallIcon(R.drawable.notification)
