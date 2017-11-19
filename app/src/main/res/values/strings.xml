@@ -160,4 +160,5 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="create_tx_nonce">nonce</string>
     <string name="settings_currently">Currently: %s</string>
     <string name="settings_please_wait">Please wait</string>
+    <string name="trezor_please_enter_your_passphrase">Please enter your passphrase</string>
 </resources>

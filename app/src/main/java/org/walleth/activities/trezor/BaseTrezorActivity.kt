@@ -139,7 +139,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         val inputLayout = inflate(R.layout.password_input)
         AlertDialog.Builder(this)
                 .setView(inputLayout)
-                .setTitle("Please enter your passphrase")
+                .setTitle(R.string.trezor_please_enter_your_passphrase)
                 .setPositiveButton(android.R.string.ok, { _, _ ->
                     currentSecret = inputLayout.password_input.text.toString()
                     state = PWD_REQUEST
