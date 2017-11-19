@@ -30,8 +30,8 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
     override fun onResume() {
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
-        findPreference(getString(R.string.key_reference)).summary = "Currently: " + settings.currentFiat
-        findPreference(getString(R.string.key_token)).summary = "Currently: " + currentTokenProvider.currentToken.name
+        findPreference(getString(R.string.key_reference)).summary = getString(R.string.settings_currently, settings.currentFiat)
+        findPreference(getString(R.string.key_token)).summary = getString(R.string.settings_currently,  currentTokenProvider.currentToken.name)
 
         setUserNameSummary()
     }
@@ -57,7 +57,7 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
                 async(UI) {
                     val alert = AlertDialog.Builder(getContext())
                             .setCancelable(false)
-                            .setMessage("Please wait").show()
+                            .setMessage(R.string.settings_please_wait).show()
                     async(CommonPool) {
                         while (GethLightEthereumService.isRunning != GethLightEthereumService.shouldRun) {
                             delay(100)
