@@ -30,10 +30,10 @@ import java.math.BigInteger
 
 
 fun Context.startTrezorActivity(transactionParcel: TransactionParcel) {
-    startActivity(Intent(this, TrezorSignTX::class.java).putExtra("TX", transactionParcel))
+    startActivity(Intent(this, TrezorSignTransactionActivity::class.java).putExtra("TX", transactionParcel))
 }
 
-class TrezorSignTX : BaseTrezorActivity() {
+class TrezorSignTransactionActivity : BaseTrezorActivity() {
 
     private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
     private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()

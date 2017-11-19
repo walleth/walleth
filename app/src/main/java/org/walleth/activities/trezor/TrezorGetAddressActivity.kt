@@ -22,7 +22,7 @@ fun Intent.hasAddressResult() = hasExtra(ADDRESS_HEX_KEY)
 fun Intent.getAddressResult() = getStringExtra(ADDRESS_HEX_KEY)
 fun Intent.getPATHResult() = getStringExtra(ADDRESS_PATH)
 
-class TrezorGetAddress : BaseTrezorActivity() {
+class TrezorGetAddressActivity : BaseTrezorActivity() {
 
     val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX").transaction }
 

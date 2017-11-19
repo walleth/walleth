@@ -22,7 +22,7 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string.*
 import org.walleth.activities.qrscan.startScanActivityForResult
-import org.walleth.activities.trezor.TrezorGetAddress
+import org.walleth.activities.trezor.TrezorGetAddressActivity
 import org.walleth.activities.trezor.getAddressResult
 import org.walleth.activities.trezor.getPATHResult
 import org.walleth.activities.trezor.hasAddressResult
@@ -87,7 +87,7 @@ class CreateAccountActivity : AppCompatActivity() {
         }
 
         add_trezor.setOnClickListener {
-            startActivityForResult(Intent(this, TrezorGetAddress::class.java), REQUEST_CODE_TREZOR)
+            startActivityForResult(Intent(this, TrezorGetAddressActivity::class.java), REQUEST_CODE_TREZOR)
         }
 
         new_address_button.setOnClickListener {
