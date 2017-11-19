@@ -161,7 +161,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             if (amountAfterFee < ZERO) {
                 alert(R.string.no_funds_after_fee)
             } else {
-                amount_input.setText(BigDecimal(amountAfterFee).divide(BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
+                amount_input.setText(String.format("%f",BigDecimal(amountAfterFee).divide(BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes()))))
             }
         }
 
