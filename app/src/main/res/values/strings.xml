@@ -161,4 +161,5 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="settings_currently">Currently: %s</string>
     <string name="settings_please_wait">Please wait</string>
     <string name="trezor_please_enter_your_passphrase">Please enter your passphrase</string>
+    <string name="trezor_reported_different_address">\"TREZOR reported different source Address. %s is not %s\"</string>
 </resources>

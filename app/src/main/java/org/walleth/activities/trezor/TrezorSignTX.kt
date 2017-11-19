@@ -18,6 +18,7 @@ import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.ligi.kaxtui.alert
 import org.ligi.kroom.inTransaction
+import org.walleth.R
 import org.walleth.R.string
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.networks.CurrentAddressProvider
@@ -39,7 +40,7 @@ class TrezorSignTX : BaseTrezorActivity() {
 
     override fun handleAddress(address: Address) {
         if (address != transaction.transaction.from) {
-            val message = "TREZOR reported different source Address. $address is not ${transaction.transaction.from}"
+            val message = getString(R.string.trezor_reported_different_address, address, transaction.transaction.from)
             alert(message, onOKListener = OnClickListener { _, _ ->
                 finish()
             })
