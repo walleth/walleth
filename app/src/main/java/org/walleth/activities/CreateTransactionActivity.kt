@@ -13,8 +13,8 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
-import org.kethereum.erc67.ERC67
-import org.kethereum.erc67.isERC67String
+import org.kethereum.erc681.isEthereumURLString
+import org.kethereum.erc681.parseERC681
 import org.kethereum.functions.createTokenTransferTransactionInput
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
@@ -107,32 +107,39 @@ class CreateTransactionActivity : AppCompatActivity() {
                 } else if (nonce_input.text.isBlank()) {
                     alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
                 } else {
-                    val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                            value = currentAmount!!,
-                            to = ERC67(currentERC67String!!).address,
-                            from = currentAddressProvider.getCurrent()
-                    ) else createTransactionWithDefaults(
-                            creationEpochSecond = System.currentTimeMillis() / 1000,
-                            value = ZERO,
-                            to = currentTokenProvider.currentToken.address,
-                            from = currentAddressProvider.getCurrent(),
-                            input = createTokenTransferTransactionInput(ERC67(currentERC67String!!).address, currentAmount)
-                    )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
+                    val toAddressString = parseERC681(currentERC67String!!).addressString
 
-                    transaction.nonce = nonce_input.asBigInit()
-                    transaction.gasPrice = gas_price_input.asBigInit()
-                    transaction.gasLimit = gas_limit_input.asBigInit()
-                    transaction.txHash = transaction.encodeRLP().keccak().toHexString()
+                    if (toAddressString == null) {
+                        alert("Address not given")
+                    } else {
+                        val toAddress = Address(toAddressString)
+                        val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
+                                value = currentAmount!!,
+                                to = toAddress,
+                                from = currentAddressProvider.getCurrent()
+                        ) else createTransactionWithDefaults(
+                                creationEpochSecond = System.currentTimeMillis() / 1000,
+                                value = ZERO,
+                                to = currentTokenProvider.currentToken.address,
+                                from = currentAddressProvider.getCurrent(),
+                                input = createTokenTransferTransactionInput(toAddress, currentAmount)
+                        )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
 
-                    when {
+                        transaction.nonce = nonce_input.asBigInit()
+                        transaction.gasPrice = gas_price_input.asBigInit()
+                        transaction.gasLimit = gas_limit_input.asBigInit()
+                        transaction.txHash = transaction.encodeRLP().keccak().toHexString()
 
-                        isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-                        else -> async(CommonPool) {
-                            appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                        when {
+
+                            isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
+                            else -> async(CommonPool) {
+                                appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                            }
+
                         }
-
+                        finish()
                     }
-                    finish()
                 }
             }
 
@@ -241,24 +248,23 @@ class CreateTransactionActivity : AppCompatActivity() {
 
             currentERC67String = if (uri.startsWith("0x")) "ethereum:$uri" else uri
 
-            if (ERC67(currentERC67String!!).isValid()) {
-                val erc67 = ERC67(currentERC67String!!)
+            if (parseERC681(currentERC67String!!).valid) {
+                val erc681 = parseERC681(currentERC67String!!)
 
-                appDatabase.addressBook.resolveNameAsync(Address(erc67.getHex())) {
+                appDatabase.addressBook.resolveNameAsync(Address(erc681.addressString!!)) {
                     to_address.text = it
                 }
 
-                erc67.value?.let {
+                erc681.value?.let {
                     amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
-                    setAmountFromETHString(it)
-                    currentAmount = currentERC67String?.let { BigInteger(ERC67(it).value) }
+                    currentAmount = it
                 }
             } else {
                 to_address.text = getString(R.string.no_address_selected)
 
                 if (fromUser || lastWarningURI != uri) {
                     lastWarningURI = uri
-                    if (uri.isERC67String()) {
+                    if (uri.isEthereumURLString()) {
                         alert(getString(R.string.create_tx_error_invalid_erc67_msg, uri), getString(R.string.create_tx_error_invalid_erc67_title))
                     } else {
                         alert(getString(R.string.create_tx_error_invalid_address, uri))

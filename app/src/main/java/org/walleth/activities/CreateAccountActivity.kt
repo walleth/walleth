@@ -14,8 +14,8 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.erc55.withERC55Checksum
-import org.kethereum.erc67.ERC67
-import org.kethereum.erc67.isERC67String
+import org.kethereum.erc681.isEthereumURLString
+import org.kethereum.erc681.parseERC681
 import org.kethereum.functions.isValid
 import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
@@ -31,7 +31,9 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
 
-private val HEX_INTENT_EXTRA_KEY = "HEX"
+private const val HEX_INTENT_EXTRA_KEY = "HEX"
+private const val REQUEST_CODE_TREZOR = 7965
+
 fun Context.startCreateAccountActivity(hex: String) {
     startActivity(Intent(this, CreateAccountActivity::class.java).apply {
         putExtra(HEX_INTENT_EXTRA_KEY, hex)
@@ -40,12 +42,10 @@ fun Context.startCreateAccountActivity(hex: String) {
 
 class CreateAccountActivity : AppCompatActivity() {
 
-    val REQUEST_CODE_TREZOR = 7965
-
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    var lastCreatedAddress: Address? = null
-    var trezorPath: String? = null
+    private val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private var lastCreatedAddress: Address? = null
+    private var trezorPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,23 +115,26 @@ class CreateAccountActivity : AppCompatActivity() {
             return
         }
 
-        if (data != null) {
-            if (data.hasExtra("SCAN_RESULT")) {
-                val address = if (!data.getStringExtra("SCAN_RESULT").isERC67String()) {
-                    data.getStringExtra("SCAN_RESULT")
+        data?.run {
+            getStringExtra("SCAN_RESULT")?.let { stringExtra ->
+                val address = if (stringExtra.isEthereumURLString()) {
+                    parseERC681(stringExtra).addressString
                 } else {
-                    ERC67(data.getStringExtra("SCAN_RESULT")).getHex()
+                    stringExtra
                 }
-                setAddressFromExternalApplyingChecksum(address)
+                if (address != null) {
+                    setAddressFromExternalApplyingChecksum(address)
+                }
             }
-            if (data.hasAddressResult()) {
-                trezorPath = data.getPATHResult()
-                setAddressFromExternalApplyingChecksum(data.getAddressResult())
+
+            if (hasAddressResult()) {
+                trezorPath = getPATHResult()
+                setAddressFromExternalApplyingChecksum(getAddressResult())
             }
         }
     }
 
-    fun setAddressFromExternalApplyingChecksum(addressHex: String) {
+    private fun setAddressFromExternalApplyingChecksum(addressHex: String) {
         hexInput.setText(Address(addressHex).withERC55Checksum().hex)
     }
 

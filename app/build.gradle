@@ -128,7 +128,7 @@ dependencies {
     compile "com.github.walleth.kethereum:bip44:$kethereum_version"
     compile "com.github.walleth.kethereum:erc55:$kethereum_version"
     compile "com.github.walleth.kethereum:eip155:$kethereum_version"
-    compile "com.github.walleth.kethereum:erc67:$kethereum_version"
+    compile "com.github.walleth.kethereum:erc681:$kethereum_version"
     compile "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     compile "com.github.walleth.kethereum:rlp:$kethereum_version"
 
@@ -171,6 +171,8 @@ dependencies {
     kapt "android.arch.lifecycle:compiler:$arch_version"
 
     androidTestCompile 'com.google.truth:truth:0.36'
+
+    testCompile "org.mockito:mockito-core:2.8.47"
 
     androidTestCompile "org.mockito:mockito-core:2.8.47"
     androidTestCompile 'com.linkedin.dexmaker:dexmaker-mockito:2.2.0'

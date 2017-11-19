@@ -11,6 +11,7 @@ import kotlinx.coroutines.experimental.async
 import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
 import org.kethereum.functions.encodeRLP
+import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.keystore.GethBackedWallethKeyStore
@@ -73,23 +74,27 @@ class GethTransactionSigner : LifecycleService() {
                 accounts.get(it).address.hex.toUpperCase() == notNullFrom.hex.toUpperCase()
             }
 
-            if (transaction.signatureData != null) { // coming from TREZOR
-                val newTransactionFromRLP = Geth.newTransactionFromRLP(transaction.transaction.encodeRLP())
-                transaction.setHash(newTransactionFromRLP.hash.hex)
-            } else if (index == null) {
-                transaction.transactionState.error = "No key for sending account"
-                transaction.setHash(newTransaction.hash.hex)
-            } else {
-                val relevantAddress = accounts.get(index)
-                gethKeystore.unlock(relevantAddress, DEFAULT_PASSWORD)
+            when {
+                transaction.signatureData != null -> { // coming from TREZOR
+                    val newTransactionFromRLP = Geth.newTransactionFromRLP(transaction.transaction.encodeRLP())
+                    transaction.setHash(newTransactionFromRLP.hash.hex)
+                }
+                index == null -> {
+                    transaction.transactionState.error = getString(R.string.no_key_for_sending_account)
+                    transaction.setHash(newTransaction.hash.hex)
+                }
+                else -> {
+                    val relevantAddress = accounts.get(index)
+                    gethKeystore.unlock(relevantAddress, DEFAULT_PASSWORD)
 
-                val transactionWithSignature = gethKeystore.signTx(relevantAddress, newTransaction, BigInt(transaction.transaction.chain!!.id))
+                    val transactionWithSignature = gethKeystore.signTx(relevantAddress, newTransaction, BigInt(transaction.transaction.chain!!.id))
 
-                gethKeystore.lock(relevantAddress.address)
+                    gethKeystore.lock(relevantAddress.address)
 
-                transaction.setHash(transactionWithSignature.hash.hex)
-                transaction.signatureData = transactionWithSignature.extractSignatureData()
+                    transaction.setHash(transactionWithSignature.hash.hex)
+                    transaction.signatureData = transactionWithSignature.extractSignatureData()
 
+                }
             }
 
         }

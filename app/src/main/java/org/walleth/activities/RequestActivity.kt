@@ -14,7 +14,8 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
-import org.kethereum.erc67.toERC67String
+import org.kethereum.erc681.ERC681
+import org.kethereum.erc681.generateURL
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
@@ -24,8 +25,8 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.networks.isNoTestNet
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
+import org.walleth.functions.extractValueForToken
 import org.walleth.functions.setQRCode
-import java.math.BigDecimal
 
 class RequestActivity : AppCompatActivity() {
 
@@ -68,17 +69,19 @@ class RequestActivity : AppCompatActivity() {
         if (currentTokenProvider.currentToken.isETH()) {
 
             val relevantAddress = currentAddressProvider.getCurrent()
-            currentERC67String = relevantAddress.toERC67String()
+            currentERC67String = ERC681(addressString = relevantAddress.hex).generateURL()
 
             if (add_value_checkbox.isChecked) {
                 try {
-                    currentERC67String = relevantAddress.toERC67String(BigDecimal(value_input_edittext.text.toString()))
+                    val currentToken = currentTokenProvider.currentToken
+
+                    currentERC67String = ERC681(addressString = relevantAddress.hex,value =value_input_edittext.text.toString().extractValueForToken(currentToken) ).generateURL()
                 } catch (e: NumberFormatException) {
                 }
             }
         } else {
             val relevantAddress = currentTokenProvider.currentToken.address
-            currentERC67String = relevantAddress.toERC67String()
+            currentERC67String = ERC681(addressString = relevantAddress.hex).generateURL()
             if (add_value_checkbox.isChecked) {
                 try {
                     currentERC67String = currentERC67String + "?function=transfer(address " +

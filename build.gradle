@@ -3,7 +3,7 @@ buildscript {
         kotlin_version = '1.1.60'
         support_version = '26.1.0'
         firebase_version = '11.6.0'
-        kethereum_version = '0.32'
+        kethereum_version = '0.33'
         arch_version = "1.0.0"
     }
 
@@ -22,7 +22,6 @@ buildscript {
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.7.2'
     }
 }
-
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

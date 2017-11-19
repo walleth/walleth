@@ -20,7 +20,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
-import org.kethereum.erc67.isERC67String
+import org.kethereum.erc681.isEthereumURLString
 import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity() {
             val scanResult = data.getStringExtra("SCAN_RESULT")
 
             when {
-                scanResult.isERC67String() -> {
+                scanResult.isEthereumURLString() -> {
                     startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
                         setData(Uri.parse(scanResult))
                     })
