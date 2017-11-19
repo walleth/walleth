@@ -150,4 +150,12 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="geth_service_notification_text">light client running</string>
     <string name="geth_service_notification_channel_description">View and Stop Geth Service</string>
     <string name="no_key_for_sending_account">No key for sending account</string>
+    <string name="create_transation_to_label">To:</string>
+    <string name="create_tx_please_specify_amount">Please specify the amount</string>
+    <string name="create_tx_show_advanced_options">Show Advanced Options</string>
+    <string name="create_tx_gas_price">Gas Price</string>
+    <string name="create_tx_amount">Amount:</string>
+    <string name="create_tx_fee">Fee:</string>
+    <string name="create_tx_gas_limit">Gas Limit</string>
+    <string name="create_tx_nonce">nonce</string>
 </resources>

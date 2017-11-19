@@ -18,7 +18,7 @@
                 tools:context="org.walleth.activities.CreateTransactionActivity">
 
             <TextView
-                    android:text="To:"
+                    android:text="@string/create_transation_to_label"
                     android:padding="8dp"
                     android:id="@+id/to_label"
                     android:fontFamily="sans-serif"
@@ -46,6 +46,8 @@
                     android:layout_below="@id/to_label"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/address_list_button"
+                    android:singleLine="true"
+                    android:ellipsize="middle"
                     android:padding="16dp"
                     android:id="@+id/to_address"
                     tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu"
@@ -55,7 +57,7 @@
 
             <TextView
                     android:layout_below="@id/to_address"
-                    android:text="Amount:"
+                    android:text="@string/create_tx_amount"
                     style="@style/section_header"
                     android:id="@+id/amount_label"/>
 
@@ -78,7 +80,7 @@
                         android:layout_height="wrap_content">
                     <android.support.design.widget.TextInputEditText
                             android:id="@+id/amount_input"
-                            android:hint="Please specify the amount"
+                            android:hint="@string/create_tx_please_specify_amount"
                             android:minWidth="256dp"
                             android:inputType="numberDecimal"
                             android:layout_width="wrap_content"
@@ -99,13 +101,13 @@
                     android:layout_margin="16dp"
                     android:id="@+id/show_advanced_button"
                     android:layout_below="@id/amount_container"
-                    android:text="Show Advanced Options"
+                    android:text="@string/create_tx_show_advanced_options"
                     android:layout_width="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_height="wrap_content"            />
             <TextView
                     android:layout_below="@id/amount_container"
-                    android:text="Fee:"
+                    android:text="@string/create_tx_fee"
                     android:visibility="gone"
                     android:id="@+id/fee_label"
                     style="@style/section_header"/>
@@ -128,7 +130,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                     <android.support.design.widget.TextInputEditText
-                            android:hint="Gas Price"
+                            android:hint="@string/create_tx_gas_price"
                             android:minWidth="128dp"
                             android:id="@+id/gas_price_input"
                             android:inputType="number|numberDecimal"
@@ -153,7 +155,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
-                        android:hint="Gas Limit"
+                        android:hint="@string/create_tx_gas_limit"
                         android:minWidth="128dp"
                         android:id="@+id/gas_limit_input"
                         android:inputType="number|numberDecimal"
@@ -178,7 +180,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
-                        android:hint="nonce"
+                        android:hint="@string/create_tx_nonce"
                         android:minWidth="128dp"
                         android:id="@+id/nonce_input"
                         android:inputType="number|numberDecimal"
