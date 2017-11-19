@@ -16,17 +16,15 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 
 class EditAccountActivity : AppCompatActivity() {
 
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    lateinit var currentAddressInfo : AddressBookEntry
+    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    private lateinit var currentAddressInfo : AddressBookEntry
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
