@@ -158,7 +158,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         val view = inflate(R.layout.pinput)
         var dialogPin = ""
         val displayPin = {
-            view.pin_textview.text = (0..(dialogPin.length - 1)).map { "*" }.joinToString("")
+            view.pin_textview.text = "*".repeat(dialogPin.length)
             view.pin_back.setVisibility(!dialogPin.isEmpty())
         }
         displayPin.invoke()
