@@ -28,6 +28,7 @@ import net.glxn.qrgen.android.QRCode
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
+import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import java.io.ByteArrayOutputStream
@@ -73,7 +74,7 @@ class ExportKeyActivity : AppCompatActivity() {
     private fun generate() {
         async(UI) {
             val bmpScaled = async(CommonPool) {
-                keyJSON = keyStore.exportKey(address = currentAddressProvider.getCurrent(), unlockPassword = "default", exportPassword = password_input.text.toString())
+                keyJSON = keyStore.exportKey(address = currentAddressProvider.getCurrent(), unlockPassword = DEFAULT_PASSWORD, exportPassword = password_input.text.toString())
 
                 val point = Point()
                 windowManager.defaultDisplay.getSize(point)

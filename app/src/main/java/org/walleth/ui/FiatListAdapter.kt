@@ -10,7 +10,7 @@ import org.walleth.data.exchangerate.ExchangeRateProvider
 
 class FiatListAdapter(exchangeRateProvider: ExchangeRateProvider, val activity: Activity, val settings: Settings) : RecyclerView.Adapter<FiatListItemViewHolder>() {
 
-    val availableFiatInfoList = exchangeRateProvider.getAvailableFiatInfoMap().values.toList()
+    private val availableFiatInfoList = exchangeRateProvider.getAvailableFiatInfoMap().values.toList()
 
     override fun getItemCount() = availableFiatInfoList.size
 

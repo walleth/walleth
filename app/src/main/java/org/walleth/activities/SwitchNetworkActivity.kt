@@ -29,7 +29,7 @@ open class SwitchNetworkActivity : AppCompatActivity() {
         recycler_view.layoutManager = LinearLayoutManager(this)
 
         fab.setOnClickListener {
-            alert("adding new networks not yet implemented")
+            alert(R.string.switch_network_activity_adding_not_yet_supported)
         }
 
         supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
@@ -48,7 +48,7 @@ open class SwitchNetworkActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    fun getAdapter() = NetworkAdapter(AllNetworkDefinitions) {
+    private fun getAdapter() = NetworkAdapter(AllNetworkDefinitions) {
         networkDefinitionProvider.setCurrent(it)
         finish()
     }

@@ -19,15 +19,15 @@ import org.walleth.ui.FiatListAdapter
 
 class SelectReferenceActivity : AppCompatActivity() {
 
-    val exchangeRateProvider: ExchangeRateProvider by LazyKodein(appKodein).instance()
-    val settings: Settings by LazyKodein(appKodein).instance()
+    private val exchangeRateProvider: ExchangeRateProvider by LazyKodein(appKodein).instance()
+    private val settings: Settings by LazyKodein(appKodein).instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_list)
 
-        supportActionBar?.subtitle = "Select reference"
+        supportActionBar?.subtitle = getString(R.string.select_reference_activity_select_reference)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         recycler_view.layoutManager = LinearLayoutManager(this)
@@ -38,11 +38,11 @@ class SelectReferenceActivity : AppCompatActivity() {
             val layout = inflater.inflate(R.layout.dialog_add_reference, null, false)
 
             AlertDialog.Builder(this@SelectReferenceActivity)
-                    .setTitle("Add Reference")
+                    .setTitle(getString(R.string.select_reference_activity_add_reference))
                     .setView(layout)
 
-                    .setPositiveButton("OK", { _, _ ->
-                        exchangeRateProvider.addFiat( layout.reference_text.text.toString().toUpperCase())
+                    .setPositiveButton(android.R.string.ok, { _, _ ->
+                        exchangeRateProvider.addFiat(layout.reference_text.text.toString().toUpperCase())
                         Handler().postDelayed({
                             recycler_view.adapter = FiatListAdapter(exchangeRateProvider, this, settings)
                         }, 1000)

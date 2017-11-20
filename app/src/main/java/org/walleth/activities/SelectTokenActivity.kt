@@ -32,7 +32,7 @@ class SelectTokenActivity : AppCompatActivity() {
     private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
 
-    var showDelete = false
+    private var showDelete = false
 
     private val tokenListAdapter by lazy {
         TokenListAdapter(currentTokenProvider, this).apply {
@@ -49,7 +49,7 @@ class SelectTokenActivity : AppCompatActivity() {
             appDatabase.tokens.showAll()
         }
 
-        supportActionBar?.subtitle = "Select token"
+        supportActionBar?.subtitle = getString(R.string.select_token_activity_select_token)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         recycler_view.layoutManager = LinearLayoutManager(this)

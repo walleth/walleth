@@ -161,5 +161,9 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="settings_currently">Currently: %s</string>
     <string name="settings_please_wait">Please wait</string>
     <string name="trezor_please_enter_your_passphrase">Please enter your passphrase</string>
-    <string name="trezor_reported_different_address">\"TREZOR reported different source Address. %s is not %s\"</string>
+    <string name="trezor_reported_different_address">TREZOR reported different source Address. %1$s is not %2$s</string>
+    <string name="select_reference_activity_select_reference">Select reference</string>
+    <string name="select_reference_activity_add_reference">Add Reference</string>
+    <string name="select_token_activity_select_token">Select token</string>
+    <string name="switch_network_activity_adding_not_yet_supported">adding new networks not yet implemented</string>
 </resources>
