@@ -123,7 +123,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile "org.ethereum:geth:1.7.1"
+    compile "org.ethereum:geth:1.7.3"
 
     compile "com.github.walleth.kethereum:functions:$kethereum_version"
     compile "com.github.walleth.kethereum:bip44:$kethereum_version"
