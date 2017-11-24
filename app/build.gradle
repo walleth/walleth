@@ -147,7 +147,7 @@ dependencies {
     compile 'com.jakewharton:process-phoenix:2.0.0'
 
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
-    compile 'com.squareup.okhttp3:okhttp:3.9.0'
+    compile 'com.squareup.okhttp3:okhttp:3.9.1'
 
     compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
     compile 'com.github.salomonbrys.kodein:kodein-android:4.1.0'
