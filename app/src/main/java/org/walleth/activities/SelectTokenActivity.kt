@@ -6,16 +6,16 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.SearchView
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.android.synthetic.main.activity_list_search.*
+import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -43,7 +43,7 @@ class SelectTokenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list_search)
+        setContentView(R.layout.activity_list)
 
         async(CommonPool) {
             appDatabase.tokens.showAll()
@@ -57,22 +57,11 @@ class SelectTokenActivity : AppCompatActivity() {
         fab.setOnClickListener {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
-        search.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?) = true
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                if (newText != null) {
-                    tokenListAdapter.filter(newText)
-                }
-                return true
-            }
-
-        })
 
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
-                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, search.query)
+                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, "")
                 showDelete = allTokens.any { !it.showInList }
             }
             invalidateOptionsMenu()
@@ -107,6 +96,19 @@ class SelectTokenActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_tokenlist, menu)
+
+        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(searchTerm: String): Boolean {
+                if (searchTerm != null) {
+                    tokenListAdapter.filter(searchTerm)
+                }
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String?) = true
+        })
+
         return super.onCreateOptionsMenu(menu)
     }
 
