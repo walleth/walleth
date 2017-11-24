@@ -72,20 +72,19 @@ class SelectTokenActivity : AppCompatActivity() {
             override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                tokenListAdapter.tokenList.getOrNull(viewHolder.adapterPosition)?.let { currentNotNull ->
-                    fun changeDeleteState(state: Boolean) {
-                        async(UI) {
-                            async(CommonPool) {
-                                appDatabase.tokens.upsert(currentNotNull.copy(showInList = state))
-                            }.await()
-                        }
+                val currentToken = tokenListAdapter.sortedList.get(viewHolder.adapterPosition)
+                fun changeDeleteState(state: Boolean) {
+                    async(UI) {
+                        async(CommonPool) {
+                            appDatabase.tokens.upsert(currentToken.copy(showInList = state))
+                        }.await()
                     }
-                    changeDeleteState(false)
-                    val snackMessage = getString(R.string.deleted_token_snack, currentNotNull.symbol)
-                    Snackbar.make(coordinator, snackMessage, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(getString(R.string.undo), { changeDeleteState(true) })
-                            .show()
                 }
+                changeDeleteState(false)
+                val snackMessage = getString(R.string.deleted_token_snack, currentToken.symbol)
+                Snackbar.make(coordinator, snackMessage, Snackbar.LENGTH_INDEFINITE)
+                        .setAction(getString(R.string.undo), { changeDeleteState(true) })
+                        .show()
             }
         }
 
