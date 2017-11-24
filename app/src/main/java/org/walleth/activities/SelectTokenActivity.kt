@@ -6,6 +6,7 @@ import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.support.v7.widget.SearchView
 import android.support.v7.widget.helper.ItemTouchHelper
 import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
@@ -56,10 +57,11 @@ class SelectTokenActivity : AppCompatActivity() {
         fab.setOnClickListener {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
+
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
-                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList })
+                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, "")
                 showDelete = allTokens.any { !it.showInList }
             }
             invalidateOptionsMenu()
@@ -94,6 +96,19 @@ class SelectTokenActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_tokenlist, menu)
+
+        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextChange(searchTerm: String): Boolean {
+                if (searchTerm != null) {
+                    tokenListAdapter.filter(searchTerm)
+                }
+                return true
+            }
+
+            override fun onQueryTextSubmit(query: String?) = true
+        })
+
         return super.onCreateOptionsMenu(menu)
     }
 

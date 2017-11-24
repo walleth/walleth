@@ -120,6 +120,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="clipboard_copy_name">Ethereum Address</string>
     <string name="undo">UNDO</string>
     <string name="undelete_all">Undelete all</string>
+    <string name="search">Search</string>
     <string name="decimals_in_list">Decimals: %s</string>
     <string name="relay_transaction">Relay transaction</string>
     <string name="input_not_valid_title">Problem with input</string>
