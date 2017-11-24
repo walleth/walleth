@@ -33,6 +33,10 @@
         <item name="actionMenuTextColor">?android:textColorPrimary</item>
         <!-- action menu item icon color -->
         <item name="colorControlNormal">?android:textColorPrimary</item>
+
+        <item name="colorControlHighlight">?android:textColorPrimary</item>
+        <item name="android:textColorHint">?android:textColorPrimary</item>
+        <item name="android:editTextColor">?android:textColorPrimary</item>
     </style>
 
     <style name="button">
