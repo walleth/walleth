@@ -7,7 +7,7 @@ interface ExchangeRateProvider {
     fun getExChangeRate(name: String): BigDecimal?
     fun getAvailableFiatInfoMap(): Map<String, FiatInfo>
     fun addFiat(name: String)
-    fun getExchangeString(value: BigInteger?, currencySymbol: String): String?
+    fun getConvertedValue(value: BigInteger?, currencySymbol: String): BigDecimal?
 }
 
 
