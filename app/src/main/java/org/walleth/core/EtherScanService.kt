@@ -1,7 +1,6 @@
 package org.walleth.core
 
-import android.arch.lifecycle.LifecycleService
-import android.arch.lifecycle.Observer
+import android.arch.lifecycle.*
 import android.content.Intent
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
@@ -47,33 +46,50 @@ class EtherScanService : LifecycleService() {
     private val appDatabase: AppDatabase by lazyKodein.instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
 
+    companion object {
+        private var timing = 7_000 // in MilliSeconds
+        private var last_run = 0L
+        private var shortcut = false
+    }
+
+    class TimingModifyingLifecycleObserver : LifecycleObserver {
+        @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        fun connectListener() {
+            timing = 7_000
+            shortcut = true
+        }
+
+        @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        fun disconnectListener() {
+            timing = 70_000
+        }
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        var shortcut = false
-
-        appDatabase.transactions.getTransactionsLive().observe(this@EtherScanService, Observer {
-            shortcut = true
-        })
         currentAddressProvider.observe(this, Observer {
             shortcut = true
+            lastSeenBalanceBlock = ZERO
         })
         networkDefinitionProvider.observe(this, Observer {
             shortcut = true
+            lastSeenBalanceBlock = ZERO
         })
+
+        ProcessLifecycleOwner.get().lifecycle.addObserver(TimingModifyingLifecycleObserver())
 
         async(CommonPool) {
 
             while (true) {
+                last_run = System.currentTimeMillis()
+
                 currentAddressProvider.value?.let {
                     tryFetchFromEtherScan(it.hex)
                 }
 
-                var i = 0
-                while (i < 100 && !shortcut) {
+                while ((last_run + timing) > System.currentTimeMillis() && !shortcut) {
                     delay(100)
-                    i++
                 }
                 shortcut = false
             }
@@ -131,7 +147,6 @@ class EtherScanService : LifecycleService() {
         networkDefinitionProvider.value?.let { currentNetwork ->
             val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + ONE}&sort=asc"
 
-            Log.i("EQuery: $lastSeenTransactionsBlock / $lastSeenBalanceBlock")
             val etherscanResult = getEtherscanResult(requestString, currentNetwork)
             if (etherscanResult != null) {
                 val jsonArray = etherscanResult.getJSONArray("result")
