@@ -27,7 +27,7 @@ data class Token(
         val decimals: Int,
         val chain: ChainDefinition,
         val showInList: Boolean,
-        val starred: Boolean,
+        var starred: Boolean,
         val fromUser: Boolean,
         val order:Int
 )

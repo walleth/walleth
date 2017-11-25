@@ -14,6 +14,7 @@ class TokenViewHolder(itemView: View, val activity: Activity,  private val curre
         itemView.token_symbol.text = tokenDescriptor.symbol
         itemView.token_name.text = tokenDescriptor.name
         itemView.token_decimals.text = activity.getString(R.string.decimals_in_list, tokenDescriptor.decimals.toString())
+        itemView.token_starred.isChecked = tokenDescriptor.starred
         if (!tokenDescriptor.isETH()) {
             itemView.token_address.text = tokenDescriptor.address.hex
             itemView.token_address.visibility = View.VISIBLE
@@ -24,6 +25,10 @@ class TokenViewHolder(itemView: View, val activity: Activity,  private val curre
         itemView.setOnClickListener {
             currentTokenProvider.currentToken = tokenDescriptor
             activity.finish()
+        }
+
+        itemView.token_starred.setOnClickListener {
+            tokenDescriptor.starred = !tokenDescriptor.starred
         }
     }
 }
