@@ -99,9 +99,7 @@ class SelectTokenActivity : AppCompatActivity() {
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(searchTerm: String): Boolean {
-                if (searchTerm != null) {
-                    tokenListAdapter.filter(searchTerm)
-                }
+                tokenListAdapter.filter(searchTerm)
                 return true
             }
 

@@ -5,10 +5,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.text.DecimalFormat
 
-val formatter: DecimalFormat
-    get() = DecimalFormat("#.#####")
-val roundingFormatter: DecimalFormat
-    get() = DecimalFormat("~#.#####")
+val formatter = DecimalFormat("#.#####")
 
 fun Token.decimalsInZeroes() = "0".repeat (decimals)
 fun Token.decimalsAsMultiplicator() = BigDecimal("1"+this.decimalsInZeroes())
@@ -17,9 +14,10 @@ fun BigInteger.toValueString(token: Token) = BigDecimal(this).toValueString(toke
 
 fun BigDecimal.toValueString(token: Token): String {
     val inEther = divide(BigDecimal("1" + token.decimalsInZeroes())).stripTrailingZeros()
+    val formatted = formatter.format(inEther);
     if (inEther.scale() < 6) {
-        return formatter.format(inEther)
+        return formatted
     } else {
-        return roundingFormatter.format(inEther)
+        return "~$formatted"
     }
 }
