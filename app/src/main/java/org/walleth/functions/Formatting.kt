@@ -12,10 +12,9 @@ fun Token.decimalsAsMultiplicator() = BigDecimal("1" + this.decimalsInZeroes())
 
 fun BigInteger.toValueString(token: Token) = BigDecimal(this).toValueString(token)
 
-fun BigDecimal.toValueString(token: Token): String {
-    val inEther = divide(BigDecimal("1" + token.decimalsInZeroes())).stripTrailingZeros()
-
-    return decimalFormatter.format(inEther).addPrefixOnCondition(prefix = "~", condition = inEther.scale() < 6)
+fun BigDecimal.inETH(token: Token): BigDecimal = divide(BigDecimal("1" + token.decimalsInZeroes())).stripTrailingZeros()
+fun BigDecimal.toValueString(token: Token) = inETH(token).let { valueInETH ->
+    decimalFormatter.format(valueInETH).addPrefixOnCondition(prefix = "~", condition = valueInETH.scale() < 6)
 }
 
 fun String.addPrefixOnCondition(prefix: String, condition: Boolean) = if (condition) this else prefix + this
