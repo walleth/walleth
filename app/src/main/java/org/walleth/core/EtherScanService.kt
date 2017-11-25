@@ -31,10 +31,15 @@ import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
 import java.io.IOException
 import java.math.BigInteger
+import java.math.BigInteger.ONE
+import java.math.BigInteger.ZERO
 
 class EtherScanService : LifecycleService() {
 
     private val lazyKodein = LazyKodein(appKodein)
+
+    private var lastSeenTransactionsBlock = ZERO
+    private var lastSeenBalanceBlock = ZERO
 
     private val okHttpClient: OkHttpClient by lazyKodein.instance()
     private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
@@ -70,6 +75,7 @@ class EtherScanService : LifecycleService() {
                     delay(100)
                     i++
                 }
+                shortcut = false
             }
         }
 
@@ -123,10 +129,15 @@ class EtherScanService : LifecycleService() {
 
     private fun queryTransactions(addressHex: String) {
         networkDefinitionProvider.value?.let { currentNetwork ->
-            val etherscanResult = getEtherscanResult("module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc", currentNetwork)
+            val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + ONE}&sort=asc"
+
+            Log.i("EQuery: $lastSeenTransactionsBlock / $lastSeenBalanceBlock")
+            val etherscanResult = getEtherscanResult(requestString, currentNetwork)
             if (etherscanResult != null) {
                 val jsonArray = etherscanResult.getJSONArray("result")
                 val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain)
+
+                lastSeenTransactionsBlock = lastSeenBalanceBlock
 
                 newTransactions.forEach {
                     val oldEntry = appDatabase.transactions.getByHash(it.hash)
@@ -152,6 +163,8 @@ class EtherScanService : LifecycleService() {
             val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLong(16)
 
             if (blockNum != null) {
+                lastSeenBalanceBlock = BigInteger.valueOf(blockNum)
+
                 val balanceString = if (currentToken.isETH()) {
                     getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest", currentNetwork)?.getString("result")
 
