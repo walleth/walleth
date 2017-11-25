@@ -1,6 +1,7 @@
 package org.walleth.data.exchangerate
 
 import org.walleth.data.ETH_IN_WEI
+import org.walleth.functions.addPrefixOnCondition
 import java.math.BigDecimal
 import java.math.BigInteger
 
@@ -22,11 +23,7 @@ abstract class BaseExchangeProvider : ExchangeRateProvider {
         val exchangeRate = getExChangeRate(currencySymbol)!!
         val divided = BigDecimal(value).divide(BigDecimal(ETH_IN_WEI))
         val times = exchangeRate.times(divided).stripTrailingZeros()
-        if (times.scale() <= 2) {
-            String.format("%.2f", times)
-        } else {
-            String.format("~%.2f", times)
-        }
+        String.format("%.2f", times).addPrefixOnCondition(prefix="~",condition = times.scale() <= 2)
     }
 
 }
