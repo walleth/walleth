@@ -149,7 +149,6 @@ class EtherScanService : LifecycleService() {
         networkDefinitionProvider.value?.let { currentNetwork ->
             val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + ONE}&sort=asc"
 
-            Log.i("ETherscanFetch " + lastSeenTransactionsBlock + " " + lastSeenBalanceBlock)
             val etherscanResult = getEtherscanResult(requestString, currentNetwork)
             if (etherscanResult != null) {
                 val jsonArray = etherscanResult.getJSONArray("result")
