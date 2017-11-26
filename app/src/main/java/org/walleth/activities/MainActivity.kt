@@ -242,10 +242,10 @@ class MainActivity : AppCompatActivity() {
 
         if (it != null) {
             value_view.setValue(it.balance, currentTokenProvider.currentToken)
-            supportActionBar?.subtitle = "Block " + it.block
+            supportActionBar?.subtitle = getString(R.string.main_activity_block, it.block)
         } else {
             value_view.setValue(ZERO, currentTokenProvider.currentToken)
-            supportActionBar?.subtitle = "No data"
+            supportActionBar?.subtitle = getString(R.string.main_activity_no_data)
         }
     }
 

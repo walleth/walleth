@@ -110,7 +110,7 @@ class CreateTransactionActivity : AppCompatActivity() {
                     val toAddressString = parseERC681(currentERC67String!!).addressString
 
                     if (toAddressString == null) {
-                        alert("Address not given")
+                        alert(R.string.create_tx_no_address)
                     } else {
                         val toAddress = Address(toAddressString)
                         val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(

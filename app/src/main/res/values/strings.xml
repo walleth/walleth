@@ -167,4 +167,11 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="select_token_activity_select_token">Select token</string>
     <string name="switch_network_activity_adding_not_yet_supported">adding new networks not yet implemented</string>
     <string name="precise_amount_alert_title">Precise amount</string>
+    <string name="create_token_activity_subtitle">Create Token</string>
+    <string name="create_token_activity_error_invalid_amount_of_decimals">Please enter a valid amount of decimals</string>
+    <string name="create_token_activity_error_invalid_name">Please enter a valid name</string>
+    <string name="create_token_activity_error_invalid_address">Please enter a valid address</string>
+    <string name="create_tx_no_address">Address not given</string>
+    <string name="main_activity_no_data">No data</string>
+    <string name="main_activity_block">Block %d</string>
 </resources>
