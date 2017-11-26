@@ -37,9 +37,6 @@ class EtherScanService : LifecycleService() {
 
     private val lazyKodein = LazyKodein(appKodein)
 
-    private var lastSeenTransactionsBlock = ZERO
-    private var lastSeenBalanceBlock = ZERO
-
     private val okHttpClient: OkHttpClient by lazyKodein.instance()
     private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
     private val tokenProvider: CurrentTokenProvider by lazyKodein.instance()
@@ -50,6 +47,9 @@ class EtherScanService : LifecycleService() {
         private var timing = 7_000 // in MilliSeconds
         private var last_run = 0L
         private var shortcut = false
+
+        private var lastSeenTransactionsBlock = ZERO
+        private var lastSeenBalanceBlock = ZERO
     }
 
     class TimingModifyingLifecycleObserver : LifecycleObserver {
@@ -65,17 +65,19 @@ class EtherScanService : LifecycleService() {
         }
     }
 
+    class ResettingObserver<T> : Observer<T> {
+        override fun onChanged(p0: T?) {
+            shortcut = true
+            lastSeenBalanceBlock = ZERO
+            lastSeenTransactionsBlock = ZERO
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        currentAddressProvider.observe(this, Observer {
-            shortcut = true
-            lastSeenBalanceBlock = ZERO
-        })
-        networkDefinitionProvider.observe(this, Observer {
-            shortcut = true
-            lastSeenBalanceBlock = ZERO
-        })
+        currentAddressProvider.observe(this, ResettingObserver())
+        networkDefinitionProvider.observe(this, ResettingObserver())
 
         ProcessLifecycleOwner.get().lifecycle.addObserver(TimingModifyingLifecycleObserver())
 
@@ -147,6 +149,7 @@ class EtherScanService : LifecycleService() {
         networkDefinitionProvider.value?.let { currentNetwork ->
             val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + ONE}&sort=asc"
 
+            Log.i("ETherscanFetch " + lastSeenTransactionsBlock + " " + lastSeenBalanceBlock)
             val etherscanResult = getEtherscanResult(requestString, currentNetwork)
             if (etherscanResult != null) {
                 val jsonArray = etherscanResult.getJSONArray("result")
