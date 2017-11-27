@@ -23,7 +23,7 @@ open class SwitchNetworkActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_list)
 
-        supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
+        supportActionBar?.subtitle = getString(R.string.network_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         recycler_view.layoutManager = LinearLayoutManager(this)
@@ -31,8 +31,6 @@ open class SwitchNetworkActivity : AppCompatActivity() {
         fab.setOnClickListener {
             alert(R.string.switch_network_activity_adding_not_yet_supported)
         }
-
-        supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
     }
 
     override fun onResume() {
