@@ -34,7 +34,7 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list)
+        setContentView(R.layout.activity_list_addresses)
 
         supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)

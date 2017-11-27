@@ -3,7 +3,7 @@ package org.walleth.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_list_addresses.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -29,6 +29,8 @@ open class AddressBookActivity : BaseAddressBookActivity() {
                 setResult(Activity.RESULT_OK, Intent().apply { putExtra("HEX", it.address.hex) })
                 finish()
             }
+
+            (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, writable_only.isChecked)
 
         }
     }

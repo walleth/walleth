@@ -22,4 +22,7 @@ class AddressAdapter(val list: List<AddressBookEntry>,
         holder.bind(list[position], keyStore, onClickAction)
     }
 
+    fun filter(starredOnly: Boolean, writableOnly: Boolean) {
+
+    }
 }
