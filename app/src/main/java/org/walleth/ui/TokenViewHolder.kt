@@ -5,11 +5,14 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.token_list_item.view.*
 import org.walleth.R
+import org.walleth.activities.TokenListCallback
+import org.walleth.data.AppDatabase
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.isETH
 
-class TokenViewHolder(itemView: View, val activity: Activity,  private val currentTokenProvider: CurrentTokenProvider) : RecyclerView.ViewHolder(itemView) {
+class TokenViewHolder(itemView: View, val activity: Activity, private val currentTokenProvider: CurrentTokenProvider,
+                      val tokenListCallback: TokenListCallback) : RecyclerView.ViewHolder(itemView) {
     fun bind(tokenDescriptor: Token) {
         itemView.token_symbol.text = tokenDescriptor.symbol
         itemView.token_name.text = tokenDescriptor.name
@@ -28,7 +31,8 @@ class TokenViewHolder(itemView: View, val activity: Activity,  private val curre
         }
 
         itemView.token_starred.setOnClickListener {
-            tokenDescriptor.starred = !tokenDescriptor.starred
+            val updatedToken = tokenDescriptor.copy(starred = !tokenDescriptor.starred)
+            tokenListCallback.onTokenUpdated(tokenDescriptor, updatedToken)
         }
     }
 }
