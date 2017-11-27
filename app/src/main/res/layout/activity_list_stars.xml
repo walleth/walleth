@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:switchPadding="@dimen/switch_padding"
-            android:text="@string/select_token_activity_starred_only"/>
+            android:text="@string/starred_only"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
