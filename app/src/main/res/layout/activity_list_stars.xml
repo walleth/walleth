@@ -14,13 +14,13 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <Switch
+        <android.support.v7.widget.SwitchCompat
             android:id="@+id/starred_only"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:switchPadding="@dimen/switch_padding"
-            android:text="@string/starred_only"/>
+            android:text="@string/starred_only"
+            app:switchPadding="@dimen/switch_padding"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
