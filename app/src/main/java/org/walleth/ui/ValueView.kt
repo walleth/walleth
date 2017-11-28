@@ -9,13 +9,18 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.value.view.*
 import org.ligi.kaxt.setVisibility
+import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.isETH
+import org.walleth.functions.addPrefixOnCondition
+import org.walleth.functions.toFullValueString
 import org.walleth.functions.toValueString
+import java.math.BigDecimal
 import java.math.BigInteger
+import java.math.BigInteger.ZERO
 
 open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
@@ -24,31 +29,54 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
     open val layoutRes = R.layout.value
 
+    private var currentValue = ZERO
+    private var currentExchangeValue: BigDecimal? = null
+    private var currentToken: Token? = null
+
     override fun onFinishInflate() {
         super.onFinishInflate()
         orientation = VERTICAL
         LayoutInflater.from(context).inflate(layoutRes, this, true)
-    }
-
-    fun setValue(int: BigInteger, token: Token) {
-
-        if (token.isETH()) {
-            val exChangeRate = exchangeRateProvider.getExchangeString(int, settings.currentFiat)
-
-            current_fiat_symbol.text = settings.currentFiat
-            if (exChangeRate != null) {
-                current_fiat.text = exChangeRate
-            } else {
-                current_fiat.text = "?"
+        current_eth.setOnClickListener {
+            currentToken?.let { tokenNotNull ->
+                showPreciseAmountAlert(currentValue.toFullValueString(tokenNotNull) + current_token_symbol.text )
             }
         }
+
+        current_fiat.setOnClickListener {
+            currentExchangeValue?.let { currentExchangeValueNotNull ->
+                showPreciseAmountAlert(String.format("%f", currentExchangeValueNotNull) + current_fiat_symbol.text)
+            }
+        }
+    }
+
+    private fun showPreciseAmountAlert(fullAmountString: String) =
+            context.alert(fullAmountString,context.getString(R.string.precise_amount_alert_title))
+
+    fun setValue(value: BigInteger, token: Token) {
+
+        if (token.isETH()) {
+            val exChangeRate = exchangeRateProvider.getConvertedValue(value, settings.currentFiat)
+
+            current_fiat_symbol.text = settings.currentFiat
+            current_fiat.text = if (exChangeRate != null) {
+                String.format("%.2f", exChangeRate).addPrefixOnCondition(prefix = "~", condition = exChangeRate.scale() <= 2)
+            } else {
+                "?"
+            }
+
+            currentExchangeValue = exChangeRate
+        }
+
+        currentValue = value
+        currentToken = token
 
         current_token_symbol.text = token.symbol
 
         current_fiat_symbol.setVisibility(token.isETH())
         current_fiat.setVisibility(token.isETH())
 
-        current_eth.text = int.toValueString(token)
+        current_eth.text = value.toValueString(token)
     }
 
 }

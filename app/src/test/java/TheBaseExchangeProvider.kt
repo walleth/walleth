@@ -2,6 +2,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.exchangerate.BaseExchangeProvider
+import org.walleth.functions.toFiatValueString
 import java.math.BigDecimal
 import java.math.BigInteger
 
@@ -13,9 +14,9 @@ class TheBaseExchangeProvider {
             override fun getExChangeRate(name: String) = BigDecimal("0.100")
         }
 
-        assertThat(baseExchangeProvider.getExchangeString(BigInteger("2").times(ETH_IN_WEI), "USD"))
+        assertThat(baseExchangeProvider.getConvertedValue(BigInteger("2").times(ETH_IN_WEI), "USD")?.toFiatValueString())
                 .isAnyOf("0,20", "0.20")
-        assertThat(baseExchangeProvider.getExchangeString(BigInteger("2000").times(ETH_IN_WEI), "USD"))
+        assertThat(baseExchangeProvider.getConvertedValue(BigInteger("2000").times(ETH_IN_WEI), "USD")?.toFiatValueString())
                 .isAnyOf("200,00", "200.00")
     }
 
@@ -25,7 +26,7 @@ class TheBaseExchangeProvider {
             override fun getExChangeRate(name: String) = BigDecimal("1")
         }
         val value = BigInteger("201").times(ETH_IN_WEI).divide(BigInteger("1000")) // 0.201 ETH
-        assertThat(baseExchangeProvider.getExchangeString(value, "USD"))
+        assertThat(baseExchangeProvider.getConvertedValue(value, "USD")?.toFiatValueString())
                 .isAnyOf("~0,20", "~0.20")
     }
 }

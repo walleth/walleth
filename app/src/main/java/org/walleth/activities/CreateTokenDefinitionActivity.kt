@@ -32,7 +32,7 @@ class CreateTokenDefinitionActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_create_token)
 
-        supportActionBar?.subtitle = "Create Token"
+        supportActionBar?.subtitle = getString(R.string.create_token_activity_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {
@@ -40,11 +40,11 @@ class CreateTokenDefinitionActivity : AppCompatActivity() {
             val newTokenName = token_name_input.text.toString()
             val newTokenAddress = token_address_input.text.toString()
             if (newDecimals == null || newDecimals > 42) {
-                alert("Please enter a valid amount of decimals")
+                alert(R.string.create_token_activity_error_invalid_amount_of_decimals)
             } else if (newTokenName.isBlank()) {
-                alert("Please enter a valid name")
+                alert(R.string.create_token_activity_error_invalid_name)
             } else if (newTokenAddress.isBlank()) {
-                alert("Please enter a valid address")
+                alert(R.string.create_token_activity_error_invalid_address)
             } else {
                 networkDefinitionProvider.observe(this, Observer { networkDefinition ->
                     if (networkDefinition == null)

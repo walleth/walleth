@@ -18,7 +18,7 @@
         <TextView
                 android:fontFamily="sans-serif-thin"
                 android:textSize="32sp"
-                android:text="ETH"
+                tools:text="ETH"
                 android:lines="1"
                 android:background="?selectableItemBackgroundBorderless"
                 android:id="@+id/current_token_symbol"
@@ -45,7 +45,7 @@
                 android:background="?selectableItemBackgroundBorderless"
                 android:fontFamily="sans-serif-thin"
                 android:textSize="24sp"
-                android:text="EUR"
+                tools:text="EUR"
                 android:lines="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

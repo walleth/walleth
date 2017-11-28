@@ -16,17 +16,12 @@ abstract class BaseExchangeProvider : ExchangeRateProvider {
 
     override fun getExChangeRate(name: String) = fiatInfoMap[name]?.exchangeRate
 
-    override fun getExchangeString(value: BigInteger?, currencySymbol: String) = if (value == null || getExChangeRate(currencySymbol) == null) {
+    override fun getConvertedValue(value: BigInteger?, currencySymbol: String) = if (value == null || getExChangeRate(currencySymbol) == null) {
         null
     } else {
         val exchangeRate = getExChangeRate(currencySymbol)!!
         val divided = BigDecimal(value).divide(BigDecimal(ETH_IN_WEI))
-        val times = exchangeRate.times(divided).stripTrailingZeros()
-        if (times.scale() <= 2) {
-            String.format("%.2f", times)
-        } else {
-            String.format("~%.2f", times)
-        }
+        exchangeRate.times(divided).stripTrailingZeros()
     }
 
 }
