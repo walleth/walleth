@@ -53,6 +53,10 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
             appDatabase.tokens.showAll()
         }
 
+        launch(UI) {
+            starred_only.isChecked = hasStarredTokens()
+        }
+
         supportActionBar?.subtitle = getString(R.string.select_token_activity_select_token)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -62,15 +66,14 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
 
-        starred_only.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton, isOn: Boolean ->
+        starred_only.setOnCheckedChangeListener({ compoundButton: CompoundButton, isOn: Boolean ->
             tokenListAdapter.filter(lastSearchTerm, isOn)
         })
 
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
-                starred_only.isChecked = allTokens.any { it.starred}
-                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList && (!starred_only.isChecked || it.starred) }, lastSearchTerm, starred_only.isChecked)
+                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, lastSearchTerm, starred_only.isChecked)
                 showDelete = allTokens.any { !it.showInList }
             }
             invalidateOptionsMenu()
@@ -83,10 +86,8 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 val currentToken = tokenListAdapter.sortedList.get(viewHolder.adapterPosition)
                 fun changeDeleteState(state: Boolean) {
-                    async(UI) {
-                        async(CommonPool) {
-                            appDatabase.tokens.upsert(currentToken.copy(showInList = state))
-                        }.await()
+                    launch {
+                        upsert(appDatabase, currentToken.copy(showInList = state))
                     }
                 }
                 changeDeleteState(false)
@@ -101,15 +102,19 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(recycler_view)
     }
 
+    private suspend fun hasStarredTokens(): Boolean = async {
+        appDatabase.tokens.all().any { it.starred }
+    }.await()
+
+
     override fun onTokenUpdated(oldToken: Token, updatedToken: Token) {
         tokenListAdapter.replace(oldToken, updatedToken)
-        tokenListAdapter.filter(lastSearchTerm, starred_only.isChecked)
         launch {
-            updateStar(appDatabase, updatedToken)
+            upsert(appDatabase, updatedToken)
         }
     }
 
-    suspend fun updateStar(appDatabase: AppDatabase, token: Token) {
+    fun upsert(appDatabase: AppDatabase, token: Token) {
         appDatabase.tokens.upsert(token)
     }
 
@@ -138,10 +143,8 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_undelete -> {
-            async(UI) {
-                async(CommonPool) {
-                    appDatabase.tokens.showAll()
-                }.await()
+            launch {
+                appDatabase.tokens.showAll()
             }
 
             true
