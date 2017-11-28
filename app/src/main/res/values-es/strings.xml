@@ -101,4 +101,5 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     <string name="nav_drawer_settings">Ajustes</string>
     <string name="default_day_night">auto</string>
     <string name="default_stats_username">Usuario WALLΞTH</string>
+    <string name="network_subtitle">Redes</string>
 </resources>
