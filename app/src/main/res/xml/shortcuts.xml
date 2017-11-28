@@ -3,15 +3,15 @@
     <shortcut
         android:shortcutId="scan"
         android:enabled="true"
-        android:icon="@drawable/ic_image_camera_alt"
+        android:icon="@drawable/ic_scan"
         android:shortcutShortLabel="@string/scan"
         android:shortcutLongLabel="@string/scan"
         android:shortcutDisabledMessage="@string/scan_disabled"
         tools:targetApi="n_mr1">
         <intent
-            android:action="android.intent.action.VIEW"
+            android:action="org.walleth.action.SCAN"
             android:targetPackage="org.walleth"
-            android:targetClass="org.walleth.activities.CreateTransactionActivity" />
+            android:targetClass="org.walleth.activities.MainActivity" />
         <!-- If your shortcut is associated with multiple intents, include them
              here. The last intent in the list determines what the user sees when
              they launch this shortcut. -->

@@ -235,6 +235,10 @@ class MainActivity : AppCompatActivity() {
             setCurrentBalanceObserver()
         })
 
+        if (intent.action?.equals("org.walleth.action.SCAN") == true) {
+            startScanActivityForResult(this)
+        }
+
     }
 
 
