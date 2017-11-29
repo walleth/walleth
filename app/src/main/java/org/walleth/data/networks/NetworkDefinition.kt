@@ -13,4 +13,6 @@ interface NetworkDefinition {
     val genesis: String
     val bootNodes: List<String>
     val statsSuffix: String
+    val statsUrl: String
+    val infoUrl: String
 }

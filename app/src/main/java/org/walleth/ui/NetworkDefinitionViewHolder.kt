@@ -7,7 +7,8 @@ import org.walleth.data.networks.NetworkDefinition
 
 class NetworkDefinitionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(networkDefinition: NetworkDefinition, onClickAction: (entry: NetworkDefinition) -> Unit) {
+    fun bind(networkDefinition: NetworkDefinition, onClickAction: (entry: NetworkDefinition) -> Unit,
+             onInfoClickAction: (entry: NetworkDefinition, stats: Boolean) -> Unit) {
 
         itemView.network_title.text = networkDefinition.getNetworkName()
 
@@ -15,6 +16,13 @@ class NetworkDefinitionViewHolder(itemView: View) : RecyclerView.ViewHolder(item
             onClickAction.invoke(networkDefinition)
         }
 
+        itemView.info_indicator.setOnClickListener {
+            onInfoClickAction.invoke(networkDefinition, false)
+        }
+
+        itemView.stats_indicator.setOnClickListener {
+            onInfoClickAction.invoke(networkDefinition, true)
+        }
     }
 
 }

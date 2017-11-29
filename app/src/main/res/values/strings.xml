@@ -177,4 +177,6 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="scan">Scan</string>
     <string name="scan_disabled">Scan disabled</string>
     <string name="network_subtitle">Networks</string>
+    <string name="network_details">network details</string>
+    <string name="network_stats">network stats</string>
 </resources>
