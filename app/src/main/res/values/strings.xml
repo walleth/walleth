@@ -174,5 +174,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="create_tx_no_address">Address not given</string>
     <string name="main_activity_no_data">No data</string>
     <string name="main_activity_block">Block %d</string>
+    <string name="scan">Scan</string>
+    <string name="scan_disabled">Scan disabled</string>
     <string name="network_subtitle">Networks</string>
 </resources>
