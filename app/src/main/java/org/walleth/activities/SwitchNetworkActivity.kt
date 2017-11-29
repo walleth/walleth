@@ -1,5 +1,7 @@
 package org.walleth.activities
 
+import android.app.AlertDialog
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -8,8 +10,15 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.core.GethLightEthereumService
+import org.walleth.core.GethLightEthereumService.Companion.gethStopIntent
 import org.walleth.data.networks.AllNetworkDefinitions
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.ui.NetworkAdapter
@@ -48,7 +57,30 @@ open class SwitchNetworkActivity : AppCompatActivity() {
 
     private fun getAdapter() = NetworkAdapter(AllNetworkDefinitions) {
         networkDefinitionProvider.setCurrent(it)
-        finish()
+        if (GethLightEthereumService.shouldRun) {
+            restartGethAndFinish()
+        } else {
+            finish()
+        }
     }
 
+    private fun restartGethAndFinish() {
+        if (GethLightEthereumService.isRunning) {
+            startService(gethStopIntent())
+        }
+
+        launch(UI) {
+            val alert = AlertDialog.Builder(this@SwitchNetworkActivity)
+                    .setCancelable(false)
+                    .setMessage(R.string.settings_please_wait).show()
+            async(CommonPool) {
+                while (GethLightEthereumService.isRunning) {
+                    delay(100)
+                }
+            }.await()
+            startService(Intent(this@SwitchNetworkActivity, GethLightEthereumService::class.java))
+            alert.dismiss()
+            finish()
+        }
+    }
 }

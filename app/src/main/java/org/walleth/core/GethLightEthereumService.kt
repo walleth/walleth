@@ -79,7 +79,7 @@ class GethLightEthereumService : LifecycleService() {
 
         val notification = NotificationCompat.Builder(this, "geth")
                 .setContentTitle(getString(R.string.geth_service_notification_title))
-                .setContentText(getString(R.string.geth_service_notification_text))
+                .setContentText(getString(R.string.geth_service_notification_text, networkDefinitionProvider.getCurrent().getNetworkName()))
                 .setContentIntent(contentIntent)
                 .addAction(android.R.drawable.ic_menu_close_clear_cancel, "exit", pendingStopIntent)
                 .setSmallIcon(R.drawable.notification)
