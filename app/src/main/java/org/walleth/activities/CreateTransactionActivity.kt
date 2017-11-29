@@ -107,38 +107,42 @@ class CreateTransactionActivity : AppCompatActivity() {
                 } else if (nonce_input.text.isBlank()) {
                     alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
                 } else {
-                    val toAddressString = parseERC681(currentERC67String!!).addressString
-
-                    if (toAddressString == null) {
-                        alert(R.string.create_tx_no_address)
+                    val erc681 = parseERC681(currentERC67String!!)
+                    if (erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
+                        alert(title = R.string.wrong_network, message = R.string.please_switch_network)
                     } else {
-                        val toAddress = Address(toAddressString)
-                        val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                                value = currentAmount!!,
-                                to = toAddress,
-                                from = currentAddressProvider.getCurrent()
-                        ) else createTransactionWithDefaults(
-                                creationEpochSecond = System.currentTimeMillis() / 1000,
-                                value = ZERO,
-                                to = currentTokenProvider.currentToken.address,
-                                from = currentAddressProvider.getCurrent(),
-                                input = createTokenTransferTransactionInput(toAddress, currentAmount)
-                        )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
+                        val toAddressString = erc681.addressString
+                        if (toAddressString == null) {
+                            alert(R.string.create_tx_no_address)
+                        } else {
+                            val toAddress = Address(toAddressString)
+                            val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
+                                    value = currentAmount!!,
+                                    to = toAddress,
+                                    from = currentAddressProvider.getCurrent()
+                            ) else createTransactionWithDefaults(
+                                    creationEpochSecond = System.currentTimeMillis() / 1000,
+                                    value = ZERO,
+                                    to = currentTokenProvider.currentToken.address,
+                                    from = currentAddressProvider.getCurrent(),
+                                    input = createTokenTransferTransactionInput(toAddress, currentAmount)
+                            )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
 
-                        transaction.nonce = nonce_input.asBigInit()
-                        transaction.gasPrice = gas_price_input.asBigInit()
-                        transaction.gasLimit = gas_limit_input.asBigInit()
-                        transaction.txHash = transaction.encodeRLP().keccak().toHexString()
+                            transaction.nonce = nonce_input.asBigInit()
+                            transaction.gasPrice = gas_price_input.asBigInit()
+                            transaction.gasLimit = gas_limit_input.asBigInit()
+                            transaction.txHash = transaction.encodeRLP().keccak().toHexString()
 
-                        when {
+                            when {
 
-                            isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-                            else -> async(CommonPool) {
-                                appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                                isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
+                                else -> async(CommonPool) {
+                                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                                }
+
                             }
-
+                            finish()
                         }
-                        finish()
                     }
                 }
             }
@@ -161,7 +165,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             if (amountAfterFee < ZERO) {
                 alert(R.string.no_funds_after_fee)
             } else {
-                amount_input.setText(String.format("%f",BigDecimal(amountAfterFee).divide(BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes()))))
+                amount_input.setText(String.format("%f", BigDecimal(amountAfterFee).divide(BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes()))))
             }
         }
 
@@ -250,6 +254,10 @@ class CreateTransactionActivity : AppCompatActivity() {
 
             if (parseERC681(currentERC67String!!).valid) {
                 val erc681 = parseERC681(currentERC67String!!)
+
+                if (erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
+                    alert(title = R.string.wrong_network, message = R.string.please_switch_network)
+                }
 
                 appDatabase.addressBook.resolveNameAsync(Address(erc681.addressString!!)) {
                     to_address.text = it
