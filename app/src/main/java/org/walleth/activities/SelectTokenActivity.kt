@@ -45,10 +45,6 @@ class SelectTokenActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_list)
 
-        async(CommonPool) {
-            appDatabase.tokens.showAll()
-        }
-
         supportActionBar?.subtitle = getString(R.string.select_token_activity_select_token)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -99,9 +95,7 @@ class SelectTokenActivity : AppCompatActivity() {
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(searchTerm: String): Boolean {
-                if (searchTerm != null) {
-                    tokenListAdapter.filter(searchTerm)
-                }
+                tokenListAdapter.filter(searchTerm)
                 return true
             }
 
