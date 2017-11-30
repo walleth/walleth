@@ -11,6 +11,12 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
 
 class SwitchAccountActivity : BaseAddressBookActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar?.subtitle = getString(R.string.switch_account_subtitle)
+    }
+
     override fun setupAdapter() {
 
         appDatabase.addressBook.allLiveData().observe(this, Observer { items ->
@@ -29,11 +35,7 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
 
     private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        supportActionBar?.subtitle = getString(R.string.switch_account_subtitle)
-    }
 
     override fun onResume() {
         super.onResume()
