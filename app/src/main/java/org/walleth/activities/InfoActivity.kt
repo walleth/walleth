@@ -6,6 +6,7 @@ import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_info.*
 import org.ligi.compat.HtmlCompat
+import org.walleth.BuildConfig
 import org.walleth.R
 
 class InfoActivity : AppCompatActivity() {
@@ -20,6 +21,7 @@ class InfoActivity : AppCompatActivity() {
 
         intro_text.text = HtmlCompat.fromHtml(getString(R.string.info_text))
         intro_text.movementMethod = LinkMovementMethod()
+        version.text = getString(R.string.version, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE)
 
     }
 

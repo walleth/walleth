@@ -11,6 +11,15 @@
         android:orientation="vertical"
         tools:context="org.walleth.activities.InfoActivity">
 
+    <TextView
+        android:id="@+id/version"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="right"
+        android:fontFamily="sans-serif"
+        android:textSize="8sp"
+        tools:text="1.0.0"/>
+
     <android.support.v7.widget.AppCompatImageView
             app:srcCompat="@mipmap/ic_launcher"
             android:layout_gravity="center_horizontal"
