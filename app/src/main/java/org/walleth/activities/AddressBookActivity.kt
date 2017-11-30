@@ -25,9 +25,11 @@ open class AddressBookActivity : BaseAddressBookActivity() {
                  deletedEntries = all.filter { it.deleted }
             }.await()
 
-            recycler_view.adapter = AddressAdapter(notDeletedEntries, keyStore) {
+            recycler_view.adapter = AddressAdapter(keyStore) {
                 setResult(Activity.RESULT_OK, Intent().apply { putExtra("HEX", it.address.hex) })
                 finish()
+            }.apply {
+                updateAddressList(notDeletedEntries,false, false)
             }
 
             (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, writable_only.isChecked)
