@@ -19,8 +19,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
 
-        versionCode 23
-        versionName "0.23"
+        versionCode 26
+        versionName "0.26"
         archivesBaseName = "WALLETH-$versionName"
 
         testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
@@ -116,7 +116,7 @@ configurations {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.20-alpha-10"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.20-alpha-12"
     compile 'com.android.support:multidex:1.0.2'
     androidTestCompile 'com.android.support:multidex:1.0.2'
     androidTestCompile 'com.android.support:multidex-instrumentation:1.0.2'

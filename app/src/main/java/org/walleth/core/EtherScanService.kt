@@ -1,7 +1,6 @@
 package org.walleth.core
 
-import android.arch.lifecycle.LifecycleService
-import android.arch.lifecycle.Observer
+import android.arch.lifecycle.*
 import android.content.Intent
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
@@ -31,6 +30,8 @@ import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
 import java.io.IOException
 import java.math.BigInteger
+import java.math.BigInteger.ONE
+import java.math.BigInteger.ZERO
 
 class EtherScanService : LifecycleService() {
 
@@ -42,34 +43,57 @@ class EtherScanService : LifecycleService() {
     private val appDatabase: AppDatabase by lazyKodein.instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
 
+    companion object {
+        private var timing = 7_000 // in MilliSeconds
+        private var last_run = 0L
+        private var shortcut = false
+
+        private var lastSeenTransactionsBlock = ZERO
+        private var lastSeenBalanceBlock = ZERO
+    }
+
+    class TimingModifyingLifecycleObserver : LifecycleObserver {
+        @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        fun connectListener() {
+            timing = 7_000
+            shortcut = true
+        }
+
+        @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        fun disconnectListener() {
+            timing = 70_000
+        }
+    }
+
+    class ResettingObserver<T> : Observer<T> {
+        override fun onChanged(p0: T?) {
+            shortcut = true
+            lastSeenBalanceBlock = ZERO
+            lastSeenTransactionsBlock = ZERO
+        }
+    }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        var shortcut = false
+        currentAddressProvider.observe(this, ResettingObserver())
+        networkDefinitionProvider.observe(this, ResettingObserver())
 
-        appDatabase.transactions.getTransactionsLive().observe(this@EtherScanService, Observer {
-            shortcut = true
-        })
-        currentAddressProvider.observe(this, Observer {
-            shortcut = true
-        })
-        networkDefinitionProvider.observe(this, Observer {
-            shortcut = true
-        })
+        ProcessLifecycleOwner.get().lifecycle.addObserver(TimingModifyingLifecycleObserver())
 
         async(CommonPool) {
 
             while (true) {
+                last_run = System.currentTimeMillis()
+
                 currentAddressProvider.value?.let {
                     tryFetchFromEtherScan(it.hex)
                 }
 
-                var i = 0
-                while (i < 100 && !shortcut) {
+                while ((last_run + timing) > System.currentTimeMillis() && !shortcut) {
                     delay(100)
-                    i++
                 }
+                shortcut = false
             }
         }
 
@@ -123,10 +147,14 @@ class EtherScanService : LifecycleService() {
 
     private fun queryTransactions(addressHex: String) {
         networkDefinitionProvider.value?.let { currentNetwork ->
-            val etherscanResult = getEtherscanResult("module=account&action=txlist&address=$addressHex&startblock=0&endblock=99999999&sort=asc", currentNetwork)
+            val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + ONE}&sort=asc"
+
+            val etherscanResult = getEtherscanResult(requestString, currentNetwork)
             if (etherscanResult != null) {
                 val jsonArray = etherscanResult.getJSONArray("result")
                 val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain)
+
+                lastSeenTransactionsBlock = lastSeenBalanceBlock
 
                 newTransactions.forEach {
                     val oldEntry = appDatabase.transactions.getByHash(it.hash)
@@ -152,6 +180,8 @@ class EtherScanService : LifecycleService() {
             val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLong(16)
 
             if (blockNum != null) {
+                lastSeenBalanceBlock = BigInteger.valueOf(blockNum)
+
                 val balanceString = if (currentToken.isETH()) {
                     getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest", currentNetwork)?.getString("result")
 
