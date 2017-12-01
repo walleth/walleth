@@ -43,6 +43,8 @@ import java.math.BigInteger.ZERO
 
 class MainActivity : AppCompatActivity() {
 
+    private val REQUEST_CODE_FIAT = 1
+
     private val lazyKodein = LazyKodein(appKodein)
 
     private val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
@@ -77,55 +79,60 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data != null && data.hasExtra("SCAN_RESULT")) {
-            val scanResult = data.getStringExtra("SCAN_RESULT")
+        if (requestCode == REQUEST_CODE_FIAT) {
+            transaction_recycler_in.adapter?.let { it.notifyDataSetChanged() }
+            transaction_recycler_out.adapter?.let { it.notifyDataSetChanged() }
+        } else {
+            if (data != null && data.hasExtra("SCAN_RESULT")) {
+                val scanResult = data.getStringExtra("SCAN_RESULT")
 
-            when {
-                scanResult.isEthereumURLString() -> {
-                    startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
-                        setData(Uri.parse(scanResult))
-                    })
-                }
+                when {
+                    scanResult.isEthereumURLString() -> {
+                        startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
+                            setData(Uri.parse(scanResult))
+                        })
+                    }
 
-                scanResult.length == 64 -> {
-                    startActivity(getKeyImportIntent(scanResult, KeyType.ECDSA))
-                }
+                    scanResult.length == 64 -> {
+                        startActivity(getKeyImportIntent(scanResult, KeyType.ECDSA))
+                    }
 
-                scanResult.isJSONKey() -> {
-                    startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
-                }
+                    scanResult.isJSONKey() -> {
+                        startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
+                    }
 
-                scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() -> {
-                    startActivity(getOfflineTransactionIntent(scanResult))
-                }
+                    scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() -> {
+                        startActivity(getOfflineTransactionIntent(scanResult))
+                    }
 
-                scanResult.startsWith("0x") -> {
-                    AlertDialog.Builder(this)
-                            .setTitle(R.string.select_action_messagebox_title)
-                            .setItems(R.array.scan_hex_choices, { _, which ->
-                                when (which) {
-                                    0 -> {
-                                        startCreateAccountActivity(scanResult)
+                    scanResult.startsWith("0x") -> {
+                        AlertDialog.Builder(this)
+                                .setTitle(R.string.select_action_messagebox_title)
+                                .setItems(R.array.scan_hex_choices, { _, which ->
+                                    when (which) {
+                                        0 -> {
+                                            startCreateAccountActivity(scanResult)
+                                        }
+                                        1 -> {
+                                            startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
+                                                setData(Uri.parse("ethereum:$scanResult"))
+                                            })
+                                        }
+                                        2 -> {
+                                            alert("TODO")
+                                        }
                                     }
-                                    1 -> {
-                                        startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
-                                            setData(Uri.parse("ethereum:$scanResult"))
-                                        })
-                                    }
-                                    2 -> {
-                                        alert("TODO")
-                                    }
-                                }
-                            })
-                            .setNegativeButton(android.R.string.cancel, null)
-                            .show()
-                }
+                                })
+                                .setNegativeButton(android.R.string.cancel, null)
+                                .show()
+                    }
 
-                else -> {
-                    AlertDialog.Builder(this)
-                            .setMessage(R.string.scan_not_interpreted_error_message)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show()
+                    else -> {
+                        AlertDialog.Builder(this)
+                                .setMessage(R.string.scan_not_interpreted_error_message)
+                                .setPositiveButton(android.R.string.ok, null)
+                                .show()
+                    }
                 }
             }
         }
@@ -169,7 +176,7 @@ class MainActivity : AppCompatActivity() {
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
         current_fiat_symbol.setOnClickListener {
-            startActivityFromClass(SelectReferenceActivity::class)
+            startActivityForResult(Intent(this, SelectReferenceActivity::class.java), REQUEST_CODE_FIAT)
         }
 
         current_token_symbol.setOnClickListener {
