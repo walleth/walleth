@@ -805,7 +805,7 @@ class RopstenNetworkDefinition : BaseNetworkDefinition() {
 }
         """
 
-    override val statsUrl = "https://ropsten.etherscan.io/"
+    override val statsUrl = ""
 
-    override val infoUrl = "https://ropsten.etherscan.io/"
+    override val infoUrl = "https://github.com/ethereum/ropsten"
 }

@@ -52,8 +52,11 @@ open class SwitchNetworkActivity : AppCompatActivity() {
     private fun getAdapter() = NetworkAdapter(AllNetworkDefinitions, {
         networkDefinitionProvider.setCurrent(it)
         finish()
-    }, { networkDefinition: NetworkDefinition, stats: Boolean ->
-        val uri = Uri.parse(if (stats) networkDefinition.statsUrl else networkDefinition.infoUrl)
+    }, { networkDefinition: NetworkDefinition ->
+        val uri = Uri.parse(networkDefinition.infoUrl)
+        startActivity(Intent(Intent.ACTION_VIEW, uri))
+    }, { networkDefinition: NetworkDefinition ->
+        val uri = Uri.parse(networkDefinition.statsUrl)
         startActivity(Intent(Intent.ACTION_VIEW, uri))
     })
 
