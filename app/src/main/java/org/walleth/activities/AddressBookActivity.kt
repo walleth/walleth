@@ -30,6 +30,7 @@ open class AddressBookActivity : BaseAddressBookActivity() {
                 finish()
             }, {
                 appDatabase.addressBook.upsert(it)
+                (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, writable_only.isChecked)
             }).apply {
                 updateAddressList(notDeletedEntries, false, false)
             }

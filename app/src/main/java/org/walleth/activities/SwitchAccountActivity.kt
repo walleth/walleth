@@ -5,7 +5,7 @@ import android.os.Bundle
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_list_addresses.*
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
@@ -30,7 +30,7 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
                 }, {
                     appDatabase.addressBook.upsert(it)
                 }).apply {
-                    updateAddressList(notDeletedEntries, false, false)
+                    updateAddressList(notDeletedEntries, starred_only.isChecked, writable_only.isChecked)
                 }
             }
         })
