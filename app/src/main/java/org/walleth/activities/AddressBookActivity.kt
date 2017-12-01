@@ -19,17 +19,19 @@ open class AddressBookActivity : BaseAddressBookActivity() {
 
     override fun setupAdapter() {
         async(UI) {
-             async(CommonPool) {
-                 val all = appDatabase.addressBook.all()
-                 notDeletedEntries = all.filter { !it.deleted }
-                 deletedEntries = all.filter { it.deleted }
+            async(CommonPool) {
+                val all = appDatabase.addressBook.all()
+                notDeletedEntries = all.filter { !it.deleted }
+                deletedEntries = all.filter { it.deleted }
             }.await()
 
-            recycler_view.adapter = AddressAdapter(keyStore) {
+            recycler_view.adapter = AddressAdapter(keyStore, {
                 setResult(Activity.RESULT_OK, Intent().apply { putExtra("HEX", it.address.hex) })
                 finish()
-            }.apply {
-                updateAddressList(notDeletedEntries,false, false)
+            }, {
+                appDatabase.addressBook.upsert(it)
+            }).apply {
+                updateAddressList(notDeletedEntries, false, false)
             }
 
             (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, writable_only.isChecked)

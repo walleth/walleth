@@ -24,10 +24,12 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
                 notDeletedEntries = items.filter { !it.deleted }
                 deletedEntries = items.filter { it.deleted }
 
-                recycler_view.adapter = AddressAdapter(keyStore) {
+                recycler_view.adapter = AddressAdapter(keyStore, {
                     currentAddressProvider.setCurrent(it.address)
                     finish()
-                }.apply {
+                }, {
+                    appDatabase.addressBook.upsert(it)
+                }).apply {
                     updateAddressList(notDeletedEntries, false, false)
                 }
             }
@@ -36,7 +38,6 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
     }
 
     private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-
 
 
     override fun onResume() {

@@ -5,12 +5,14 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.util.SortedListAdapterCallback
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import kotlinx.coroutines.experimental.launch
 import org.walleth.R
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
 
 class AddressAdapter(val keyStore: WallethKeyStore,
-                     val onClickAction: (entry: AddressBookEntry) -> Unit) : RecyclerView.Adapter<AddressViewHolder>() {
+                     val onClickAction: (entry: AddressBookEntry) -> Unit,
+                     val saveUpdatedAddress: (entry:AddressBookEntry) -> Unit) : RecyclerView.Adapter<AddressViewHolder>() {
 
     private val list = mutableListOf<AddressBookEntry>()
     private val sortedList = SortedList<AddressBookEntry>(AddressBookEntry::class.java, AddressAdapter.AddressAdapterCallback(this))
@@ -23,7 +25,7 @@ class AddressAdapter(val keyStore: WallethKeyStore,
     }
 
     override fun onBindViewHolder(holder: AddressViewHolder, position: Int) {
-        holder.bind(sortedList[position], keyStore, onClickAction, this::replace)
+        holder.bind(sortedList[position], keyStore, onClickAction, this::updateAddressBookEntry)
     }
 
     fun updateAddressList(newTokenList: List<AddressBookEntry>, starredOny: Boolean, writableOnly: Boolean) {
@@ -48,9 +50,12 @@ class AddressAdapter(val keyStore: WallethKeyStore,
     }
 
 
-    fun replace(oldAddress: AddressBookEntry, updatedAddress: AddressBookEntry) {
+    fun updateAddressBookEntry(oldAddress: AddressBookEntry, updatedAddress: AddressBookEntry) {
         list.remove(oldAddress)
         list.add(updatedAddress)
+        launch {
+            saveUpdatedAddress(updatedAddress)
+        }
     }
 
     class AddressAdapterCallback(adapter: AddressAdapter) : SortedListAdapterCallback<AddressBookEntry>(adapter) {
