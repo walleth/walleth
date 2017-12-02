@@ -3,7 +3,7 @@ package org.walleth.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_list_addresses.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -19,16 +19,23 @@ open class AddressBookActivity : BaseAddressBookActivity() {
 
     override fun setupAdapter() {
         async(UI) {
-             async(CommonPool) {
-                 val all = appDatabase.addressBook.all()
-                 notDeletedEntries = all.filter { !it.deleted }
-                 deletedEntries = all.filter { it.deleted }
+            async(CommonPool) {
+                val all = appDatabase.addressBook.all()
+                notDeletedEntries = all.filter { !it.deleted }
+                deletedEntries = all.filter { it.deleted }
             }.await()
 
-            recycler_view.adapter = AddressAdapter(notDeletedEntries, keyStore) {
+            recycler_view.adapter = AddressAdapter(keyStore, {
                 setResult(Activity.RESULT_OK, Intent().apply { putExtra("HEX", it.address.hex) })
                 finish()
+            }, {
+                appDatabase.addressBook.upsert(it)
+                (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, writable_only.isChecked)
+            }).apply {
+                updateAddressList(notDeletedEntries, false, false)
             }
+
+            (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, writable_only.isChecked)
 
         }
     }
