@@ -49,10 +49,6 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
         setContentView(R.layout.activity_list_stars)
 
-        async(CommonPool) {
-            appDatabase.tokens.showAll()
-        }
-
         launch(UI) {
             starred_only.isChecked = hasStarredTokens()
         }
