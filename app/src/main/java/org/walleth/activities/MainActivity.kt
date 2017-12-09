@@ -3,6 +3,7 @@ package org.walleth.activities
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
@@ -41,7 +42,7 @@ import org.walleth.ui.TransactionRecyclerAdapter
 import java.math.BigInteger.ZERO
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val lazyKodein = LazyKodein(appKodein)
 
@@ -148,6 +149,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main_in_drawer_container)
 
         onboardingController.install()
+
+        settings.registerListener(this)
 
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -285,4 +288,15 @@ class MainActivity : AppCompatActivity() {
         else -> actionBarDrawerToggle.onOptionsItemSelected(item) || super.onOptionsItemSelected(item)
     }
 
+    override fun onSharedPreferenceChanged(preferences: SharedPreferences?, key: String?) {
+        if (Settings::currentFiat.name == key) {
+            transaction_recycler_in.adapter?.notifyDataSetChanged()
+            transaction_recycler_in.adapter?.notifyDataSetChanged()
+        }
+    }
+
+    override fun onDestroy() {
+        settings.unregisterListener(this)
+        super.onDestroy()
+    }
 }

@@ -1,5 +1,6 @@
 package org.walleth.data.config
 
+import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatDelegate
 import com.chibatching.kotpref.KotprefModel
@@ -46,5 +47,8 @@ object KotprefSettings : KotprefModel(), Settings {
         "auto" -> AppCompatDelegate.MODE_NIGHT_AUTO
         else -> AppCompatDelegate.MODE_NIGHT_AUTO
     }
+
+    override fun registerListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.registerOnSharedPreferenceChangeListener(listener)
+    override fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.unregisterOnSharedPreferenceChangeListener(listener)
 
 }
