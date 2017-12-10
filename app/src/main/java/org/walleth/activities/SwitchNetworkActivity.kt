@@ -1,5 +1,7 @@
 package org.walleth.activities
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
@@ -11,6 +13,7 @@ import kotlinx.android.synthetic.main.activity_list.*
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.AllNetworkDefinitions
+import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.ui.NetworkAdapter
 
@@ -46,9 +49,15 @@ open class SwitchNetworkActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun getAdapter() = NetworkAdapter(AllNetworkDefinitions) {
+    private fun getAdapter() = NetworkAdapter(AllNetworkDefinitions, {
         networkDefinitionProvider.setCurrent(it)
         finish()
-    }
+    }, { networkDefinition: NetworkDefinition ->
+        val uri = Uri.parse(networkDefinition.infoUrl)
+        startActivity(Intent(Intent.ACTION_VIEW, uri))
+    }, { networkDefinition: NetworkDefinition ->
+        val uri = Uri.parse(networkDefinition.statsUrl)
+        startActivity(Intent(Intent.ACTION_VIEW, uri))
+    })
 
 }

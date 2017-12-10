@@ -804,4 +804,8 @@ class RopstenNetworkDefinition : BaseNetworkDefinition() {
     "coinbase": "0x0000000000000000000000000000000000000000"
 }
         """
+
+    override val statsUrl = ""
+
+    override val infoUrl = "https://github.com/ethereum/ropsten"
 }

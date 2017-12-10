@@ -13,5 +13,10 @@ class MainnetNetworkDefinition : BaseNetworkDefinition() {
     override val statsSuffix = ""
 
     override val bootNodes = emptyList<String>()
+
     override val genesis = ""
+
+    override val statsUrl = "https://ethstats.net/"
+
+    override val infoUrl = "https://ethereum.org/"
 }
