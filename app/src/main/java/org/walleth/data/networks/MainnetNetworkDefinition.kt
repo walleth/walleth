@@ -16,7 +16,5 @@ class MainnetNetworkDefinition : BaseNetworkDefinition() {
 
     override val genesis = ""
 
-    override val statsUrl = "https://ethstats.net/"
-
-    override val infoUrl = "https://ethereum.org/"
+    override val infoUrl = "https://ethstats.net/"
 }

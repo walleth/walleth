@@ -3,18 +3,15 @@ package org.walleth.ui
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.item_network_definition.view.*
-import org.ligi.kaxt.setVisibility
 import org.walleth.data.networks.NetworkDefinition
 
 class NetworkDefinitionViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(networkDefinition: NetworkDefinition, onClickAction: (entry: NetworkDefinition) -> Unit,
-             onInfoClick: (entry: NetworkDefinition) -> Unit,
-             onStatsClick: (entry: NetworkDefinition) -> Unit) {
+             onInfoClick: (entry: NetworkDefinition) -> Unit) {
 
         itemView.network_title.text = networkDefinition.getNetworkName()
         itemView.info_indicator.visibility = if (networkDefinition.infoUrl.isNotEmpty()) View.VISIBLE else View.INVISIBLE
-        itemView.stats_indicator.visibility = if (networkDefinition.statsUrl.isNotEmpty()) View.VISIBLE else View.INVISIBLE
 
         itemView.setOnClickListener {
             onClickAction.invoke(networkDefinition)
@@ -24,9 +21,6 @@ class NetworkDefinitionViewHolder(itemView: View) : RecyclerView.ViewHolder(item
             onInfoClick.invoke(networkDefinition)
         }
 
-        itemView.stats_indicator.setOnClickListener {
-            onStatsClick.invoke(networkDefinition)
-        }
     }
 
 }

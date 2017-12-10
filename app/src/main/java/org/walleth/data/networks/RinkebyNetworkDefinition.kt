@@ -18,7 +18,5 @@ class RinkebyNetworkDefinition : BaseNetworkDefinition() {
 
     override val genesis = ""
 
-    override val statsUrl = "https://stats.rinkeby.io/"
-
     override val infoUrl = "https://www.rinkeby.io/"
 }

@@ -37,13 +37,6 @@
             android:contentDescription="@string/network_details"
             app:srcCompat="@drawable/ic_action_info_outline"/>
 
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/stats_indicator"
-            android:layout_width="@android:dimen/app_icon_size"
-            android:layout_height="@android:dimen/app_icon_size"
-            android:contentDescription="@string/network_stats"
-            app:srcCompat="@drawable/ic_action_search"/>
-
     </LinearLayout>
 
 </android.support.v7.widget.CardView>

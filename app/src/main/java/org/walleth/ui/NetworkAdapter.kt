@@ -8,8 +8,7 @@ import org.walleth.data.networks.NetworkDefinition
 
 class NetworkAdapter(val list: List<NetworkDefinition>,
                      private val onClickAction: (entry: NetworkDefinition) -> Unit,
-                     private val onInfoClick: (entry: NetworkDefinition) -> Unit,
-                     private val onStatsClick: (entry: NetworkDefinition) -> Unit) : RecyclerView.Adapter<NetworkDefinitionViewHolder>() {
+                     private val onInfoClick: (entry: NetworkDefinition) -> Unit) : RecyclerView.Adapter<NetworkDefinitionViewHolder>() {
 
     override fun getItemCount() = list.size
 
@@ -19,7 +18,7 @@ class NetworkAdapter(val list: List<NetworkDefinition>,
     }
 
     override fun onBindViewHolder(holder: NetworkDefinitionViewHolder, position: Int) {
-        holder.bind(list[position], onClickAction, onInfoClick, onStatsClick)
+        holder.bind(list[position], onClickAction, onInfoClick)
     }
 
 }

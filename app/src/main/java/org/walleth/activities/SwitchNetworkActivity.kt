@@ -55,9 +55,6 @@ open class SwitchNetworkActivity : AppCompatActivity() {
     }, { networkDefinition: NetworkDefinition ->
         val uri = Uri.parse(networkDefinition.infoUrl)
         startActivity(Intent(Intent.ACTION_VIEW, uri))
-    }, { networkDefinition: NetworkDefinition ->
-        val uri = Uri.parse(networkDefinition.statsUrl)
-        startActivity(Intent(Intent.ACTION_VIEW, uri))
     })
 
 }
