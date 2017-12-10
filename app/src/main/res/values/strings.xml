@@ -179,4 +179,5 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="network_subtitle">Networks</string>
     <string name="wrong_network">Wrong Network</string>
     <string name="please_switch_network">Please switch network</string>
+    <string name="info_activity_subtitle">Version %s</string>
 </resources>
