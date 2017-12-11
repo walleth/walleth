@@ -8,5 +8,6 @@
 
     <dimen name="transaction_eth_text">6sp</dimen>
     <dimen name="transaction_fiat_text">6sp</dimen>
+    <dimen name="switch_padding">8dp</dimen>
 
 </resources>

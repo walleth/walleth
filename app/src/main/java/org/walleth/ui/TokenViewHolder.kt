@@ -5,15 +5,19 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.token_list_item.view.*
 import org.walleth.R
+import org.walleth.activities.TokenListCallback
+import org.walleth.data.AppDatabase
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.isETH
 
-class TokenViewHolder(itemView: View, val activity: Activity,  private val currentTokenProvider: CurrentTokenProvider) : RecyclerView.ViewHolder(itemView) {
+class TokenViewHolder(itemView: View, val activity: Activity, private val currentTokenProvider: CurrentTokenProvider,
+                      val tokenListCallback: TokenListCallback) : RecyclerView.ViewHolder(itemView) {
     fun bind(tokenDescriptor: Token) {
         itemView.token_symbol.text = tokenDescriptor.symbol
         itemView.token_name.text = tokenDescriptor.name
         itemView.token_decimals.text = activity.getString(R.string.decimals_in_list, tokenDescriptor.decimals.toString())
+        itemView.token_starred.isChecked = tokenDescriptor.starred
         if (!tokenDescriptor.isETH()) {
             itemView.token_address.text = tokenDescriptor.address.hex
             itemView.token_address.visibility = View.VISIBLE
@@ -24,6 +28,11 @@ class TokenViewHolder(itemView: View, val activity: Activity,  private val curre
         itemView.setOnClickListener {
             currentTokenProvider.currentToken = tokenDescriptor
             activity.finish()
+        }
+
+        itemView.token_starred.setOnClickListener {
+            val updatedToken = tokenDescriptor.copy(starred = !tokenDescriptor.starred)
+            tokenListCallback.onTokenUpdated(tokenDescriptor, updatedToken)
         }
     }
 }

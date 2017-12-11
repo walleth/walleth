@@ -12,30 +12,34 @@ import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.CompoundButton
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_list_stars.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.Token
 import org.walleth.ui.TokenListAdapter
 
-class SelectTokenActivity : AppCompatActivity() {
+class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
     private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
 
     private var showDelete = false
+    private var lastSearchTerm: String = ""
 
     private val tokenListAdapter by lazy {
-        TokenListAdapter(currentTokenProvider, this).apply {
+        TokenListAdapter(currentTokenProvider, this, this).apply {
             recycler_view.adapter = this
         }
     }
@@ -43,7 +47,11 @@ class SelectTokenActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list)
+        setContentView(R.layout.activity_list_stars)
+
+        launch(UI) {
+            starred_only.isChecked = hasStarredTokens()
+        }
 
         supportActionBar?.subtitle = getString(R.string.select_token_activity_select_token)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -54,10 +62,14 @@ class SelectTokenActivity : AppCompatActivity() {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
 
+        starred_only.setOnCheckedChangeListener({ compoundButton: CompoundButton, isOn: Boolean ->
+            tokenListAdapter.filter(lastSearchTerm, isOn)
+        })
+
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
-                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, "")
+                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, lastSearchTerm, starred_only.isChecked)
                 showDelete = allTokens.any { !it.showInList }
             }
             invalidateOptionsMenu()
@@ -70,10 +82,8 @@ class SelectTokenActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 val currentToken = tokenListAdapter.sortedList.get(viewHolder.adapterPosition)
                 fun changeDeleteState(state: Boolean) {
-                    async(UI) {
-                        async(CommonPool) {
-                            appDatabase.tokens.upsert(currentToken.copy(showInList = state))
-                        }.await()
+                    launch {
+                        upsert(appDatabase, currentToken.copy(showInList = state))
                     }
                 }
                 changeDeleteState(false)
@@ -86,7 +96,22 @@ class SelectTokenActivity : AppCompatActivity() {
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
         itemTouchHelper.attachToRecyclerView(recycler_view)
+    }
 
+    private suspend fun hasStarredTokens(): Boolean = async {
+        appDatabase.tokens.all().any { it.starred }
+    }.await()
+
+
+    override fun onTokenUpdated(oldToken: Token, updatedToken: Token) {
+        tokenListAdapter.replace(oldToken, updatedToken)
+        launch {
+            upsert(appDatabase, updatedToken)
+        }
+    }
+
+    fun upsert(appDatabase: AppDatabase, token: Token) {
+        appDatabase.tokens.upsert(token)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -95,7 +120,8 @@ class SelectTokenActivity : AppCompatActivity() {
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(searchTerm: String): Boolean {
-                tokenListAdapter.filter(searchTerm)
+                tokenListAdapter.filter(searchTerm, starred_only.isChecked)
+                lastSearchTerm = searchTerm
                 return true
             }
 
@@ -113,10 +139,8 @@ class SelectTokenActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_undelete -> {
-            async(UI) {
-                async(CommonPool) {
-                    appDatabase.tokens.showAll()
-                }.await()
+            launch {
+                appDatabase.tokens.showAll()
             }
 
             true
@@ -128,5 +152,9 @@ class SelectTokenActivity : AppCompatActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
+}
+
+interface TokenListCallback {
+    fun onTokenUpdated(tokenDescriptor: Token, updatedToken: Token)
 }
 
