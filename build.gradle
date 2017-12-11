@@ -2,7 +2,7 @@ buildscript {
     ext {
         kotlin_version = '1.2.0'
         support_version = '26.1.0'
-        firebase_version = '11.6.0'
+        firebase_version = '11.6.2'
         kethereum_version = '0.33'
         arch_version = "1.0.0"
     }
