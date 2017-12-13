@@ -7,13 +7,14 @@ import android.support.v7.widget.util.SortedListAdapterCallback
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.walleth.R
+import org.walleth.activities.TokenListCallback
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 
 
 class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
-
-                       private val activity: Activity) : RecyclerView.Adapter<TokenViewHolder>() {
+                       private val activity: Activity,
+                       private val tokenListCallback: TokenListCallback) : RecyclerView.Adapter<TokenViewHolder>() {
 
     val tokenList = mutableListOf<Token>()
 
@@ -22,29 +23,37 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
     override fun getItemCount() = sortedList.size()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            = TokenViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.token_list_item, parent, false), activity, tokenProvider)
+            = TokenViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.token_list_item, parent, false), activity, tokenProvider, tokenListCallback)
 
     override fun onBindViewHolder(holder: TokenViewHolder, position: Int) {
         holder.bind(sortedList[position])
     }
 
-    fun updateTokenList(newTokenList: List<Token>, query: CharSequence) {
+    fun updateTokenList(newTokenList: List<Token>, query: CharSequence, starredOny: Boolean) {
         tokenList.clear()
         tokenList.addAll(newTokenList)
 
-        filter(query)
+        filter(query, starredOny)
     }
 
-    fun filter(search: CharSequence) {
+    fun filter(search: CharSequence, starredOny: Boolean) {
         sortedList.beginBatchedUpdates()
         sortedList.clear()
 
-        if (search.isEmpty()) {
+        if (search.isEmpty() && !starredOny) {
             sortedList.addAll(tokenList)
         } else {
-            for (token in tokenList) {
-                if (token.symbol.contains(search, true) || token.name.contains(search, true)) {
-                    sortedList.add(token)
+            if (!search.isEmpty()) {
+                for (token in tokenList) {
+                    if (token.symbol.contains(search, true) || token.name.contains(search, true) || (token.starred and starredOny)) {
+                        sortedList.add(token)
+                    }
+                }
+            } else {
+                for (token in tokenList) {
+                    if (token.starred and starredOny) {
+                        sortedList.add(token)
+                    }
                 }
             }
         }
@@ -66,5 +75,10 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
         }
 
         override fun areItemsTheSame(item1: Token?, item2: Token?) = item1?.address == item2?.address
+    }
+
+    fun replace(oldToken: Token, updatedToken: Token) {
+        tokenList.remove(oldToken)
+        tokenList.add(updatedToken)
     }
 }
