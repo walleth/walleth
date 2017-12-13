@@ -167,7 +167,7 @@ dependencies {
 
     kapt "android.arch.lifecycle:compiler:$arch_version"
 
-    androidTestCompile 'com.google.truth:truth:0.36'
+    androidTestCompile "com.google.truth:truth:$truth"
 
     testCompile "org.mockito:mockito-core:2.8.47"
 
@@ -178,7 +178,7 @@ dependencies {
     androidTestCompile 'com.github.ligi:trulesk:0.21'
 
     testCompile 'junit:junit:4.12'
-    testCompile 'com.google.truth:truth:0.36'
+    testCompile "com.google.truth:truth:$truth"
     testCompile 'org.threeten:threetenbp:1.3.6'
 
     if (includeFirebase) {
