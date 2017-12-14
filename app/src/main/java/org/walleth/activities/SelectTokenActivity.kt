@@ -127,12 +127,11 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
         }
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(searchTerm: String): Boolean {
+            override fun onQueryTextChange(searchTerm: String) = true.also {
                 tokenListAdapter.filter(searchTerm, starred_only.isChecked)
                 if (!searchTerm.isBlank()) {
                     viewModel.searchTerm = searchTerm
                 }
-                return true
             }
 
             override fun onQueryTextSubmit(query: String?) = false
@@ -150,16 +149,13 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.menu_undelete -> {
+        R.id.menu_undelete -> true.also {
             launch {
                 appDatabase.tokens.showAll()
             }
-
-            true
         }
-        android.R.id.home -> {
+        android.R.id.home -> true.also {
             finish()
-            true
         }
         else -> super.onOptionsItemSelected(item)
     }
