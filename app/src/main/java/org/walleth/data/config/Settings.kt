@@ -14,6 +14,8 @@ interface Settings {
 
     var currentGoVerbosity: Int
 
+    var showOnlyStaredTokens: Boolean
+
     fun isLightClientWanted(): Boolean
     fun getNightMode(): Int
     fun getStatsName(): String

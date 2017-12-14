@@ -19,12 +19,11 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list_stars.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
+import org.walleth.data.config.Settings
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
@@ -39,6 +38,7 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
     private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private val settings: Settings by LazyKodein(appKodein).instance()
 
     private var showDelete = false
 
@@ -55,9 +55,7 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
         setContentView(R.layout.activity_list_stars)
 
-        launch(UI) {
-            starred_only.isChecked = hasStarredTokens()
-        }
+        starred_only.isChecked = settings.showOnlyStaredTokens
 
         supportActionBar?.subtitle = getString(R.string.select_token_activity_select_token)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -70,6 +68,7 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
         starred_only.setOnCheckedChangeListener({ compoundButton: CompoundButton, isOn: Boolean ->
             tokenListAdapter.filter(viewModel.searchTerm, isOn)
+            settings.showOnlyStaredTokens = isOn
         })
 
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
@@ -104,11 +103,6 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(recycler_view)
     }
 
-    private suspend fun hasStarredTokens(): Boolean = async {
-        appDatabase.tokens.all().any { it.starred }
-    }.await()
-
-
     override fun onTokenUpdated(oldToken: Token, updatedToken: Token) {
         tokenListAdapter.replace(oldToken, updatedToken)
         launch {
@@ -125,7 +119,8 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(searchTerm: String): Boolean { tokenListAdapter.filter(searchTerm, starred_only.isChecked)
+            override fun onQueryTextChange(searchTerm: String): Boolean {
+                tokenListAdapter.filter(searchTerm, starred_only.isChecked)
                 viewModel.searchTerm = searchTerm
                 return true
             }

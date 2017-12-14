@@ -13,6 +13,7 @@ object KotprefSettings : KotprefModel(), Settings {
 
     override var currentFiat by stringPref(default = "USD")
     override var startupWarningDone by booleanPref(default = false)
+    override var showOnlyStaredTokens by booleanPref(default = false)
 
     override var chain by longPref(RINKEBY_CHAIN_ID)
     override var accountAddress by nullableStringPref(null)
