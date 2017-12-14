@@ -117,16 +117,27 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_tokenlist, menu)
 
-        val searchView = menu.findItem(R.id.action_search).actionView as SearchView
+
+        val searchItem = menu.findItem(R.id.action_search)
+        val searchView = searchItem.actionView as SearchView
+
+        val lastTerm = viewModel.searchTerm
+        if (!lastTerm.isBlank()) {
+            searchItem.expandActionView()
+        }
+
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(searchTerm: String): Boolean {
                 tokenListAdapter.filter(searchTerm, starred_only.isChecked)
-                viewModel.searchTerm = searchTerm
+                if (!searchTerm.isBlank()) {
+                    viewModel.searchTerm = searchTerm
+                }
                 return true
             }
 
-            override fun onQueryTextSubmit(query: String?) = true
+            override fun onQueryTextSubmit(query: String?) = false
         })
+        searchView.setQuery(lastTerm, true)
 
         return super.onCreateOptionsMenu(menu)
     }
@@ -134,6 +145,7 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         menu.findItem(R.id.menu_undelete).isVisible = showDelete
+
         return super.onPrepareOptionsMenu(menu)
     }
 
