@@ -1,6 +1,8 @@
 package org.walleth.activities
 
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModel
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -17,7 +19,6 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list_stars.*
-import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
@@ -29,6 +30,10 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 import org.walleth.ui.TokenListAdapter
 
+class TokenActivityViewModel : ViewModel() {
+    var searchTerm: String = ""
+}
+
 class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
     private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
@@ -36,7 +41,8 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
 
     private var showDelete = false
-    private var lastSearchTerm: String = ""
+
+    private val viewModel by lazy { ViewModelProviders.of(this).get(TokenActivityViewModel::class.java) }
 
     private val tokenListAdapter by lazy {
         TokenListAdapter(currentTokenProvider, this, this).apply {
@@ -63,13 +69,13 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
         }
 
         starred_only.setOnCheckedChangeListener({ compoundButton: CompoundButton, isOn: Boolean ->
-            tokenListAdapter.filter(lastSearchTerm, isOn)
+            tokenListAdapter.filter(viewModel.searchTerm, isOn)
         })
 
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
-                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, lastSearchTerm, starred_only.isChecked)
+                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, viewModel.searchTerm, starred_only.isChecked)
                 showDelete = allTokens.any { !it.showInList }
             }
             invalidateOptionsMenu()
@@ -119,9 +125,8 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
 
         val searchView = menu.findItem(R.id.action_search).actionView as SearchView
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(searchTerm: String): Boolean {
-                tokenListAdapter.filter(searchTerm, starred_only.isChecked)
-                lastSearchTerm = searchTerm
+            override fun onQueryTextChange(searchTerm: String): Boolean { tokenListAdapter.filter(searchTerm, starred_only.isChecked)
+                viewModel.searchTerm = searchTerm
                 return true
             }
 
