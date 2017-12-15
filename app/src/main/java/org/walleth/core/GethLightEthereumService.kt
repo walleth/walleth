@@ -16,6 +16,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.ethereum.geth.*
 import org.kethereum.functions.encodeRLP
 import org.ligi.tracedroid.logging.Log
@@ -172,7 +173,9 @@ class GethLightEthereumService : LifecycleService() {
 
             handler.post {
                 transactionsLiveData.removeObserver(transactionObserver)
-                ethereumNode.stop()
+                launch {
+                    ethereumNode.stop()
+                }
                 stopForeground(true)
                 stopSelf()
                 isRunning = false
