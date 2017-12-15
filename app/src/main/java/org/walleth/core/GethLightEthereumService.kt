@@ -35,6 +35,7 @@ import java.io.File
 import java.math.BigInteger
 
 private const val NOTIFICATION_ID = 101
+private const val NOTIFICATION_CHANNEL_ID = "geth"
 
 class GethLightEthereumService : LifecycleService() {
 
@@ -78,7 +79,7 @@ class GethLightEthereumService : LifecycleService() {
             setNotificationChannel()
         }
 
-        val notification = NotificationCompat.Builder(this, "geth")
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
                 .setContentTitle(getString(R.string.geth_service_notification_title))
                 .setContentText(getString(R.string.geth_service_notification_text))
                 .setContentIntent(contentIntent)
@@ -184,7 +185,7 @@ class GethLightEthereumService : LifecycleService() {
 
     @TargetApi(26)
     private fun setNotificationChannel() {
-        val channel = NotificationChannel("geth", "Geth Service", NotificationManager.IMPORTANCE_HIGH)
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, "Geth Service", NotificationManager.IMPORTANCE_HIGH)
         channel.description = getString(R.string.geth_service_notification_channel_description)
         notificationManager.createNotificationChannel(channel)
     }
