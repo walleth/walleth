@@ -11,6 +11,7 @@ import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
 import org.walleth.activities.CreateTransactionActivity
+import org.walleth.infrastructure.TestApp
 
 class TheCreateTransactionActivity {
 
@@ -30,7 +31,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun rejectsDifferentChainId() {
-        rule.launchActivity(Intent.parseUri("ethereum:0x12345?chainId=0", 0))
+        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345@"+(TestApp.mySettings.chain+1)))
 
         Espresso.onView(ViewMatchers.withText(R.string.wrong_network)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         Espresso.onView(ViewMatchers.withText(R.string.please_switch_network)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
@@ -38,4 +39,17 @@ class TheCreateTransactionActivity {
         rule.screenShot("chainId_not_valid")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
     }
+
+    @Test
+    fun acceptsDifferentChainId() {
+        TestApp.networkDefinitionProvider
+        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345@"+TestApp.networkDefinitionProvider.getCurrent()))
+
+        Espresso.onView(ViewMatchers.withText(R.string.wrong_network)).check(ViewAssertions.doesNotExist())
+        Espresso.onView(ViewMatchers.withText(R.string.please_switch_network)).check(ViewAssertions.doesNotExist())
+
+        rule.screenShot("chainId_valid")
+        Truth.assertThat(rule.activity.isFinishing).isFalse()
+    }
+
 }

@@ -13,6 +13,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.parseERC681
 import org.kethereum.functions.createTokenTransferTransactionInput
@@ -108,9 +109,7 @@ class CreateTransactionActivity : AppCompatActivity() {
                     alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
                 } else {
                     val erc681 = parseERC681(currentERC67String!!)
-                    if (erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
-                        alert(title = R.string.wrong_network, message = R.string.please_switch_network)
-                    } else {
+                    if (!showWarningOnWrongNetwork(erc681)) {
                         val toAddressString = erc681.address
                         if (toAddressString == null) {
                             alert(R.string.create_tx_no_address)
@@ -255,9 +254,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             if (parseERC681(currentERC67String!!).valid) {
                 val erc681 = parseERC681(currentERC67String!!)
 
-                if (erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
-                    alert(title = R.string.wrong_network, message = R.string.please_switch_network)
-                }
+                showWarningOnWrongNetwork(erc681)
 
                 appDatabase.addressBook.resolveNameAsync(Address(erc681.address!!)) {
                     to_address.text = it
@@ -281,6 +278,14 @@ class CreateTransactionActivity : AppCompatActivity() {
                 }
             }
         }
+    }
+
+    private fun showWarningOnWrongNetwork(erc681: ERC681) : Boolean {
+        if (erc681.chainId != null && erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
+            alert(title = R.string.wrong_network, message = R.string.please_switch_network)
+            return true
+        }
+        return false
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
