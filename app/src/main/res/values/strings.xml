@@ -147,7 +147,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="trezor_select_address">Select Address</string>
     <string name="trezor_no_valid_input">No valid input</string>
     <string name="geth_service_notification_title">WALLETH Geth</string>
-    <string name="geth_service_notification_text">light client running</string>
+    <string name="geth_service_notification_content_text">light client running on %1$s</string>
     <string name="geth_service_notification_channel_description">View and Stop Geth Service</string>
     <string name="no_key_for_sending_account">No key for sending account</string>
     <string name="create_transation_to_label">To:</string>
