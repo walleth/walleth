@@ -6,32 +6,31 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.walleth.R
-import org.walleth.activities.TokenListCallback
+import org.walleth.data.AppDatabase
+
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 
 
 class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
                        private val activity: Activity,
-                       private val tokenListCallback: TokenListCallback) : RecyclerView.Adapter<TokenViewHolder>() {
+                       private val database: AppDatabase) : RecyclerView.Adapter<TokenViewHolder>() {
 
-    private val tokenList = mutableListOf<Token>()
+    private var tokenList = listOf<Token>()
 
     var sortedList = listOf<Token>()
 
     override fun getItemCount() = sortedList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            = TokenViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.token_list_item, parent, false), activity, tokenProvider, tokenListCallback)
+            = TokenViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.token_list_item, parent, false), activity, tokenProvider, database)
 
     override fun onBindViewHolder(holder: TokenViewHolder, position: Int) {
         holder.bind(sortedList[position])
     }
 
     fun updateTokenList(newTokenList: List<Token>, query: CharSequence, starredOny: Boolean) {
-        tokenList.clear()
-        tokenList.addAll(newTokenList)
-
+        tokenList = newTokenList
         filter(query, starredOny)
     }
 
@@ -60,8 +59,4 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
         sortedList = newSortedList
     }
 
-    fun replace(oldToken: Token, updatedToken: Token) {
-        tokenList.remove(oldToken)
-        tokenList.add(updatedToken)
-    }
 }

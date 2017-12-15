@@ -33,7 +33,7 @@ class TokenActivityViewModel : ViewModel() {
     var searchTerm: String = ""
 }
 
-class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
+class SelectTokenActivity : AppCompatActivity() {
 
     private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
@@ -45,7 +45,7 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
     private val viewModel by lazy { ViewModelProviders.of(this).get(TokenActivityViewModel::class.java) }
 
     private val tokenListAdapter by lazy {
-        TokenListAdapter(currentTokenProvider, this, this).apply {
+        TokenListAdapter(currentTokenProvider, this, appDatabase).apply {
             recycler_view.adapter = this
         }
     }
@@ -103,13 +103,6 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(recycler_view)
     }
 
-    override fun onTokenUpdated(oldToken: Token, updatedToken: Token) {
-        tokenListAdapter.replace(oldToken, updatedToken)
-        launch {
-            upsert(appDatabase, updatedToken)
-        }
-    }
-
     fun upsert(appDatabase: AppDatabase, token: Token) {
         appDatabase.tokens.upsert(token)
     }
@@ -161,8 +154,3 @@ class SelectTokenActivity : TokenListCallback, AppCompatActivity() {
     }
 
 }
-
-interface TokenListCallback {
-    fun onTokenUpdated(tokenDescriptor: Token, updatedToken: Token)
-}
-
