@@ -134,7 +134,7 @@ dependencies {
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.19'
     compile 'com.github.ligi:KAXTUI:0.4'
-    compile 'com.github.trezor.trezor-android:trezor-lib:v1.0.6'
+    compile 'com.github.trezor.trezor-android:trezor-lib:v1.0.8'
 
 
     compile 'com.github.kenglxn.QRGen:android:2.3.0'
@@ -202,7 +202,6 @@ if (hasProperty("isCI")) {
                 'com.github.salomonbrys.kodein:kodein-core:4876960b936d6becb00e7b5c614ba9f4be2b7d5d22a8a2433583d87373c342f8',
 
                 'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
-                'com.github.trezor.trezor-android:trezor-lib:6ac8601798e851191a1c33673d8b804b836cdfd9788b289a41ec9c3655b3e91c',
                 'com.github.kenglxn.QRGen:android:7670317f4ec37cf2bb24b7d3932da83daafa2956e77cd2e92dccce86a66816d9',
                 'com.github.kenglxn.QRGen:core:1db3f51189a71bb37ee0e97081a353b6c6b203ee73bb93c4372aa76e94f9d701',
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
