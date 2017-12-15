@@ -16,6 +16,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import org.ethereum.geth.*
 import org.kethereum.functions.encodeRLP
@@ -34,6 +35,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.geth.toGethAddr
 import java.io.File
 import java.math.BigInteger
+import java.util.concurrent.TimeUnit
 
 private const val NOTIFICATION_ID = 101
 private const val NOTIFICATION_CHANNEL_ID = "geth"
@@ -216,25 +218,27 @@ class GethLightEthereumService : LifecycleService() {
         notificationManager.createNotificationChannel(channel)
     }
 
-    private fun syncTick(ethereumNode: Node, ethereumContext: Context) {
+    private suspend fun syncTick(ethereumNode: Node, ethereumContext: Context) {
         try {
             val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
 
-            if (ethereumSyncProgress != null) {
-                isSyncing = true
-                val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
-                syncProgress.postValue(newSyncProgress)
-            } else {
-                syncProgress.postValue(WallethSyncProgress())
-                if (isSyncing) {
-                    finishedSyncing = true
+            async(UI) {
+                if (ethereumSyncProgress != null) {
+                    isSyncing = true
+                    val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
+                    syncProgress.postValue(newSyncProgress)
+                } else {
+                    syncProgress.postValue(WallethSyncProgress())
+                    if (isSyncing) {
+                        finishedSyncing = true
+                    }
                 }
             }
         } catch (e: Exception) {
             e.printStackTrace()
         }
 
-        SystemClock.sleep(1000)
+        delay(1,TimeUnit.SECONDS)
     }
 
 
