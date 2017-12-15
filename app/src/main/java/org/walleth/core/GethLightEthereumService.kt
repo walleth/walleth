@@ -1,5 +1,6 @@
 package org.walleth.core
 
+import android.annotation.TargetApi
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -72,9 +73,7 @@ class GethLightEthereumService : LifecycleService() {
 
 
         if (Build.VERSION.SDK_INT > 25) {
-            val channel = NotificationChannel("geth", "Geth Service", NotificationManager.IMPORTANCE_HIGH)
-            channel.description = getString(R.string.geth_service_notification_channel_description)
-            notificationManager.createNotificationChannel(channel)
+            setNotificationChannel()
         }
 
         val notification = NotificationCompat.Builder(this, "geth")
@@ -178,6 +177,13 @@ class GethLightEthereumService : LifecycleService() {
 
         }).start()
         return START_NOT_STICKY
+    }
+
+    @TargetApi(26)
+    private fun setNotificationChannel() {
+        val channel = NotificationChannel("geth", "Geth Service", NotificationManager.IMPORTANCE_HIGH)
+        channel.description = getString(R.string.geth_service_notification_channel_description)
+        notificationManager.createNotificationChannel(channel)
     }
 
     private fun syncTick(ethereumNode: Node, ethereumContext: Context) {
