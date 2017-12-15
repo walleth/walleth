@@ -119,6 +119,14 @@ class SelectTokenActivity : AppCompatActivity() {
             searchItem.expandActionView()
         }
 
+        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
+            override fun onMenuItemActionExpand(p0: MenuItem?) = true
+
+            override fun onMenuItemActionCollapse(p0: MenuItem?) = true.also {
+                viewModel.searchTerm = ""
+            }
+
+        })
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(searchTerm: String) = true.also {
                 tokenListAdapter.filter(searchTerm, starred_only.isChecked)
