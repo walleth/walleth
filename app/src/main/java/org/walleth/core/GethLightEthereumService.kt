@@ -14,6 +14,8 @@ import android.support.v4.app.NotificationCompat
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.async
 import org.ethereum.geth.*
 import org.kethereum.functions.encodeRLP
 import org.ligi.tracedroid.logging.Log
@@ -86,7 +88,7 @@ class GethLightEthereumService : LifecycleService() {
 
         startForeground(NOTIFICATION_ID, notification)
         val handler = Handler()
-        Thread({
+        async(CommonPool) {
             Geth.setVerbosity(settings.currentGoVerbosity.toLong())
             val ethereumContext = Context()
 
@@ -137,7 +139,7 @@ class GethLightEthereumService : LifecycleService() {
                     executeTransaction(it, ethereumNode.ethereumClient, ethereumContext)
                 }
             }
-            transactionsLiveData.observe(this, transactionObserver)
+            transactionsLiveData.observe(this@GethLightEthereumService, transactionObserver)
             try {
                 ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
                     override fun onNewHead(p0: Header) {
@@ -175,7 +177,8 @@ class GethLightEthereumService : LifecycleService() {
                 isRunning = false
             }
 
-        }).start()
+
+        }
         return START_NOT_STICKY
     }
 
