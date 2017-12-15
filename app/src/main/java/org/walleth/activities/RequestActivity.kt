@@ -69,19 +69,19 @@ class RequestActivity : AppCompatActivity() {
         if (currentTokenProvider.currentToken.isETH()) {
 
             val relevantAddress = currentAddressProvider.getCurrent()
-            currentERC67String = ERC681(addressString = relevantAddress.hex).generateURL()
+            currentERC67String = ERC681(address = relevantAddress.hex).generateURL()
 
             if (add_value_checkbox.isChecked) {
                 try {
                     val currentToken = currentTokenProvider.currentToken
 
-                    currentERC67String = ERC681(addressString = relevantAddress.hex,value =value_input_edittext.text.toString().extractValueForToken(currentToken) ).generateURL()
+                    currentERC67String = ERC681(address = relevantAddress.hex,value =value_input_edittext.text.toString().extractValueForToken(currentToken) ).generateURL()
                 } catch (e: NumberFormatException) {
                 }
             }
         } else {
             val relevantAddress = currentTokenProvider.currentToken.address
-            currentERC67String = ERC681(addressString = relevantAddress.hex).generateURL()
+            currentERC67String = ERC681(address = relevantAddress.hex).generateURL()
             if (add_value_checkbox.isChecked) {
                 try {
                     currentERC67String = currentERC67String + "?function=transfer(address " +

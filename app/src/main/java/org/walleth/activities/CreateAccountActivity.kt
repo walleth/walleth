@@ -118,7 +118,7 @@ class CreateAccountActivity : AppCompatActivity() {
         data?.run {
             getStringExtra("SCAN_RESULT")?.let { stringExtra ->
                 val address = if (stringExtra.isEthereumURLString()) {
-                    parseERC681(stringExtra).addressString
+                    parseERC681(stringExtra).address
                 } else {
                     stringExtra
                 }

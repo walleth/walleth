@@ -111,7 +111,7 @@ class CreateTransactionActivity : AppCompatActivity() {
                     if (erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
                         alert(title = R.string.wrong_network, message = R.string.please_switch_network)
                     } else {
-                        val toAddressString = erc681.addressString
+                        val toAddressString = erc681.address
                         if (toAddressString == null) {
                             alert(R.string.create_tx_no_address)
                         } else {
@@ -259,7 +259,7 @@ class CreateTransactionActivity : AppCompatActivity() {
                     alert(title = R.string.wrong_network, message = R.string.please_switch_network)
                 }
 
-                appDatabase.addressBook.resolveNameAsync(Address(erc681.addressString!!)) {
+                appDatabase.addressBook.resolveNameAsync(Address(erc681.address!!)) {
                     to_address.text = it
                 }
 
