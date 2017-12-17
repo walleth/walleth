@@ -27,6 +27,7 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.keystore.WallethKeyStore
+import java.io.FileNotFoundException
 
 enum class KeyType {
     ECDSA, JSON
@@ -132,8 +133,12 @@ class ImportActivity : AppCompatActivity() {
 
     }
 
-    private fun readTextFromUri(uri: Uri) = contentResolver.openInputStream(uri).reader().readText()
-
+    private fun readTextFromUri(uri: Uri) = try {
+        contentResolver.openInputStream(uri).reader().readText()
+    } catch (fileNotFoundException: FileNotFoundException) {
+        alert("Cannot read from $uri - if you think I should - please contact ligi@ligi.de with details of the device (Android version,Brand) and the beginning of the uri")
+        null
+    }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
