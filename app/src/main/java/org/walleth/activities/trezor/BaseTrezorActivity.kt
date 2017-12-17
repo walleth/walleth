@@ -194,7 +194,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         }
         AlertDialog.Builder(this)
                 .setView(view)
-                .setTitle("Please enter your PIN")
+                .setTitle(R.string.trezor_please_enter_your_pin)
                 .setPositiveButton(android.R.string.ok, { _, _ ->
                     currentSecret = dialogPin
                     state = PIN_REQUEST
