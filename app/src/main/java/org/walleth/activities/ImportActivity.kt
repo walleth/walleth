@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.annotation.TargetApi
 import android.app.Activity
 import android.content.ActivityNotFoundException
 import android.content.Context
@@ -143,15 +144,7 @@ class ImportActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
         R.id.menu_open -> true.also {
-            try {
-                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-                intent.addCategory(Intent.CATEGORY_OPENABLE)
-                intent.type = "*/*"
-
-                startActivityForResult(intent, READ_REQUEST_CODE)
-            } catch (e: ActivityNotFoundException) {
-                alert(R.string.saf_activity_not_found_problem)
-            }
+            tryOpen()
         }
 
         R.id.menu_scan -> true.also {
@@ -163,5 +156,18 @@ class ImportActivity : AppCompatActivity() {
         }
 
         else -> super.onOptionsItemSelected(item)
+    }
+
+    @TargetApi(19)
+    private fun tryOpen() {
+        try {
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
+            intent.addCategory(Intent.CATEGORY_OPENABLE)
+            intent.type = "*/*"
+
+            startActivityForResult(intent, READ_REQUEST_CODE)
+        } catch (e: ActivityNotFoundException) {
+            alert(R.string.saf_activity_not_found_problem)
+        }
     }
 }
