@@ -7,7 +7,7 @@ val RINKEBY_CHAIN_ID = 4L
 
 class RinkebyNetworkDefinition : BaseNetworkDefinition() {
 
-    override val etherscan_prefix = ETHEREUM_NETWORK_RINKEBY
+    override val etherscanPrefix = ETHEREUM_NETWORK_RINKEBY
     override val chain = ChainDefinition(RINKEBY_CHAIN_ID)
 
     override fun getNetworkName() = ETHEREUM_NETWORK_RINKEBY

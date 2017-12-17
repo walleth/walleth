@@ -4,8 +4,8 @@ import org.walleth.data.blockexplorer.EtherscanBlockExplorer
 
 abstract class BaseNetworkDefinition : NetworkDefinition {
 
-    abstract val etherscan_prefix: String
+    abstract val etherscanPrefix: String
 
-    override fun getBlockExplorer() = EtherscanBlockExplorer(etherscan_prefix)
+    override fun getBlockExplorer() = EtherscanBlockExplorer(etherscanPrefix)
 
 }

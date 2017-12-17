@@ -3,7 +3,7 @@ package org.walleth.data.networks
 import android.arch.lifecycle.MutableLiveData
 import org.walleth.data.config.Settings
 
-val AllNetworkDefinitions = mutableListOf(RinkebyNetworkDefinition(), MainnetNetworkDefinition(), RopstenNetworkDefinition())
+val AllNetworkDefinitions = mutableListOf(RinkebyNetworkDefinition(), MainNetNetworkDefinition(), RopstenNetworkDefinition())
 
 fun getNetworkDefinitionByChainID(chainID: Long) = AllNetworkDefinitions.firstOrNull { it.chain.id == chainID }
 

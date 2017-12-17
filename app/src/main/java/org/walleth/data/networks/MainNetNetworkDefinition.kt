@@ -3,9 +3,9 @@ package org.walleth.data.networks
 import org.kethereum.ETHEREUM_NETWORK_MAIN
 import org.kethereum.model.ChainDefinition
 
-class MainnetNetworkDefinition : BaseNetworkDefinition() {
+class MainNetNetworkDefinition : BaseNetworkDefinition() {
 
-    override val etherscan_prefix = ""
+    override val etherscanPrefix = ""
     override val chain = ChainDefinition(1L)
 
     override fun getNetworkName() = ETHEREUM_NETWORK_MAIN

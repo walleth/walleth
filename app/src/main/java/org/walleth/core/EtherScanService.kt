@@ -15,6 +15,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
+import org.ligi.kaxt.letIf
 import org.ligi.tracedroid.logging.Log
 import org.walleth.BuildConfig
 import org.walleth.data.AppDatabase
@@ -32,6 +33,7 @@ import java.io.IOException
 import java.math.BigInteger
 import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
+import java.security.cert.CertPathValidatorException
 
 class EtherScanService : LifecycleService() {
 
@@ -208,8 +210,16 @@ class EtherScanService : LifecycleService() {
         }
     }
 
-    private fun getEtherscanResult(requestString: String, networkDefinition: NetworkDefinition): JSONObject? {
-        val baseURL = networkDefinition.getBlockExplorer().baseAPIURL
+    private fun getEtherscanResult(requestString: String, networkDefinition: NetworkDefinition) = try {
+        getEtherscanResult(requestString, networkDefinition, true)
+    } catch (e: CertPathValidatorException) {
+        getEtherscanResult(requestString, networkDefinition, true)
+    }
+
+    private fun getEtherscanResult(requestString: String, networkDefinition: NetworkDefinition, httpFallback: Boolean): JSONObject? {
+        val baseURL = networkDefinition.getBlockExplorer().baseAPIURL.letIf(httpFallback) {
+            replace("https://", "http://") // :-( https://github.com/walleth/walleth/issues/134 )
+        }
         val urlString = "$baseURL/api?$requestString&apikey=$" + BuildConfig.ETHERSCAN_APIKEY
         val url = Request.Builder().url(urlString).build()
         val newCall: Call = okHttpClient.newCall(url)
