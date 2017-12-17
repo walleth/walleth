@@ -142,7 +142,7 @@ class ImportActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
-        R.id.menu_open -> {
+        R.id.menu_open -> true.also {
             try {
                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
                 intent.addCategory(Intent.CATEGORY_OPENABLE)
@@ -152,18 +152,16 @@ class ImportActivity : AppCompatActivity() {
             } catch (e: ActivityNotFoundException) {
                 alert(R.string.saf_activity_not_found_problem)
             }
-            true
         }
 
-        R.id.menu_scan -> {
+        R.id.menu_scan -> true.also {
             startScanActivityForResult(this)
-            true
         }
 
-        android.R.id.home -> {
+        android.R.id.home -> true.also {
             finish()
-            true
         }
+
         else -> super.onOptionsItemSelected(item)
     }
 }
