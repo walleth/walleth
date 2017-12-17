@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.app.Activity
 import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
@@ -26,6 +27,7 @@ import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
+import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
 import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
@@ -64,13 +66,21 @@ class CreateTransactionActivity : AppCompatActivity() {
     private var lastWarningURI: String? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        data?.let {
-            if (data.hasExtra("HEX")) {
-                setToFromURL(data.getStringExtra("HEX"), fromUser = true)
-            } else if (data.hasExtra("SCAN_RESULT")) {
-                setToFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
+        when (requestCode) {
+            TREZOR_REQUEST_CODE -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    finish()
+                }
+            }
+            else -> data?.let {
+                if (data.hasExtra("HEX")) {
+                    setToFromURL(data.getStringExtra("HEX"), fromUser = true)
+                } else if (data.hasExtra("SCAN_RESULT")) {
+                    setToFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
+                }
             }
         }
+
 
     }
 
@@ -139,10 +149,10 @@ class CreateTransactionActivity : AppCompatActivity() {
                                 isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
                                 else -> async(CommonPool) {
                                     appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                                    finish()
                                 }
 
                             }
-                            finish()
                         }
                     }
                 }

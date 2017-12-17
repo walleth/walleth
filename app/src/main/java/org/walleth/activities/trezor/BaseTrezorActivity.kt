@@ -1,5 +1,6 @@
 package org.walleth.activities.trezor
 
+import android.app.Activity
 import android.content.DialogInterface.OnClickListener
 import android.os.Bundle
 import android.os.Handler
@@ -106,7 +107,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
 
     private fun Message.handleTrezorResult() {
         if (state == CANCEL) {
-            finish()
+            cancel()
             return
         }
 
@@ -119,15 +120,20 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
             is TrezorMessage.EthereumAddress -> handleAddress(Address(address.toByteArray().toHexString()))
             is TrezorMessage.Failure -> when (code) {
                 TrezorType.FailureType.Failure_PinInvalid -> alert("Pin invalid", "Error", OnClickListener { _, _ ->
-                    finish()
+                    cancel()
                 })
                 TrezorType.FailureType.Failure_UnexpectedMessage -> Unit
-                TrezorType.FailureType.Failure_ActionCancelled -> finish()
+                TrezorType.FailureType.Failure_ActionCancelled -> cancel()
                 else -> alert("problem: $message $code")
             }
 
             else -> handleExtraMessage(this)
         }
+    }
+
+    private fun cancel() {
+        setResult(Activity.RESULT_CANCELED)
+        finish()
     }
 
     protected open fun getMessageForState(): GeneratedMessageV3 = when (state) {
@@ -202,9 +208,8 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
-            finish()
-            true
+        android.R.id.home -> true.also {
+            cancel()
         }
         else -> super.onOptionsItemSelected(item)
     }

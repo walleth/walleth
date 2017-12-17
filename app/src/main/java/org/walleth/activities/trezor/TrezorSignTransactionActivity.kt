@@ -1,6 +1,6 @@
 package org.walleth.activities.trezor
 
-import android.content.Context
+import android.app.Activity
 import android.content.DialogInterface.OnClickListener
 import android.content.Intent
 import android.os.Bundle
@@ -28,9 +28,11 @@ import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
 
+const val TREZOR_REQUEST_CODE = 7688
 
-fun Context.startTrezorActivity(transactionParcel: TransactionParcel) {
-    startActivity(Intent(this, TrezorSignTransactionActivity::class.java).putExtra("TX", transactionParcel))
+fun Activity.startTrezorActivity(transactionParcel: TransactionParcel) {
+    val trezorIntent = Intent(this, TrezorSignTransactionActivity::class.java).putExtra("TX", transactionParcel)
+    startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
 }
 
 class TrezorSignTransactionActivity : BaseTrezorActivity() {
@@ -42,6 +44,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
         if (address != transaction.transaction.from) {
             val message = getString(R.string.trezor_reported_different_address, address, transaction.transaction.from)
             alert(message, onOKListener = OnClickListener { _, _ ->
+                setResult(Activity.RESULT_CANCELED)
                 finish()
             })
         } else {
@@ -78,6 +81,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
                         transactions.upsert(transaction.transaction.toEntity(signatureData, TransactionState()))
                     }
                 }.await()
+                setResult(Activity.RESULT_OK)
                 finish()
             }
         }
