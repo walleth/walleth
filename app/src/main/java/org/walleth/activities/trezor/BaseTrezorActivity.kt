@@ -14,6 +14,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Message
+import com.satoshilabs.trezor.lib.TrezorException
 import com.satoshilabs.trezor.lib.TrezorManager
 import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
 import com.satoshilabs.trezor.lib.protobuf.TrezorType
@@ -84,33 +85,14 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
                 trezor_connect_indicator.setImageResource(R.drawable.trezor_icon)
                 trezor_status_text.visibility = View.GONE
 
-                val res = manager.sendMessage(getMessageForState())
-
-                if (state == CANCEL) {
-                    finish()
-                    return
+                try {
+                    val trezorResult = manager.sendMessage(getMessageForState())
+                    trezorResult.handleTrezorResult()
+                } catch (trezorException: TrezorException) {
+                    // this can happen when the trezor is unplugged - don't really care in this case
+                    trezorException.printStackTrace()
                 }
 
-
-                when (res) {
-                    is TrezorMessage.PinMatrixRequest -> showPINDialog()
-                    is TrezorMessage.PassphraseRequest -> showPassPhraseDialog()
-                    is TrezorMessage.ButtonRequest -> enterNewState(BUTTON_ACK)
-                    is TrezorMessage.Features -> enterNewState(READ_ADDRESS)
-                    is TrezorMessage.EthereumAddress -> handleAddress(Address(res.address.toByteArray().toHexString()))
-                    is TrezorMessage.Failure -> {
-                        when {
-                            res.code == TrezorType.FailureType.Failure_PinInvalid -> alert("Pin invalid", "Error", OnClickListener { _, _ ->
-                                finish()
-                            })
-                            res.code == TrezorType.FailureType.Failure_UnexpectedMessage -> Unit
-                            res.code == TrezorType.FailureType.Failure_ActionCancelled -> finish()
-                            else -> alert("problem: " + res.message + " " + res.code)
-                        }
-                    }
-
-                    else -> handleExtraMessage(res)
-                }
             } else {
                 if (state == INIT && manager.hasDeviceWithoutPermission(true)) {
                     manager.requestDevicePermissionIfCan(true)
@@ -119,6 +101,32 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
 
                 handler.postDelayed(this, 1000)
             }
+        }
+    }
+
+    private fun Message.handleTrezorResult() {
+        if (state == CANCEL) {
+            finish()
+            return
+        }
+
+
+        when (this) {
+            is TrezorMessage.PinMatrixRequest -> showPINDialog()
+            is TrezorMessage.PassphraseRequest -> showPassPhraseDialog()
+            is TrezorMessage.ButtonRequest -> enterNewState(BUTTON_ACK)
+            is TrezorMessage.Features -> enterNewState(READ_ADDRESS)
+            is TrezorMessage.EthereumAddress -> handleAddress(Address(address.toByteArray().toHexString()))
+            is TrezorMessage.Failure -> when (code) {
+                TrezorType.FailureType.Failure_PinInvalid -> alert("Pin invalid", "Error", OnClickListener { _, _ ->
+                    finish()
+                })
+                TrezorType.FailureType.Failure_UnexpectedMessage -> Unit
+                TrezorType.FailureType.Failure_ActionCancelled -> finish()
+                else -> alert("problem: $message $code")
+            }
+
+            else -> handleExtraMessage(this)
         }
     }
 
