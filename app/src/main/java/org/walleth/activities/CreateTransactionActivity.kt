@@ -41,6 +41,7 @@ import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.tokens.isETH
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
+import org.walleth.functions.asBigDecimal
 import org.walleth.functions.decimalsInZeroes
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.toHexString
@@ -48,6 +49,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
+import java.text.ParseException
 
 class CreateTransactionActivity : AppCompatActivity() {
 
@@ -232,10 +234,10 @@ class CreateTransactionActivity : AppCompatActivity() {
         fee_value_view.setValue(fee, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
     }
 
-    private fun setAmountFromETHString(it: String) {
+    private fun setAmountFromETHString(amount: String) {
         currentAmount = try {
-            (BigDecimal(it) * BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toBigInteger()
-        } catch (e: NumberFormatException) {
+            (amount.asBigDecimal() * BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toBigInteger()
+        } catch (e: ParseException) {
             ZERO
         }
     }
@@ -280,7 +282,7 @@ class CreateTransactionActivity : AppCompatActivity() {
         }
     }
 
-    private fun showWarningOnWrongNetwork(erc681: ERC681) : Boolean {
+    private fun showWarningOnWrongNetwork(erc681: ERC681): Boolean {
         if (erc681.chainId != null && erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
             alert(title = R.string.wrong_network, message = R.string.please_switch_network)
             return true
