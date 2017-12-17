@@ -92,27 +92,34 @@ class Videographer(val activity: Activity) {
         thread.join()
     }
 
-    private fun openCamera(surface: SurfaceTexture) {
+    private fun openCamera(surface: SurfaceTexture)  {
         handler.post {
-            camera = Camera.open(defaultCameraId)
+            try {
+                camera = Camera.open(defaultCameraId)
 
-            setDefaultParameters()
-            setPreviewSize()
-            setCameraDisplayOrientation()
+                setDefaultParameters()
+                setPreviewSize()
+                setCameraDisplayOrientation()
 
-            camera.setPreviewTexture(surface)
-            camera.startPreview()
+                camera.setPreviewTexture(surface)
+                camera.startPreview()
 
-            isOpen = true
+                isOpen = true
 
-            scanner.scan()
+                scanner.scan()
+            } catch (e: RuntimeException) {
+                // https://github.com/walleth/walleth/issues/139
+                e.printStackTrace()
+            }
         }
     }
 
     private fun closeCamera() {
-        camera.stopPreview()
-        camera.release()
-        isOpen = false
+        if (::camera.isInitialized) {
+            camera.stopPreview()
+            camera.release()
+            isOpen = false
+        }
     }
 
     private fun setDefaultParameters() {
