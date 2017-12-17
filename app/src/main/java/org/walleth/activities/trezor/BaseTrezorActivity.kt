@@ -192,19 +192,21 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
                 dialogPin = dialogPin.substring(0, dialogPin.length - 1)
             displayPin.invoke()
         }
-        AlertDialog.Builder(this)
-                .setView(view)
-                .setTitle(R.string.trezor_please_enter_your_pin)
-                .setPositiveButton(android.R.string.ok, { _, _ ->
-                    currentSecret = dialogPin
-                    state = PIN_REQUEST
-                    handler.post(mainRunnable)
-                })
-                .setNegativeButton(android.R.string.cancel, { _, _ ->
-                    state = CANCEL
-                    handler.post(mainRunnable)
-                })
-                .show()
+        if (!isFinishing) {
+            AlertDialog.Builder(this)
+                    .setView(view)
+                    .setTitle(R.string.trezor_please_enter_your_pin)
+                    .setPositiveButton(android.R.string.ok, { _, _ ->
+                        currentSecret = dialogPin
+                        state = PIN_REQUEST
+                        handler.post(mainRunnable)
+                    })
+                    .setNegativeButton(android.R.string.cancel, { _, _ ->
+                        state = CANCEL
+                        handler.post(mainRunnable)
+                    })
+                    .show()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
