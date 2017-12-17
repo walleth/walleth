@@ -47,9 +47,9 @@ class RequestActivity : AppCompatActivity() {
 
 
         val initText = getString(if (networkDefinitionProvider.getCurrent().isNoTestNet() ) {
-            R.string.request_hint_test_net
-        } else {
             R.string.request_hint_no_test_net
+        } else {
+            R.string.request_hint_test_net
         })
         request_hint.text = HtmlCompat.fromHtml(initText)
         request_hint.movementMethod = LinkMovementMethod()
