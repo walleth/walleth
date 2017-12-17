@@ -143,7 +143,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
     }
 
 
-    protected fun showPassPhraseDialog() {
+    private fun showPassPhraseDialog() {
         val inputLayout = inflate(R.layout.password_input)
         AlertDialog.Builder(this)
                 .setView(inputLayout)
