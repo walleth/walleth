@@ -89,14 +89,9 @@
 
                 </android.support.design.widget.TextInputLayout>
                 <android.support.v7.widget.AppCompatImageView
+                        style="@style/button"
                         android:id="@+id/sweep_button"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:clickable="true"
-                        android:focusable="true"
-                        app:srcCompat="@drawable/ic_all_inclusive_black_24dp"
-                        android:padding="8dp"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"/>
+                        app:srcCompat="@drawable/ic_all_inclusive_black_24dp"/>
             </LinearLayout>
             <Button
                     android:layout_margin="16dp"
@@ -105,7 +100,7 @@
                     android:text="@string/create_tx_show_advanced_options"
                     android:layout_width="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_height="wrap_content"            />
+                    android:layout_height="wrap_content"/>
             <TextView
                     android:layout_below="@id/amount_container"
                     android:text="@string/create_tx_fee"
@@ -140,15 +135,10 @@
                 </android.support.design.widget.TextInputLayout>
 
                 <android.support.v7.widget.AppCompatImageView
+                        style="@style/button"
                         app:srcCompat="@drawable/ic_local_gas_station_black_24dp"
-                        android:background="?selectableItemBackgroundBorderless"
                         android:id="@+id/gas_station_image"
-                        android:layout_gravity="center_vertical"
-                        android:padding="8dp"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"/>
+                        android:layout_gravity="center_vertical"/>
             </LinearLayout>
             <android.support.design.widget.TextInputLayout
                     android:paddingLeft="16dp"
