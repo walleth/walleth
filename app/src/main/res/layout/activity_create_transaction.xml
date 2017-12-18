@@ -92,6 +92,7 @@
                         android:id="@+id/sweep_button"
                         android:background="?selectableItemBackgroundBorderless"
                         android:clickable="true"
+                        android:focusable="true"
                         app:srcCompat="@drawable/ic_all_inclusive_black_24dp"
                         android:padding="8dp"
                         android:layout_width="48dp"
@@ -144,6 +145,8 @@
                         android:id="@+id/gas_station_image"
                         android:layout_gravity="center_vertical"
                         android:padding="8dp"
+                        android:clickable="true"
+                        android:focusable="true"
                         android:layout_width="48dp"
                         android:layout_height="48dp"/>
             </LinearLayout>
