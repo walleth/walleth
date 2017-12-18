@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.StrictMode
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatDelegate
 import com.chibatching.kotpref.Kotpref
 import com.github.salomonbrys.kodein.*
@@ -60,7 +61,7 @@ open class App : MultiDexApplication(), KodeinAware {
 
             bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
             bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
-            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance(),applicationContext) }
+            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance(), applicationContext) }
         }
     }
 
@@ -126,15 +127,18 @@ open class App : MultiDexApplication(), KodeinAware {
     }
 
     open fun executeCodeWeWillIgnoreInTests() {
-        if (settings.isLightClientWanted()) {
-            Handler().postDelayed({
-                startService(Intent(this, GethLightEthereumService::class.java))
-            }, 2000)
+        try {
+            if (settings.isLightClientWanted()) {
+                Handler().postDelayed({
+                    val intent = Intent(this, GethLightEthereumService::class.java)
+                    ContextCompat.startForegroundService(this, intent)
+                }, 2000)
 
-        }
-        startService(Intent(this, GethTransactionSigner::class.java))
-        startService(Intent(this, EtherScanService::class.java))
-        startService(Intent(this, TransactionNotificationService::class.java))
+            }
+            startService(Intent(this, GethTransactionSigner::class.java))
+            startService(Intent(this, EtherScanService::class.java))
+            startService(Intent(this, TransactionNotificationService::class.java))
+        } catch (e: IllegalStateException) {  }
     }
 
     companion object {
