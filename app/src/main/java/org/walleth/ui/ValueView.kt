@@ -18,6 +18,7 @@ import org.walleth.data.tokens.isETH
 import org.walleth.functions.addPrefixOnCondition
 import org.walleth.functions.toFullValueString
 import org.walleth.functions.toValueString
+import org.walleth.functions.twoDigitDecimalFormat
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
@@ -60,7 +61,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
             current_fiat_symbol.text = settings.currentFiat
             current_fiat.text = if (exChangeRate != null) {
-                String.format("%.2f", exChangeRate).addPrefixOnCondition(prefix = "~", condition = exChangeRate.scale() <= 2)
+                twoDigitDecimalFormat.format(exChangeRate).addPrefixOnCondition(prefix = "~", condition = exChangeRate.scale() <= 2)
             } else {
                 "?"
             }

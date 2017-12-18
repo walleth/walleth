@@ -22,8 +22,8 @@ class TheFormatting {
 
     @Test
     fun testWeCanRound() {
-        assertThat(BigDecimal("2").toValueString(testToken.copy(decimals = 5))).isAnyOf("0.00002", "0,00002")
-        assertThat(BigDecimal("2").toValueString(testToken.copy(decimals = 6))).isEqualTo("~0")
+        assertThat(BigDecimal("2").toValueString(testToken.copy(decimals = 6))).isEqualTo("0.000002")
+        assertThat(BigDecimal("2").toValueString(testToken.copy(decimals = 7))).isEqualTo("~0")
     }
 
 }

@@ -15,9 +15,9 @@ class TheBaseExchangeProvider {
         }
 
         assertThat(baseExchangeProvider.getConvertedValue(BigInteger("2").times(ETH_IN_WEI), "USD")?.toFiatValueString())
-                .isAnyOf("0,20", "0.20")
+                .isEqualTo( "0.20")
         assertThat(baseExchangeProvider.getConvertedValue(BigInteger("2000").times(ETH_IN_WEI), "USD")?.toFiatValueString())
-                .isAnyOf("200,00", "200.00")
+                .isEqualTo("200")
     }
 
     @Test
@@ -27,6 +27,6 @@ class TheBaseExchangeProvider {
         }
         val value = BigInteger("201").times(ETH_IN_WEI).divide(BigInteger("1000")) // 0.201 ETH
         assertThat(baseExchangeProvider.getConvertedValue(value, "USD")?.toFiatValueString())
-                .isAnyOf("~0,20", "~0.20")
+                .isEqualTo("~0.20")
     }
 }
