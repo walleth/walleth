@@ -47,13 +47,13 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
             startActivityFromClass(CreateAccountActivity::class.java)
         }
 
-        starred_only.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton, isOn: Boolean ->
+        starred_only.setOnCheckedChangeListener({ _: CompoundButton, isOn: Boolean ->
             (recycler_view.adapter as AddressAdapter).filter(isOn, writable_only.isChecked)
         })
 
-        writable_only.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton, isOn: Boolean ->
+        writable_only.setOnCheckedChangeListener { _: CompoundButton, isOn: Boolean ->
             (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, isOn)
-        })
+        }
 
         refresh()
 
@@ -65,13 +65,15 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 val current = notDeletedEntries.getOrNull(viewHolder.adapterPosition)
                 if (current != null) {
-                    fun changeDeleteState(state: Boolean) {async(UI) {
-                        async(CommonPool) {
-                            current.deleted = state
-                            appDatabase.addressBook.upsert(current)
-                        }.await()
-                        refresh()
-                    }}
+                    fun changeDeleteState(state: Boolean) {
+                        async(UI) {
+                            async(CommonPool) {
+                                current.deleted = state
+                                appDatabase.addressBook.upsert(current)
+                            }.await()
+                            refresh()
+                        }
+                    }
                     changeDeleteState(true)
                     Snackbar.make(coordinator, R.string.deleted_account_snack, Snackbar.LENGTH_LONG)
                             .setAction(getString(R.string.undo), { changeDeleteState(false) })
