@@ -18,27 +18,36 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:padding="16dp"
             android:orientation="horizontal">
 
-            <Switch
+            <android.support.v7.widget.AppCompatImageView
+                    app:srcCompat="@drawable/ic_key"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"/>
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/starred_only"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginEnd="@dimen/switch_padding"
                 android:layout_marginRight="@dimen/switch_padding"
-                android:switchPadding="@dimen/switch_padding"
-                android:text="@string/starred_only"/>
+                android:switchPadding="@dimen/switch_padding"/>
 
-            <Switch
+            <android.support.v7.widget.AppCompatImageView
+                    app:srcCompat="@android:drawable/btn_star"
+                    android:layout_marginLeft="24dp"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"/>
+
+            <android.support.v7.widget.SwitchCompat
                 android:id="@+id/writable_only"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:layout_marginLeft="@dimen/switch_padding"
                 android:layout_marginStart="@dimen/switch_padding"
-                android:switchPadding="@dimen/switch_padding"
-                android:text="@string/keys_only"/>
+                android:switchPadding="@dimen/switch_padding"/>
 
         </LinearLayout>
 
@@ -46,7 +55,8 @@
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp"/>
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"/>
 
     </LinearLayout>
 
