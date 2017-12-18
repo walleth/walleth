@@ -11,7 +11,9 @@ import org.walleth.data.keystore.WallethKeyStore
 
 class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(addressBookEntry: AddressBookEntry, keyStore: WallethKeyStore, onClickAction: (entry: AddressBookEntry) -> Unit) {
+    fun bind(addressBookEntry: AddressBookEntry, keyStore: WallethKeyStore,
+             onClickAction: (entry: AddressBookEntry) -> Unit,
+             onStarred: (oldEntry: AddressBookEntry, updatedEntry: AddressBookEntry) -> Unit) {
 
         itemView.setOnClickListener {
             onClickAction.invoke(addressBookEntry)
@@ -33,6 +35,13 @@ class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         }
 
         itemView.address_hash.text = addressBookEntry.address.hex
+
+        itemView.address_starred.isChecked = addressBookEntry.starred
+
+        itemView.address_starred.setOnClickListener {
+            val updatedEntry = addressBookEntry.copy(starred = !addressBookEntry.starred)
+            onStarred.invoke(addressBookEntry, updatedEntry)
+        }
     }
 
 }

@@ -166,6 +166,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="select_reference_activity_add_reference">Add Reference</string>
     <string name="select_token_activity_select_token">Select token</string>
     <string name="switch_network_activity_adding_not_yet_supported">adding new networks not yet implemented</string>
+    <string name="keys_only">Keys only</string>
     <string name="precise_amount_alert_title">Precise amount</string>
     <string name="create_token_activity_subtitle">Create Token</string>
     <string name="create_token_activity_error_invalid_amount_of_decimals">Please enter a valid amount of decimals</string>

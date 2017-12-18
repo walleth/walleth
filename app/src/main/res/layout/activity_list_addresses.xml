@@ -14,20 +14,40 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <android.support.v7.widget.SwitchCompat
-            android:id="@+id/starred_only"
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:orientation="horizontal">
 
-            android:switchPadding="@dimen/switch_padding"
-            android:text="@string/starred_only"/>
+            <Switch
+                android:id="@+id/starred_only"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginEnd="@dimen/switch_padding"
+                android:layout_marginRight="@dimen/switch_padding"
+                android:switchPadding="@dimen/switch_padding"
+                android:text="@string/starred_only"/>
+
+            <Switch
+                android:id="@+id/writable_only"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="@dimen/switch_padding"
+                android:layout_marginStart="@dimen/switch_padding"
+                android:switchPadding="@dimen/switch_padding"
+                android:text="@string/keys_only"/>
+
+        </LinearLayout>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycler_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="16dp"/>
+
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton

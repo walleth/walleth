@@ -10,10 +10,11 @@ import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.CompoundButton
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.activity_list_addresses.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -22,6 +23,7 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.ui.AddressAdapter
 
 abstract class BaseAddressBookActivity : AppCompatActivity() {
 
@@ -34,7 +36,7 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list)
+        setContentView(R.layout.activity_list_addresses)
 
         supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
@@ -44,6 +46,14 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
         fab.setOnClickListener {
             startActivityFromClass(CreateAccountActivity::class.java)
         }
+
+        starred_only.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton, isOn: Boolean ->
+            (recycler_view.adapter as AddressAdapter).filter(isOn, writable_only.isChecked)
+        })
+
+        writable_only.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton: CompoundButton, isOn: Boolean ->
+            (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, isOn)
+        })
 
         refresh()
 
