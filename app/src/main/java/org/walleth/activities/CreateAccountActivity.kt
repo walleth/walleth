@@ -135,7 +135,11 @@ class CreateAccountActivity : AppCompatActivity() {
     }
 
     private fun setAddressFromExternalApplyingChecksum(addressHex: String) {
-        hexInput.setText(Address(addressHex).withERC55Checksum().hex)
+        if (Address(addressHex).isValid()) {
+            hexInput.setText(Address(addressHex).withERC55Checksum().hex)
+        } else {
+            alert(getString(R.string.warning_not_a_valid_address, addressHex),getString(R.string.title_invalid_address_alert))
+        }
     }
 
     override fun onPause() {

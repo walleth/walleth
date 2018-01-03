@@ -4,6 +4,9 @@ import org.kethereum.model.Address
 import org.walleth.data.keystore.WallethKeyStore
 import java.util.*
 
+private val random = Random()
+fun randomAddress() = Address("0x"+(0 until 40).map { "0123456789abcdef"[Math.abs(random.nextInt()%16)] }.joinToString(""))
+
 class TestKeyStore : WallethKeyStore {
 
     val addresses = mutableListOf<Address>()
@@ -11,7 +14,7 @@ class TestKeyStore : WallethKeyStore {
     override fun hasKeyForForAddress(wallethAddress: Address) = addresses.contains(wallethAddress)
 
     override fun newAddress(password: String): Address {
-        val newAddress = Address("0x" + UUID.randomUUID().toString())
+        val newAddress = randomAddress()
         addresses.add(newAddress)
         return newAddress
     }

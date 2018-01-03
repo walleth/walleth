@@ -185,4 +185,6 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="please_switch_network">Please switch network</string>
     <string name="info_activity_subtitle">Version %s</string>
     <string name="trezor_please_enter_your_pin">Please enter your PIN</string>
+    <string name="warning_not_a_valid_address">not a valid address: %s</string>
+    <string name="title_invalid_address_alert">invalid_address</string>
 </resources>

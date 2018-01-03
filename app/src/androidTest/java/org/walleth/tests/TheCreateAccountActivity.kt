@@ -1,23 +1,40 @@
 package org.walleth.tests
 
+import android.app.Activity
+import android.app.Instrumentation
+import android.content.Intent
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.intent.Intents.intending
+import android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import android.support.test.espresso.matcher.ViewMatchers.*
 import com.google.common.truth.Truth.assertThat
 import kotlinx.android.synthetic.main.activity_account_create.*
 import org.junit.Rule
 import org.junit.Test
 import org.kethereum.model.Address
-import org.ligi.trulesk.TruleskActivityRule
+import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
 import org.walleth.activities.CreateAccountActivity
+import org.walleth.activities.qrscan.QRScanActivity
 import org.walleth.infrastructure.TestApp
+
 
 class TheCreateAccountActivity {
 
     @get:Rule
-    var rule = TruleskActivityRule(CreateAccountActivity::class.java)
+    var rule = TruleskIntentRule(CreateAccountActivity::class.java)
+
+    @Test
+    fun rejectsCriticallyLongAddress() {
+        // https://github.com/walleth/walleth/issues/146
+        val resultIntent = Intent()
+        resultIntent.putExtra("SCAN_RESULT", "0x" + "a".repeat(65))
+        intending(hasComponent(QRScanActivity::class.java.name)).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, resultIntent))
+        onView(withId(R.id.camera_button)).perform(click())
+        onView(withText(R.string.title_invalid_address_alert)).check(matches(isDisplayed()))
+    }
 
     @Test
     fun rejectsInvalidAddress() {
