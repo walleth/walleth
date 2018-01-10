@@ -15,6 +15,9 @@ object KotprefSettings : KotprefModel(), Settings {
     override var startupWarningDone by booleanPref(default = false)
     override var showOnlyStaredTokens by booleanPref(default = false)
 
+    override var filterAddressesStared by booleanPref(default = false)
+    override var filterAddressesKeyOnly by booleanPref(default = false)
+
     override var chain by longPref(RINKEBY_CHAIN_ID)
     override var accountAddress by nullableStringPref(null)
 

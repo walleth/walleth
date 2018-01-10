@@ -16,6 +16,10 @@ interface Settings {
 
     var showOnlyStaredTokens: Boolean
 
+
+    var filterAddressesStared: Boolean
+    var filterAddressesKeyOnly: Boolean
+
     fun isLightClientWanted(): Boolean
     fun getNightMode(): Int
     fun getStatsName(): String

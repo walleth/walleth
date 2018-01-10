@@ -5,7 +5,9 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import kotlinx.android.synthetic.main.item_address_book.view.*
+import kotlinx.coroutines.experimental.launch
 import org.walleth.R
+import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
 
@@ -13,7 +15,7 @@ class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bind(addressBookEntry: AddressBookEntry, keyStore: WallethKeyStore,
              onClickAction: (entry: AddressBookEntry) -> Unit,
-             onStarred: (oldEntry: AddressBookEntry, updatedEntry: AddressBookEntry) -> Unit) {
+             appDatabase: AppDatabase) {
 
         itemView.setOnClickListener {
             onClickAction.invoke(addressBookEntry)
@@ -39,8 +41,10 @@ class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.address_starred.isChecked = addressBookEntry.starred
 
         itemView.address_starred.setOnClickListener {
-            val updatedEntry = addressBookEntry.copy(starred = !addressBookEntry.starred)
-            onStarred.invoke(addressBookEntry, updatedEntry)
+            launch {
+                val updatedEntry = addressBookEntry.copy(starred = !addressBookEntry.starred)
+                appDatabase.addressBook.upsert(updatedEntry)
+            }
         }
     }
 

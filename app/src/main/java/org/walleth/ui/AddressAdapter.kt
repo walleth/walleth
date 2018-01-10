@@ -1,23 +1,22 @@
 package org.walleth.ui
 
-import android.support.v7.util.SortedList
+import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
-import android.support.v7.widget.util.SortedListAdapterCallback
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import kotlinx.coroutines.experimental.launch
 import org.walleth.R
+import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
 
 class AddressAdapter(val keyStore: WallethKeyStore,
                      val onClickAction: (entry: AddressBookEntry) -> Unit,
-                     val saveUpdatedAddress: (entry:AddressBookEntry) -> Unit) : RecyclerView.Adapter<AddressViewHolder>() {
+                     val appDatabase: AppDatabase) : RecyclerView.Adapter<AddressViewHolder>() {
 
-    private val list = mutableListOf<AddressBookEntry>()
-    private val sortedList = SortedList<AddressBookEntry>(AddressBookEntry::class.java, AddressAdapter.AddressAdapterCallback(this))
+    var list = listOf<AddressBookEntry>()
+    var displayList = listOf<AddressBookEntry>()
 
-    override fun getItemCount() = sortedList.size()
+    override fun getItemCount() = displayList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AddressViewHolder {
         val inflate = LayoutInflater.from(parent.context).inflate(R.layout.item_address_book, parent, false)
@@ -25,53 +24,32 @@ class AddressAdapter(val keyStore: WallethKeyStore,
     }
 
     override fun onBindViewHolder(holder: AddressViewHolder, position: Int) {
-        holder.bind(sortedList[position], keyStore, onClickAction, this::updateAddressBookEntry)
+        holder.bind(displayList[position], keyStore, onClickAction, appDatabase)
     }
-
-    fun updateAddressList(newTokenList: List<AddressBookEntry>, starredOny: Boolean, writableOnly: Boolean) {
-        list.clear()
-        list.addAll(newTokenList)
-
-        filter(starredOny, writableOnly)
-    }
-
 
     fun filter(starredOnly: Boolean, writableOnly: Boolean) {
-        sortedList.beginBatchedUpdates()
-        sortedList.clear()
+        val newDisplayList = list
+                .filter { !starredOnly || it.starred  }
+                .filter { !writableOnly || keyStore.hasKeyForForAddress(it.address) }
+                .filter { !it.deleted }
+                .sortedBy { it.name }
 
-        for (address in list) {
-            if ((!writableOnly || keyStore.hasKeyForForAddress(address.address)) && (address.starred || !starredOnly)) {
-                sortedList.add(address)
-            }
-        }
+        val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
+            override fun getOldListSize() = displayList.size
 
-        sortedList.endBatchedUpdates()
-    }
+            override fun getNewListSize() = newDisplayList.size
 
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int)
+                    = displayList[oldItemPosition] == newDisplayList[newItemPosition]
 
-    fun updateAddressBookEntry(oldAddress: AddressBookEntry, updatedAddress: AddressBookEntry) {
-        list.remove(oldAddress)
-        list.add(updatedAddress)
-        launch {
-            saveUpdatedAddress(updatedAddress)
-        }
-    }
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int)
+                    = displayList[oldItemPosition].address == newDisplayList[newItemPosition].address
 
-    class AddressAdapterCallback(adapter: AddressAdapter) : SortedListAdapterCallback<AddressBookEntry>(adapter) {
-        override fun areContentsTheSame(oldItem: AddressBookEntry?, newItem: AddressBookEntry?) = oldItem?.address == newItem?.address
+        })
 
-        override fun compare(o1: AddressBookEntry?, o2: AddressBookEntry?): Int {
-            if (o1 == null) {
-                return if (o2 == null) 0 else -1
-            } else {
-                if (o2 == null) return 1
-            }
+        diff.dispatchUpdatesTo(this)
 
-            return o1.address.hex.compareTo(o2.address.hex)
-        }
-
-        override fun areItemsTheSame(item1: AddressBookEntry?, item2: AddressBookEntry?) = item1?.address == item2?.address
+        displayList = newDisplayList
     }
 
 }

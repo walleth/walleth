@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
@@ -22,16 +23,25 @@ import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.config.Settings
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
 
 abstract class BaseAddressBookActivity : AppCompatActivity() {
 
     val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    val settings: Settings by LazyKodein(appKodein).instance()
+    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
 
-    var notDeletedEntries: List<AddressBookEntry> = emptyList()
-    var deletedEntries: List<AddressBookEntry> = emptyList()
+    val adapter by lazy {
+        AddressAdapter(keyStore, onClickAction = { onAddressClick(it) }, appDatabase = appDatabase).apply {
+            recycler_view.adapter = this
+        }
+    }
+
+    abstract fun onAddressClick(addressEntry: AddressBookEntry)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,15 +57,24 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
             startActivityFromClass(CreateAccountActivity::class.java)
         }
 
+        starred_only.isChecked = settings.filterAddressesStared
         starred_only.setOnCheckedChangeListener({ _: CompoundButton, isOn: Boolean ->
-            (recycler_view.adapter as AddressAdapter).filter(isOn, writable_only.isChecked)
+            settings.filterAddressesStared = isOn
+            refresh()
         })
 
-        writable_only.setOnCheckedChangeListener { _: CompoundButton, isOn: Boolean ->
-            (recycler_view.adapter as AddressAdapter).filter(starred_only.isChecked, isOn)
+        key_only.isChecked = settings.filterAddressesKeyOnly
+        key_only.setOnCheckedChangeListener { _: CompoundButton, isOn: Boolean ->
+            settings.filterAddressesKeyOnly = isOn
+            refresh()
         }
 
-        refresh()
+        appDatabase.addressBook.allLiveData().observe(this, Observer { items ->
+            if (items != null) {
+                adapter.list = items
+                refresh()
+            }
+        })
 
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
 
@@ -63,22 +82,21 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
                     = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                val current = notDeletedEntries.getOrNull(viewHolder.adapterPosition)
-                if (current != null) {
-                    fun changeDeleteState(state: Boolean) {
-                        async(UI) {
-                            async(CommonPool) {
-                                current.deleted = state
-                                appDatabase.addressBook.upsert(current)
-                            }.await()
-                            refresh()
-                        }
+
+                val current = adapter.displayList[viewHolder.adapterPosition]
+                fun changeDeleteState(state: Boolean) {
+                    async(UI) {
+                        async(CommonPool) {
+                            appDatabase.addressBook.upsert(current.apply {
+                                deleted = state
+                            })
+                        }.await()
                     }
-                    changeDeleteState(true)
-                    Snackbar.make(coordinator, R.string.deleted_account_snack, Snackbar.LENGTH_LONG)
-                            .setAction(getString(R.string.undo), { changeDeleteState(false) })
-                            .show()
                 }
+                changeDeleteState(true)
+                Snackbar.make(coordinator, R.string.deleted_account_snack, Snackbar.LENGTH_LONG)
+                        .setAction(getString(R.string.undo), { changeDeleteState(false) })
+                        .show()
             }
         }
 
@@ -86,10 +104,8 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
         itemTouchHelper.attachToRecyclerView(recycler_view)
     }
 
-    abstract fun setupAdapter()
-
-    protected fun refresh() {
-        setupAdapter()
+    private fun refresh() {
+        adapter.filter(settings.filterAddressesStared, settings.filterAddressesKeyOnly)
         invalidateOptionsMenu()
     }
 
@@ -99,7 +115,7 @@ abstract class BaseAddressBookActivity : AppCompatActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.menu_undelete).isVisible = deletedEntries.isNotEmpty()
+        menu.findItem(R.id.menu_undelete).isVisible = adapter.list.any { it.deleted }
         return super.onPrepareOptionsMenu(menu)
     }
 
