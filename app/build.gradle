@@ -7,7 +7,7 @@ apply plugin: 'spoon'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
-def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
+def includeFirebase = hasProperty("singleFlavor") || hasProperty("firebase")
 
 android {
     compileSdkVersion 26
@@ -49,9 +49,17 @@ android {
         warning 'MissingTranslation'
     }
 
-    flavorDimensions "fire", "store"
+    flavorDimensions "geth", "fire", "store"
 
     productFlavors {
+        withGeth {
+            dimension "geth"
+        }
+
+        noGeth {
+            dimension "geth"
+        }
+
         forFDroid {
             dimension "store"
             buildConfigField 'String', 'STORE', '"fdroid"'
@@ -81,10 +89,12 @@ android {
 
 
     android.variantFilter { variant ->
-        def firebase = variant.getFlavors().get(0).name
-        def store = variant.getFlavors().get(1).name
+        def geth = variant.getFlavors().get(0).name
+        def firebase = variant.getFlavors().get(1).name
+        def store = variant.getFlavors().get(2).name
 
         if ((project.hasProperty("singleFlavor") && (store != 'forPlay'))
+                || ((geth == 'noGeth') && project.hasProperty("isCI"))
                 || ((store == 'forAmazon' || store == 'forPlay') && firebase == 'noFirebase')
                 || (store == 'forFDroid' && firebase != 'noFirebase')) {
             variant.setIgnore(true)
@@ -119,7 +129,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    compile "org.ethereum:geth:1.7.3"
+    withGethCompile "org.ethereum:geth:1.7.3"
 
     compile "com.github.walleth.kethereum:functions:$kethereum_version"
     compile "com.github.walleth.kethereum:bip44:$kethereum_version"
@@ -188,7 +198,7 @@ dependencies {
     }
 }
 
-if (hasProperty("isCI")) {
+if (hasProperty("singleFlavor")) {
 
     apply plugin: 'witness'
 
