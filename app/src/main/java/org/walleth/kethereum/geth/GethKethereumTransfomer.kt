@@ -6,12 +6,13 @@ import org.json.JSONObject
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
-import org.walleth.functions.toGethInteger
 import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
 import org.ethereum.geth.Address as GethAddress
 
 fun BigInt.toBigInteger() = BigInteger(bytes)
+fun BigInteger.toGethInteger() = BigInt(toLong())
+
 fun Address.toGethAddr() = Geth.newAddressFromHex(hex)
 fun GethAddress.toKethereumAddress() = Address(hex)
 
