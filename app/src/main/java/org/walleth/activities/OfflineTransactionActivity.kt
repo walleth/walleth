@@ -234,14 +234,12 @@ class OfflineTransactionActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
-        R.id.menu_scan -> {
+        R.id.menu_scan -> true.also {
             startScanActivityForResult(this)
-            true
         }
 
-        android.R.id.home -> {
+        android.R.id.home -> true.also {
             finish()
-            true
         }
 
         else -> super.onOptionsItemSelected(item)
