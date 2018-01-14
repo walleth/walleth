@@ -17,10 +17,10 @@ import kotlinx.coroutines.experimental.delay
 import org.ligi.kaxt.recreateWhenPossible
 import org.walleth.App
 import org.walleth.R
-import org.walleth.core.GethLightEthereumService
-import org.walleth.core.GethLightEthereumService.Companion.gethStopIntent
 import org.walleth.data.config.Settings
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.geth.services.GethLightEthereumService
+import org.walleth.geth.services.GethLightEthereumService.Companion.gethStopIntent
 
 class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 

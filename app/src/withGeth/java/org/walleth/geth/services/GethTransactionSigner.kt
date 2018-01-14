@@ -1,4 +1,4 @@
-package org.walleth.core
+package org.walleth.geth.services
 
 import android.arch.lifecycle.LifecycleService
 import android.arch.lifecycle.Observer

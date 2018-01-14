@@ -3,11 +3,9 @@ package org.walleth
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
 import android.os.StrictMode
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
-import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatDelegate
 import com.chibatching.kotpref.Kotpref
 import com.github.salomonbrys.kodein.*
@@ -19,8 +17,6 @@ import okhttp3.OkHttpClient
 import org.kethereum.model.Address
 import org.ligi.tracedroid.TraceDroid
 import org.walleth.core.EtherScanService
-import org.walleth.core.GethLightEthereumService
-import org.walleth.core.GethTransactionSigner
 import org.walleth.core.TransactionNotificationService
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
@@ -124,24 +120,19 @@ open class App : MultiDexApplication(), KodeinAware {
                 )))
             }
         }
+        postInitCallbacks.forEach { it.invoke() }
     }
 
     open fun executeCodeWeWillIgnoreInTests() {
         try {
-            if (settings.isLightClientWanted()) {
-                Handler().postDelayed({
-                    val intent = Intent(this, GethLightEthereumService::class.java)
-                    ContextCompat.startForegroundService(this, intent)
-                }, 2000)
-
-            }
-            startService(Intent(this, GethTransactionSigner::class.java))
             startService(Intent(this, EtherScanService::class.java))
             startService(Intent(this, TransactionNotificationService::class.java))
         } catch (e: IllegalStateException) {  }
     }
 
     companion object {
+        val postInitCallbacks = mutableListOf<()->Unit>()
+
         fun applyNightMode(settings: Settings) {
             @AppCompatDelegate.NightMode val nightMode = settings.getNightMode()
             AppCompatDelegate.setDefaultNightMode(nightMode)

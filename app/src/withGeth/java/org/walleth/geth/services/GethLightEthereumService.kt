@@ -1,4 +1,4 @@
-package org.walleth.core
+package org.walleth.geth.services
 
 import android.annotation.TargetApi
 import android.app.NotificationChannel
