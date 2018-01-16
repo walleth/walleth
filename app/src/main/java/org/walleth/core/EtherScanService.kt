@@ -5,9 +5,8 @@ import android.content.Intent
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.experimental.launch
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -81,9 +80,9 @@ class EtherScanService : LifecycleService() {
         currentAddressProvider.observe(this, ResettingObserver())
         networkDefinitionProvider.observe(this, ResettingObserver())
 
-        ProcessLifecycleOwner.get().lifecycle.addObserver(TimingModifyingLifecycleObserver())
+        lifecycle.addObserver(TimingModifyingLifecycleObserver())
 
-        async(CommonPool) {
+        launch {
 
             while (true) {
                 last_run = System.currentTimeMillis()
@@ -111,7 +110,7 @@ class EtherScanService : LifecycleService() {
     }
 
     private fun relayTransaction(transaction: TransactionEntity) {
-        async(CommonPool) {
+        launch {
             val url = "module=proxy&action=eth_sendRawTransaction&hex=" + transaction.transaction.encodeRLP(transaction.signatureData).toHexString("0x")
             val result = getEtherscanResult(url, networkDefinitionProvider.value!!)
 
@@ -225,7 +224,8 @@ class EtherScanService : LifecycleService() {
         val newCall: Call = okHttpClient.newCall(url)
 
         try {
-            newCall.execute().body().use { it?.string() }.let {
+            val resultString = newCall.execute().body().use { it?.string() }
+            resultString.let {
                 return JSONObject(it)
             }
         } catch (ioe: IOException) {
