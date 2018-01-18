@@ -54,6 +54,9 @@ import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
 import java.text.ParseException
 
+val TO_ADDRESS_REQUEST_CODE = 1
+val FROM_ADDRESS_REQUEST_CODE = 2
+
 class CreateTransactionActivity : AppCompatActivity() {
 
     private var currentERC67String: String? = null
@@ -71,6 +74,14 @@ class CreateTransactionActivity : AppCompatActivity() {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     finish()
+                }
+            }
+            FROM_ADDRESS_REQUEST_CODE -> {
+                data?.let {
+                    if (data.hasExtra("HEX")) {
+                        val addressHex = data.getStringExtra("HEX")
+                        setFromAddress(addressHex)
+                    }
                 }
             }
             else -> data?.let {
@@ -161,7 +172,7 @@ class CreateTransactionActivity : AppCompatActivity() {
 
         }
 
-
+        setFromAddress(currentAddressProvider.getCurrent().hex)
 
         gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
 
@@ -219,7 +230,12 @@ class CreateTransactionActivity : AppCompatActivity() {
 
         address_list_button.setOnClickListener {
             val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
-            startActivityForResult(intent, 23451)
+            startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
+        }
+
+        from_address_list_button.setOnClickListener {
+            val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
+            startActivityForResult(intent, FROM_ADDRESS_REQUEST_CODE)
         }
 
         amount_input.doAfterEdit {
@@ -257,6 +273,15 @@ class CreateTransactionActivity : AppCompatActivity() {
         outState.putString("ERC67", currentERC67String)
         outState.putString("lastERC67", lastWarningURI)
         super.onSaveInstanceState(outState)
+    }
+
+    private fun setFromAddress(addressHex: String) {
+        val address = Address(addressHex)
+        from_address.text = addressHex
+        appDatabase.addressBook.resolveNameAsync(address) {
+            from_address.text = it
+        }
+        currentAddressProvider.setCurrent(address)
     }
 
     private fun setToFromURL(uri: String?, fromUser: Boolean) {
