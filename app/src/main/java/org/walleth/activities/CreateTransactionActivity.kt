@@ -54,8 +54,8 @@ import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
 import java.text.ParseException
 
-val TO_ADDRESS_REQUEST_CODE = 1
-val FROM_ADDRESS_REQUEST_CODE = 2
+const val TO_ADDRESS_REQUEST_CODE = 1
+const val FROM_ADDRESS_REQUEST_CODE = 2
 
 class CreateTransactionActivity : AppCompatActivity() {
 
