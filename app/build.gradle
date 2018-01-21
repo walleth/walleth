@@ -7,7 +7,7 @@ apply plugin: 'spoon'
 apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
-def includeFirebase = hasProperty("singleFlavor") || hasProperty("firebase")
+def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
 
 android {
     compileSdkVersion 26
@@ -92,6 +92,7 @@ android {
         def geth = variant.getFlavors().get(0).name
         def firebase = variant.getFlavors().get(1).name
         def store = variant.getFlavors().get(2).name
+
 
         if ((project.hasProperty("singleFlavor") && (store != 'forPlay'))
                 || ((geth == 'noGeth') && project.hasProperty("isCI"))
