@@ -119,10 +119,7 @@ class CreateTransactionActivity : AppCompatActivity() {
         }).observe(this, Observer {
             currentBalance = it
         })
-
-        from_address.text = currentAddressProvider.getCurrent().hex
-
-        currentAddressProvider.observe(this, Observer<Address> { address ->
+        currentAddressProvider.observe(this, Observer { address ->
             address?.let {
                 appDatabase.addressBook.getByAddressAsync(address) {
                     from_address.text = it?.name
@@ -184,7 +181,6 @@ class CreateTransactionActivity : AppCompatActivity() {
                 ZERO
             }.toString())
         })
-
         refreshFee()
         setToFromURL(currentERC67String, false)
 
