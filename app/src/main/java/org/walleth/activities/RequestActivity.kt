@@ -66,31 +66,32 @@ class RequestActivity : AppCompatActivity() {
 
     private fun refreshQR() {
 
-        if (currentTokenProvider.currentToken.isETH()) {
+        val currentToken = currentTokenProvider.currentToken
+        if (currentToken.isETH()) {
 
             val relevantAddress = currentAddressProvider.getCurrent()
             currentERC67String = ERC681(address = relevantAddress.hex).generateURL()
 
             if (add_value_checkbox.isChecked) {
                 try {
-                    val currentToken = currentTokenProvider.currentToken
-
                     currentERC67String = ERC681(address = relevantAddress.hex,value =value_input_edittext.text.toString().extractValueForToken(currentToken) ).generateURL()
                 } catch (e: NumberFormatException) {
                 }
             }
         } else {
-            val relevantAddress = currentTokenProvider.currentToken.address
-            currentERC67String = ERC681(address = relevantAddress.hex).generateURL()
+            val relevantAddress = currentToken.address.hex
+
+            val userAddress = currentAddressProvider.getCurrent().hex
+            val functionParams = mutableMapOf("address" to userAddress)
             if (add_value_checkbox.isChecked) {
                 try {
-                    currentERC67String = currentERC67String + "?function=transfer(address " +
-                            currentAddressProvider.getCurrent().hex + ", uint " +
-                            value_input_edittext.text.toString() + ")"
+                    functionParams.put("uint256", value_input_edittext.text.toString().extractValueForToken(currentToken).toString())
                 } catch (e: NumberFormatException) {
                 }
             }
 
+            currentERC67String = ERC681(address = relevantAddress, function = "transfer",
+                    functionParams = functionParams).generateURL()
         }
 
         receive_qrcode.setQRCode(currentERC67String)
