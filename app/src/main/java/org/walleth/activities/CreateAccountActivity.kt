@@ -23,8 +23,8 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string.*
+import org.walleth.activities.nfc.NFCGetAddressActivity
 import org.walleth.activities.qrscan.startScanActivityForResult
-import org.walleth.activities.trezor.TrezorGetAddressActivity
 import org.walleth.activities.trezor.getAddressResult
 import org.walleth.activities.trezor.getPATHResult
 import org.walleth.activities.trezor.hasAddressResult
@@ -36,6 +36,7 @@ import org.walleth.util.hasText
 
 private const val HEX_INTENT_EXTRA_KEY = "HEX"
 private const val REQUEST_CODE_TREZOR = 7965
+private const val REQUEST_CODE_NFC = 7967
 
 fun Context.startCreateAccountActivity(hex: String) {
     startActivity(Intent(this, CreateAccountActivity::class.java).apply {
@@ -92,7 +93,7 @@ class CreateAccountActivity : BaseSubActivity() {
 
         add_trezor.setVisibility(packageManager.hasSystemFeature(FEATURE_USB_HOST))
         add_trezor.setOnClickListener {
-            startActivityForResult(Intent(this, TrezorGetAddressActivity::class.java), REQUEST_CODE_TREZOR)
+            startActivityForResult(Intent(this, NFCGetAddressActivity::class.java), REQUEST_CODE_NFC)
         }
 
         new_address_button.setOnClickListener {
@@ -103,6 +104,10 @@ class CreateAccountActivity : BaseSubActivity() {
             }
 
             notify_checkbox.isChecked = true
+        }
+
+        add_nfc.setOnClickListener {
+            startActivityForResult(Intent(this, NFCGetAddressActivity::class.java), REQUEST_CODE_TREZOR)
         }
 
         camera_button.setOnClickListener {

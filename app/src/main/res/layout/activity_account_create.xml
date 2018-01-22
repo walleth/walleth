@@ -67,6 +67,12 @@
                 android:layout_gravity="center_vertical"
                 style="@style/button"/>
         <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/add_nfc"
+                app:srcCompat="@drawable/ic_nfc_colorcontrolnormal"
+                android:layout_gravity="center_vertical"
+                style="@style/button"/>
+
+        <android.support.v7.widget.AppCompatImageView
                 android:id="@+id/add_trezor"
                 app:srcCompat="@drawable/trezor_icon"
                 android:layout_gravity="center_vertical"
