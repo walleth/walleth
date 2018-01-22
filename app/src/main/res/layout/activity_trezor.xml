@@ -16,7 +16,7 @@
 
     <TextView
             android:id="@+id/trezor_status_text"
-            android:text="Please connect your TREZOR"
+            android:text="@string/please_connect_your_trezor"
             android:layout_below="@id/trezor_connect_indicator"
             android:layout_centerHorizontal="true"
             android:fontFamily="sans-serif"

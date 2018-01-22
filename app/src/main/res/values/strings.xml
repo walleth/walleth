@@ -187,6 +187,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="trezor_please_enter_your_pin">Please enter your PIN</string>
     <string name="warning_not_a_valid_address">not a valid address: %s</string>
     <string name="title_invalid_address_alert">invalid_address</string>
+    <string name="please_connect_your_trezor">Please connect your TREZOR</string>
     <string name="create_transation_from_label">From:</string>
     <string name="settings_start_light_summary">This makes your phone warm, might crash and use a lot of CPU cycles and bandwidth - but also gives you the warm feeling of helping decentralisation by finding issues in this area.</string>
     <string name="settings_start_light_title">Start Geth Light Client</string>
