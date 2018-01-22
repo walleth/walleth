@@ -31,6 +31,7 @@ import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
+import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -54,6 +55,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     private val settings: Settings by lazyKodein.instance()
     private val currentTokenProvider: CurrentTokenProvider by lazyKodein.instance()
     private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
+    private val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
+
     private var lastNightMode: Int? = null
     private var balanceLiveData: LiveData<Balance>? = null
     private val onboardingController by lazy { OnboardingController(this, settings) }
@@ -140,7 +143,6 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         empty_view_container.setVisibility(!hasTransactions && !onboardingController.isShowing)
         transaction_recycler_out.setVisibility(hasTransactions)
         transaction_recycler_in.setVisibility(hasTransactions)
-        send_container.setVisibility(hasTransactions, INVISIBLE)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -249,9 +251,11 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
 
         if (it != null) {
             value_view.setValue(it.balance, currentTokenProvider.currentToken)
+            send_container.setVisibility(it.balance > ZERO && keyStore.hasKeyForForAddress(currentAddressProvider.getCurrent()), INVISIBLE)
             supportActionBar?.subtitle = getString(R.string.main_activity_block, it.block)
         } else {
             value_view.setValue(ZERO, currentTokenProvider.currentToken)
+            send_container.setVisibility(INVISIBLE)
             supportActionBar?.subtitle = getString(R.string.main_activity_no_data)
         }
     }
