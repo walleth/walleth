@@ -62,6 +62,7 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     private var currentERC67String: String? = null
     private var currentAmount: BigInteger? = null
+    private var currentToAddress: Address? = null
 
     private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
@@ -69,6 +70,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
@@ -209,7 +211,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     }
 
     private fun onFabClick(isTrezorTransaction: Boolean) {
-        if (to_address.text.isEmpty()) {
+        if (to_address.text.isEmpty() || currentToAddress == null) {
             alert(R.string.create_tx_error_address_must_be_specified)
         } else if (currentAmount == null) {
             alert(R.string.create_tx_error_amount_must_be_specified)
@@ -218,17 +220,16 @@ class CreateTransactionActivity : AppCompatActivity() {
         } else if (nonce_input.text.isBlank()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
-            val toAddress = currentAddressProvider.getCurrent()
             val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
                     value = currentAmount!!,
-                    to = toAddress,
+                    to = currentToAddress!!,
                     from = currentAddressProvider.getCurrent()
             ) else createTransactionWithDefaults(
                     creationEpochSecond = System.currentTimeMillis() / 1000,
                     value = ZERO,
                     to = currentTokenProvider.currentToken.address,
                     from = currentAddressProvider.getCurrent(),
-                    input = createTokenTransferTransactionInput(toAddress, currentAmount)
+                    input = createTokenTransferTransactionInput(currentToAddress!!, currentAmount!!)
             )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
 
             transaction.nonce = nonce_input.asBigInit()
@@ -297,17 +298,25 @@ class CreateTransactionActivity : AppCompatActivity() {
 
                 showWarningOnWrongNetwork(erc681)
 
-                appDatabase.addressBook.resolveNameAsync(Address(erc681.address!!)) {
-                    to_address.text = it
-                }
+                currentToAddress =
+                        if (erc681.address != null) {
+                            to_address.text = erc681.address
+                            Address(erc681.address!!).apply {
+                                appDatabase.addressBook.resolveNameAsync(this) {
+                                    to_address.text = it
+                                }
+                            }
+                        } else {
+                            null
+                        }
 
                 erc681.value?.let {
                     amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
                     currentAmount = it
                 }
             } else {
+                currentToAddress = null
                 to_address.text = getString(R.string.no_address_selected)
-
                 if (fromUser || lastWarningURI != uri) {
                     lastWarningURI = uri
                     if (uri.isEthereumURLString()) {
