@@ -2,6 +2,7 @@ package org.walleth.activities
 
 import android.app.Activity
 import android.arch.lifecycle.Observer
+import android.arch.lifecycle.Transformations
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -54,6 +55,9 @@ import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
 import java.text.ParseException
 
+const val TO_ADDRESS_REQUEST_CODE = 1
+const val FROM_ADDRESS_REQUEST_CODE = 2
+
 class CreateTransactionActivity : AppCompatActivity() {
 
     private var currentERC67String: String? = null
@@ -71,6 +75,13 @@ class CreateTransactionActivity : AppCompatActivity() {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     finish()
+                }
+            }
+            FROM_ADDRESS_REQUEST_CODE -> {
+                data?.let {
+                    if (data.hasExtra("HEX")) {
+                        setFromAddress(Address(data.getStringExtra("HEX")))
+                    }
                 }
             }
             else -> data?.let {
@@ -103,65 +114,23 @@ class CreateTransactionActivity : AppCompatActivity() {
         supportActionBar?.subtitle = getString(R.string.create_transaction_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        appDatabase.balances.getBalanceLive(currentAddressProvider.getCurrent(), currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain).observe(this, Observer {
+        Transformations.switchMap(currentAddressProvider, { address ->
+            appDatabase.balances.getBalanceLive(address, currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain)
+        }).observe(this, Observer {
             currentBalance = it
         })
-        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
-            val isTrezorTransaction = it?.trezorDerivationPath != null
-            fab.setImageResource(if (isTrezorTransaction) R.drawable.trezor_icon_black else R.drawable.ic_action_done)
-
-            fab.setOnClickListener {
-
-                if (currentERC67String == null) {
-                    alert(R.string.create_tx_error_address_must_be_specified)
-                } else if (currentAmount == null) {
-                    alert(R.string.create_tx_error_amount_must_be_specified)
-                } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
-                    alert(R.string.create_tx_error_not_enough_funds)
-                } else if (nonce_input.text.isBlank()) {
-                    alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
-                } else {
-                    val erc681 = parseERC681(currentERC67String!!)
-                    if (!showWarningOnWrongNetwork(erc681)) {
-                        val toAddressString = erc681.address
-                        if (toAddressString == null) {
-                            alert(R.string.create_tx_no_address)
-                        } else {
-                            val toAddress = Address(toAddressString)
-                            val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                                    value = currentAmount!!,
-                                    to = toAddress,
-                                    from = currentAddressProvider.getCurrent()
-                            ) else createTransactionWithDefaults(
-                                    creationEpochSecond = System.currentTimeMillis() / 1000,
-                                    value = ZERO,
-                                    to = currentTokenProvider.currentToken.address,
-                                    from = currentAddressProvider.getCurrent(),
-                                    input = createTokenTransferTransactionInput(toAddress, currentAmount)
-                            )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
-
-                            transaction.nonce = nonce_input.asBigInit()
-                            transaction.gasPrice = gas_price_input.asBigInit()
-                            transaction.gasLimit = gas_limit_input.asBigInit()
-                            transaction.txHash = transaction.encodeRLP().keccak().toHexString()
-
-                            when {
-
-                                isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-                                else -> async(CommonPool) {
-                                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
-                                    finish()
-                                }
-
-                            }
-                        }
+        currentAddressProvider.observe(this, Observer { address ->
+            address?.let {
+                appDatabase.addressBook.getByAddressAsync(address) {
+                    from_address.text = it?.name
+                    val isTrezorTransaction = it?.trezorDerivationPath != null
+                    fab.setImageResource(if (isTrezorTransaction) R.drawable.trezor_icon_black else R.drawable.ic_action_done)
+                    fab.setOnClickListener {
+                        onFabClick(isTrezorTransaction)
                     }
                 }
             }
-
-        }
-
-
+        })
 
         gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
 
@@ -203,7 +172,9 @@ class CreateTransactionActivity : AppCompatActivity() {
             nonce_input_container.visibility = View.VISIBLE
         }
 
-        appDatabase.transactions.getNonceForAddressLive(currentAddressProvider.getCurrent(), networkDefinitionProvider.getCurrent().chain).observe(this, Observer {
+        Transformations.switchMap(currentAddressProvider, { address ->
+            appDatabase.transactions.getNonceForAddressLive(address, networkDefinitionProvider.getCurrent().chain)
+        }).observe(this, Observer {
             nonce_input.setText(if (it != null && !it.isEmpty()) {
                 it.max()!! + ONE
             } else {
@@ -219,7 +190,12 @@ class CreateTransactionActivity : AppCompatActivity() {
 
         address_list_button.setOnClickListener {
             val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
-            startActivityForResult(intent, 23451)
+            startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
+        }
+
+        from_address_list_button.setOnClickListener {
+            val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
+            startActivityForResult(intent, FROM_ADDRESS_REQUEST_CODE)
         }
 
         amount_input.doAfterEdit {
@@ -230,6 +206,46 @@ class CreateTransactionActivity : AppCompatActivity() {
         amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
 
 
+    }
+
+    private fun onFabClick(isTrezorTransaction: Boolean) {
+        if (to_address.text.isEmpty()) {
+            alert(R.string.create_tx_error_address_must_be_specified)
+        } else if (currentAmount == null) {
+            alert(R.string.create_tx_error_amount_must_be_specified)
+        } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
+            alert(R.string.create_tx_error_not_enough_funds)
+        } else if (nonce_input.text.isBlank()) {
+            alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
+        } else {
+            val toAddress = currentAddressProvider.getCurrent()
+            val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
+                    value = currentAmount!!,
+                    to = toAddress,
+                    from = currentAddressProvider.getCurrent()
+            ) else createTransactionWithDefaults(
+                    creationEpochSecond = System.currentTimeMillis() / 1000,
+                    value = ZERO,
+                    to = currentTokenProvider.currentToken.address,
+                    from = currentAddressProvider.getCurrent(),
+                    input = createTokenTransferTransactionInput(toAddress, currentAmount)
+            )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
+
+            transaction.nonce = nonce_input.asBigInit()
+            transaction.gasPrice = gas_price_input.asBigInit()
+            transaction.gasLimit = gas_limit_input.asBigInit()
+            transaction.txHash = transaction.encodeRLP().keccak().toHexString()
+
+            when {
+
+                isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
+                else -> async(CommonPool) {
+                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                    finish()
+                }
+
+            }
+        }
     }
 
     private fun currentBalanceSafely() = currentBalance?.balance ?: ZERO
@@ -257,6 +273,18 @@ class CreateTransactionActivity : AppCompatActivity() {
         outState.putString("ERC67", currentERC67String)
         outState.putString("lastERC67", lastWarningURI)
         super.onSaveInstanceState(outState)
+    }
+
+    private fun setFromAddress(address: Address) {
+        if (currentAddressProvider.value != address) {
+            currentBalance = null
+            from_address.text = address.hex
+            fab.setImageResource(R.drawable.ic_action_done)
+            fab.setOnClickListener {
+                onFabClick(false)
+            }
+            currentAddressProvider.setCurrent(address)
+        }
     }
 
     private fun setToFromURL(uri: String?, fromUser: Boolean) {
