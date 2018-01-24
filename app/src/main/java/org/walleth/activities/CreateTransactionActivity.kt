@@ -298,16 +298,17 @@ class CreateTransactionActivity : AppCompatActivity() {
 
                 showWarningOnWrongNetwork(erc681)
 
-                currentToAddress = when {
-                    erc681.address != null -> {
-                        to_address.text = erc681.address
-                        Address(erc681.address!!).apply {
-                            appDatabase.addressBook.resolveNameAsync(this) {
-                                to_address.text = it
+                currentToAddress =
+                        if (erc681.address != null) {
+                            to_address.text = erc681.address
+                            Address(erc681.address!!).apply {
+                                appDatabase.addressBook.resolveNameAsync(this) {
+                                    to_address.text = it
+                                }
                             }
-                        } }
-                    else -> null
-                }
+                        } else {
+                            null
+                        }
 
                 erc681.value?.let {
                     amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
