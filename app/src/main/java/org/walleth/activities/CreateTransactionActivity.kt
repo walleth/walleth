@@ -80,9 +80,7 @@ class CreateTransactionActivity : AppCompatActivity() {
         when (requestCode) {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    storeDefaultGasPrice {
-                        finish()
-                    }
+                    storeDefaultGasPrice()
                 }
             }
             FROM_ADDRESS_REQUEST_CODE -> {
@@ -251,7 +249,7 @@ class CreateTransactionActivity : AppCompatActivity() {
                         async(CommonPool) {
                             appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
                         }.await()
-                        storeDefaultGasPrice { finish() }
+                        storeDefaultGasPrice()
                     }
                 }
 
@@ -348,21 +346,23 @@ class CreateTransactionActivity : AppCompatActivity() {
         return false
     }
 
-    private fun storeDefaultGasPrice(whenDone: () -> Unit) {
+    private fun storeDefaultGasPrice() {
         val gasPrice = gas_price_input.asBigInit();
-        if (gasPrice != settings.getGasPriceFor(networkDefinitionProvider.getCurrent())) {
+        val networkDefinition = networkDefinitionProvider.getCurrent()
+        if (gasPrice != settings.getGasPriceFor(networkDefinition)) {
             AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.default_gas_price, networkDefinition.getNetworkName()))
                     .setMessage(R.string.store_gas_price)
                     .setPositiveButton(R.string.save) { dialogInterface: DialogInterface, button: Int ->
-                        settings.storeGasPriceFor(gasPrice, networkDefinitionProvider.getCurrent())
-                        whenDone()
+                        settings.storeGasPriceFor(gasPrice, networkDefinition)
+                        finish()
                     }
                     .setNegativeButton(R.string.no) { dialogInterface: DialogInterface, button: Int ->
-                        whenDone()
+                        finish()
                     }
                     .show()
         } else {
-            whenDone()
+            finish()
         }
     }
 

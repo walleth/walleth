@@ -191,4 +191,5 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="store_gas_price">Store the current gas price as default?</string>
     <string name="save">Save</string>
     <string name="no">No</string>
+    <string name="default_gas_price">Default gas price for %1$s</string>
 </resources>
