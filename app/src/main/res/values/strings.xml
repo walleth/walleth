@@ -188,4 +188,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="warning_not_a_valid_address">not a valid address: %s</string>
     <string name="title_invalid_address_alert">invalid_address</string>
     <string name="create_transation_from_label">From:</string>
+    <string name="unknown_token">Unknown Token</string>
+    <string name="add_token_manually">Please add token with address %1$s manually.</string>
+    <string name="no_token_address">Token address is missing!</string>
 </resources>
