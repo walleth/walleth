@@ -1,6 +1,8 @@
 package org.walleth.data.config
 
 import android.content.SharedPreferences
+import org.walleth.data.networks.NetworkDefinition
+import java.math.BigInteger
 
 interface Settings {
     var currentFiat: String
@@ -26,4 +28,7 @@ interface Settings {
 
     fun registerListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
     fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
+
+    fun getGasPriceFor(current: NetworkDefinition): BigInteger
+    fun storeGasPriceFor(gasPrice:BigInteger, network: NetworkDefinition)
 }

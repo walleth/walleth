@@ -188,4 +188,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="warning_not_a_valid_address">not a valid address: %s</string>
     <string name="title_invalid_address_alert">invalid_address</string>
     <string name="create_transation_from_label">From:</string>
+    <string name="store_gas_price">Store the current gas price as default?</string>
+    <string name="save">Save</string>
+    <string name="no">No</string>
 </resources>
