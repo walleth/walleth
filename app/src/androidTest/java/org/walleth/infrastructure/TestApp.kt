@@ -37,7 +37,7 @@ class TestApp : App() {
         bind<Settings>() with singleton { mySettings }
         bind<CurrentAddressProvider>() with singleton { currentAddressProvider }
         bind<NetworkDefinitionProvider>() with singleton { networkDefinitionProvider }
-        bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
+        bind<CurrentTokenProvider>() with singleton { currentTokenProvider }
         bind<AppDatabase>() with singleton { testDatabase }
     }
 
@@ -61,7 +61,7 @@ class TestApp : App() {
         }
         val currentAddressProvider = DefaultCurrentAddressProvider(mySettings)
         val networkDefinitionProvider = NetworkDefinitionProvider(mySettings)
-
+        val currentTokenProvider = CurrentTokenProvider(networkDefinitionProvider)
         lateinit var testDatabase: AppDatabase
         fun resetDB(context: Context) {
             testDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
