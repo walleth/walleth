@@ -189,6 +189,9 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="title_invalid_address_alert">invalid_address</string>
     <string name="please_connect_your_trezor">Please connect your TREZOR</string>
     <string name="create_transation_from_label">From:</string>
+    <string name="unknown_token">Unknown Token</string>
+    <string name="add_token_manually">Please add token with address %1$s manually.</string>
+    <string name="no_token_address">Token address is missing!</string>
     <string name="settings_start_light_summary">This makes your phone warm, might crash and use a lot of CPU cycles and bandwidth - but also gives you the warm feeling of helping decentralisation by finding issues in this area.</string>
     <string name="settings_start_light_title">Start Geth Light Client</string>
     <string name="settings_stats_name">Your name in the stats</string>
