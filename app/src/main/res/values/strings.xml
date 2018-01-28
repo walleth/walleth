@@ -192,4 +192,5 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="settings_start_light_summary">This makes your phone warm, might crash and use a lot of CPU cycles and bandwidth - but also gives you the warm feeling of helping decentralisation by finding issues in this area.</string>
     <string name="settings_start_light_title">Start Geth Light Client</string>
     <string name="settings_stats_name">Your name in the stats</string>
+    <string name="trezor_pin_invalid">Pin invalid</string>
 </resources>
