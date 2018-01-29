@@ -5,7 +5,6 @@ import org.walleth.khex.prepend0xPrefix
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.text.DecimalFormat
-import java.text.DecimalFormatSymbols
 import java.text.NumberFormat
 import java.util.*
 
@@ -19,9 +18,7 @@ val inputDecimalFormat = (NumberFormat.getInstance(Locale.ENGLISH) as DecimalFor
     isParseBigDecimal = true
 }
 
-val decimalSymbols = DecimalFormatSymbols(Locale.ENGLISH).apply { decimalSeparator = '.' }
-
-private fun getDecimalFormatUS(): DecimalFormat = NumberFormat.getInstance(Locale.US) as DecimalFormat
+private fun getDecimalFormatUS(): DecimalFormat = NumberFormat.getInstance(Locale.ENGLISH) as DecimalFormat
 
 val decimalFormat = getDecimalFormatUS().apply {
     isGroupingUsed = false
@@ -29,8 +26,9 @@ val decimalFormat = getDecimalFormatUS().apply {
 val sixDigitDecimalFormat = getDecimalFormat(6)
 val twoDigitDecimalFormat = getDecimalFormat(2)
 
-fun String.replaceNullDecimals(decimals : Int) = replace("."+"0".repeat(decimals),"")
-
+private val endingWithOneNumber = "^.*\\.[0-9]$".toRegex()
+fun String.stripTrailingZeros() = trimEnd('0').trimEnd('.')
+fun String.adjustToMonetary2DecimalsWhenNeeded() = if (endingWithOneNumber.matches(this)) "${this}0" else this
 
 private fun getDecimalFormat(decimals: Int) = getDecimalFormatUS().apply {
     applyPattern("#0." + "0".repeat(decimals))
