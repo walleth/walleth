@@ -182,7 +182,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="network_details">network details</string>
     <string name="network_stats">network stats</string>
     <string name="wrong_network">Wrong Network</string>
-    <string name="please_switch_network">Please switch network</string>
+    <string name="please_switch_network">Please switch network from %1$s to %2$s</string>
     <string name="info_activity_subtitle">Version %s</string>
     <string name="trezor_please_enter_your_pin">Please enter your PIN</string>
     <string name="warning_not_a_valid_address">not a valid address: %s</string>

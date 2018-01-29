@@ -39,6 +39,7 @@ import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.getNetworkDefinitionByChainID
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.tokens.isETH
@@ -332,7 +333,8 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     private fun showWarningOnWrongNetwork(erc681: ERC681): Boolean {
         if (erc681.chainId != null && erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
-            alert(title = R.string.wrong_network, message = R.string.please_switch_network)
+            val chainForTransaction = getNetworkDefinitionByChainID(erc681.chainId!!)?.getNetworkName() ?: erc681.chainId
+            alert(title = getString(R.string.wrong_network), message = getString(R.string.please_switch_network, networkDefinitionProvider.getCurrent().getNetworkName(), chainForTransaction))
             return true
         }
         return false
