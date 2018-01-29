@@ -26,9 +26,8 @@ class InfoActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
+        android.R.id.home -> true.also {
             finish()
-            true
         }
         else -> super.onOptionsItemSelected(item)
     }

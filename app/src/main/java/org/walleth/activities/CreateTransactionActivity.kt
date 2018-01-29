@@ -1,12 +1,13 @@
 package org.walleth.activities
 
 import android.app.Activity
-import android.app.AlertDialog
+import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
@@ -42,16 +43,17 @@ import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.tokens.getEthTokenForChain
-import org.walleth.data.tokens.isETH
+import org.walleth.data.networks.getNetworkDefinitionByChainID
+import org.walleth.data.tokens.*
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.functions.asBigDecimal
 import org.walleth.functions.decimalFormat
+import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.functions.decimalsInZeroes
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.toHexString
+import org.walleth.ui.asyncAwait
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ONE
@@ -74,6 +76,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     private val settings: Settings by LazyKodein(appKodein).instance()
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
+    private var currentBalanceLive: LiveData<Balance>? = null
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -120,11 +123,8 @@ class CreateTransactionActivity : AppCompatActivity() {
         supportActionBar?.subtitle = getString(R.string.create_transaction_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        Transformations.switchMap(currentAddressProvider, { address ->
-            appDatabase.balances.getBalanceLive(address, currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain)
-        }).observe(this, Observer {
-            currentBalance = it
-        })
+        onCurrentTokenChanged()
+
         currentAddressProvider.observe(this, Observer { address ->
             address?.let {
                 appDatabase.addressBook.getByAddressAsync(address) {
@@ -139,12 +139,6 @@ class CreateTransactionActivity : AppCompatActivity() {
         })
 
         gas_price_input.setText(settings.getGasPriceFor(networkDefinitionProvider.getCurrent()).toString())
-
-        if (currentTokenProvider.currentToken.isETH()) {
-            gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
-        } else {
-            gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
-        }
 
         sweep_button.setOnClickListener {
             val balance = currentBalanceSafely()
@@ -209,9 +203,24 @@ class CreateTransactionActivity : AppCompatActivity() {
             amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
         }
 
-        amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
+    }
 
+    private fun onCurrentTokenChanged() {
+        val currentToken = currentTokenProvider.currentToken
+        currentBalanceLive = Transformations.switchMap(currentAddressProvider, { address ->
+            appDatabase.balances.getBalanceLive(address, currentToken.address, networkDefinitionProvider.getCurrent().chain)
+        })
+        currentBalanceLive!!.observe(this, Observer {
+            currentBalance = it
+        })
 
+        amount_value.setValue(currentAmount ?: ZERO, currentToken)
+
+        if (currentToken.isETH()) {
+            gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
+        } else {
+            gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
+        }
     }
 
     private fun onFabClick(isTrezorTransaction: Boolean) {
@@ -220,6 +229,8 @@ class CreateTransactionActivity : AppCompatActivity() {
         } else if (currentAmount == null) {
             alert(R.string.create_tx_error_amount_must_be_specified)
         } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
+            alert(R.string.create_tx_error_not_enough_funds)
+        } else if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (nonce_input.text.isBlank()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
@@ -306,21 +317,45 @@ class CreateTransactionActivity : AppCompatActivity() {
 
                 showWarningOnWrongNetwork(erc681)
 
-                currentToAddress =
-                        if (erc681.address != null) {
-                            to_address.text = erc681.address
-                            Address(erc681.address!!).apply {
-                                appDatabase.addressBook.resolveNameAsync(this) {
-                                    to_address.text = it
-                                }
-                            }
-                        } else {
-                            null
-                        }
+                currentToAddress = erc681.getToAddress()?.apply {
+                    to_address.text = this.hex
+                    appDatabase.addressBook.resolveNameAsync(this) {
+                        to_address.text = it
+                    }
+                }
 
-                erc681.value?.let {
-                    amount_input.setText((BigDecimal(it).setScale(4) / BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toString())
-                    currentAmount = it
+                if (erc681.isTokenTransfer()) {
+                    if (erc681.address != null) {
+                        { appDatabase.tokens.forAddress(Address(erc681.address!!)) }.asyncAwait { token ->
+                            if (token != null) {
+
+                                if (token != currentTokenProvider.currentToken) {
+                                    currentTokenProvider.currentToken = token
+                                    currentBalanceLive!!.removeObservers(this)
+                                    onCurrentTokenChanged()
+                                }
+
+                                amount_input.setText(BigDecimal(erc681.getValueForTokenTransfer()).divide(token.decimalsAsMultiplicator()).toPlainString())
+                            } else {
+                                alert(getString(R.string.add_token_manually, erc681.address), getString(R.string.unknown_token))
+                            }
+                        }
+                    } else {
+                        alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
+                    }
+                } else {
+                    if (!currentTokenProvider.currentToken.isETH()) {
+                        currentTokenProvider.currentToken = getEthTokenForChain(networkDefinitionProvider.getCurrent())
+                        currentBalanceLive!!.removeObservers(this)
+                        onCurrentTokenChanged()
+                    }
+                    erc681.value?.let {
+                        amount_input.setText(BigDecimal(it).divide(currentTokenProvider.currentToken.decimalsAsMultiplicator()).toPlainString())
+
+                        // when called from onCreate() the afterEdit hook is not yet added
+                        setAmountFromETHString(amount_input.text.toString())
+                        amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
+                    }
                 }
             } else {
                 currentToAddress = null
@@ -340,7 +375,8 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     private fun showWarningOnWrongNetwork(erc681: ERC681): Boolean {
         if (erc681.chainId != null && erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
-            alert(title = R.string.wrong_network, message = R.string.please_switch_network)
+            val chainForTransaction = getNetworkDefinitionByChainID(erc681.chainId!!)?.getNetworkName() ?: erc681.chainId
+            alert(title = getString(R.string.wrong_network), message = getString(R.string.please_switch_network, networkDefinitionProvider.getCurrent().getNetworkName(), chainForTransaction))
             return true
         }
         return false
