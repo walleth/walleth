@@ -5,7 +5,10 @@ import android.preference.PreferenceManager
 import android.support.v7.app.AppCompatDelegate
 import com.chibatching.kotpref.KotprefModel
 import org.walleth.R
+import org.walleth.data.DEFAULT_GAS_PRICE
+import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.RINKEBY_CHAIN_ID
+import org.walleth.functions.asBigDecimal
 import java.math.BigInteger
 import java.security.SecureRandom
 
@@ -55,4 +58,14 @@ object KotprefSettings : KotprefModel(), Settings {
     override fun registerListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.registerOnSharedPreferenceChangeListener(listener)
     override fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.unregisterOnSharedPreferenceChangeListener(listener)
 
+    override fun getGasPriceFor(current: NetworkDefinition): BigInteger {
+        val gasPrice = sharedPreferences.getString("KEY_GAS_PRICE" + current.chain.id, null)
+        return gasPrice?.asBigDecimal()?.toBigInteger() ?: DEFAULT_GAS_PRICE
+    }
+
+    override fun storeGasPriceFor(gasPrice: BigInteger, network: NetworkDefinition) {
+        sharedPreferences.edit()
+                .putString("KEY_GAS_PRICE" + network.chain.id, gasPrice.toString())
+                .apply()
+    }
 }

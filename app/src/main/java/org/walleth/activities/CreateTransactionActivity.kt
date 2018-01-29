@@ -4,8 +4,10 @@ import android.app.Activity
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
@@ -15,6 +17,7 @@ import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.isEthereumURLString
@@ -34,10 +37,10 @@ import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
 import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
-import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
+import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.networks.getNetworkDefinitionByChainID
@@ -70,6 +73,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
     private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private val settings: Settings by LazyKodein(appKodein).instance()
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
     private var currentBalanceLive: LiveData<Balance>? = null
@@ -79,7 +83,7 @@ class CreateTransactionActivity : AppCompatActivity() {
         when (requestCode) {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    finish()
+                    storeDefaultGasPrice()
                 }
             }
             FROM_ADDRESS_REQUEST_CODE -> {
@@ -134,7 +138,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             }
         })
 
-        gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
+        gas_price_input.setText(settings.getGasPriceFor(networkDefinitionProvider.getCurrent()).toString())
 
         sweep_button.setOnClickListener {
             val balance = currentBalanceSafely()
@@ -251,9 +255,13 @@ class CreateTransactionActivity : AppCompatActivity() {
             when {
 
                 isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-                else -> async(CommonPool) {
-                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
-                    finish()
+                else -> {
+                    async(UI) {
+                        async(CommonPool) {
+                            appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                        }.await()
+                        storeDefaultGasPrice()
+                    }
                 }
 
             }
@@ -372,6 +380,26 @@ class CreateTransactionActivity : AppCompatActivity() {
             return true
         }
         return false
+    }
+
+    private fun storeDefaultGasPrice() {
+        val gasPrice = gas_price_input.asBigInit();
+        val networkDefinition = networkDefinitionProvider.getCurrent()
+        if (gasPrice != settings.getGasPriceFor(networkDefinition)) {
+            AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.default_gas_price, networkDefinition.getNetworkName()))
+                    .setMessage(R.string.store_gas_price)
+                    .setPositiveButton(R.string.save) { dialogInterface: DialogInterface, button: Int ->
+                        settings.storeGasPriceFor(gasPrice, networkDefinition)
+                        finish()
+                    }
+                    .setNegativeButton(R.string.no) { dialogInterface: DialogInterface, button: Int ->
+                        finish()
+                    }
+                    .show()
+        } else {
+            finish()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

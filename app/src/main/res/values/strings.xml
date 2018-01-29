@@ -196,4 +196,8 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="settings_start_light_title">Start Geth Light Client</string>
     <string name="settings_stats_name">Your name in the stats</string>
     <string name="trezor_pin_invalid">Pin invalid</string>
+    <string name="store_gas_price">Store the current gas price as default?</string>
+    <string name="save">Save</string>
+    <string name="no">No</string>
+    <string name="default_gas_price">Default gas price for %1$s</string>
 </resources>
