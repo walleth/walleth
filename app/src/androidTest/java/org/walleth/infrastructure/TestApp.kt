@@ -5,9 +5,8 @@ import android.content.Context
 import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
-import org.mockito.ArgumentMatchers.any
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.walleth.App
@@ -25,6 +24,13 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
+
+private fun <T> any(): T {
+    Mockito.any<T>()
+    return uninitialized()
+}
+
+private fun <T> uninitialized(): T = null as T
 
 class TestApp : App() {
 
