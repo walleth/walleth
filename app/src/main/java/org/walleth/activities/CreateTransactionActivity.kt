@@ -4,8 +4,10 @@ import android.app.Activity
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
@@ -16,6 +18,7 @@ import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.isEthereumURLString
@@ -35,12 +38,13 @@ import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
 import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
-import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
+import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.getNetworkDefinitionByChainID
 import org.walleth.data.tokens.*
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
@@ -71,6 +75,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
     private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
     private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    private val settings: Settings by LazyKodein(appKodein).instance()
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
     private var currentBalanceLive: LiveData<Balance>? = null
@@ -80,7 +85,7 @@ class CreateTransactionActivity : AppCompatActivity() {
         when (requestCode) {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    finish()
+                    storeDefaultGasPrice()
                 }
             }
             FROM_ADDRESS_REQUEST_CODE -> {
@@ -143,7 +148,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             startActivityForResult(Intent(this, SelectTokenActivity::class.java), TOKEN_REQUEST_CODE)
         }
 
-        gas_price_input.setText(DEFAULT_GAS_PRICE.toString())
+        gas_price_input.setText(settings.getGasPriceFor(networkDefinitionProvider.getCurrent()).toString())
 
         sweep_button.setOnClickListener {
             val balance = currentBalanceSafely()
@@ -260,9 +265,13 @@ class CreateTransactionActivity : AppCompatActivity() {
             when {
 
                 isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-                else -> async(CommonPool) {
-                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
-                    finish()
+                else -> {
+                    async(UI) {
+                        async(CommonPool) {
+                            appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                        }.await()
+                        storeDefaultGasPrice()
+                    }
                 }
 
             }
@@ -376,10 +385,31 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     private fun showWarningOnWrongNetwork(erc681: ERC681): Boolean {
         if (erc681.chainId != null && erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
-            alert(title = R.string.wrong_network, message = R.string.please_switch_network)
+            val chainForTransaction = getNetworkDefinitionByChainID(erc681.chainId!!)?.getNetworkName() ?: erc681.chainId
+            alert(title = getString(R.string.wrong_network), message = getString(R.string.please_switch_network, networkDefinitionProvider.getCurrent().getNetworkName(), chainForTransaction))
             return true
         }
         return false
+    }
+
+    private fun storeDefaultGasPrice() {
+        val gasPrice = gas_price_input.asBigInit();
+        val networkDefinition = networkDefinitionProvider.getCurrent()
+        if (gasPrice != settings.getGasPriceFor(networkDefinition)) {
+            AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.default_gas_price, networkDefinition.getNetworkName()))
+                    .setMessage(R.string.store_gas_price)
+                    .setPositiveButton(R.string.save) { dialogInterface: DialogInterface, button: Int ->
+                        settings.storeGasPriceFor(gasPrice, networkDefinition)
+                        finish()
+                    }
+                    .setNegativeButton(R.string.no) { dialogInterface: DialogInterface, button: Int ->
+                        finish()
+                    }
+                    .show()
+        } else {
+            finish()
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

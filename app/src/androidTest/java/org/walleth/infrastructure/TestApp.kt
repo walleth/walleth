@@ -5,12 +5,13 @@ import android.content.Context
 import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
+import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.walleth.App
 import org.walleth.data.AppDatabase
+import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.WallethKeyStore
@@ -23,6 +24,13 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
+
+private fun <T> any(): T {
+    Mockito.any<T>()
+    return uninitialized()
+}
+
+private fun <T> uninitialized(): T = null as T
 
 class TestApp : App() {
 
@@ -58,6 +66,7 @@ class TestApp : App() {
             `when`(isLightClientWanted()).thenReturn(false)
             `when`(addressInitVersion).thenReturn(0)
             `when`(tokensInitVersion).thenReturn(0)
+            `when`(getGasPriceFor(any())).thenReturn(DEFAULT_GAS_PRICE)
         }
         val currentAddressProvider = DefaultCurrentAddressProvider(mySettings)
         val networkDefinitionProvider = NetworkDefinitionProvider(mySettings)

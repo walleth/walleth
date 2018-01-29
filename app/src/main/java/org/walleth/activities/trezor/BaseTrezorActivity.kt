@@ -119,7 +119,7 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
             is TrezorMessage.Features -> enterNewState(READ_ADDRESS)
             is TrezorMessage.EthereumAddress -> handleAddress(Address(address.toByteArray().toHexString()))
             is TrezorMessage.Failure -> when (code) {
-                TrezorType.FailureType.Failure_PinInvalid -> alert("Pin invalid", "Error", OnClickListener { _, _ ->
+                TrezorType.FailureType.Failure_PinInvalid -> alert(R.string.trezor_pin_invalid, R.string.dialog_title_error, OnClickListener { _, _ ->
                     cancel()
                 })
                 TrezorType.FailureType.Failure_UnexpectedMessage -> Unit

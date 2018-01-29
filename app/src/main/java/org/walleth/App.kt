@@ -3,6 +3,7 @@ package org.walleth
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.Intent
+import android.net.TrafficStats
 import android.os.StrictMode
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
@@ -33,11 +34,25 @@ import org.walleth.data.networks.InitializingCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.util.DelegatingSocketFactory
+import java.net.Socket
+import javax.net.SocketFactory
 
 open class App : MultiDexApplication(), KodeinAware {
 
     override val kodein by Kodein.lazy {
-        bind<OkHttpClient>() with singleton { OkHttpClient.Builder().build() }
+        bind<OkHttpClient>() with singleton {
+            val socketFactory = object : DelegatingSocketFactory(SocketFactory.getDefault()) {
+                override fun configureSocket(socket: Socket): Socket {
+                    // https://github.com/walleth/walleth/issues/164
+                    // https://github.com/square/okhttp/issues/3537
+                    TrafficStats.tagSocket(socket)
+
+                    return socket
+                }
+            }
+            OkHttpClient.Builder().socketFactory(socketFactory).build()
+        }
 
         import(createKodein())
     }
