@@ -7,10 +7,12 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.singleton
+import org.mockito.ArgumentMatchers.any
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.walleth.App
 import org.walleth.data.AppDatabase
+import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.WallethKeyStore
@@ -58,6 +60,7 @@ class TestApp : App() {
             `when`(isLightClientWanted()).thenReturn(false)
             `when`(addressInitVersion).thenReturn(0)
             `when`(tokensInitVersion).thenReturn(0)
+            `when`(getGasPriceFor(any())).thenReturn(DEFAULT_GAS_PRICE)
         }
         val currentAddressProvider = DefaultCurrentAddressProvider(mySettings)
         val networkDefinitionProvider = NetworkDefinitionProvider(mySettings)
