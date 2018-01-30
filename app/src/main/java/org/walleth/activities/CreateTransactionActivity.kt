@@ -16,6 +16,7 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_transaction.*
+import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -62,6 +63,7 @@ import java.text.ParseException
 
 const val TO_ADDRESS_REQUEST_CODE = 1
 const val FROM_ADDRESS_REQUEST_CODE = 2
+const val TOKEN_REQUEST_CODE = 3
 
 class CreateTransactionActivity : AppCompatActivity() {
 
@@ -92,6 +94,10 @@ class CreateTransactionActivity : AppCompatActivity() {
                         setFromAddress(Address(data.getStringExtra("HEX")))
                     }
                 }
+            }
+            TOKEN_REQUEST_CODE -> {
+                setAmountFromETHString(amount_input.text.toString())
+                onCurrentTokenChanged()
             }
             else -> data?.let {
                 if (data.hasExtra("HEX")) {
@@ -137,6 +143,10 @@ class CreateTransactionActivity : AppCompatActivity() {
                 }
             }
         })
+
+        current_token_symbol.setOnClickListener {
+            startActivityForResult(Intent(this, SelectTokenActivity::class.java), TOKEN_REQUEST_CODE)
+        }
 
         gas_price_input.setText(settings.getGasPriceFor(networkDefinitionProvider.getCurrent()).toString())
 
