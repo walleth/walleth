@@ -354,12 +354,14 @@ class CreateTransactionActivity : AppCompatActivity() {
                         alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
                     }
                 } else {
-                    if (!currentTokenProvider.currentToken.isETH()) {
-                        currentTokenProvider.currentToken = getEthTokenForChain(networkDefinitionProvider.getCurrent())
-                        currentBalanceLive!!.removeObservers(this)
-                        onCurrentTokenChanged()
-                    }
                     erc681.value?.let {
+
+                        if (!currentTokenProvider.currentToken.isETH()) {
+                            currentTokenProvider.currentToken = getEthTokenForChain(networkDefinitionProvider.getCurrent())
+                            currentBalanceLive!!.removeObservers(this)
+                            onCurrentTokenChanged()
+                        }
+
                         amount_input.setText(BigDecimal(it).divide(currentTokenProvider.currentToken.decimalsAsMultiplicator()).toPlainString())
 
                         // when called from onCreate() the afterEdit hook is not yet added

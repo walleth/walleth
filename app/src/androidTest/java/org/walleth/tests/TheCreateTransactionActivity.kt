@@ -1,9 +1,14 @@
 package org.walleth.tests
 
+import android.app.Activity.RESULT_OK
+import android.app.Instrumentation
 import android.content.Intent
 import android.support.test.espresso.Espresso
 import android.support.test.espresso.action.ViewActions
+import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions
+import android.support.test.espresso.intent.Intents.intending
+import android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import android.support.test.espresso.matcher.ViewMatchers
 import com.google.common.truth.Truth
 import org.junit.Before
@@ -14,9 +19,10 @@ import org.kethereum.functions.getTokenTransferTo
 import org.kethereum.functions.getTokenTransferValue
 import org.kethereum.functions.isTokenTransfer
 import org.kethereum.model.Address
-import org.ligi.trulesk.TruleskActivityRule
+import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
 import org.walleth.activities.CreateTransactionActivity
+import org.walleth.activities.qrscan.QRScanActivity
 import org.walleth.data.balances.Balance
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.TokenTransfer
@@ -25,6 +31,7 @@ import org.walleth.data.tokens.toERC681
 import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.infrastructure.TestApp
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
+import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
 import java.math.BigInteger
 
 val testToken = Token("Test", "TEST", Address("0x01"), 15, TestApp.networkDefinitionProvider.getCurrent().chain, true, false, false, 1)
@@ -33,7 +40,7 @@ val eth = getEthTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
 class TheCreateTransactionActivity {
 
     @get:Rule
-    var rule = TruleskActivityRule(CreateTransactionActivity::class.java, autoLaunch = false)
+    var rule = TruleskIntentRule(CreateTransactionActivity::class.java, autoLaunch = false)
 
     @Before
     fun setup() {
@@ -177,4 +184,23 @@ class TheCreateTransactionActivity {
         rule.screenShot("unknown_token")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
     }
+
+    @Test
+    fun doesNotChangeTokenOnToAddressScan() {
+        TestApp.currentTokenProvider.currentToken = testToken
+        TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
+
+        val uri = TokenTransfer(DEFAULT_TEST_ADDRESS2, testToken, BigInteger.TEN).toERC681()
+                .generateURL()
+        rule.launchActivity(Intent.getIntentOld(uri))
+
+        val result = Instrumentation.ActivityResult(RESULT_OK, Intent().putExtra("SCAN_RESULT", DEFAULT_TEST_ADDRESS3.hex))
+        intending(hasComponent(QRScanActivity::class.java.canonicalName)).respondWith(result)
+
+        Espresso.onView(ViewMatchers.withId(R.id.scan_button)).perform(click())
+
+        Espresso.onView(ViewMatchers.withText(testToken.symbol)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+    }
+
 }
