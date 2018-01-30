@@ -401,11 +401,11 @@ class CreateTransactionActivity : AppCompatActivity() {
             AlertDialog.Builder(this)
                     .setTitle(getString(R.string.default_gas_price, networkDefinition.getNetworkName()))
                     .setMessage(R.string.store_gas_price)
-                    .setPositiveButton(R.string.save) { dialogInterface: DialogInterface, button: Int ->
+                    .setPositiveButton(R.string.save) { _: DialogInterface, _: Int ->
                         settings.storeGasPriceFor(gasPrice, networkDefinition)
                         finish()
                     }
-                    .setNegativeButton(R.string.no) { dialogInterface: DialogInterface, button: Int ->
+                    .setNegativeButton(R.string.no) { _: DialogInterface, _: Int ->
                         finish()
                     }
                     .show()
