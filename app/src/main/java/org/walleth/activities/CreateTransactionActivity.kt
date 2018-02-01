@@ -265,13 +265,11 @@ class CreateTransactionActivity : AppCompatActivity() {
             when {
 
                 isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-                else -> {
-                    async(UI) {
-                        async(CommonPool) {
-                            appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
-                        }.await()
-                        storeDefaultGasPrice()
-                    }
+                else -> async(UI) {
+                    async(CommonPool) {
+                        appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                    }.await()
+                    storeDefaultGasPrice()
                 }
 
             }
@@ -395,7 +393,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     }
 
     private fun storeDefaultGasPrice() {
-        val gasPrice = gas_price_input.asBigInit();
+        val gasPrice = gas_price_input.asBigInit()
         val networkDefinition = networkDefinitionProvider.getCurrent()
         if (gasPrice != settings.getGasPriceFor(networkDefinition)) {
             AlertDialog.Builder(this)
@@ -415,9 +413,8 @@ class CreateTransactionActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
+        android.R.id.home -> true.also {
             finish()
-            true
         }
         else -> super.onOptionsItemSelected(item)
     }
