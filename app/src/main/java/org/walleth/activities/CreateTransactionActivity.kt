@@ -386,7 +386,9 @@ class CreateTransactionActivity : AppCompatActivity() {
     private fun showWarningOnWrongNetwork(erc681: ERC681): Boolean {
         if (erc681.chainId != null && erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
             val chainForTransaction = getNetworkDefinitionByChainID(erc681.chainId!!)?.getNetworkName() ?: erc681.chainId
-            alert(title = getString(R.string.wrong_network), message = getString(R.string.please_switch_network, networkDefinitionProvider.getCurrent().getNetworkName(), chainForTransaction))
+            val currentNetworkName = networkDefinitionProvider.getCurrent().getNetworkName()
+            val message = getString(R.string.please_switch_network, currentNetworkName, chainForTransaction)
+            alert(title = getString(R.string.wrong_network), message = message)
             return true
         }
         return false
