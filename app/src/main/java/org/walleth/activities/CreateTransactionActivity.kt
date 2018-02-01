@@ -367,6 +367,12 @@ class CreateTransactionActivity : AppCompatActivity() {
                         amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
                     }
                 }
+
+                erc681.gas?.let {
+                    show_advanced_button.callOnClick()
+                    gas_limit_input.setText(it.toString())
+                }
+
             } else {
                 currentToAddress = null
                 to_address.text = getString(R.string.no_address_selected)
