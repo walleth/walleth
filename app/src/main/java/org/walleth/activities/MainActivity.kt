@@ -37,6 +37,7 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.isTokenTransfer
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
@@ -113,9 +114,14 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
 
             when {
                 scanResult.isEthereumURLString() -> {
-                    startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
-                        setData(Uri.parse(scanResult))
-                    })
+                    val erc681 = scanResult.toERC681()
+                    if (erc681.address == null || erc681.isTokenTransfer() || (erc681.value != null && erc681.value != ZERO)) {
+                        startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
+                            setData(Uri.parse(scanResult))
+                        })
+                    } else {
+                        showAddressActionChooser(erc681.address!!)
+                    }
                 }
 
                 scanResult.length == 64 -> {
@@ -131,25 +137,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                 }
 
                 scanResult.startsWith("0x") -> {
-                    AlertDialog.Builder(this)
-                            .setTitle(R.string.select_action_messagebox_title)
-                            .setItems(R.array.scan_hex_choices, { _, which ->
-                                when (which) {
-                                    0 -> {
-                                        startCreateAccountActivity(scanResult)
-                                    }
-                                    1 -> {
-                                        startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
-                                            setData(Uri.parse("ethereum:$scanResult"))
-                                        })
-                                    }
-                                    2 -> {
-                                        alert("TODO")
-                                    }
-                                }
-                            })
-                            .setNegativeButton(android.R.string.cancel, null)
-                            .show()
+                    showAddressActionChooser(scanResult)
                 }
 
                 else -> {
@@ -160,6 +148,28 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                 }
             }
         }
+    }
+
+    private fun showAddressActionChooser(address: String) {
+        AlertDialog.Builder(this)
+                .setTitle(R.string.select_action_messagebox_title)
+                .setItems(R.array.scan_hex_choices, { _, which ->
+                    when (which) {
+                        0 -> {
+                            startCreateAccountActivity(address)
+                        }
+                        1 -> {
+                            startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
+                                setData(Uri.parse("ethereum:$address"))
+                            })
+                        }
+                        2 -> {
+                            alert("TODO")
+                        }
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show()
     }
 
     fun refresh() {
