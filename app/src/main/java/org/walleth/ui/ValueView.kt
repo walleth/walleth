@@ -40,7 +40,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         LayoutInflater.from(context).inflate(layoutRes, this, true)
         current_eth.setOnClickListener {
             currentToken?.let { tokenNotNull ->
-                showPreciseAmountAlert(currentValue.toFullValueString(tokenNotNull) + current_token_symbol.text )
+                showPreciseAmountAlert(currentValue.toFullValueString(tokenNotNull) + current_token_symbol.text)
             }
         }
 
@@ -52,7 +52,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     }
 
     private fun showPreciseAmountAlert(fullAmountString: String) =
-            context.alert(fullAmountString,context.getString(R.string.precise_amount_alert_title))
+            context.alert(fullAmountString, context.getString(R.string.precise_amount_alert_title))
 
     fun setValue(value: BigInteger, token: Token) {
 
@@ -61,7 +61,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
             current_fiat_symbol.text = settings.currentFiat
             current_fiat.text = if (exChangeRate != null) {
-                twoDigitDecimalFormat.format(exChangeRate).addPrefixOnCondition(prefix = "~", condition = exChangeRate.scale() <= 2)
+                twoDigitDecimalFormat.format(exChangeRate).addPrefixOnCondition(prefix = "~", condition = exChangeRate.scale() > 2)
             } else {
                 "?"
             }
