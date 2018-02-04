@@ -2,11 +2,12 @@ package org.walleth.activities
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
-import android.content.Intent
-import android.content.SharedPreferences
+import android.content.*
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.support.design.widget.BaseTransientBottomBar
+import android.support.design.widget.Snackbar
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -43,6 +44,7 @@ import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
 import java.math.BigInteger.ZERO
 
+private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
 
 class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -60,6 +62,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     private var balanceLiveData: LiveData<Balance>? = null
     private val onboardingController by lazy { OnboardingController(this, settings) }
 
+    private var lastPastedData: String? = null
+
     override fun onResume() {
         super.onResume()
 
@@ -69,6 +73,31 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         }
         lastNightMode = settings.getNightMode()
         setCurrentBalanceObserver()
+
+        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        if (clipboard.hasPrimaryClip()) {
+            val item = clipboard.primaryClip.getItemAt(0).text?.toString()
+            val erc681 = item?.toERC681()
+            if (erc681?.address != null && item != lastPastedData) {
+                Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
+                        .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
+                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
+                                if (event == DISMISS_EVENT_ACTION || event == DISMISS_EVENT_SWIPE) {
+                                    lastPastedData = item
+                                }
+                            }
+                        })
+                        .setAction(R.string.paste_from_clipboard_action, {
+                            alert(R.string.copied_string_warning_message, R.string.copied_string_warning_title, DialogInterface.OnClickListener { _, _ ->
+                                startActivity(Intent(this@MainActivity, CreateTransactionActivity::class.java).apply {
+                                    data = Uri.parse(item)
+                                })
+                            })
+
+                        })
+                        .show()
+            }
+        }
     }
 
     private fun String.isJSONKey() = try {
@@ -252,6 +281,9 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             startScanActivityForResult(this)
         }
 
+        if (savedInstanceState != null) {
+            lastPastedData = savedInstanceState.getString(KEY_LAST_PASTED_DATA)
+        }
     }
 
 
@@ -305,6 +337,11 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             transaction_recycler_in.adapter?.notifyDataSetChanged()
             transaction_recycler_in.adapter?.notifyDataSetChanged()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState!!.putString(KEY_LAST_PASTED_DATA, lastPastedData)
     }
 
     override fun onDestroy() {

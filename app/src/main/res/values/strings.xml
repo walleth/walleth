@@ -200,4 +200,8 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="save">Save</string>
     <string name="no">No</string>
     <string name="default_gas_price">Default gas price for %1$s</string>
+    <string name="paste_from_clipboard">Copied Ethereum details detected</string>
+    <string name="paste_from_clipboard_action">Use it</string>
+    <string name="copied_string_warning_title">Warning</string>
+    <string name="copied_string_warning_message">Copied details could have been tampered with by other apps. Please verify the details!</string>
 </resources>
