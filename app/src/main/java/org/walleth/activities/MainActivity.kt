@@ -78,7 +78,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip.getItemAt(0).text?.toString()
             val erc681 = item?.toERC681()
-            if (erc681?.address != null && item != lastPastedData) {
+            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData) {
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
