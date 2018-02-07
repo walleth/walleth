@@ -4,7 +4,6 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.content.*
 import android.content.res.Configuration
-import android.net.Uri
 import android.os.Bundle
 import android.support.design.widget.BaseTransientBottomBar
 import android.support.design.widget.Snackbar
@@ -23,11 +22,9 @@ import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
 import org.kethereum.erc681.isEthereumURLString
-import org.kethereum.erc681.toERC681
 import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
-import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
