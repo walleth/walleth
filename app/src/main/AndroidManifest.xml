@@ -27,6 +27,7 @@
 
         <activity android:name="org.walleth.activities.SwitchNetworkActivity"/>
         <activity android:name="org.walleth.activities.RequestActivity"/>
+        <activity android:name=".activities.FullscreenQRCodeActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>
         <activity android:name="org.walleth.activities.DebugWallethActivity"/>
         <activity android:name="org.walleth.activities.OfflineTransactionActivity"

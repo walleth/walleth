@@ -46,7 +46,7 @@ class RequestActivity : AppCompatActivity() {
         refreshQR()
 
 
-        val initText = getString(if (networkDefinitionProvider.getCurrent().isNoTestNet() ) {
+        val initText = getString(if (networkDefinitionProvider.getCurrent().isNoTestNet()) {
             R.string.request_hint_no_test_net
         } else {
             R.string.request_hint_test_net
@@ -62,6 +62,12 @@ class RequestActivity : AppCompatActivity() {
         value_input_edittext.doAfterEdit {
             refreshQR()
         }
+
+        receive_qrcode.setOnClickListener({
+            startActivity(Intent(this, FullscreenQRCodeActivity::class.java).apply {
+                putExtra(KEY_ERC681, currentERC67String)
+            })
+        })
     }
 
     private fun refreshQR() {
@@ -74,7 +80,7 @@ class RequestActivity : AppCompatActivity() {
 
             if (add_value_checkbox.isChecked) {
                 try {
-                    currentERC67String = ERC681(address = relevantAddress.hex,value =value_input_edittext.text.toString().extractValueForToken(currentToken) ).generateURL()
+                    currentERC67String = ERC681(address = relevantAddress.hex, value = value_input_edittext.text.toString().extractValueForToken(currentToken)).generateURL()
                 } catch (e: NumberFormatException) {
                 }
             }
