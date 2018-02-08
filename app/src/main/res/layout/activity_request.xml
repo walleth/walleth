@@ -38,6 +38,7 @@
     <android.support.design.widget.TextInputLayout
             android:layout_below="@+id/add_value_checkbox"
             android:id="@+id/value_input_layout"
+            android:hint="@string/request_funds_value_hint"
             android:visibility="gone"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -47,7 +48,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/value_input_edittext"
                 android:inputType="numberDecimal"
-                android:hint="@string/request_funds_value_hint"
         />
     </android.support.design.widget.TextInputLayout>
     <TextView

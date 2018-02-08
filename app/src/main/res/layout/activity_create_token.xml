@@ -12,11 +12,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputLayout
+                android:hint="@string/input_hint_token_name"
                 android:minWidth="127dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
-                    android:hint="Token Name"
                     android:minWidth="128dp"
                     android:maxLength="5"
                     android:id="@+id/token_name_input"
@@ -26,10 +26,10 @@
 
 
         <android.support.design.widget.TextInputLayout
+                android:hint="@string/input_hint_token_address"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
-                    android:hint="Token Address"
                     android:minWidth="128dp"
                     android:id="@+id/token_address_input"
                     android:layout_width="match_parent"
@@ -37,10 +37,10 @@
         </android.support.design.widget.TextInputLayout>
 
         <android.support.design.widget.TextInputLayout
+                android:hint="@string/input_hint_decimals"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
-                    android:hint="Decimals"
                     android:minWidth="128dp"
                     android:id="@+id/token_decimals_input"
                     android:inputType="number"

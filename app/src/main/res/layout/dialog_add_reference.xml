@@ -2,6 +2,7 @@
 <android.support.design.widget.TextInputLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/activity_main"
+        android:hint="@string/input_hint_reference_to_add"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/rythm2">
@@ -9,7 +10,6 @@
 
     <android.support.v7.widget.AppCompatEditText
             android:id="@+id/reference_text"
-            android:hint="Reference to add"
             android:lines="1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

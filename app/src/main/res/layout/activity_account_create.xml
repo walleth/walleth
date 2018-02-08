@@ -16,11 +16,11 @@
             <android.support.design.widget.TextInputLayout
                     android:padding="16dp"
                     android:id="@+id/name_input_container"
+                    android:hint="@string/input_hint_account_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/nameInput"
-                        android:hint="@string/input_hint_account_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
             </android.support.design.widget.TextInputLayout>
@@ -29,11 +29,11 @@
             <android.support.design.widget.TextInputLayout
                     android:padding="16dp"
                     android:id="@+id/note_input_container"
+                    android:hint="@string/input_hint_notes"
                     android:layout_below="@+id/name_input_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
-                        android:hint="@string/input_hint_notes"
                         android:id="@+id/noteInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
@@ -47,12 +47,12 @@
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputLayout
                 android:id="@+id/hex_input_container"
+                android:hint="@string/input_hint_address"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content">
             <android.support.design.widget.TextInputEditText
                     android:id="@+id/hexInput"
-                    android:hint="@string/input_hint_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
         </android.support.design.widget.TextInputLayout>
