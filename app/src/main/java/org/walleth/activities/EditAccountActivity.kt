@@ -69,6 +69,9 @@ class EditAccountActivity : AppCompatActivity() {
 
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.menu_copy -> true.also {
+            copyToClipboard(currentAddressInfo.address, activity_main)
+        }
         R.id.menu_etherscan -> true.also {
             startActivityFromURL(networkDefinitionProvider.value!!.getBlockExplorer().getURLforAddress(currentAddressProvider.getCurrent()))
         }
