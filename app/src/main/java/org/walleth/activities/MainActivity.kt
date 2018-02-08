@@ -80,7 +80,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip.getItemAt(0).text?.toString()
             val erc681 = item?.toERC681()
-            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData) {
+            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != "ethereum:${currentAddressProvider.getCurrent().hex}") {
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -327,12 +327,12 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     }
 }
 
-fun Activity.copyToClipboard(address: Address, anchor: View) {
-    copyToClipboard("ethereum:${address.hex}", anchor)
+fun Activity.copyToClipboard(address: Address, view: View) {
+    copyToClipboard("ethereum:${address.hex}", view)
 }
 
-fun Activity.copyToClipboard(ethereumString: String, anchor: View) {
+fun Activity.copyToClipboard(ethereumString: String, view: View) {
     val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
     clipboard.primaryClip = ClipData.newPlainText(getString(R.string.clipboard_copy_name), ethereumString)
-    Snackbar.make(anchor, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
+    Snackbar.make(view, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
 }
