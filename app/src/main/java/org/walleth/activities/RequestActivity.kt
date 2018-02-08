@@ -114,9 +114,7 @@ class RequestActivity : AppCompatActivity() {
             true
         }
         R.id.menu_copy -> {
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.primaryClip = ClipData.newPlainText(getString(R.string.clipboard_copy_name), currentERC67String)
-            Snackbar.make(receive_qrcode, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
+            copyToClipboard(currentERC67String, receive_qrcode)
             true
         }
         android.R.id.home -> {

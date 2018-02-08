@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.app.Activity
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.content.*
@@ -14,6 +15,7 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.View.INVISIBLE
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
@@ -24,6 +26,7 @@ import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.toERC681
+import org.kethereum.model.Address
 import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -295,6 +298,10 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.menu_copy -> {
+            copyToClipboard(currentAddressProvider.getCurrent(), fab)
+            true
+        }
         R.id.menu_info -> {
             startActivityFromClass(InfoActivity::class.java)
             true
@@ -318,4 +325,14 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         settings.unregisterListener(this)
         super.onDestroy()
     }
+}
+
+fun Activity.copyToClipboard(address: Address, anchor: View) {
+    copyToClipboard("ethereum:${address.hex}", anchor)
+}
+
+fun Activity.copyToClipboard(ethereumString: String, anchor: View) {
+    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+    clipboard.primaryClip = ClipData.newPlainText(getString(R.string.clipboard_copy_name), ethereumString)
+    Snackbar.make(anchor, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
 }
