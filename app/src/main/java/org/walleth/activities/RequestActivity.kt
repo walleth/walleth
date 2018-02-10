@@ -1,11 +1,7 @@
 package org.walleth.activities
 
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
 import android.view.Menu
@@ -27,6 +23,7 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
 import org.walleth.functions.extractValueForToken
 import org.walleth.functions.setQRCode
+import org.walleth.util.copyToClipboard
 
 class RequestActivity : AppCompatActivity() {
 
@@ -46,7 +43,7 @@ class RequestActivity : AppCompatActivity() {
         refreshQR()
 
 
-        val initText = getString(if (networkDefinitionProvider.getCurrent().isNoTestNet() ) {
+        val initText = getString(if (networkDefinitionProvider.getCurrent().isNoTestNet()) {
             R.string.request_hint_no_test_net
         } else {
             R.string.request_hint_test_net
@@ -74,7 +71,7 @@ class RequestActivity : AppCompatActivity() {
 
             if (add_value_checkbox.isChecked) {
                 try {
-                    currentERC67String = ERC681(address = relevantAddress.hex,value =value_input_edittext.text.toString().extractValueForToken(currentToken) ).generateURL()
+                    currentERC67String = ERC681(address = relevantAddress.hex, value = value_input_edittext.text.toString().extractValueForToken(currentToken)).generateURL()
                 } catch (e: NumberFormatException) {
                 }
             }
@@ -114,9 +111,7 @@ class RequestActivity : AppCompatActivity() {
             true
         }
         R.id.menu_copy -> {
-            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-            clipboard.primaryClip = ClipData.newPlainText(getString(R.string.clipboard_copy_name), currentERC67String)
-            Snackbar.make(receive_qrcode, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
+            copyToClipboard(currentERC67String, receive_qrcode)
             true
         }
         android.R.id.home -> {

@@ -41,6 +41,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
+import org.walleth.util.copyToClipboard
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -77,7 +78,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip.getItemAt(0).text?.toString()
             val erc681 = item?.toERC681()
-            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData) {
+            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != "ethereum:${currentAddressProvider.value?.hex}") {
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -295,6 +296,10 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.menu_copy -> {
+            copyToClipboard(currentAddressProvider.getCurrent(), fab)
+            true
+        }
         R.id.menu_info -> {
             startActivityFromClass(InfoActivity::class.java)
             true

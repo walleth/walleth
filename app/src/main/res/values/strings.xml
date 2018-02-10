@@ -87,6 +87,8 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="input_hint_notes">notes</string>
     <string name="input_hint_account_name">account name</string>
     <string name="please_enter_name">Please enter a name</string>
+    <string name="info">Info</string>
+    <string name="copy">Copy</string>
     <string name="share">Share</string>
     <string name="print">Print</string>
     <string name="paper_wallet_title">WALLΞTH Paper Ethereum Wallet</string>
