@@ -6,12 +6,14 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.support.design.widget.Snackbar
 import android.view.View
+import org.kethereum.erc681.ERC681
+import org.kethereum.erc681.generateURL
 import org.kethereum.model.Address
 import org.walleth.R
 
 
 fun Activity.copyToClipboard(address: Address, view: View) {
-    copyToClipboard("ethereum:${address.hex}", view)
+    copyToClipboard(ERC681(address = address.hex).generateURL(), view)
 }
 
 fun Activity.copyToClipboard(ethereumString: String, view: View) {

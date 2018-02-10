@@ -22,6 +22,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
+import org.kethereum.erc681.ERC681
+import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.toERC681
 import org.ligi.kaxt.recreateWhenPossible
@@ -78,7 +80,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip.getItemAt(0).text?.toString()
             val erc681 = item?.toERC681()
-            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != "ethereum:${currentAddressProvider.value?.hex}") {
+            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != currentAddressProvider.value?.hex.let { ERC681(address = it).generateURL() }) {
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -130,7 +132,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                 }
 
                 scanResult.startsWith("0x") -> {
-                    startActivity(getEthereumViewIntent("ethereum:" + scanResult))
+                    startActivity(getEthereumViewIntent(ERC681(address = scanResult).generateURL()))
                 }
 
                 else -> {
