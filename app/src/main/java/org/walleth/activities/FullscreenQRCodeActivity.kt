@@ -8,10 +8,9 @@ import kotlinx.android.synthetic.main.activity_fullscreen_qrcode.*
 import org.walleth.R
 import org.walleth.functions.setQRCode
 
-const val KEY_ERC681 = "extra_erc681"
+const val KEY_ERC681 = "erc681"
 
 class FullscreenQRCodeActivity : AppCompatActivity() {
-    private var fullBrightnessSet = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,7 +42,6 @@ class FullscreenQRCodeActivity : AppCompatActivity() {
         val params = win.attributes
         params.screenBrightness = WindowManager.LayoutParams.BRIGHTNESS_OVERRIDE_FULL
         win.attributes = params
-        fullBrightnessSet = true
     }
 
 }
