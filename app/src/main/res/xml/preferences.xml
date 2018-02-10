@@ -33,6 +33,7 @@
 
     <CheckBoxPreference
             android:key="@string/key_prefs_start_light"
+            android:visibility="gone"
             android:title="@string/settings_start_light_title"
             android:summary="@string/settings_start_light_summary"
     />
