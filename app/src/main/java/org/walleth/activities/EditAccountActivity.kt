@@ -18,6 +18,7 @@ import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.util.copyToClipboard
 
 class EditAccountActivity : AppCompatActivity() {
 

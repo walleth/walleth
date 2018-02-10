@@ -1,6 +1,5 @@
 package org.walleth.activities
 
-import android.app.Activity
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import android.content.*
@@ -15,7 +14,6 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.View.INVISIBLE
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
@@ -26,7 +24,6 @@ import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.toERC681
-import org.kethereum.model.Address
 import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -44,6 +41,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
+import org.walleth.util.copyToClipboard
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -80,7 +78,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip.getItemAt(0).text?.toString()
             val erc681 = item?.toERC681()
-            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != "ethereum:${currentAddressProvider.getCurrent().hex}") {
+            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != "ethereum:${currentAddressProvider.value?.hex}") {
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
                             override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
@@ -325,14 +323,4 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         settings.unregisterListener(this)
         super.onDestroy()
     }
-}
-
-fun Activity.copyToClipboard(address: Address, view: View) {
-    copyToClipboard("ethereum:${address.hex}", view)
-}
-
-fun Activity.copyToClipboard(ethereumString: String, view: View) {
-    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-    clipboard.primaryClip = ClipData.newPlainText(getString(R.string.clipboard_copy_name), ethereumString)
-    Snackbar.make(view, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
 }
