@@ -107,11 +107,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputLayout
+                        android:hint="@string/create_tx_please_specify_amount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                     <android.support.design.widget.TextInputEditText
                             android:id="@+id/amount_input"
-                            android:hint="@string/create_tx_please_specify_amount"
                             android:digits="0123456789."
                             android:minWidth="256dp"
                             android:inputType="numberDecimal"
@@ -155,10 +155,10 @@
                           android:layout_below="@id/fee_value_view"
                           android:id="@+id/gas_price_input_container">
                 <android.support.design.widget.TextInputLayout
+                        android:hint="@string/create_tx_gas_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                     <android.support.design.widget.TextInputEditText
-                            android:hint="@string/create_tx_gas_price"
                             android:minWidth="128dp"
                             android:id="@+id/gas_price_input"
                             android:inputType="number|numberDecimal"
@@ -176,11 +176,11 @@
                     android:paddingLeft="16dp"
                     android:layout_below="@id/gas_price_input_container"
                     android:id="@+id/gas_limit_input_container"
+                    android:hint="@string/create_tx_gas_limit"
                     android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
-                        android:hint="@string/create_tx_gas_limit"
                         android:minWidth="128dp"
                         android:id="@+id/gas_limit_input"
                         android:inputType="number|numberDecimal"
@@ -201,11 +201,11 @@
                     android:paddingLeft="16dp"
                     android:layout_below="@id/nonce_title"
                     android:id="@+id/nonce_input_container"
+                    android:hint="@string/create_tx_nonce"
                     android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
                 <android.support.design.widget.TextInputEditText
-                        android:hint="@string/create_tx_nonce"
                         android:minWidth="128dp"
                         android:id="@+id/nonce_input"
                         android:inputType="number|numberDecimal"

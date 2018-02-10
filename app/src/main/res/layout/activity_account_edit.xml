@@ -10,21 +10,21 @@
         tools:context="org.walleth.activities.MainActivity">
 
     <android.support.design.widget.TextInputLayout
+            android:hint="@string/input_hint_account_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputEditText
                 android:id="@+id/nameInput"
-                android:hint="account name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
     </android.support.design.widget.TextInputLayout>
 
 
     <android.support.design.widget.TextInputLayout
+            android:hint="@string/input_hint_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputEditText
-                android:hint="notes"
                 android:id="@+id/noteInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>

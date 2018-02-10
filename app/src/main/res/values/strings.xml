@@ -206,4 +206,13 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="paste_from_clipboard_action">Use it</string>
     <string name="copied_string_warning_title">Warning</string>
     <string name="copied_string_warning_message">Copied details could have been tampered with by other apps. Please verify the details!</string>
+    <string name="input_hint_token_name">Token name</string>
+    <string name="input_hint_token_address">Token address</string>
+    <string name="input_hint_decimals">Decimals</string>
+    <string name="input_hint_export_password">Export password</string>
+    <string name="input_hint_confirm_export_password">Confirm export password</string>
+    <string name="error_confirmation_does_not_match_password">Confirmation does not match Password</string>
+    <string name="show_qr_code">show QR code</string>
+    <string name="input_hint_reference_to_add">Reference to add</string>
+    <string name="input_hint_derivation_path">Derivation path</string>
 </resources>

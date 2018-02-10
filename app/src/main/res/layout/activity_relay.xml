@@ -13,6 +13,7 @@
 
     <android.support.design.widget.TextInputLayout
             android:id="@+id/account_name_container"
+            android:hint="@string/transaction_to_use_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         <android.support.design.widget.TextInputEditText
@@ -21,7 +22,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:fontFamily="sans-serif"
-                android:hint="@string/transaction_to_use_hint"
                 android:textSize="16sp"
                 android:padding="16dp"/>
     </android.support.design.widget.TextInputLayout>
