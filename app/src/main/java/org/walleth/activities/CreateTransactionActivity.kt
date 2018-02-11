@@ -21,6 +21,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.erc681.ERC681
+import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.parseERC681
 import org.kethereum.functions.createTokenTransferTransactionInput
@@ -318,7 +319,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     private fun setToFromURL(uri: String?, fromUser: Boolean) {
         if (uri != null) {
 
-            currentERC67String = if (uri.startsWith("0x")) "ethereum:$uri" else uri
+            currentERC67String = if (uri.startsWith("0x")) ERC681(address = uri).generateURL() else uri
 
             if (parseERC681(currentERC67String!!).valid) {
                 val erc681 = parseERC681(currentERC67String!!)
