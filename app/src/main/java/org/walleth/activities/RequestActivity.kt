@@ -59,6 +59,12 @@ class RequestActivity : AppCompatActivity() {
         value_input_edittext.doAfterEdit {
             refreshQR()
         }
+
+        receive_qrcode.setOnClickListener({
+            startActivity(Intent(this, FullscreenQRCodeActivity::class.java).apply {
+                putExtra(KEY_ERC681, currentERC67String)
+            })
+        })
     }
 
     private fun refreshQR() {
