@@ -12,9 +12,9 @@ import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_logs.*
-import org.ethereum.geth.Geth
 import org.walleth.R
 import org.walleth.data.config.Settings
+import org.walleth.util.setGethVerbosity
 import java.io.IOException
 
 class DebugWallethActivity : AppCompatActivity() {
@@ -32,7 +32,7 @@ class DebugWallethActivity : AppCompatActivity() {
             displayLog()
         }
 
-        val verbosityList = listOf( "silent",  "error", "warn", "info", "debug", "detail","max")
+        val verbosityList = listOf("silent", "error", "warn", "info", "debug", "detail", "max")
         geth_verbosity_spinner.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, verbosityList)
         geth_verbosity_spinner.setSelection(settings.currentGoVerbosity)
         geth_verbosity_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
@@ -40,7 +40,7 @@ class DebugWallethActivity : AppCompatActivity() {
 
             override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
                 settings.currentGoVerbosity = position
-                Geth.setVerbosity(position.toLong())
+                setGethVerbosity(position.toLong())
             }
 
         }

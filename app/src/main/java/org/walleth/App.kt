@@ -27,7 +27,6 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.initTokens
-import org.walleth.data.keystore.GethBackedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.InitializingCurrentAddressProvider
@@ -35,6 +34,7 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.util.DelegatingSocketFactory
+import org.walleth.util.createKeyStore
 import java.net.Socket
 import javax.net.SocketFactory
 
@@ -57,7 +57,8 @@ open class App : MultiDexApplication(), KodeinAware {
         import(createKodein())
     }
 
-    private val gethBackedWallethKeyStore by lazy { GethBackedWallethKeyStore(this) }
+    private val gethBackedWallethKeyStore by lazy { createKeyStore() }
+
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
     val settings: Settings by LazyKodein(appKodein).instance()
 
@@ -111,12 +112,12 @@ open class App : MultiDexApplication(), KodeinAware {
             settings.addressInitVersion = 1
 
             async(CommonPool) {
-                val keyCount = gethBackedWallethKeyStore.keyStore.accounts.size()
+                val keyCount = gethBackedWallethKeyStore.getAddressCount()
                 (0 until keyCount).forEach {
-                    val account = gethBackedWallethKeyStore.keyStore.accounts.get(it)
+                    val account = gethBackedWallethKeyStore.getAddressByIndex(it)
                     appDatabase.addressBook.upsert(AddressBookEntry(
                             name = "Default" + if (keyCount > 1) it else "",
-                            address = Address(account.address.hex),
+                            address = Address(account.hex),
                             note = "default account with key",
                             isNotificationWanted = false,
                             trezorDerivationPath = null
@@ -151,11 +152,12 @@ open class App : MultiDexApplication(), KodeinAware {
         try {
             startService(Intent(this, EtherScanService::class.java))
             startService(Intent(this, TransactionNotificationService::class.java))
-        } catch (e: IllegalStateException) {  }
+        } catch (e: IllegalStateException) {
+        }
     }
 
     companion object {
-        val postInitCallbacks = mutableListOf<()->Unit>()
+        val postInitCallbacks = mutableListOf<() -> Unit>()
 
         fun applyNightMode(settings: Settings) {
             @AppCompatDelegate.NightMode val nightMode = settings.getNightMode()

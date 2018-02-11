@@ -1,26 +1,19 @@
 package org.walleth.ui
 
 
-import android.app.AlertDialog
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v7.preference.CheckBoxPreference
 import android.support.v7.preference.PreferenceFragmentCompat
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
 import org.ligi.kaxt.recreateWhenPossible
 import org.walleth.App
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.geth.services.GethLightEthereumService
-import org.walleth.geth.services.GethLightEthereumService.Companion.gethStopIntent
+import org.walleth.util.setGethPreferenceVisibility
+import org.walleth.util.toggleGethLightEthereumService
 
 class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -31,9 +24,10 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         findPreference(getString(R.string.key_reference)).summary = getString(R.string.settings_currently, settings.currentFiat)
-        findPreference(getString(R.string.key_token)).summary = getString(R.string.settings_currently,  currentTokenProvider.currentToken.name)
+        findPreference(getString(R.string.key_token)).summary = getString(R.string.settings_currently, currentTokenProvider.currentToken.name)
 
         setUserNameSummary()
+        setGethPreferenceVisibility()
     }
 
     override fun onPause() {
@@ -48,25 +42,7 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
             activity.recreateWhenPossible()
         }
         if (key == getString(R.string.key_prefs_start_light)) {
-            if ((findPreference(key) as CheckBoxPreference).isChecked != GethLightEthereumService.isRunning) {
-                if (GethLightEthereumService.isRunning) {
-                    context.startService(context.gethStopIntent())
-                } else {
-                    context.startService(Intent(context, GethLightEthereumService::class.java))
-                }
-                async(UI) {
-                    val alert = AlertDialog.Builder(getContext())
-                            .setCancelable(false)
-                            .setMessage(R.string.settings_please_wait).show()
-                    async(CommonPool) {
-                        while (GethLightEthereumService.isRunning != GethLightEthereumService.shouldRun) {
-                            delay(100)
-                        }
-                    }.await()
-                    alert.dismiss()
-                }
-            }
-
+            toggleGethLightEthereumService(key)
         }
         setUserNameSummary()
 
