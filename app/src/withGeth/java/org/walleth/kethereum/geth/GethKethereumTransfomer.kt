@@ -19,7 +19,7 @@ fun GethAddress.toKethereumAddress() = Address(hex)
 fun Transaction.toGethTransaction(): org.ethereum.geth.Transaction = Geth.newTransaction(nonce!!.toLong(),
         to!!.toGethAddr(),
         BigInt(value.toLong()),
-        gasLimit.toGethInteger(),
+        gasLimit.toLong(),
         gasPrice.toGethInteger(),
         input.toByteArray()
 )
