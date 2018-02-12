@@ -50,9 +50,9 @@ import org.walleth.data.tokens.*
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.functions.asBigDecimal
-import org.walleth.functions.decimalFormat
 import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.functions.decimalsInZeroes
+import org.walleth.functions.toFullValueString
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.toHexString
 import org.walleth.ui.asyncAwait
@@ -157,7 +157,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             if (amountAfterFee < ZERO) {
                 alert(R.string.no_funds_after_fee)
             } else {
-                amount_input.setText(decimalFormat.format(BigDecimal(amountAfterFee).divide(BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes()))))
+                amount_input.setText(amountAfterFee.toFullValueString(currentTokenProvider.currentToken))
             }
         }
 

@@ -20,9 +20,6 @@ val inputDecimalFormat = (NumberFormat.getInstance(Locale.ENGLISH) as DecimalFor
 
 private fun getDecimalFormatUS(): DecimalFormat = NumberFormat.getInstance(Locale.ENGLISH) as DecimalFormat
 
-val decimalFormat = getDecimalFormatUS().apply {
-    isGroupingUsed = false
-}
 val sixDigitDecimalFormat = getDecimalFormat(6)
 val twoDigitDecimalFormat = getDecimalFormat(2)
 
