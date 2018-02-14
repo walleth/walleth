@@ -127,7 +127,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             lastWarningURI = savedInstanceState.getString("lastERC67")
         }
 
-        supportActionBar?.subtitle = getString(R.string.create_transaction_subtitle)
+        supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle,networkDefinitionProvider.getCurrent().getNetworkName())
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         onCurrentTokenChanged()
