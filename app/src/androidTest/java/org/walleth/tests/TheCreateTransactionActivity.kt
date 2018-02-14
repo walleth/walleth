@@ -3,7 +3,6 @@ package org.walleth.tests
 import android.app.Activity.RESULT_OK
 import android.app.Instrumentation
 import android.content.Intent
-import android.support.test.InstrumentationRegistry
 import android.support.test.espresso.Espresso
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.action.ViewActions.click
@@ -23,20 +22,16 @@ import org.kethereum.model.Address
 import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
 import org.walleth.activities.CreateTransactionActivity
-import org.walleth.activities.getTransactionActivityIntentForHash
 import org.walleth.activities.qrscan.QRScanActivity
 import org.walleth.data.balances.Balance
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.TokenTransfer
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.tokens.toERC681
-import org.walleth.data.transactions.TransactionState
-import org.walleth.data.transactions.toEntity
 import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.infrastructure.TestApp
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
-import org.walleth.testdata.addTestAddresses
 import java.math.BigInteger
 
 val testToken = Token("Test", "TEST", Address("0x01"), 15, TestApp.networkDefinitionProvider.getCurrent().chain, true, false, false, 1)
