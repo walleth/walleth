@@ -48,6 +48,17 @@ class TheCreateTransactionActivity {
     }
 
     @Test
+    fun chainNameDisplayedInSubtitle() {
+        val chainDefinition = TestApp.networkDefinitionProvider.getCurrent()
+        rule.launchActivity()
+
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.create_transaction_on_network_subtitle,chainDefinition.getNetworkName())))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        rule.screenShot("chain_name_in_subtitle")
+        Truth.assertThat(rule.activity.isFinishing).isFalse()
+    }
+
+    @Test
     fun rejectsEmptyAddress() {
         rule.launchActivity()
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
