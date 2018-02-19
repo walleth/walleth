@@ -141,7 +141,7 @@ dependencies {
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    withGethCompile "org.ethereum:geth:1.8.0"
+    withGethCompile "org.ethereum:geth:1.8.1"
 
     compile "com.github.walleth.kethereum:functions:$kethereum_version"
     compile "com.github.walleth.kethereum:bip44:$kethereum_version"
