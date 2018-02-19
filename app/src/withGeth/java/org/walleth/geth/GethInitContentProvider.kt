@@ -10,11 +10,21 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v4.content.ContextCompat
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import android.support.v7.app.AlertDialog
+import android.support.v7.preference.CheckBoxPreference
+import android.support.v7.preference.Preference
+import com.github.salomonbrys.kodein.android.appKodein
+import com.github.salomonbrys.kodein.instance
+import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.delay
 import org.walleth.App
+import org.walleth.R
+import org.walleth.activities.OfflineTransactionActivity
 import org.walleth.data.config.Settings
 import org.walleth.geth.services.GethLightEthereumService
+import org.walleth.geth.services.GethLightEthereumService.Companion.gethStopIntent
 import org.walleth.geth.services.GethTransactionSigner
 
 class GethInitContentProvider : ContentProvider() {
@@ -42,6 +52,36 @@ class GethInitContentProvider : ContentProvider() {
         App.postInitCallbacks.add({
             ProcessLifecycleOwner.get().lifecycle.addObserver(GethInitAppLifecycleObserver(context, settings))
         })
+
+        val preference = Preference(context)
+        val enablePreference = CheckBoxPreference(context)
+
+        preference.setOnPreferenceChangeListener { _, newValue ->
+
+            if (newValue != GethLightEthereumService.isRunning) {
+                if (GethLightEthereumService.isRunning) {
+                    context.startService(context.gethStopIntent())
+                } else {
+                    context.startService(Intent(context, GethLightEthereumService::class.java))
+                }
+                async(UI) {
+                    val alert = AlertDialog.Builder(getContext())
+                            .setCancelable(false)
+                            .setMessage(R.string.settings_please_wait).show()
+                    async(CommonPool) {
+                        while (GethLightEthereumService.isRunning != GethLightEthereumService.shouldRun) {
+                            delay(100)
+                        }
+                    }.await()
+                    alert.dismiss()
+                }
+            }
+
+            true
+        }
+        preference.title = "foo_yolo"
+        preference.intent = Intent(context, OfflineTransactionActivity::class.java)
+        App.extraPreferences.add(preference)
 
         return true
     }

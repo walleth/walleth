@@ -29,8 +29,6 @@
         <activity android:name=".activities.FullscreenQRCodeActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>
         <activity android:name="org.walleth.activities.DebugWallethActivity"/>
-        <activity android:name="org.walleth.activities.OfflineTransactionActivity"
-                  android:windowSoftInputMode="adjustResize"/>
         <activity android:name="org.walleth.activities.trezor.TrezorSignTransactionActivity"/>
         <activity android:name="org.walleth.activities.trezor.TrezorGetAddressActivity"/>
         <activity android:name="org.walleth.activities.ImportActivity"/>

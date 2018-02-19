@@ -8,6 +8,7 @@ import android.os.StrictMode
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
+import android.support.v7.preference.Preference
 import com.chibatching.kotpref.Kotpref
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
@@ -145,6 +146,7 @@ open class App : MultiDexApplication(), KodeinAware {
 
     companion object {
         val postInitCallbacks = mutableListOf<() -> Unit>()
+        val extraPreferences = mutableListOf<Preference>()
 
         fun applyNightMode(settings: Settings) {
             @AppCompatDelegate.NightMode val nightMode = settings.getNightMode()

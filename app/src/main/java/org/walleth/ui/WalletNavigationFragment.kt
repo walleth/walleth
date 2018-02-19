@@ -55,11 +55,18 @@ class WalletNavigationFragment : Fragment(), KodeinAware {
         navigationView.setNavigationItemSelectedListener {
             view!!.rootView.drawer_layout.closeDrawers()
             val classToStart = idToClassMap[it.itemId]
-            if (classToStart != null) {
-                context?.startActivityFromClass(classToStart)
-                true
-            } else {
-                false
+            when {
+                classToStart != null -> {
+                    context?.startActivityFromClass(classToStart)
+                    true
+                }
+
+                it.itemId == R.id.menu_offline_transaction -> {
+                    context?.startOfflineTransactionFlow("")
+                    true
+                }
+
+                else -> false
             }
         }
 

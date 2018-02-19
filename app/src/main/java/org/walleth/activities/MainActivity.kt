@@ -45,6 +45,8 @@ import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
 import org.walleth.util.copyToClipboard
+import org.walleth.util.isSignedTransactionJSON
+import org.walleth.util.isUnsignedTransactionJSON
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -128,8 +130,8 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                     startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
                 }
 
-                scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() -> {
-                    startActivity(getOfflineTransactionIntent(scanResult))
+                FLAVOR_HAS_OFFLINE_TX_OPTION && scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() -> {
+                    startOfflineTransactionFlow(scanResult)
                 }
 
                 scanResult.startsWith("0x") -> {
