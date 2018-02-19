@@ -71,7 +71,6 @@ class TheCreateAccountActivity {
         val firstCreatedAddress = Address(rule.activity.hexInput.text.toString())
 
         assertThat(firstCreatedAddress.hex).startsWith("0x")
-        assertThat(TestApp.keyStore.hasKeyForForAddress(firstCreatedAddress)).isTrue()
 
         onView(withId(R.id.new_address_button)).perform(click())
 

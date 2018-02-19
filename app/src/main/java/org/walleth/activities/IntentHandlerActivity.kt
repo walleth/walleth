@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import org.kethereum.erc681.toERC681
+import org.kethereum.model.EthereumURI
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.tokens.isTokenTransfer
@@ -21,7 +22,7 @@ class IntentHandlerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val erc681 = intent.data.toString().toERC681()
+        val erc681 = EthereumURI(intent.data.toString()).toERC681()
         if (erc681.valid) {
             if (erc681.address == null || erc681.isTokenTransfer() || erc681.value != null && erc681.value != ZERO) {
                 startActivity(Intent(this, CreateTransactionActivity::class.java).apply {

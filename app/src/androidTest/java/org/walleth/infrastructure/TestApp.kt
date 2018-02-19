@@ -71,7 +71,7 @@ class TestApp : App() {
             `when`(tokensInitVersion).thenReturn(0)
             `when`(getGasPriceFor(any())).thenReturn(DEFAULT_GAS_PRICE)
         }
-        val currentAddressProvider = DefaultCurrentAddressProvider(mySettings)
+        val currentAddressProvider = DefaultCurrentAddressProvider(mySettings, keyStore)
         val networkDefinitionProvider = NetworkDefinitionProvider(mySettings)
         val currentTokenProvider = CurrentTokenProvider(networkDefinitionProvider)
 

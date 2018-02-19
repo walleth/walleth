@@ -21,7 +21,10 @@ import kotlinx.android.synthetic.main.activity_show_qr.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.serialization.json.JSON
 import net.glxn.qrgen.android.QRCode
+import org.kethereum.wallet.LIGHT_SCRYPT_CONFIG
+import org.kethereum.wallet.createWallet
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -75,8 +78,11 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
     private fun generate() {
         async(UI) {
             val bmpScaled = async(CommonPool) {
-                keyJSON = keyStore.exportKey(address = currentAddressProvider.getCurrent(), unlockPassword = DEFAULT_PASSWORD, exportPassword = password_input.text.toString())
 
+                val key = keyStore.getKeyForAddress(currentAddressProvider.getCurrent(), DEFAULT_PASSWORD)
+                val walletFile = key?.createWallet(password_input.text.toString(), LIGHT_SCRYPT_CONFIG)
+
+                keyJSON = JSON.stringify(walletFile?:throw (IllegalStateException("Could not create JSON from key")))
                 val point = Point()
                 windowManager.defaultDisplay.getSize(point)
                 Bitmap.createScaledBitmap(QRCode.from(keyJSON).bitmap(), point.x, point.x, false)

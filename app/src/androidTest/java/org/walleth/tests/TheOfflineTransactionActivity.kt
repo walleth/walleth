@@ -35,7 +35,6 @@ class TheOfflineTransactionActivity {
 
         rule.launchActivity()
 
-
         onView(withId(R.id.transaction_to_relay_hex)).perform(typeText("x"))
 
         onView(withId(R.id.fab)).perform(click())

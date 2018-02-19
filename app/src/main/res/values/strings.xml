@@ -184,11 +184,9 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="network_subtitle">Networks</string>
     <string name="network_details">network details</string>
     <string name="network_stats">network stats</string>
-    <string name="wrong_network">Wrong Network</string>
     <string name="warning_dynamic_length_params_unsupported">Dynamic length parameters are currently not supported (parameter %1$s - %2$s)</string>
     <string name="warning_problem_with_parameter">Problem with parameter (parameter %1$s - %2$s = %3$s)</string>
     <string name="warning_invalid_param">Invalid parameter detected (parameter %1$s - %2$s)</string>
-    <string name="please_switch_network">Please switch network from %1$s to %2$s</string>
     <string name="info_activity_subtitle">Version %s</string>
     <string name="trezor_please_enter_your_pin">Please enter your PIN</string>
     <string name="warning_not_a_valid_address">not a valid address: %s</string>
@@ -229,4 +227,6 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="security_info">Security Information</string>
     <string name="click_for_details">Click for details</string>
     <string name="activity_subtitle_oss_license">OSS licenses information</string>
+    <string name="alert_network_unsupported_title">Network invalid</string>
+    <string name="alert_network_unsupported_message">WallETH is not supporting network with chainId %d</string>
 </resources>

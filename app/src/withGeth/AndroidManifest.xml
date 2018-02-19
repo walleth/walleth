@@ -8,7 +8,6 @@
                 android:enabled="true"
                 android:name="org.walleth.geth.GethInitContentProvider" />
 
-        <service android:name="org.walleth.geth.services.GethTransactionSigner"/>
         <service android:name="org.walleth.geth.services.GethLightEthereumService"/>
 
     </application>

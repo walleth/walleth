@@ -23,6 +23,7 @@ import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.toERC681
+import org.kethereum.model.EthereumURI
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -45,6 +46,9 @@ import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
 import org.walleth.util.copyToClipboard
+import org.walleth.util.isParityUnsignedTransactionJSON
+import org.walleth.util.isSignedTransactionJSON
+import org.walleth.util.isUnsignedTransactionJSON
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -80,7 +84,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip.getItemAt(0).text?.toString()
-            val erc681 = item?.toERC681()
+            val erc681 = item?.let { EthereumURI(it).toERC681() }
             if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != currentAddressProvider.value?.hex.let { ERC681(address = it).generateURL() }) {
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
@@ -128,7 +132,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                     startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
                 }
 
-                scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() -> {
+                scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() || scanResult.isParityUnsignedTransactionJSON() -> {
                     startActivity(getOfflineTransactionIntent(scanResult))
                 }
 
@@ -286,7 +290,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain)
             balanceLiveData?.observe(this, balanceObserver)
             etherLiveData?.removeObserver(etherObserver)
-            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getEthTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain )
+            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getEthTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain)
             etherLiveData?.observe(this, etherObserver)
         }
     }

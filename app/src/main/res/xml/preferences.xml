@@ -31,9 +31,4 @@
             android:key="@string/key_prefs_stats_username"
             android:title="@string/settings_stats_name"/>
 
-    <CheckBoxPreference
-            android:key="@string/key_prefs_start_light"
-            android:title="@string/settings_start_light_title"
-            android:summary="@string/settings_start_light_summary"
-    />
 </PreferenceScreen>

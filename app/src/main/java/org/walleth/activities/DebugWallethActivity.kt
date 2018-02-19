@@ -5,11 +5,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
 import kotlinx.android.synthetic.main.activity_logs.*
-import org.ethereum.geth.Geth
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -31,6 +27,10 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
             displayLog()
         }
 
+        /*
+
+        TODO-GETHOPT
+
         val verbosityList = listOf("silent", "error", "warn", "info", "debug", "detail", "max")
         geth_verbosity_spinner.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, verbosityList)
         geth_verbosity_spinner.setSelection(settings.currentGoVerbosity)
@@ -43,6 +43,7 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
             }
 
         }
+        */
 
         golog_switch.isChecked = true
 

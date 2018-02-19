@@ -238,12 +238,28 @@
 
         </RelativeLayout>
     </ScrollView>
-    <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fab"
-            android:layout_margin="16dp"
-            app:srcCompat="@drawable/ic_action_done"
-            android:layout_gravity="bottom|right"
+
+    <com.dmitrymalkovich.android.ProgressFloatingActionButton
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:layout_gravity="bottom|right"
+            android:clickable="true">
+
+        <android.support.design.widget.FloatingActionButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/fab"/>
+
+        <ProgressBar
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:id="@+id/fab_progress_bar"
+                android:visibility="invisible"
+                android:indeterminateTint="@color/colorPrimary"
+                android:indeterminateTintMode="src_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </com.dmitrymalkovich.android.ProgressFloatingActionButton>
 
 </FrameLayout>

@@ -29,8 +29,6 @@
         <activity android:name=".activities.FullscreenQRCodeActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>
         <activity android:name="org.walleth.activities.DebugWallethActivity"/>
-        <activity android:name="org.walleth.activities.OfflineTransactionActivity"
-                  android:windowSoftInputMode="adjustResize"/>
         <activity android:name="org.walleth.activities.trezor.TrezorSignTransactionActivity"/>
         <activity android:name="org.walleth.activities.trezor.TrezorGetAddressActivity"/>
         <activity android:name="org.walleth.activities.ImportActivity"/>
@@ -39,6 +37,7 @@
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
         <activity android:name="org.walleth.activities.CreateAccountActivity"/>
         <activity android:name="org.walleth.activities.SelectReferenceActivity"/>
+        <activity android:name="org.walleth.activities.ParitySignerQRActivity"/>
 
         <activity android:name="org.walleth.activities.SelectTokenActivity"/>
         <activity android:name="org.walleth.activities.CreateTokenDefinitionActivity"/>
@@ -78,6 +77,9 @@
                 <data android:scheme="org.walleth.licenses" />
             </intent-filter>
         </activity>
+
+        <activity android:name="org.walleth.activities.OfflineTransactionActivity"
+                  android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

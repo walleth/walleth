@@ -1,16 +1,9 @@
 package org.walleth.ui
 
 
-import android.app.AlertDialog
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.support.v7.preference.CheckBoxPreference
 import android.support.v7.preference.PreferenceFragmentCompat
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -19,8 +12,6 @@ import org.walleth.App
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.geth.services.GethLightEthereumService
-import org.walleth.geth.services.GethLightEthereumService.Companion.gethStopIntent
 
 class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, KodeinAware {
 
@@ -32,7 +23,7 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         findPreference(getString(R.string.key_reference)).summary = getString(R.string.settings_currently, settings.currentFiat)
-        findPreference(getString(R.string.key_token)).summary = getString(R.string.settings_currently,  currentTokenProvider.currentToken.name)
+        findPreference(getString(R.string.key_token)).summary = getString(R.string.settings_currently, currentTokenProvider.currentToken.name)
 
         setUserNameSummary()
     }
@@ -49,24 +40,6 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
             activity?.recreateWhenPossible()
         }
         if (key == getString(R.string.key_prefs_start_light)) {
-            if ((findPreference(key) as CheckBoxPreference).isChecked != GethLightEthereumService.isRunning) {
-                if (GethLightEthereumService.isRunning) {
-                    context?.let { it.startService(it.gethStopIntent()) }
-                } else {
-                    context?.let { it.startService(Intent(context, GethLightEthereumService::class.java)) }
-                }
-                async(UI) {
-                    val alert = AlertDialog.Builder(getContext())
-                            .setCancelable(false)
-                            .setMessage(R.string.settings_please_wait).show()
-                    async(CommonPool) {
-                        while (GethLightEthereumService.isRunning != GethLightEthereumService.shouldRun) {
-                            delay(100)
-                        }
-                    }.await()
-                    alert.dismiss()
-                }
-            }
 
         }
         setUserNameSummary()
@@ -79,6 +52,11 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
 
     override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
+
+        App.extraPreferences.forEach {
+            addPreferencesFromResource(it.first)
+            it.second(preferenceScreen)
+        }
     }
 
 }

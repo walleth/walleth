@@ -5,16 +5,19 @@ import android.content.Context
 import android.content.Intent
 import android.net.TrafficStats
 import android.os.StrictMode
+
+import android.support.annotation.XmlRes
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
+import android.support.v7.preference.PreferenceScreen
 import com.chibatching.kotpref.Kotpref
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import okhttp3.OkHttpClient
-import org.kethereum.model.Address
+import org.kethereum.crypto.initializeCrypto
 import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.generic.bind
@@ -33,7 +36,7 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.initTokens
-import org.walleth.data.keystore.GethBackedWallethKeyStore
+import org.walleth.data.keystore.FileBasedWallethKeyStore
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.InitializingCurrentAddressProvider
@@ -63,7 +66,7 @@ open class App : MultiDexApplication(), KodeinAware {
         import(createKodein())
     }
 
-    private val gethBackedWallethKeyStore by lazy { GethBackedWallethKeyStore(this) }
+    private val keyStore by lazy { FileBasedWallethKeyStore(this) }
     val appDatabase: AppDatabase by instance()
     val settings: Settings by instance()
 
@@ -72,14 +75,14 @@ open class App : MultiDexApplication(), KodeinAware {
         return Kodein.Module {
             bind<ExchangeRateProvider>() with singleton { CryptoCompareExchangeProvider(this@App, instance()) }
             bind<SyncProgressProvider>() with singleton { SyncProgressProvider() }
-            bind<WallethKeyStore>() with singleton { gethBackedWallethKeyStore }
+            bind<WallethKeyStore>() with singleton { keyStore }
             bind<Settings>() with singleton { KotprefSettings }
 
             bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
 
             bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
             bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
-            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance(), applicationContext) }
+            bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(keyStore, instance(), instance(), applicationContext) }
             bind<FourByteDirectory>() with singleton { FourByteDirectoryImpl(instance(), applicationContext) }
         }
     }
@@ -109,8 +112,8 @@ open class App : MultiDexApplication(), KodeinAware {
 
         Kotpref.init(this)
         TraceDroid.init(this)
+        initializeCrypto()
         AndroidThreeTen.init(this)
-
         applyNightMode(settings)
         executeCodeWeWillIgnoreInTests()
         initTokens(settings, assets, appDatabase)
@@ -118,12 +121,11 @@ open class App : MultiDexApplication(), KodeinAware {
             settings.addressInitVersion = 1
 
             async(CommonPool) {
-                val keyCount = gethBackedWallethKeyStore.keyStore.accounts.size()
-                (0 until keyCount).forEach {
-                    val account = gethBackedWallethKeyStore.keyStore.accounts.get(it)
+                keyStore.getAddresses().forEachIndexed { index, address ->
+
                     appDatabase.addressBook.upsert(AddressBookEntry(
-                            name = "Default" + if (keyCount > 1) it else "",
-                            address = Address(account.address.hex),
+                            name = "Default" + if (keyStore.getAddresses().size > 1) index else "",
+                            address = address,
                             note = "default account with key",
                             isNotificationWanted = false,
                             trezorDerivationPath = null
@@ -145,6 +147,7 @@ open class App : MultiDexApplication(), KodeinAware {
 
     companion object {
         val postInitCallbacks = mutableListOf<() -> Unit>()
+        val extraPreferences = mutableListOf<Pair<@XmlRes Int, (preferenceScreen: PreferenceScreen) -> Unit>>()
 
         fun applyNightMode(settings: Settings) {
             @AppCompatDelegate.NightMode val nightMode = settings.getNightMode()

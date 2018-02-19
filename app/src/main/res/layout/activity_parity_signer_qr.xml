@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:animateLayoutChanges="true">
+
+    <TextView
+            android:id="@+id/textview_parity_explanation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    <android.support.v7.widget.AppCompatImageView
+            android:layout_below="@id/textview_parity_explanation"
+            android:id="@+id/parity_address_qr_image"
+            android:padding="16dp"
+            android:layout_width="@dimen/qrcode_size"
+            android:layout_height="@dimen/qrcode_size"
+            android:contentDescription="@string/qr_code"
+            android:layout_centerHorizontal="true"/>
+
+</RelativeLayout>

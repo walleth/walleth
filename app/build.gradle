@@ -94,7 +94,6 @@ android {
 
 
         if ((project.hasProperty("singleFlavor") && (store != 'forPlay'))
-                || ((geth == 'noGeth') && project.hasProperty("isCI"))
                 || ((store == 'forAmazon' || store == 'forPlay') && firebase == 'noFirebase')
                 || (store == 'forFDroid' && firebase != 'noFirebase')) {
             variant.setIgnore(true)
@@ -110,6 +109,10 @@ android {
                 }
             }
         }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/main.kotlin_module'
     }
 
 }
@@ -132,7 +135,10 @@ dependencies {
     implementation "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     implementation "com.github.walleth.kethereum:method_signatures:$kethereum_version"
     implementation "com.github.walleth.kethereum:rlp:$kethereum_version"
+    implementation "com.github.walleth.kethereum:wallet:$kethereum_version"
     implementation "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
+
+    implementation 'com.dmitrymalkovich.android:progress-fab:1.6'
 
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
 
@@ -301,17 +307,6 @@ if (hasProperty("isCI")) {
                 'com.github.ligi:tracedroid:1.4:tracedroid-1.4.jar:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
                 'com.github.ligi:trulesk:0.23:trulesk-0.23.aar:2cad3a849c170dcf5b521b24cca4d3de78986450bba424aced0a898fc91a916e',
                 'com.github.trezor.trezor-android:trezor-lib:v2.0.1:trezor-lib-v2.0.1.aar:58f71f9b8c8611bfe44eeed3e6cdd74b0aeb2bcbec9cd90bfbaf2b4273816c72',
-                'com.github.walleth.kethereum:bip44:0.47:bip44-0.47.jar:ebe449b71bba3ac5154d2771821a283970eb5baadc4c635ce4e782762d48770d',
-                'com.github.walleth.kethereum:contract_abi_types:0.47:contract_abi_types-0.47.jar:71b2c7760c5c1e013ba927a1bf48a95eb080e8793d2cfac0549a8e2648636cb8',
-                'com.github.walleth.kethereum:eip155:0.47:eip155-0.47.jar:44074e4268146a03d83519601cf1b319d1539e70fa416c6daa1ff7886aa87c87',
-                'com.github.walleth.kethereum:erc55:0.47:erc55-0.47.jar:3c2835c7ed2ee1560a1cabde40b400deedb62f38997af2a7c247b763c8b039a0',
-                'com.github.walleth.kethereum:erc681:0.47:erc681-0.47.jar:d86977d1dfc12f9bc3144004402a836e6de5de32bf526a6b9ef761ae9f886d5a',
-                'com.github.walleth.kethereum:extensions:0.47:extensions-0.47.jar:7ae3072a5abe5cffec153c0a19cfb315d181b21af684a12f3642167499d16c03',
-                'com.github.walleth.kethereum:functions:0.47:functions-0.47.jar:7609abdea44de885473be98a392fda3a000a0042b4d46da0cae66adc24e13dcf',
-                'com.github.walleth.kethereum:keccak_shortcut:0.47:keccak_shortcut-0.47.jar:1eb18d4bbd552efcdce1bd545de56cf7c672b8098430433c63bf463b9462b6bb',
-                'com.github.walleth.kethereum:method_signatures:0.47:method_signatures-0.47.jar:0580516eb715ad28caa6c98aabda8fe659b86379fb2c23101023fd1a3c3dbc1b',
-                'com.github.walleth.kethereum:model:0.47:model-0.47.jar:86b2d1a0cc2c598dc5a0e9719c786cff4152cdeb6efa6358c894bfa1a56b2613',
-                'com.github.walleth.kethereum:rlp:0.47:rlp-0.47.jar:a2d011099aadbe18e45f915ae6f62160b7a5642e302a831bb9f1f33dbd3b0dec',
                 'com.github.walleth:khex:0.6:khex-0.6.jar:ffa8f099f38e6f14a3ede09ad2e75389ce96a2b93fbc4578c5f8eda43c15eb8d',
                 'com.gojuno.commander:android:0.1.6:android-0.1.6.jar:fe232d2e06ce412fd9e01f29523b41cd3be1596e8968bf7363490083d8a431da',
                 'com.gojuno.commander:os:0.1.6:os-0.1.6.jar:9ad8a479ce8baecfae5bac929be7da430925f9868e421c7edc9432eda0f485bb',

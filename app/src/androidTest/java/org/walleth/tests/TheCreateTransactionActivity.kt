@@ -76,8 +76,8 @@ class TheCreateTransactionActivity {
         val chainIdForTransaction = TestApp.mySettings.chain + 1
         rule.launchActivity(Intent.getIntentOld("ethereum:0x12345@" + chainIdForTransaction))
 
-        Espresso.onView(ViewMatchers.withText(R.string.wrong_network)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.please_switch_network, TestApp.networkDefinitionProvider.getCurrent().getNetworkName(), chainIdForTransaction)))
+        Espresso.onView(ViewMatchers.withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         rule.screenShot("chainId_not_valid")
@@ -89,8 +89,8 @@ class TheCreateTransactionActivity {
         val chainIdForTransaction = TestApp.networkDefinitionProvider.getCurrent().chain.id
         rule.launchActivity(Intent.getIntentOld("ethereum:0x12345@" + chainIdForTransaction))
 
-        Espresso.onView(ViewMatchers.withText(R.string.wrong_network)).check(ViewAssertions.doesNotExist())
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.please_switch_network, TestApp.networkDefinitionProvider.getCurrent().getNetworkName(), chainIdForTransaction)))
+        Espresso.onView(ViewMatchers.withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.doesNotExist())
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
                 .check(ViewAssertions.doesNotExist())
 
         rule.screenShot("please_change_chain")

@@ -7,6 +7,7 @@ import android.arch.lifecycle.Transformations
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -18,16 +19,21 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.contract.abi.types.convertStringToABIType
+import org.kethereum.eip155.extractChainID
+import org.kethereum.eip155.signViaEIP155
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.parseERC681
+import org.kethereum.extensions.maybeHexToBigInteger
+import org.kethereum.extensions.toHexStringZeroPadded
 import org.kethereum.functions.createTokenTransferTransactionInput
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.methodsignatures.toHexSignature
 import org.kethereum.model.Address
+import org.kethereum.model.SignatureData
 import org.kethereum.model.createTransactionWithDefaults
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -43,13 +49,14 @@ import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
 import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
+import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
+import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.networks.getNetworkDefinitionByChainID
 import org.walleth.data.tokens.*
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
@@ -62,18 +69,20 @@ import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.khex.toNoPrefixHexString
 import org.walleth.ui.asyncAwait
+import org.walleth.ui.chainIDAlert
 import org.walleth.util.question
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
 import java.text.ParseException
+import java.util.*
 
 const val TO_ADDRESS_REQUEST_CODE = 1
 const val FROM_ADDRESS_REQUEST_CODE = 2
 const val TOKEN_REQUEST_CODE = 3
 
-class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
+class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
 
     private var currentERC681: ERC681? = null
     private var currentAmount: BigInteger? = null
@@ -83,17 +92,19 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private val currentTokenProvider: CurrentTokenProvider by instance()
+    private val keyStore: WallethKeyStore by instance()
     private val appDatabase: AppDatabase by instance()
     private val settings: Settings by instance()
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
     private var currentBalanceLive: LiveData<Balance>? = null
+    private var currentSignatureData: SignatureData? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    storeDefaultGasPrice()
+                    storeDefaultGasPriceAndFinish()
                 }
             }
             FROM_ADDRESS_REQUEST_CODE -> {
@@ -121,6 +132,8 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
 
     private fun String.toERC681() = if (startsWith("0x")) ERC681(address = this) else parseERC681(this)
 
+    private fun isParityFlow() = intent.getBooleanExtra("parityFlow", false)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -136,7 +149,10 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
             lastWarningURI = savedInstanceState.getString("lastERC67")
         }
 
-        supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, networkDefinitionProvider.getCurrent().getNetworkName())
+        networkDefinitionProvider.observe(this, Observer {
+            supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, networkDefinitionProvider.getCurrent().getNetworkName())
+        })
+
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         onCurrentTokenChanged()
@@ -146,7 +162,16 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
                 appDatabase.addressBook.getByAddressAsync(address) {
                     from_address.text = it?.name
                     val isTrezorTransaction = it?.trezorDerivationPath != null
-                    fab.setImageResource(if (isTrezorTransaction) R.drawable.trezor_icon_black else R.drawable.ic_action_done)
+
+                    fab.setImageResource(when {
+                        isTrezorTransaction
+                        -> R.drawable.trezor_icon_black
+
+                        (keyStore.hasKeyForForAddress(currentAddressProvider.getCurrent()))
+                        -> R.drawable.ic_key_black
+
+                        else -> R.drawable.ic_action_done
+                    })
                     fab.setOnClickListener {
                         onFabClick(isTrezorTransaction)
                     }
@@ -158,8 +183,11 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
             startActivityForResult(Intent(this, SelectTokenActivity::class.java), TOKEN_REQUEST_CODE)
         }
 
-        gas_price_input.setText(settings.getGasPriceFor(networkDefinitionProvider.getCurrent()).toString())
-
+        gas_price_input.setText(if (intent.getStringExtra("gasPrice") != null) {
+            intent.getStringExtra("gasPrice").maybeHexToBigInteger().toString()
+        } else {
+            settings.getGasPriceFor(networkDefinitionProvider.getCurrent()).toString()
+        })
         sweep_button.setOnClickListener {
             val balance = currentBalanceSafely()
             if (currentTokenProvider.currentToken.isETH()) {
@@ -199,11 +227,16 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
         Transformations.switchMap(currentAddressProvider, { address ->
             appDatabase.transactions.getNonceForAddressLive(address, networkDefinitionProvider.getCurrent().chain)
         }).observe(this, Observer {
-            nonce_input.setText(if (it != null && !it.isEmpty()) {
-                it.max()!! + ONE
-            } else {
-                ZERO
-            }.toString())
+
+            if (intent.getStringExtra("nonce") == null) {
+                val nonceBigInt = if (it != null && !it.isEmpty()) {
+                    it.max()!! + ONE
+                } else {
+                    ZERO
+                }
+                nonce_input.setText(String.format(Locale.ENGLISH, "%d", nonceBigInt))
+            }
+
         })
         refreshFee()
         setToFromURL(currentERC681?.generateURL(), false)
@@ -259,7 +292,7 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
             alert(R.string.create_tx_error_address_must_be_specified)
         } else if (currentAmount == null && currentERC681?.function == null) {
             alert(R.string.create_tx_error_amount_must_be_specified)
-        } else if (currentTokenProvider.currentToken.isETH() && currentAmount?:ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
+        } else if (currentTokenProvider.currentToken.isETH() && currentAmount ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (nonce_input.text.isBlank()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
@@ -276,7 +309,7 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
 
     private fun startTransaction(isTrezorTransaction: Boolean) {
         val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                value = currentAmount?:ZERO,
+                value = currentAmount ?: ZERO,
                 to = currentToAddress!!,
                 from = currentAddressProvider.getCurrent()
         ) else createTransactionWithDefaults(
@@ -304,16 +337,43 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
         transaction.nonce = nonce_input.asBigInit()
         transaction.gasPrice = gas_price_input.asBigInit()
         transaction.gasLimit = gas_limit_input.asBigInit()
-        transaction.txHash = transaction.encodeRLP().keccak().toHexString()
 
         when {
 
             isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
             else -> async(UI) {
-                async(CommonPool) {
-                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+
+                fab_progress_bar.visibility = View.VISIBLE
+                fab.isEnabled = false
+
+                val error: String? = async(CommonPool) {
+                    try {
+                        val signatureData = keyStore.getKeyForAddress(currentAddressProvider.getCurrent(), DEFAULT_PASSWORD)?.let {
+                            Snackbar.make(fab, "Signing transaction", Snackbar.LENGTH_INDEFINITE).show()
+                            transaction.signViaEIP155(it, networkDefinitionProvider.getCurrent().chain)
+                        }
+
+
+                        currentSignatureData = signatureData
+
+                        transaction.txHash = transaction.encodeRLP(signatureData).keccak().toHexString()
+
+                        val entity = transaction.toEntity(signatureData = signatureData, transactionState = TransactionState())
+                        appDatabase.transactions.upsert(entity)
+                        null
+                    } catch (e: Exception) {
+                        e.message
+                    }
                 }.await()
-                storeDefaultGasPrice()
+
+                fab_progress_bar.visibility = View.INVISIBLE
+                fab.isEnabled = true
+
+                if (error != null) {
+                    alert("Could not sign transaction: $error")
+                } else {
+                    storeDefaultGasPriceAndFinish()
+                }
             }
 
         }
@@ -350,10 +410,6 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
         if (currentAddressProvider.value != address) {
             currentBalance = null
             from_address.text = address.hex
-            fab.setImageResource(R.drawable.ic_action_done)
-            fab.setOnClickListener {
-                onFabClick(false)
-            }
             currentAddressProvider.setCurrent(address)
         }
     }
@@ -366,60 +422,71 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
 
             if (currentERC681?.valid == true) {
 
-                showWarningOnWrongNetwork(localERC681)
+                chainIDAlert(networkDefinitionProvider,
+                        localERC681.chainId,
+                        continuationWithWrongChainId = {
+                            finish()
+                        },
+                        continuationWithCorrectOrNullChainId = {
 
-                currentToAddress = localERC681.getToAddress()?.apply {
-                    to_address.text = this.hex
-                    appDatabase.addressBook.resolveNameAsync(this) {
-                        to_address.text = it
-                    }
-                }
-
-                if (localERC681.isTokenTransfer()) {
-                    if (localERC681.address != null) {
-                        { appDatabase.tokens.forAddress(Address(localERC681.address!!)) }.asyncAwait { token ->
-                            if (token != null) {
-
-                                if (token != currentTokenProvider.currentToken) {
-                                    currentTokenProvider.currentToken = token
-                                    currentBalanceLive!!.removeObservers(this)
-                                    onCurrentTokenChanged()
-                                }
-
-                                amount_input.setText(BigDecimal(localERC681.getValueForTokenTransfer()).divide(token.decimalsAsMultiplicator()).toPlainString())
-                            } else {
-                                alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
+                            intent.getStringExtra("nonce")?.let {
+                                nonce_input.setText(it.maybeHexToBigInteger().toString())
                             }
-                        }
-                    } else {
-                        alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
-                    }
-                } else {
 
-                    if (localERC681.function != null) {
-                        checkFunctionParameters(localERC681)
+                            currentToAddress = localERC681.getToAddress()?.apply {
+                                to_address.text = this.hex
+                                appDatabase.addressBook.resolveNameAsync(this) {
+                                    to_address.text = it
+                                }
+                            }
 
-                    }
-                    localERC681.value?.let {
+                            if (localERC681.isTokenTransfer()) {
+                                if (localERC681.address != null) {
+                                    { appDatabase.tokens.forAddress(Address(localERC681.address!!)) }.asyncAwait { token ->
+                                        if (token != null) {
 
-                        if (!currentTokenProvider.currentToken.isETH()) {
-                            currentTokenProvider.currentToken = getEthTokenForChain(networkDefinitionProvider.getCurrent())
-                            currentBalanceLive!!.removeObservers(this)
-                            onCurrentTokenChanged()
-                        }
+                                            if (token != currentTokenProvider.currentToken) {
+                                                currentTokenProvider.currentToken = token
+                                                currentBalanceLive!!.removeObservers(this)
+                                                onCurrentTokenChanged()
+                                            }
 
-                        amount_input.setText(BigDecimal(it).divide(currentTokenProvider.currentToken.decimalsAsMultiplicator()).toPlainString())
+                                            amount_input.setText(BigDecimal(localERC681.getValueForTokenTransfer()).divide(token.decimalsAsMultiplicator()).toPlainString())
+                                        } else {
+                                            alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
+                                        }
+                                    }
+                                } else {
+                                    alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
+                                }
+                            } else {
 
-                        // when called from onCreate() the afterEdwer outage foit hook is not yet added
-                        setAmountFromETHString(amount_input.text.toString())
-                        amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
-                    }
-                }
+                                if (localERC681.function != null) {
+                                    checkFunctionParameters(localERC681)
 
-                localERC681.gas?.let {
-                    show_advanced_button.callOnClick()
-                    gas_limit_input.setText(it.toString())
-                }
+                                }
+                                localERC681.value?.let {
+
+                                    if (!currentTokenProvider.currentToken.isETH()) {
+                                        currentTokenProvider.currentToken = getEthTokenForChain(networkDefinitionProvider.getCurrent())
+                                        currentBalanceLive!!.removeObservers(this)
+                                        onCurrentTokenChanged()
+                                    }
+
+                                    amount_input.setText(BigDecimal(it).divide(currentTokenProvider.currentToken.decimalsAsMultiplicator()).toPlainString())
+
+                                    // when called from onCreate() the afterEdwer outage foit hook is not yet added
+                                    setAmountFromETHString(amount_input.text.toString())
+                                    amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
+                                }
+                            }
+
+                            localERC681.gas?.let {
+                                show_advanced_button.callOnClick()
+                                gas_limit_input.setText(it.toString())
+                            }
+
+                        })
 
             } else {
                 currentToAddress = null
@@ -485,18 +552,7 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
         }
     }
 
-    private fun showWarningOnWrongNetwork(erc681: ERC681): Boolean {
-        if (erc681.chainId != null && erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
-            val chainForTransaction = getNetworkDefinitionByChainID(erc681.chainId!!)?.getNetworkName() ?: erc681.chainId.toString()
-            val currentNetworkName = networkDefinitionProvider.getCurrent().getNetworkName()
-            val message = getString(R.string.please_switch_network, currentNetworkName, chainForTransaction)
-            alert(title = getString(R.string.wrong_network), message = message)
-            return true
-        }
-        return false
-    }
-
-    private fun storeDefaultGasPrice() {
+    private fun storeDefaultGasPriceAndFinish() {
         val gasPrice = gas_price_input.asBigInit()
         val networkDefinition = networkDefinitionProvider.getCurrent()
         if (gasPrice != settings.getGasPriceFor(networkDefinition)) {
@@ -505,15 +561,29 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
                     .setMessage(R.string.store_gas_price)
                     .setPositiveButton(R.string.save) { _: DialogInterface, _: Int ->
                         settings.storeGasPriceFor(gasPrice, networkDefinition)
-                        finish()
+                        finishAndFollowUp()
                     }
                     .setNegativeButton(R.string.no) { _: DialogInterface, _: Int ->
-                        finish()
+                        finishAndFollowUp()
                     }
                     .show()
         } else {
-            finish()
+            finishAndFollowUp()
         }
+    }
+
+    private fun finishAndFollowUp() {
+        if (isParityFlow()) {
+            currentSignatureData?.let {
+                val hex = it.r.toHexStringZeroPadded(64, false) +
+                        it.s.toHexStringZeroPadded(64, false) +
+                        (it.v - 35 - (it.extractChainID() ?: 0) * 2).toBigInteger().toHexStringZeroPadded(2, false)
+                val intent = Intent(this, ParitySignerQRActivity::class.java)
+                        .putExtra("signatureHex", hex)
+                startActivity(intent)
+            }
+        }
+        finish()
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {

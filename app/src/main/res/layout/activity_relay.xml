@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
-        android:animateLayoutChanges="true"
-        tools:context="org.walleth.activities.OfflineTransactionActivity">
+        android:animateLayoutChanges="true">
 
 
     <android.support.design.widget.TextInputLayout
@@ -25,6 +23,13 @@
                 android:textSize="16sp"
                 android:padding="16dp"/>
     </android.support.design.widget.TextInputLayout>
+
+    <Button
+            android:layout_below="@id/account_name_container"
+            android:id="@+id/parity_signer_button"
+            android:text="show parity signer QR-Code"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"

@@ -14,7 +14,7 @@
     <item
             android:id="@+id/menu_keys"
             android:title="@string/nav_drawer_keys"
-            android:icon="@drawable/ic_key_menu"/>
+            android:icon="@drawable/ic_key_black"/>
 
     <item
             android:id="@+id/menu_settings"
