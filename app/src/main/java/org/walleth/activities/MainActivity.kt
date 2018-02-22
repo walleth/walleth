@@ -264,7 +264,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
 
         if (it != null) {
             value_view.setValue(it.balance, currentTokenProvider.currentToken)
-            send_container.setVisibility(it.balance > ZERO, INVISIBLE)
+            send_container.setVisibility(currentTokenProvider.currentToken.requiresBalance && it.balance > ZERO, INVISIBLE)
             supportActionBar?.subtitle = getString(R.string.main_activity_block, it.block)
         } else {
             value_view.setValue(ZERO, currentTokenProvider.currentToken)
