@@ -216,4 +216,5 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="input_hint_reference_to_add">Reference to add</string>
     <string name="input_hint_derivation_path">Derivation path</string>
     <string name="create_tx_negative_token_balance">You have less tokens than you want to send. However, some tokens allow to do that. Do you want to continue?</string>
+    <string name="create_tx_zero_amount">The amount is set to ZERO ether. Do you want to continue?</string>
 </resources>

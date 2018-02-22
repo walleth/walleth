@@ -245,7 +245,9 @@ class CreateTransactionActivity : AppCompatActivity() {
         } else if (nonce_input.text.isBlank()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
-            if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
+            if (currentTokenProvider.currentToken.isETH() && currentAmount == ZERO) {
+                question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener({ _, _ -> startTransaction(isTrezorTransaction)}))
+            } else if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
                 question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction)})
             } else {
                 startTransaction(isTrezorTransaction)
