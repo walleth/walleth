@@ -29,5 +29,6 @@ data class Token(
         val showInList: Boolean,
         val starred: Boolean,
         val fromUser: Boolean,
-        val order:Int
+        val order:Int,
+        val requiresBalance: Boolean = true
 )

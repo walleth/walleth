@@ -39,8 +39,9 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
 
                     val newTokens = (0 until jsonArray.length()).map { jsonArray.get(it) as JSONObject }.map {
                         val address = it.getString("address")
+                        val symbol = it.getString("symbol")
                         Token(
-                                symbol = it.getString("symbol"),
+                                symbol = symbol,
                                 name = it.getString("name"),
                                 decimals = Integer.parseInt(it.getString("decimals")),
                                 address = Address(address),
@@ -48,7 +49,8 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
                                 showInList = true,
                                 fromUser = false,
                                 chain = chain,
-                                order = mapToOrder(address)
+                                order = mapToOrder(address),
+                                requiresBalance = "BeerCoin" != symbol
                         )
 
 

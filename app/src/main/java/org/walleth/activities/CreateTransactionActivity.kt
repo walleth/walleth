@@ -241,7 +241,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             alert(R.string.create_tx_error_amount_must_be_specified)
         } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
-        } else if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
+        } else if (!currentTokenProvider.currentToken.isETH() && currentTokenProvider.currentToken.requiresBalance && currentAmount!! > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (nonce_input.text.isBlank()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
