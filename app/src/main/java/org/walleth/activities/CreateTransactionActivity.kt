@@ -56,6 +56,7 @@ import org.walleth.functions.toFullValueString
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.toHexString
 import org.walleth.ui.asyncAwait
+import org.walleth.util.question
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ONE
@@ -241,39 +242,45 @@ class CreateTransactionActivity : AppCompatActivity() {
             alert(R.string.create_tx_error_amount_must_be_specified)
         } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
-        } else if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
-            alert(R.string.create_tx_error_not_enough_funds)
         } else if (nonce_input.text.isBlank()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
-            val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                    value = currentAmount!!,
-                    to = currentToAddress!!,
-                    from = currentAddressProvider.getCurrent()
-            ) else createTransactionWithDefaults(
-                    creationEpochSecond = System.currentTimeMillis() / 1000,
-                    value = ZERO,
-                    to = currentTokenProvider.currentToken.address,
-                    from = currentAddressProvider.getCurrent(),
-                    input = createTokenTransferTransactionInput(currentToAddress!!, currentAmount!!)
-            )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
-
-            transaction.nonce = nonce_input.asBigInit()
-            transaction.gasPrice = gas_price_input.asBigInit()
-            transaction.gasLimit = gas_limit_input.asBigInit()
-            transaction.txHash = transaction.encodeRLP().keccak().toHexString()
-
-            when {
-
-                isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-                else -> async(UI) {
-                    async(CommonPool) {
-                        appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
-                    }.await()
-                    storeDefaultGasPrice()
-                }
-
+            if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
+                question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction)})
+            } else {
+                startTransaction(isTrezorTransaction)
             }
+        }
+    }
+
+    private fun startTransaction(isTrezorTransaction: Boolean) {
+        val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
+                value = currentAmount!!,
+                to = currentToAddress!!,
+                from = currentAddressProvider.getCurrent()
+        ) else createTransactionWithDefaults(
+                creationEpochSecond = System.currentTimeMillis() / 1000,
+                value = ZERO,
+                to = currentTokenProvider.currentToken.address,
+                from = currentAddressProvider.getCurrent(),
+                input = createTokenTransferTransactionInput(currentToAddress!!, currentAmount!!)
+        )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
+
+        transaction.nonce = nonce_input.asBigInit()
+        transaction.gasPrice = gas_price_input.asBigInit()
+        transaction.gasLimit = gas_limit_input.asBigInit()
+        transaction.txHash = transaction.encodeRLP().keccak().toHexString()
+
+        when {
+
+            isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
+            else -> async(UI) {
+                async(CommonPool) {
+                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                }.await()
+                storeDefaultGasPrice()
+            }
+
         }
     }
 
