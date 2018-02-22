@@ -5,6 +5,7 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.withId
 import android.support.test.espresso.matcher.ViewMatchers.withText
+import org.hamcrest.Matchers.*
 import org.junit.Rule
 import org.junit.Test
 import org.kethereum.model.ChainDefinition
@@ -17,6 +18,7 @@ import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.infrastructure.TestApp
+import org.walleth.khex.hexToByteArray
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 import org.walleth.testdata.Room77
 import org.walleth.testdata.ShapeShift
@@ -70,6 +72,23 @@ class TheTransactionActivity {
 
         onView(withId(R.id.from_to_title)).check(matches(withText(R.string.transaction_from_label)))
         onView(withId(R.id.from_to)).check(matches(withText("ShapeShift")))
+    }
+
+
+    @Test
+    fun showsTheCorrectMethodSignature() {
+        val transaction = DEFAULT_TX.copy(from = ShapeShift, to = DEFAULT_TEST_ADDRESS,
+                input = "0xdeafbeef000000000000000000000000f44f28b5ca7808b9ad782c759ab8efb041de64d2".hexToByteArray().toList())
+
+        TestApp.testDatabase.runInTransaction {
+            TestApp.testDatabase.addressBook.addTestAddresses()
+            TestApp.testDatabase.transactions.upsert(transaction.toEntity(null, TransactionState()))
+        }
+
+        rule.launchActivity(InstrumentationRegistry.getTargetContext().getTransactionActivityIntentForHash(transaction.txHash!!))
+
+        onView(withId(R.id.function_call)).check(matches(withText(
+                allOf(containsString(TestApp.contractFunctionTextSignature1), containsString(TestApp.contractFunctionTextSignature2)))))
     }
 
 
