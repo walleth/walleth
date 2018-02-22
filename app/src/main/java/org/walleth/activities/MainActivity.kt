@@ -39,6 +39,7 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
@@ -62,6 +63,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
     private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
     private var lastNightMode: Int? = null
     private var balanceLiveData: LiveData<Balance>? = null
+    private var etherLiveData: LiveData<Balance>? = null
     private val onboardingController by lazy { OnboardingController(this, settings) }
 
     private var lastPastedData: String? = null
@@ -74,7 +76,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
             return
         }
         lastNightMode = settings.getNightMode()
-        setCurrentBalanceObserver()
+        setCurrentBalanceObservers()
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         if (clipboard.hasPrimaryClip()) {
@@ -238,7 +240,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         }
 
         networkDefinitionProvider.observe(this, Observer {
-            setCurrentBalanceObserver()
+            setCurrentBalanceObservers()
             installTransactionObservers()
         })
 
@@ -247,7 +249,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         })
 
         currentAddressProvider.observe(this, Observer { _ ->
-            setCurrentBalanceObserver()
+            setCurrentBalanceObservers()
         })
 
         if (intent.action?.equals("org.walleth.action.SCAN") == true) {
@@ -261,24 +263,32 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
 
 
     private val balanceObserver = Observer<Balance> {
-
         if (it != null) {
             value_view.setValue(it.balance, currentTokenProvider.currentToken)
-            send_container.setVisibility(it.balance > ZERO, INVISIBLE)
             supportActionBar?.subtitle = getString(R.string.main_activity_block, it.block)
         } else {
             value_view.setValue(ZERO, currentTokenProvider.currentToken)
-            send_container.visibility = INVISIBLE
             supportActionBar?.subtitle = getString(R.string.main_activity_no_data)
         }
     }
 
-    private fun setCurrentBalanceObserver() {
+    private val etherObserver = Observer<Balance> {
+        if (it != null) {
+            send_container.setVisibility(it.balance > ZERO, INVISIBLE)
+        } else {
+            send_container.visibility = INVISIBLE
+        }
+    }
+
+    private fun setCurrentBalanceObservers() {
         val currentAddress = currentAddressProvider.value
         if (currentAddress != null) {
             balanceLiveData?.removeObserver(balanceObserver)
             balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain)
             balanceLiveData?.observe(this, balanceObserver)
+            etherLiveData?.removeObserver(etherObserver)
+            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getEthTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain )
+            etherLiveData?.observe(this, etherObserver)
         }
     }
 

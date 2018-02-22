@@ -117,4 +117,25 @@ class TheMainActivity {
         rule.screenShot("balance_one")
     }
 
+    @Test
+    fun behavesCorrectlyWhenZeroTokenBalanceButOneEther() {
+        val token = testToken
+        TestApp.testDatabase.runInTransaction {
+            TestApp.testDatabase.balances.deleteAll()
+            TestApp.testDatabase.transactions.deleteAll()
+            TestApp.testDatabase.transactions.loadTestData(currentNetwork.chain)
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ETH_IN_WEI))
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), token.address, currentNetwork.chain, 42, ZERO))
+        }
+        TestApp.currentTokenProvider.currentToken = testToken
+        rule.launchActivity()
+
+        onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))
+                .check(matches(withText("0")))
+
+        onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(VISIBLE)))
+
+        rule.screenShot("balance_zero_token")
+    }
+
 }
