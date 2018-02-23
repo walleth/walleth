@@ -75,10 +75,14 @@ class TestApp : App() {
         val networkDefinitionProvider = NetworkDefinitionProvider(mySettings)
         val currentTokenProvider = CurrentTokenProvider(networkDefinitionProvider)
 
-        val contractFunctionTextSignature = "aFunctionCall(address)"
+        val contractFunctionTextSignature1 = "aFunctionCall1(address)"
+        val contractFunctionTextSignature2 = "aFunctionCall2(address)"
         val testFourByteDirectory = mock(FourByteDirectory::class.java).apply {
-            `when`(getSignatureFor(any())).then { invocation ->
-                ContractFunction(invocation.arguments[0] as String, textSignature = contractFunctionTextSignature)
+            `when`(getSignaturesFor(any())).then { invocation ->
+                listOf(
+                        ContractFunction(invocation.arguments[0] as String, textSignature = contractFunctionTextSignature1),
+                        ContractFunction(invocation.arguments[0] as String, textSignature = contractFunctionTextSignature2)
+                )
             }
         }
         lateinit var testDatabase: AppDatabase

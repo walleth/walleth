@@ -218,4 +218,5 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="create_tx_negative_token_balance">You have less tokens than you want to send. However, some tokens allow to do that. Do you want to continue?</string>
     <string name="create_tx_zero_amount">The amount is set to ZERO ether. Do you want to continue?</string>
     <string name="function_call">Function call:</string>
+    <string name="or">or</string>
 </resources>

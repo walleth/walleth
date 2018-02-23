@@ -144,10 +144,16 @@ class ViewTransactionActivity : AppCompatActivity() {
                         function_call_label.visibility = View.VISIBLE
                         function_call.visibility = View.VISIBLE
                         async(UI) {
-                            val result = async(CommonPool) {
-                                fourByteDirectory.getSignatureFor(it.subList(0, 4).toHexString())
+                            val signatures = async(CommonPool) {
+                                fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString())
                             }.await()
-                            function_call.text = result?.textSignature ?: "-"
+                            function_call.text = if (signatures.isNotEmpty()) {
+                                signatures.joinToString(
+                                        separator = " ${getString(R.string.or)}\n",
+                                        transform = { sig -> sig.textSignature ?: sig.hexSignature })
+                            } else {
+                                "-"
+                            }
                         }
                     }
                 }
