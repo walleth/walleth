@@ -13,7 +13,7 @@ fun TransactionEntity.setHash(newHash: String) {
         transaction.txHash = newHash
 }
 @Entity(tableName = "transactions")
-data class TransactionEntity(
+open class TransactionEntity(
 
         @PrimaryKey
         var hash: String,
@@ -25,5 +25,8 @@ data class TransactionEntity(
         var signatureData: SignatureData?,
 
         @Embedded
-        var transactionState: TransactionState
+        var transactionState: TransactionState,
+
+        @Embedded
+        var functionCall: FunctionCall? = null
 )

@@ -1,6 +1,8 @@
 package org.walleth
 
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import android.content.Intent
 import android.net.TrafficStats
@@ -71,7 +73,9 @@ open class App : MultiDexApplication(), KodeinAware {
 
             bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
 
-            bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
+            bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
+                    .fallbackToDestructiveMigration()
+                    .build() }
             bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
             bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance(), applicationContext) }
         }
