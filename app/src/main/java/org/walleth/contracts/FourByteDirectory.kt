@@ -4,10 +4,7 @@ import android.content.Context
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONException
-import org.json.JSONObject
 import org.kethereum.methodsignatures.FileBackedMethodSignatureStore
-import org.walleth.functions.JSONObjectIterator
 import org.walleth.kethereum.model.ContractFunction
 import java.io.File
 import java.io.IOException
@@ -21,7 +18,7 @@ class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Con
         mkdirs()
     }
     private val signatureStore = FileBackedMethodSignatureStore(storeDir)
-    private val baseURL = "https://www.4byte.directory/api/v1"
+    private val baseURL = "https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/"
 
     override fun getSignaturesFor(hex: String): List<ContractFunction> {
         return try {
@@ -38,40 +35,24 @@ class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Con
 
     private fun fetchAndStore(hex: String): ArrayList<ContractFunction> {
         val signatures = ArrayList<ContractFunction>()
-        val urlString = "$baseURL/signatures/?hex_signature=$hex"
-        val url = Request.Builder().url(urlString).build()
+        val cleanHex = hex.replace("0x", "")
+        val url = Request.Builder().url("$baseURL$cleanHex").build()
         val newCall: Call = okHttpClient.newCall(url)
 
         try {
-            val resultString = newCall.execute().body().use { it?.string() }
-            resultString?.fourByteResultToContractFunctions()?.let {
-                signatures.addAll(it)
+            val executedCall = newCall.execute()
+            if (executedCall.code() == 200) {
+                val resultString = executedCall.body().use { it?.string() }
+                resultString?.split(";")?.forEach {
+                    signatures.add(ContractFunction(hex, it))
+                    signatureStore.upsert(hex, it)
+                }
             }
 
         } catch (ioe: IOException) {
             ioe.printStackTrace()
-        } catch (jsonException: JSONException) {
-            jsonException.printStackTrace()
         }
-        return signatures
-    }
 
-    fun String.fourByteResultToContractFunctions(): List<ContractFunction> {
-        val signatures = ArrayList<ContractFunction>()
-        JSONObject(this).let {
-            val count = it.getInt("count")
-            if (count >= 1) {
-                it.getJSONArray("results").JSONObjectIterator().forEach {
-                    val textSignature = it.getString("text_signature")
-                    val hexSignature = it.getString("hex_signature")
-                    signatureStore.upsert(hexSignature, textSignature)
-
-                    signatures.add(ContractFunction(
-                            textSignature = textSignature,
-                            hexSignature = hexSignature))
-                }
-            }
-        }
         return signatures
     }
 
