@@ -4,12 +4,12 @@ import android.content.Context
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
-import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
+import org.kethereum.methodsignatures.FileBackedMethodSignatureStore
 import org.walleth.functions.JSONObjectIterator
 import org.walleth.kethereum.model.ContractFunction
-import org.walleth.util.FileBackedStore
+import java.io.File
 import java.io.IOException
 
 interface FourByteDirectory {
@@ -17,7 +17,10 @@ interface FourByteDirectory {
 }
 
 class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Context) : FourByteDirectory {
-    val signatureStore = FileBackedStore(context.getDir("funsignatures", Context.MODE_PRIVATE))
+    private val storeDir = File(context.cacheDir, "funsignatures").apply {
+        mkdirs()
+    }
+    private val signatureStore = FileBackedMethodSignatureStore(storeDir)
     private val baseURL = "https://www.4byte.directory/api/v1"
 
     override fun getSignaturesFor(hex: String): List<ContractFunction> {
