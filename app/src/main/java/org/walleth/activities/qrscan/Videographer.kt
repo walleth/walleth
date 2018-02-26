@@ -4,6 +4,7 @@ import android.app.Activity
 import android.graphics.ImageFormat
 import android.graphics.SurfaceTexture
 import android.hardware.Camera
+import android.os.Build
 import android.os.Handler
 import android.os.HandlerThread
 import android.view.Surface
@@ -132,6 +133,11 @@ class Videographer(val activity: Activity) {
         val focusMode = Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE
         if (parameters.supportedFocusModes.contains(focusMode)) {
             parameters.focusMode = focusMode
+        }
+
+        if ("Nexus 4".equals(Build.MODEL)) {
+            //Workaround for slow camera preview on Nexus 4
+            parameters.setRecordingHint(true)
         }
 
         camera.parameters = parameters
