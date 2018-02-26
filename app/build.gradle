@@ -166,7 +166,7 @@ dependencies {
     compile 'com.jakewharton:process-phoenix:2.0.0'
 
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.squareup.okhttp3:okhttp:3.10.0'
 
     compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
     compile 'com.github.salomonbrys.kodein:kodein-android:4.1.0'
@@ -238,8 +238,7 @@ if (hasProperty("singleFlavor")) {
                 'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
                 'com.google.protobuf:protobuf-java:f3411ade77523d5f0d013d4f25c36879e66f0c5e1e4310f7096d54d0d2553554',
                 'com.jakewharton.timber:timber:d553d3d3e883ce7d061f1b21b95d6ee0840f3bfbf6d3bd51c5671f0b0f0b0091',
-                'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102',
-                'com.squareup.okio:okio:734269c3ebc5090e3b23566db558f421f0b4027277c79ad5d176b8ec168bb850',
+                'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102'
         ]
     }
 
