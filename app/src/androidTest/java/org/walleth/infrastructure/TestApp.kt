@@ -10,6 +10,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.walleth.App
+import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.config.Settings
@@ -21,6 +22,7 @@ import org.walleth.data.networks.RINKEBY_CHAIN_ID
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.kethereum.model.ContractFunction
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
@@ -47,6 +49,7 @@ class TestApp : App() {
         bind<NetworkDefinitionProvider>() with singleton { networkDefinitionProvider }
         bind<CurrentTokenProvider>() with singleton { currentTokenProvider }
         bind<AppDatabase>() with singleton { testDatabase }
+        bind<FourByteDirectory>() with singleton { testFourByteDirectory }
     }
 
     override fun executeCodeWeWillIgnoreInTests() = Unit
@@ -71,6 +74,17 @@ class TestApp : App() {
         val currentAddressProvider = DefaultCurrentAddressProvider(mySettings)
         val networkDefinitionProvider = NetworkDefinitionProvider(mySettings)
         val currentTokenProvider = CurrentTokenProvider(networkDefinitionProvider)
+
+        val contractFunctionTextSignature1 = "aFunctionCall1(address)"
+        val contractFunctionTextSignature2 = "aFunctionCall2(address)"
+        val testFourByteDirectory = mock(FourByteDirectory::class.java).apply {
+            `when`(getSignaturesFor(any())).then { invocation ->
+                listOf(
+                        ContractFunction(invocation.arguments[0] as String, textSignature = contractFunctionTextSignature1),
+                        ContractFunction(invocation.arguments[0] as String, textSignature = contractFunctionTextSignature2)
+                )
+            }
+        }
         lateinit var testDatabase: AppDatabase
         fun resetDB(context: Context) {
             testDatabase = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java).build()
