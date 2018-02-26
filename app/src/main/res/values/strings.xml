@@ -217,4 +217,21 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="input_hint_derivation_path">Derivation path</string>
     <string name="create_tx_negative_token_balance">You have less tokens than you want to send. However, some tokens allow to do that. Do you want to continue?</string>
     <string name="create_tx_zero_amount">The amount is set to ZERO ether. Do you want to continue?</string>
+    <string name="function_call">Function call:</string>
+    <string name="or">or</string>
+    <string name="export_addresses">Export</string>
+    <string name="export_addresses_subtitle">Export addresses</string>
+    <string name="import_addresses">Import</string>
+    <string name="menu_export_addresses">Export</string>
+    <string name="menu_import_addresses">Import</string>
+    <string name="export_failed">Export failed</string>
+    <string name="import_failed">Import failed</string>
+    <plurals name="addresses_exported">
+        <item quantity="one">%1$d address exported</item>
+        <item quantity="other">%1$d addresses exported</item>
+    </plurals>
+    <plurals name="addresses_imported">
+        <item quantity="one">%1$d address imported</item>
+        <item quantity="other">%1$d addresses imported</item>
+    </plurals>
 </resources>
