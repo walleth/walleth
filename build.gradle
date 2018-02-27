@@ -3,7 +3,7 @@ buildscript {
         kotlin_version = '1.2.21'
         support_version = '26.1.0'
         firebase_version = '11.6.2'
-        kethereum_version = '0.39'
+        kethereum_version = '0.40'
         arch_version = "1.0.0"
         truth = '0.39'
     }
