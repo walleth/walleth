@@ -7,15 +7,19 @@ import org.kethereum.model.createTransactionWithDefaults
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.TransactionSource
 import org.walleth.data.transactions.TransactionState
-
 import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
 
-fun parseEtherScanTransactions(jsonArray: JSONArray, chain: ChainDefinition): List<TransactionEntity> {
-    return (0 until jsonArray.length()).map {
+class ParseResult(val list: List<TransactionEntity>, val highestBlock: Long)
+
+fun parseEtherScanTransactions(jsonArray: JSONArray, chain: ChainDefinition): ParseResult {
+    var lastBlockNumber = 0L
+    val list = (0 until jsonArray.length()).map {
         val transactionJson = jsonArray.getJSONObject(it)
         val value = BigInteger(transactionJson.getString("value"))
         val timeStamp = transactionJson.getString("timeStamp").toLong()
+        val blockNumber = transactionJson.getString("blockNumber").toLong()
+        lastBlockNumber = Math.max(blockNumber, lastBlockNumber)
         TransactionEntity(
                 transactionJson.getString("hash"),
                 createTransactionWithDefaults(
@@ -33,7 +37,8 @@ fun parseEtherScanTransactions(jsonArray: JSONArray, chain: ChainDefinition): Li
                         creationEpochSecond = timeStamp
                 ),
                 signatureData = null,
-                transactionState = TransactionState(false, isPending = false, source =  TransactionSource.ETHERSCAN)
+                transactionState = TransactionState(false, isPending = false, source = TransactionSource.ETHERSCAN)
         )
     }
+    return ParseResult(list, lastBlockNumber)
 }

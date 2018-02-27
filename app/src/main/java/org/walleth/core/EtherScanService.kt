@@ -30,8 +30,6 @@ import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
 import java.io.IOException
 import java.math.BigInteger
-import java.math.BigInteger.ONE
-import java.math.BigInteger.ZERO
 import java.security.cert.CertPathValidatorException
 
 class EtherScanService : LifecycleService() {
@@ -49,8 +47,8 @@ class EtherScanService : LifecycleService() {
         private var last_run = 0L
         private var shortcut = false
 
-        private var lastSeenTransactionsBlock = ZERO
-        private var lastSeenBalanceBlock = ZERO
+        private var lastSeenTransactionsBlock = 0L
+        private var lastSeenBalanceBlock = 0L
     }
 
     class TimingModifyingLifecycleObserver : LifecycleObserver {
@@ -69,8 +67,8 @@ class EtherScanService : LifecycleService() {
     class ResettingObserver<T> : Observer<T> {
         override fun onChanged(p0: T?) {
             shortcut = true
-            lastSeenBalanceBlock = ZERO
-            lastSeenTransactionsBlock = ZERO
+            lastSeenBalanceBlock = 0L
+            lastSeenTransactionsBlock = 0L
         }
     }
 
@@ -148,16 +146,17 @@ class EtherScanService : LifecycleService() {
 
     private fun queryTransactions(addressHex: String) {
         networkDefinitionProvider.value?.let { currentNetwork ->
-            val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + ONE}&sort=asc"
+            val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + 1L}&sort=asc"
 
             val etherscanResult = getEtherscanResult(requestString, currentNetwork)
             if (etherscanResult != null && etherscanResult.has("result")) {
                 val jsonArray = etherscanResult.getJSONArray("result")
                 val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain)
 
-                lastSeenTransactionsBlock = lastSeenBalanceBlock
+                lastSeenTransactionsBlock = newTransactions.highestBlock
 
-                newTransactions.forEach {
+                newTransactions.list.forEach {
+
                     val oldEntry = appDatabase.transactions.getByHash(it.hash)
                     if (oldEntry == null || oldEntry.transactionState.isPending) {
                         appDatabase.transactions.upsert(it)
@@ -181,7 +180,7 @@ class EtherScanService : LifecycleService() {
             val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLongOrNull(16)
 
             if (blockNum != null) {
-                lastSeenBalanceBlock = BigInteger.valueOf(blockNum)
+                lastSeenBalanceBlock = blockNum
 
                 val balanceString = if (currentToken.isETH()) {
                     getEtherscanResult("module=account&action=balance&address=$addressHex&tag=latest", currentNetwork)?.getString("result")
