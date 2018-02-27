@@ -178,7 +178,7 @@ class EtherScanService : LifecycleService() {
                 Log.w("Cannot parse " + etherscanResult)
                 return
             }
-            val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLong(16)
+            val blockNum = etherscanResult.getString("result")?.replace("0x", "")?.toLongOrNull(16)
 
             if (blockNum != null) {
                 lastSeenBalanceBlock = BigInteger.valueOf(blockNum)
