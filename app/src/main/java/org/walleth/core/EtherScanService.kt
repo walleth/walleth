@@ -126,7 +126,7 @@ class EtherScanService : LifecycleService() {
                     if (error.has("message") &&
                             !error.getString("message").startsWith("known") &&
                             error.getString("message") != "Transaction with the same hash was already imported."
-                            ) {
+                    ) {
                         transaction.transactionState.error = result.toString()
                     }
                 } else {
@@ -151,7 +151,7 @@ class EtherScanService : LifecycleService() {
             val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + ONE}&sort=asc"
 
             val etherscanResult = getEtherscanResult(requestString, currentNetwork)
-            if (etherscanResult != null) {
+            if (etherscanResult != null && etherscanResult.has("result")) {
                 val jsonArray = etherscanResult.getJSONArray("result")
                 val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain)
 
