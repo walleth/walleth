@@ -135,9 +135,9 @@ configurations {
 
 dependencies {
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.3"
-    compile 'com.android.support:multidex:1.0.2'
-    androidTestCompile 'com.android.support:multidex:1.0.2'
-    androidTestCompile 'com.android.support:multidex-instrumentation:1.0.2'
+    compile "com.android.support:multidex:$multidex_version"
+    androidTestCompile "com.android.support:multidex:$multidex_version"
+    androidTestCompile "com.android.support:multidex-instrumentation:$multidex_version"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
@@ -220,8 +220,6 @@ if (hasProperty("singleFlavor")) {
 
     dependencyVerification {
         verify = [
-                'com.android.support:multidex:7cd48755c7cfdb6dd2d21cbb02236ec390f6ac91cde87eb62f475b259ab5301d',
-
                 'com.github.ligi:KAXTUI:7bd3745979d8db21010846303339e2debec5ab77c5c9323f136d70c093c1017a',
                 'com.github.salomonbrys.kodein:kodein:6727cb851a73a82fd5ded29877739749f7f89c26a23ababaf9a06d7cf9aa7bee',
                 'com.github.salomonbrys.kodein:kodein-android:98b1998e2477eb715720ddf7f016a1b828ceb87c1f11ce72dad3d518629a0330',
