@@ -234,7 +234,6 @@ if (hasProperty("singleFlavor")) {
                 'com.squareup.moshi:moshi:91e9c49dc282f1e22570ad3cff7178b00a22180749c8427083ec9be2322c064e',
                 'com.github.ligi:ExtraCompats:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
                 'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
-                'com.google.protobuf:protobuf-java:f3411ade77523d5f0d013d4f25c36879e66f0c5e1e4310f7096d54d0d2553554',
                 'com.jakewharton.timber:timber:d553d3d3e883ce7d061f1b21b95d6ee0840f3bfbf6d3bd51c5671f0b0f0b0091',
                 'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102'
         ]
