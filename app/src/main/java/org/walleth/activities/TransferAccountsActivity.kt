@@ -20,6 +20,7 @@ import kotlinx.coroutines.experimental.async
 import org.json.JSONArray
 import org.json.JSONObject
 import org.kethereum.model.Address
+import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
@@ -41,8 +42,7 @@ fun Context.getImportAccountsIntent()
     action = ACTION_IMPORT
 }
 
-
-@TargetApi(Build.VERSION_CODES.KITKAT)
+@TargetApi(Build.VERSION_CODES.KITKAT) // for devices with document providers only
 class TransferAccountsActivity : AppCompatActivity() {
 
     val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
@@ -97,6 +97,7 @@ class TransferAccountsActivity : AppCompatActivity() {
     }
 
     private fun export(exportUri: Uri) {
+        setProgressVisibility(true)
         async(UI) {
             try {
                 val addresses = JSONArray()
@@ -109,13 +110,18 @@ class TransferAccountsActivity : AppCompatActivity() {
                             )
                         }
                     }
-                    contentResolver.openOutputStream(exportUri).bufferedWriter().use { it.write(addresses.toString()) }
+                    val addressesContainer = JSONObject().apply {
+                        put("content", "addresses")
+                        put("version", 1)
+                        put("addresses", addresses)
+                    }
+                    contentResolver.openOutputStream(exportUri).bufferedWriter().use { it.write(addressesContainer.toString()) }
                 }.await()
-
                 Toast.makeText(this@TransferAccountsActivity,
                         resources.getQuantityString(R.plurals.addresses_exported, addresses.length(), addresses.length()),
                         Toast.LENGTH_SHORT)
                         .show()
+                setProgressVisibility(false)
             } catch (e: Exception) {
                 Log.d("transfer", "export failed", e)
                 Toast.makeText(this@TransferAccountsActivity,
@@ -132,20 +138,29 @@ class TransferAccountsActivity : AppCompatActivity() {
     }
 
     private fun import(importUri: Uri) {
+        setProgressVisibility(true)
         async(UI) {
             try {
                 val count = async(CommonPool) {
-                    val addresses = JSONArray(contentResolver.openInputStream(importUri).bufferedReader()
+                    val addressesContainer = JSONObject(contentResolver.openInputStream(importUri).bufferedReader()
                             .use { it.readText() })
-                    addresses.iterator().forEach {
-                        appDatabase.addressBook.upsert(it.toAddressBookEntry())
+                    val content = addressesContainer.getString("content")
+                    val version = addressesContainer.getInt("version")
+                    if (version == 1 && content == "addresses") {
+                        val addresses = addressesContainer.getJSONArray("addresses")
+                        addresses.iterator().forEach {
+                            appDatabase.addressBook.upsert(it.toAddressBookEntry())
+                        }
+                        addresses.length()
+                    } else {
+                        0
                     }
-                    addresses.length()
                 }.await()
                 Toast.makeText(this@TransferAccountsActivity,
                         resources.getQuantityString(R.plurals.addresses_imported, count, count),
                         Toast.LENGTH_SHORT)
                         .show()
+                setProgressVisibility(false)
             } catch (e: Exception) {
                 Log.d("transfer", "import failed", e)
                 Toast.makeText(this@TransferAccountsActivity,
@@ -156,6 +171,11 @@ class TransferAccountsActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun setProgressVisibility(visible: Boolean) {
+        progress_bar.setVisibility(visible)
+        button_container.setVisibility(!visible)
     }
 
     operator fun JSONArray.iterator(): Iterator<JSONObject>
