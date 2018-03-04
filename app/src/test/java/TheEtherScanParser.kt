@@ -13,7 +13,7 @@ class TheEtherScanParser {
         // the "nonce":"" from the genesis transaction really got me by surprise ;-)
         val transactions = parseEtherScanTransactions(JSONArray(faucet_transactions), ChainDefinition(42))
 
-        assertThat(transactions.size).isEqualTo(23)
+        assertThat(transactions.list.size).isEqualTo(23)
 
     }
 

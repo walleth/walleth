@@ -154,11 +154,15 @@ class CreateTransactionActivity : AppCompatActivity() {
 
         sweep_button.setOnClickListener {
             val balance = currentBalanceSafely()
-            val amountAfterFee = balance - gas_price_input.asBigInit() * gas_limit_input.asBigInit()
-            if (amountAfterFee < ZERO) {
-                alert(R.string.no_funds_after_fee)
+            if (currentTokenProvider.currentToken.isETH()) {
+                val amountAfterFee = balance - gas_price_input.asBigInit() * gas_limit_input.asBigInit()
+                if (amountAfterFee < ZERO) {
+                    alert(R.string.no_funds_after_fee)
+                } else {
+                    amount_input.setText(amountAfterFee.toFullValueString(currentTokenProvider.currentToken))
+                }
             } else {
-                amount_input.setText(amountAfterFee.toFullValueString(currentTokenProvider.currentToken))
+                amount_input.setText(balance.toFullValueString(currentTokenProvider.currentToken))
             }
         }
 

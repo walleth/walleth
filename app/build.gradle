@@ -19,8 +19,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
 
-        versionCode 31
-        versionName "0.31"
+        versionCode 33
+        versionName "0.33"
         archivesBaseName = "WALLETH-$versionName"
 
         testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
@@ -134,14 +134,14 @@ configurations {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.2"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.3"
     compile 'com.android.support:multidex:1.0.2'
     androidTestCompile 'com.android.support:multidex:1.0.2'
     androidTestCompile 'com.android.support:multidex-instrumentation:1.0.2'
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    withGethCompile "org.ethereum:geth:1.8.0"
+    withGethCompile "org.ethereum:geth:1.8.1"
 
     compile "com.github.walleth.kethereum:functions:$kethereum_version"
     compile "com.github.walleth.kethereum:bip44:$kethereum_version"
@@ -149,6 +149,7 @@ dependencies {
     compile "com.github.walleth.kethereum:eip155:$kethereum_version"
     compile "com.github.walleth.kethereum:erc681:$kethereum_version"
     compile "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
+    compile "com.github.walleth.kethereum:method_signatures:$kethereum_version"
     compile "com.github.walleth.kethereum:rlp:$kethereum_version"
 
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
@@ -165,7 +166,7 @@ dependencies {
     compile 'com.jakewharton:process-phoenix:2.0.0'
 
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
-    compile 'com.squareup.okhttp3:okhttp:3.9.1'
+    compile 'com.squareup.okhttp3:okhttp:3.10.0'
 
     compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
     compile 'com.github.salomonbrys.kodein:kodein-android:4.1.0'
@@ -176,7 +177,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:preference-v14:$support_version"
 
-    compile "com.chibatching.kotpref:kotpref:2.3.0"
+    compile "com.chibatching.kotpref:kotpref:2.4.0"
 
     compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.github.ligi:ExtraCompats:0.4'
@@ -237,8 +238,7 @@ if (hasProperty("singleFlavor")) {
                 'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',
                 'com.google.protobuf:protobuf-java:f3411ade77523d5f0d013d4f25c36879e66f0c5e1e4310f7096d54d0d2553554',
                 'com.jakewharton.timber:timber:d553d3d3e883ce7d061f1b21b95d6ee0840f3bfbf6d3bd51c5671f0b0f0b0091',
-                'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102',
-                'com.squareup.okio:okio:734269c3ebc5090e3b23566db558f421f0b4027277c79ad5d176b8ec168bb850',
+                'org.threeten:threetenbp:dfb095d318c266673f6db2c89648fa73995343a2f2705e68ab2c63c99035f102'
         ]
     }
 
