@@ -86,8 +86,9 @@ class TransferAccountsActivity : AppCompatActivity() {
             when (requestCode) {
                 REQUEST_CODE_EXPORT -> data?.data?.let {
                     settings.defaultExportLocation = it.toString()
-                    val takeFlags = data.getFlags() and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                    contentResolver.takePersistableUriPermission(it, takeFlags)
+                    // val takeFlags = data.getFlags() and (Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+                    // FIXME makes espresso test fail
+                    // contentResolver.takePersistableUriPermission(it, takeFlags)
                     export(it)
                 }
                 REQUEST_CODE_IMPORT -> data?.data?.let {
