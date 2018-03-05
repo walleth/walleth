@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "d6d081fa6090c122fccddabc6e2c19d3",
+    "identityHash": "45712362e41412e7fbc0f32c4fb414b6",
     "entities": [
       {
         "tableName": "addressbook",
@@ -189,7 +189,7 @@
       },
       {
         "tableName": "transactions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `chain` TEXT, `creationEpochSecond` INTEGER, `from` TEXT, `gasLimit` TEXT NOT NULL, `gasPrice` TEXT NOT NULL, `input` TEXT NOT NULL, `nonce` TEXT, `to` TEXT, `txHash` TEXT, `value` TEXT NOT NULL, `r` TEXT, `s` TEXT, `v` INTEGER, `needsSigningConfirmation` INTEGER NOT NULL, `source` TEXT NOT NULL, `relayedLightClient` INTEGER NOT NULL, `relayedEtherscan` INTEGER NOT NULL, `eventLog` TEXT, `isPending` INTEGER NOT NULL, `gethSignProcessed` INTEGER NOT NULL, `error` TEXT, `hexSignature` TEXT, `functionValue` TEXT, PRIMARY KEY(`hash`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `chain` TEXT, `creationEpochSecond` INTEGER, `from` TEXT, `gasLimit` TEXT NOT NULL, `gasPrice` TEXT NOT NULL, `input` TEXT NOT NULL, `nonce` TEXT, `to` TEXT, `txHash` TEXT, `value` TEXT NOT NULL, `r` TEXT, `s` TEXT, `v` INTEGER, `needsSigningConfirmation` INTEGER NOT NULL, `source` TEXT NOT NULL, `relayedLightClient` INTEGER NOT NULL, `relayedEtherscan` INTEGER NOT NULL, `eventLog` TEXT, `isPending` INTEGER NOT NULL, `gethSignProcessed` INTEGER NOT NULL, `error` TEXT, `relevantAddress1` TEXT, `relevantAddress2` TEXT, PRIMARY KEY(`hash`))",
         "fields": [
           {
             "fieldPath": "hash",
@@ -324,14 +324,14 @@
             "notNull": false
           },
           {
-            "fieldPath": "functionCall.hexSignature",
-            "columnName": "hexSignature",
+            "fieldPath": "functionCall.relevantAddress1",
+            "columnName": "relevantAddress1",
             "affinity": "TEXT",
             "notNull": false
           },
           {
-            "fieldPath": "functionCall.functionValue",
-            "columnName": "functionValue",
+            "fieldPath": "functionCall.relevantAddress2",
+            "columnName": "relevantAddress2",
             "affinity": "TEXT",
             "notNull": false
           }
@@ -348,7 +348,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"d6d081fa6090c122fccddabc6e2c19d3\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"45712362e41412e7fbc0f32c4fb414b6\")"
     ]
   }
 }

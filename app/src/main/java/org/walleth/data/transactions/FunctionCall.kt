@@ -1,28 +1,38 @@
 package org.walleth.data.transactions
 
-import android.arch.persistence.room.Entity
-import android.arch.persistence.room.PrimaryKey
-import android.arch.persistence.room.Relation
 import org.kethereum.model.Address
-import org.kethereum.model.SignatureData
-import org.kethereum.model.Transaction
+import org.walleth.contracts.FourByteDirectory
+import org.walleth.kethereum.model.ContractFunction
 import java.math.BigInteger
 
-data class FunctionCall(
-        var hexSignature: String,
-        var functionValue: BigInteger
-)
+data class FunctionCall(var relevantAddress1: Address?, var relevantAddress2: Address? = null)
 
-class TransactionEntityWithAddresses(
-        hash: String, transaction: Transaction, signatureData: SignatureData?, transactionState: TransactionState, functionCall: FunctionCall?,
-        @Relation(parentColumn = "hash", entityColumn = "hash")
-        var relevantAddresses:List<RelevantAddress>
-): TransactionEntity(hash, transaction, signatureData, transactionState, functionCall)
+fun String.toFunctionCall(fourByteDirectory: FourByteDirectory): FunctionCall? {
+    val signatures = fourByteDirectory.getSignaturesFor(this)
+    if (signatures.size == 1 && signatures[0].hexSignature == Signatures.tokenTransfer) {
+        return FunctionCall(signatures[0].parametersFrom(this)[0] as Address, null)
+    }
+    return null
+}
 
-@Entity(tableName = "transactionToAddresses")
-data class RelevantAddress(
-        @PrimaryKey
-        var hash: String,
-        @PrimaryKey
-        var address: Address
-)
+fun ContractFunction.parametersFrom(input: String): List<Any?> {
+    if (arguments == null) {
+        return listOf()
+    }
+
+    val parameters = ArrayList<Any?>(arguments.size)
+    var point = 8
+    arguments.forEachIndexed { index, type ->
+        val value = when (type) {
+            "address" -> Address(input.substring(point + 24, point + 64)).also { point += 64 }
+            "uint256" -> BigInteger(input.substring(point, point + 64), 16).also { point += 64 }
+            else -> return parameters // no further parsing
+        }
+        parameters.add(value)
+    }
+    return parameters
+}
+
+object Signatures {
+    val tokenTransfer = "a9059cbb"
+}

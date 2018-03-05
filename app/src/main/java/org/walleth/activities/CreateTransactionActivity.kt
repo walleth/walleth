@@ -47,6 +47,7 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.networks.getNetworkDefinitionByChainID
 import org.walleth.data.tokens.*
+import org.walleth.data.transactions.FunctionCall
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.functions.asBigDecimal
@@ -282,7 +283,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
             else -> async(UI) {
                 async(CommonPool) {
-                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState(), functionCall = FunctionCall(if (!currentTokenProvider.currentToken.isETH()) currentToAddress else null, null)))
                 }.await()
                 storeDefaultGasPrice()
             }
