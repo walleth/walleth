@@ -25,6 +25,8 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.config.Settings
+import org.walleth.functions.JSONObjectIterator
+import org.walleth.functions.getStringOrNull
 import java.lang.Exception
 
 private const val REQUEST_CODE_EXPORT: Int = 1
@@ -149,7 +151,7 @@ class TransferAccountsActivity : AppCompatActivity() {
                     val version = addressesContainer.getInt("version")
                     if (version == 1 && content == "addresses") {
                         val addresses = addressesContainer.getJSONArray("addresses")
-                        addresses.iterator().forEach {
+                        addresses.JSONObjectIterator().forEach {
                             appDatabase.addressBook.upsert(it.toAddressBookEntry())
                         }
                         addresses.length()
@@ -179,9 +181,6 @@ class TransferAccountsActivity : AppCompatActivity() {
         button_container.setVisibility(!visible)
     }
 
-    operator fun JSONArray.iterator(): Iterator<JSONObject>
-            = (0 until length()).asSequence().map { get(it) as JSONObject }.iterator()
-
     private fun AddressBookEntry.toJSONObject(): JSONObject {
         return JSONObject().apply {
             put("address", address.hex)
@@ -209,5 +208,3 @@ class TransferAccountsActivity : AppCompatActivity() {
     }
 
 }
-
-private fun JSONObject.getStringOrNull(name: String) = if (has(name)) getString(name) else null
