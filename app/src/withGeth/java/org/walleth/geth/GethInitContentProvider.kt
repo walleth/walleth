@@ -1,11 +1,15 @@
 package org.walleth.geth
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
+import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.ContentProvider
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v4.content.ContextCompat
-import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
 import com.github.salomonbrys.kodein.instance
 import org.walleth.App
@@ -15,19 +19,27 @@ import org.walleth.geth.services.GethTransactionSigner
 
 class GethInitContentProvider : ContentProvider() {
 
-    private val lazyKodein by lazy { LazyKodein(context.appKodein) }
-
-    override fun onCreate(): Boolean {
-        App.postInitCallbacks.add({
+    class GethInitAppLifecycleObserver(val context: Context, val settings: Settings) : LifecycleObserver {
+        @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        fun connectListener() {
             context.startService(Intent(context, GethTransactionSigner::class.java))
 
-            val settings: Settings by lazyKodein.instance()
             if (settings.isLightClientWanted()) {
                 Intent(context, GethLightEthereumService::class.java).run {
                     ContextCompat.startForegroundService(context, this)
                 }
             }
 
+            ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
+        }
+
+    }
+
+    override fun onCreate(): Boolean {
+        App.postInitCallbacks.add({
+            val settings: Settings = context.appKodein.invoke().instance()
+
+            ProcessLifecycleOwner.get().lifecycle.addObserver(GethInitAppLifecycleObserver(context, settings))
         })
 
         return true
