@@ -20,6 +20,8 @@ import kotlinx.coroutines.experimental.async
 import okhttp3.OkHttpClient
 import org.kethereum.model.Address
 import org.ligi.tracedroid.TraceDroid
+import org.walleth.contracts.FourByteDirectory
+import org.walleth.contracts.FourByteDirectoryImpl
 import org.walleth.core.EtherScanService
 import org.walleth.core.TransactionNotificationService
 import org.walleth.data.AppDatabase
@@ -78,6 +80,7 @@ open class App : MultiDexApplication(), KodeinAware {
                     .build() }
             bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
             bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance(), applicationContext) }
+            bind<FourByteDirectory>() with singleton { FourByteDirectoryImpl(instance(), applicationContext) }
         }
     }
 
@@ -155,11 +158,12 @@ open class App : MultiDexApplication(), KodeinAware {
         try {
             startService(Intent(this, EtherScanService::class.java))
             startService(Intent(this, TransactionNotificationService::class.java))
-        } catch (e: IllegalStateException) {  }
+        } catch (e: IllegalStateException) {
+        }
     }
 
     companion object {
-        val postInitCallbacks = mutableListOf<()->Unit>()
+        val postInitCallbacks = mutableListOf<() -> Unit>()
 
         fun applyNightMode(settings: Settings) {
             @AppCompatDelegate.NightMode val nightMode = settings.getNightMode()

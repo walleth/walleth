@@ -22,6 +22,7 @@ import org.kethereum.functions.encodeRLP
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
+import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.networks.CurrentAddressProvider
@@ -39,11 +40,12 @@ fun Context.getTransactionActivityIntentForHash(hex: String)
 }
 
 class ViewTransactionActivity : AppCompatActivity() {
-
-    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    val lazyKodein = LazyKodein(appKodein)
+    private val appDatabase: AppDatabase by lazyKodein.instance()
+    private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
     private var txEntity: TransactionEntity? = null
+    private val fourByteDirectory: FourByteDirectory by lazyKodein.instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -136,6 +138,25 @@ class ViewTransactionActivity : AppCompatActivity() {
                     message += "\nError:" + error
                 }
                 details.text = message
+
+                transaction.input.let {
+                    if (it.size >= 4) {
+                        function_call_label.visibility = View.VISIBLE
+                        function_call.visibility = View.VISIBLE
+                        async(UI) {
+                            val signatures = async(CommonPool) {
+                                fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString())
+                            }.await()
+                            function_call.text = if (signatures.isNotEmpty()) {
+                                signatures.joinToString(
+                                        separator = " ${getString(R.string.or)}\n",
+                                        transform = { sig -> sig.textSignature ?: sig.hexSignature })
+                            } else {
+                                "-"
+                            }
+                        }
+                    }
+                }
             }
         })
 
