@@ -124,6 +124,13 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
                 })
                 TrezorType.FailureType.Failure_UnexpectedMessage -> Unit
                 TrezorType.FailureType.Failure_ActionCancelled -> cancel()
+                TrezorType.FailureType.Failure_ProcessError -> if (message.contains("not initialized")) {
+                    alert(R.string.trezor_not_initialized, R.string.dialog_title_error, OnClickListener { _, _ ->
+                        cancel()
+                    })
+                } else {
+                    alert(getString(R.string.process_error, message))
+                }
                 else -> alert("problem: $message $code")
             }
 
