@@ -15,10 +15,7 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.isETH
-import org.walleth.functions.addPrefixOnCondition
-import org.walleth.functions.toFullValueString
-import org.walleth.functions.toValueString
-import org.walleth.functions.twoDigitDecimalFormat
+import org.walleth.functions.*
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
@@ -40,13 +37,17 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         LayoutInflater.from(context).inflate(layoutRes, this, true)
         current_eth.setOnClickListener {
             currentToken?.let { tokenNotNull ->
-                showPreciseAmountAlert(currentValue.toFullValueString(tokenNotNull) + current_token_symbol.text)
+                if (current_eth.text.isValueImprecise()) {
+                    showPreciseAmountAlert(currentValue.toFullValueString(tokenNotNull) + current_token_symbol.text)
+                }
             }
         }
 
         current_fiat.setOnClickListener {
             currentExchangeValue?.let { currentExchangeValueNotNull ->
-                showPreciseAmountAlert(String.format("%f", currentExchangeValueNotNull) + current_fiat_symbol.text)
+                if (current_fiat.text.isValueImprecise()) {
+                    showPreciseAmountAlert(String.format("%f", currentExchangeValueNotNull) + current_fiat_symbol.text)
+                }
             }
         }
     }

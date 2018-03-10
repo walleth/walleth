@@ -32,3 +32,5 @@ fun BigDecimal.toFiatValueString() = twoDigitDecimalFormat.format(this)
         .adjustToMonetary2DecimalsWhenNeeded()
 
 fun String.addPrefixOnCondition(prefix: String, condition: Boolean) = if (condition) prefix + this else this
+
+fun CharSequence.isValueImprecise() = length > 0 && this[0] == '~'

@@ -150,21 +150,25 @@ class EtherScanService : LifecycleService() {
         networkDefinitionProvider.value?.let { currentNetwork ->
             val requestString = "module=account&action=txlist&address=$addressHex&startblock=$lastSeenTransactionsBlock&endblock=${lastSeenBalanceBlock + 1L}&sort=asc"
 
-            val etherscanResult = getEtherscanResult(requestString, currentNetwork)
-            if (etherscanResult != null && etherscanResult.has("result")) {
-                val jsonArray = etherscanResult.getJSONArray("result")
-                val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain, fourByteDirectory)
+            try {
+                val etherscanResult = getEtherscanResult(requestString, currentNetwork)
+                if (etherscanResult != null && etherscanResult.has("result")) {
+                    val jsonArray = etherscanResult.getJSONArray("result")
+                    val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain, fourByteDirectory)
 
-                lastSeenTransactionsBlock = newTransactions.highestBlock
+                    lastSeenTransactionsBlock = newTransactions.highestBlock
 
-                newTransactions.list.forEach {
+                    newTransactions.list.forEach {
 
-                    val oldEntry = appDatabase.transactions.getByHash(it.hash)
-                    if (oldEntry == null || oldEntry.transactionState.isPending) {
-                        appDatabase.transactions.upsert(it)
+                        val oldEntry = appDatabase.transactions.getByHash(it.hash)
+                        if (oldEntry == null || oldEntry.transactionState.isPending) {
+                            appDatabase.transactions.upsert(it)
+                        }
                     }
-                }
 
+                }
+            } catch (e: JSONException) {
+                Log.w("Problem with JSON from EtherScan: " + e.message)
             }
         }
     }
