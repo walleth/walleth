@@ -8,7 +8,8 @@ import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.TransactionSource
 import org.walleth.data.transactions.TransactionState
-import org.walleth.data.transactions.toFunctionCall
+import org.walleth.functions.toCleanHex
+import org.walleth.functions.toFunctionCall
 import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
 
@@ -42,7 +43,7 @@ fun parseEtherScanTransactions(jsonArray: JSONArray, chain: ChainDefinition, fou
                 ),
                 signatureData = null,
                 transactionState = TransactionState(false, isPending = false, source = TransactionSource.ETHERSCAN),
-                functionCall = input.toFunctionCall(fourByteDirectory)
+                functionCall = input.toCleanHex().toFunctionCall(fourByteDirectory)
         )
     }
     return ParseResult(list, lastBlockNumber)

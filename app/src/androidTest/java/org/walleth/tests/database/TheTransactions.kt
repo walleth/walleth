@@ -4,11 +4,11 @@ import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
+import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
 import org.walleth.data.transactions.FunctionCall
-import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.testdata.*
@@ -43,17 +43,23 @@ class TheTransactions : AbstractDatabaseTest() {
     @Test
     fun weCanFindTransactionsByRelevantAddress() {
         val chain = ChainDefinition(24)
-        val tx = createTransactionWithDefaults(from = Ligi, to = ΞBay, value = BigInteger.ZERO, txHash = "0x1", chain = chain)
+        val tx1 = createTransactionWithDefaults(from = Ligi, to = ΞBay, value = BigInteger.ZERO, txHash = "0x1", chain = chain)
+        val tx2 = createTransactionWithDefaults(from = Ligi, to = ΞBay, value = BigInteger.ZERO, txHash = "0x2", chain = chain)
 
-        database.transactions.upsert(tx.toEntity(null, TransactionState(), FunctionCall(Room77)))
+        addTransactionWithRelevantAddress(tx1, Room77)
+        addTransactionWithRelevantAddress(tx2, null)
 
         assertThat(getValue(database.transactions.getIncomingTransactionsForAddressOnChainOrdered(Room77, chain))).hasSize(1)
         assertThat(getValue(database.transactions.getOutgoingTransactionsForAddressOnChainOrdered(Room77, chain))).hasSize(0)
+        assertThat(database.transactions.getAllTransactionsForAddress(listOf(Ligi))).hasSize(2)
+    }
+
+    private fun addTransactionWithRelevantAddress(tx1: Transaction, address: Address?) {
+        database.transactions.upsert(tx1.toEntity(null, TransactionState(), FunctionCall(address)))
     }
 
     private fun addTransactions(tx: List<Transaction>) {
         database.transactions.upsert(tx.mapIndexed { index, transaction -> transaction.copy(txHash = "0x" + index).toEntity(null, TransactionState()) })
-
     }
 
     @Test

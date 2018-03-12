@@ -10,7 +10,7 @@ import java.io.File
 import java.io.IOException
 
 interface FourByteDirectory {
-    fun getSignaturesFor(hex: String): List<ContractFunction>
+    fun getSignaturesFor(hexSignature: String): List<ContractFunction>
 }
 
 class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Context) : FourByteDirectory {
@@ -21,11 +21,17 @@ class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Con
     private val baseURL = "https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/"
 
     override fun getSignaturesFor(hex: String): List<ContractFunction> {
+        if (hex.length != 8) {
+            return emptyList()
+        }
+
         return try {
             signatureStore.get(hex).map {
                 ContractFunction(
                         textSignature = it,
-                        hexSignature = hex
+                        hexSignature = hex,
+                        name = it.toName(),
+                        arguments = it.toArguments()
                 )
             }
         } catch (exception: IOException) {
@@ -47,6 +53,8 @@ class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Con
                     signatures.add(ContractFunction(hex, it))
                     signatureStore.upsert(hex, it)
                 }
+            } else {
+                executedCall.close()
             }
 
         } catch (ioe: IOException) {
@@ -57,3 +65,7 @@ class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Con
     }
 
 }
+
+private fun String.toArguments(): List<String>? = substringAfter('(').dropLast(1).split(',')
+
+private fun String.toName(): String = substring(0, indexOf('('))
