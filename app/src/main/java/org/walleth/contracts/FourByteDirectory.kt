@@ -10,7 +10,7 @@ import java.io.File
 import java.io.IOException
 
 interface FourByteDirectory {
-    fun getSignaturesFor(hexSignature: String): List<ContractFunction>
+    fun getSignaturesFor(hexHash: String): List<ContractFunction>
 }
 
 class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Context) : FourByteDirectory {
@@ -20,22 +20,22 @@ class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Con
     private val signatureStore = FileBackedMethodSignatureStore(storeDir)
     private val baseURL = "https://raw.githubusercontent.com/ethereum-lists/4bytes/master/signatures/"
 
-    override fun getSignaturesFor(hex: String): List<ContractFunction> {
-        if (hex.length != 8) {
+    override fun getSignaturesFor(hexHash: String): List<ContractFunction> {
+        if (hexHash.length != 8) {
             return emptyList()
         }
 
         return try {
-            signatureStore.get(hex).map {
+            signatureStore.get(hexHash).map {
                 ContractFunction(
                         textSignature = it,
-                        hexSignature = hex,
+                        hexSignature = hexHash,
                         name = it.toName(),
                         arguments = it.toArguments()
                 )
             }
         } catch (exception: IOException) {
-            fetchAndStore(hex)
+            fetchAndStore(hexHash)
         }
     }
 

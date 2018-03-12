@@ -283,7 +283,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
             else -> async(UI) {
                 async(CommonPool) {
-                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState(), functionCall = FunctionCall(if (!currentTokenProvider.currentToken.isETH()) currentToAddress else null, null)))
+                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState(), functionCall = FunctionCall(if (!currentTokenProvider.currentToken.isETH()) currentToAddress else null)))
                 }.await()
                 storeDefaultGasPrice()
             }

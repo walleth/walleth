@@ -145,8 +145,8 @@ class ViewTransactionActivity : AppCompatActivity() {
                         function_call.visibility = View.VISIBLE
                         async(UI) {
                             val functionCallText = async(CommonPool) {
-                                val signatures = fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString(prefix = ""))
-                                signatures.toHumanReadableTextFor(transaction, it.toHexString(prefix = ""), appDatabase, this@ViewTransactionActivity)
+                                fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString(prefix = ""))
+                                        .toHumanReadableTextFor(it.toHexString(prefix = ""), transaction, appDatabase, this@ViewTransactionActivity)
                             }.await()
 
                             function_call.text = functionCallText

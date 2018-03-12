@@ -53,7 +53,7 @@ fun ContractFunction.toParametersFor(cleanInput: String): List<Any?> {
     return parameters
 }
 
-fun List<ContractFunction>.toHumanReadableTextFor(transaction: Transaction, cleanInput: String, appDatabase: AppDatabase, context: Context): String {
+fun List<ContractFunction>.toHumanReadableTextFor(cleanInput: String, transaction: Transaction, appDatabase: AppDatabase, context: Context): String {
     return when {
         isEmpty() -> "-"
         (size == 1 && get(0).hexSignature == SignatureHash.tokenTransfer) -> {

@@ -1,4 +1,3 @@
-
 import com.google.common.truth.Truth.assertThat
 import data.faucet_transactions
 import org.json.JSONArray
@@ -13,8 +12,8 @@ class TheEtherScanParser {
     @Test
     fun testWeCanParseFaucetTransactionsWithEmptyNonce() {
         // the "nonce":"" from the genesis transaction really got me by surprise ;-)
-        val transactions = parseEtherScanTransactions(JSONArray(faucet_transactions), ChainDefinition(42), object: FourByteDirectory {
-            override fun getSignaturesFor(hex: String): List<ContractFunction> {
+        val transactions = parseEtherScanTransactions(JSONArray(faucet_transactions), ChainDefinition(42), object : FourByteDirectory {
+            override fun getSignaturesFor(hexHash: String): List<ContractFunction> {
                 return listOf()
             }
         })
