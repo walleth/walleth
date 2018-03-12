@@ -55,6 +55,8 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         INIT,
         PIN_REQUEST,
         PWD_REQUEST,
+        PWD_STATE,
+        PWD_ON_DEVICE,
         BUTTON_ACK,
         PROCESS_TASK,
         READ_ADDRESS,
@@ -114,7 +116,12 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
 
         when (this) {
             is TrezorMessage.PinMatrixRequest -> showPINDialog()
-            is TrezorMessage.PassphraseRequest -> showPassPhraseDialog()
+            is TrezorMessage.PassphraseRequest -> if (hasOnDevice() && onDevice) {
+                enterNewState(PWD_ON_DEVICE)
+            } else {
+                showPassPhraseDialog()
+            }
+            is TrezorMessage.PassphraseStateRequest -> enterNewState(PWD_STATE)
             is TrezorMessage.ButtonRequest -> enterNewState(BUTTON_ACK)
             is TrezorMessage.Features -> enterNewState(READ_ADDRESS)
             is TrezorMessage.EthereumAddress -> handleAddress(Address(address.toByteArray().toHexString()))
@@ -148,6 +155,8 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
         READ_ADDRESS -> TrezorMessage.EthereumGetAddress.newBuilder()
                 .addAllAddressN(currentBIP44!!.toIntList())
                 .build()
+        PWD_STATE -> TrezorMessage.PassphraseStateAck.newBuilder().build()
+        PWD_ON_DEVICE -> TrezorMessage.PassphraseAck.newBuilder().build()
         PIN_REQUEST -> TrezorMessage.PinMatrixAck.newBuilder().setPin(currentSecret).build()
         PWD_REQUEST -> TrezorMessage.PassphraseAck.newBuilder().setPassphrase(currentSecret).build()
         BUTTON_ACK -> TrezorMessage.ButtonAck.getDefaultInstance()

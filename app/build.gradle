@@ -19,8 +19,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 26
 
-        versionCode 33
-        versionName "0.33"
+        versionCode 34
+        versionName "0.34"
         archivesBaseName = "WALLETH-$versionName"
 
         testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
@@ -137,7 +137,7 @@ configurations {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.3"
+    compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5"
     compile "com.android.support:multidex:$multidex_version"
     androidTestCompile "com.android.support:multidex:$multidex_version"
     androidTestCompile "com.android.support:multidex-instrumentation:$multidex_version"
@@ -161,11 +161,11 @@ dependencies {
     compile 'com.github.ligi:tracedroid:1.4'
     compile 'com.github.ligi:KAXT:0.19'
     compile 'com.github.ligi:KAXTUI:0.4'
-    compile 'com.github.trezor.trezor-android:trezor-lib:v1.0.8'
+    compile 'com.github.ligi.trezor-android:trezor-lib:be8134c7c83d52a054ae7c7c116c5ff7e3248962'
 
 
     compile 'com.github.kenglxn.QRGen:android:2.4.0'
-    compile 'com.google.zxing:core:3.3.1'
+    compile 'com.google.zxing:core:3.3.2'
 
     compile 'com.jakewharton:process-phoenix:2.0.0'
 
