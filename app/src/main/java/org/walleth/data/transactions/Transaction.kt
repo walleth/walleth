@@ -14,7 +14,7 @@ fun TransactionEntity.setHash(newHash: String) {
 }
 
 @Entity(tableName = "transactions")
-open class TransactionEntity(
+data class TransactionEntity(
 
         @PrimaryKey
         var hash: String,

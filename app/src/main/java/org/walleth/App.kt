@@ -25,6 +25,7 @@ import org.walleth.contracts.FourByteDirectoryImpl
 import org.walleth.core.EtherScanService
 import org.walleth.core.TransactionNotificationService
 import org.walleth.data.AppDatabase
+import org.walleth.data.MIGRATION_1_2
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
@@ -76,7 +77,7 @@ open class App : MultiDexApplication(), KodeinAware {
             bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
 
             bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
-                    .fallbackToDestructiveMigration()
+                    .addMigrations(MIGRATION_1_2)
                     .build() }
             bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
             bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(gethBackedWallethKeyStore, instance(), instance(), applicationContext) }

@@ -84,7 +84,10 @@ android {
         noFirebase {
             dimension "fire"
         }
+    }
 
+    sourceSets {
+        androidTest.assets.srcDirs += files("$projectDir/schemas".toString())
     }
 
 
@@ -140,6 +143,7 @@ dependencies {
     androidTestCompile "com.android.support:multidex-instrumentation:$multidex_version"
 
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    androidTestCompile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     withGethCompile "org.ethereum:geth:1.8.2"
 
@@ -185,8 +189,12 @@ dependencies {
 
     compile "android.arch.lifecycle:extensions:$arch_version"
 
-    compile "android.arch.persistence.room:runtime:$arch_version"
-    kapt "android.arch.persistence.room:compiler:$arch_version"
+    compile "android.arch.persistence.room:runtime:$room_version"
+    kapt "android.arch.persistence.room:compiler:$room_version"
+
+    androidTestCompile "android.arch.persistence.room:testing:$room_version@aar"
+    androidTestCompile "android.arch.persistence.room:migration:$room_version"
+
 
     kapt "android.arch.lifecycle:compiler:$arch_version"
 
