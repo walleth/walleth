@@ -41,7 +41,7 @@ class WalletNavigationFragment : Fragment() {
                 R.id.menu_debug to DebugWallethActivity::class,
                 R.id.menu_edit to EditAccountActivity::class,
                 R.id.menu_save to ExportKeyActivity::class,
-                R.id.menu_switch to SwitchAccountActivity::class,
+                R.id.menu_accounts to SwitchAccountActivity::class,
                 R.id.menu_load to ImportActivity::class,
                 R.id.menu_offline_transaction to OfflineTransactionActivity::class,
                 R.id.menu_settings to PreferenceActivity::class

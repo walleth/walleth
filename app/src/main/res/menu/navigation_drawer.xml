@@ -12,9 +12,9 @@
             android:icon="@drawable/ic_editor_mode_edit"/>
 
     <item
-            android:id="@+id/menu_switch"
-            android:title="@string/nav_drawer_switch_account"
-            android:icon="@drawable/ic_swap_horiz_black_24dp"/>
+            android:id="@+id/menu_accounts"
+            android:title="@string/nav_drawer_accounts"
+            android:icon="@drawable/ic_group_black_24dp"/>
 
     <item
             android:id="@+id/menu_save"
