@@ -106,7 +106,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="no_funds_after_fee">No funds left with the given fee</string>
     <string name="nav_drawer_switch_network">Switch network</string>
     <string name="nav_drawer_edit_account">Edit account</string>
-    <string name="nav_drawer_switch_account">Switch account</string>
+    <string name="nav_drawer_accounts">Accounts</string>
     <string name="nav_drawer_export_key">Export key</string>
     <string name="nav_drawer_import_key">Import key</string>
     <string name="nav_drawer_settings">Settings</string>
@@ -219,6 +219,8 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="create_tx_zero_amount">The amount is set to ZERO ether. Do you want to continue?</string>
     <string name="function_call">Function call:</string>
     <string name="or">or</string>
+    <string name="trezor_not_initialized">TREZOR not initialized. Please use the TREZOR manager to initialize.</string>
+    <string name="process_error">Process Error %s</string>
     <string name="export_addresses">Export</string>
     <string name="export_addresses_subtitle">Export addresses</string>
     <string name="import_addresses">Import</string>

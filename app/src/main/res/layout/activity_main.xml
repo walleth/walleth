@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
+<merge
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -10,92 +10,98 @@
         android:padding="@dimen/rythm2"
         tools:context="org.walleth.activities.MainActivity">
 
+
     <LinearLayout
-            android:id="@+id/top_container"
-            android:paddingTop="32dp"
-            android:paddingBottom="16dp"
+            android:orientation="vertical"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <FrameLayout android:layout_width="0dp"
-                     android:layout_weight="38"
-                     android:id="@+id/receive_container"
+            android:layout_height="match_parent">
+        <LinearLayout
+                android:id="@+id/top_container"
+                android:paddingTop="32dp"
+                android:paddingBottom="16dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <FrameLayout android:layout_width="0dp"
+                         android:layout_weight="38"
+                         android:id="@+id/receive_container"
 
-                     android:layout_height="match_parent">
-            <android.support.v7.widget.AppCompatImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:duplicateParentState="true"
-                    android:id="@+id/rec"
-                    app:srcCompat="@drawable/ic_rec"/>
-        </FrameLayout>
+                         android:layout_height="match_parent">
+                <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:duplicateParentState="true"
+                        android:id="@+id/rec"
+                        app:srcCompat="@drawable/ic_rec"/>
+            </FrameLayout>
 
-        <org.walleth.ui.ValueView
-                android:id="@+id/value_view"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="123"/>
+            <org.walleth.ui.ValueView
+                    android:id="@+id/value_view"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="123"/>
 
-        <FrameLayout android:layout_width="0dp"
-                     android:layout_weight="38"
-                     android:id="@+id/send_container"
-                     android:layout_height="match_parent">
-            <android.support.v7.widget.AppCompatImageView
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:background="?selectableItemBackgroundBorderless"
-                    android:duplicateParentState="true"
-                    android:id="@+id/send"
-                    app:srcCompat="@drawable/ic_send"/>
-        </FrameLayout>
-    </LinearLayout>
+            <FrameLayout android:layout_width="0dp"
+                         android:layout_weight="38"
+                         android:id="@+id/send_container"
+                         android:layout_height="match_parent">
+                <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:layout_gravity="center"
+                        android:background="?selectableItemBackgroundBorderless"
+                        android:duplicateParentState="true"
+                        android:id="@+id/send"
+                        app:srcCompat="@drawable/ic_send"/>
+            </FrameLayout>
+        </LinearLayout>
 
 
-    <LinearLayout android:layout_width="match_parent"
-                  android:layout_height="match_parent"
-                  android:layout_below="@id/top_container"
-                  android:orientation="horizontal">
+        <LinearLayout android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
 
-        <ScrollView android:layout_width="0dp"
+                      android:orientation="horizontal">
+
+            <ScrollView android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:id="@+id/empty_view_container"
+                        android:layout_height="match_parent">
+                <TextView
+                        android:id="@+id/empty_view"
+                        android:padding="16dp"
+                        android:layout_width="match_parent"
+                        android:gravity="center"
+                        android:fontFamily="sans-serif"
+                        android:textSize="18sp"
+                        android:text="@string/empty_view"
+                        android:layout_height="wrap_content"/>
+            </ScrollView>
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/transaction_recycler_in"
+                    android:visibility="gone"
+                    android:paddingRight="8dp"
+                    android:layout_width="0dp"
                     android:layout_weight="1"
-                    android:id="@+id/empty_view_container"
-                    android:layout_height="match_parent">
-            <TextView
-                    android:id="@+id/empty_view"
-                    android:padding="16dp"
-                    android:layout_width="match_parent"
-                    android:gravity="center"
-                    android:fontFamily="sans-serif"
-                    android:textSize="18sp"
-                    android:text="@string/empty_view"
-                    android:layout_height="wrap_content"/>
-        </ScrollView>
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/transaction_recycler_in"
-                android:visibility="gone"
-                android:paddingRight="8dp"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"/>
 
-        <android.support.v7.widget.RecyclerView
-                android:id="@+id/transaction_recycler_out"
-                android:visibility="gone"
-                android:paddingLeft="8dp"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="match_parent"/>
+            <android.support.v7.widget.RecyclerView
+                    android:id="@+id/transaction_recycler_out"
+                    android:visibility="gone"
+                    android:paddingLeft="8dp"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="match_parent"/>
+        </LinearLayout>
     </LinearLayout>
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/ic_image_for_fab"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_gravity="end|bottom"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-</RelativeLayout>
+</merge>
