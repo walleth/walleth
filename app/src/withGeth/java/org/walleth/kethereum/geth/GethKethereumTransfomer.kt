@@ -3,6 +3,7 @@ package org.walleth.kethereum.geth
 import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
 import org.json.JSONObject
+import org.kethereum.extensions.hexToBigInteger
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
@@ -11,14 +12,16 @@ import java.math.BigInteger
 import org.ethereum.geth.Address as GethAddress
 
 fun BigInt.toBigInteger() = BigInteger(bytes)
-fun BigInteger.toGethInteger() = BigInt(toLong())
+fun BigInteger.toGethInteger() = BigInt(0).apply {
+    setString(toString(10), 10)
+}
 
 fun Address.toGethAddr() = Geth.newAddressFromHex(hex)
 fun GethAddress.toKethereumAddress() = Address(hex)
 
 fun Transaction.toGethTransaction(): org.ethereum.geth.Transaction = Geth.newTransaction(nonce!!.toLong(),
         to!!.toGethAddr(),
-        BigInt(value.toLong()),
+        value.toGethInteger(),
         gasLimit.toLong(),
         gasPrice.toGethInteger(),
         input.toByteArray()
