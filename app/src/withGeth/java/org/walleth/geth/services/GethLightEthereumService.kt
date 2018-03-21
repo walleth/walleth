@@ -3,13 +3,13 @@ package org.walleth.geth.services
 import android.annotation.TargetApi
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.PendingIntent
 import android.arch.lifecycle.LifecycleService
 import android.arch.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.SystemClock
 import android.support.v4.app.NotificationCompat
 import com.github.salomonbrys.kodein.LazyKodein
 import com.github.salomonbrys.kodein.android.appKodein
@@ -182,13 +182,10 @@ class GethLightEthereumService : LifecycleService() {
 
                     }, 16)
 
-                    //transactionProvider.registerChangeObserver(changeObserver)
-
                 } catch (e: Exception) {
-                    org.ligi.tracedroid.logging.Log.e("node error", e)
+                    Log.e("node error", e)
                 }
 
-                org.ligi.tracedroid.logging.Log.i("FinishedSyncing")
                 while (shouldRun) {
                     syncTick(ethereumNode, ethereumContext)
                 }
@@ -215,7 +212,7 @@ class GethLightEthereumService : LifecycleService() {
 
     @TargetApi(26)
     private fun setNotificationChannel() {
-        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, "Geth Service", NotificationManager.IMPORTANCE_HIGH)
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, "Geth Service", IMPORTANCE_HIGH)
         channel.description = getString(R.string.geth_service_notification_channel_description)
         notificationManager.createNotificationChannel(channel)
     }
@@ -227,7 +224,9 @@ class GethLightEthereumService : LifecycleService() {
             async(UI) {
                 if (ethereumSyncProgress != null) {
                     isSyncing = true
-                    val newSyncProgress = WallethSyncProgress(true, ethereumSyncProgress.currentBlock, ethereumSyncProgress.highestBlock)
+                    val newSyncProgress = ethereumSyncProgress.let {
+                        WallethSyncProgress(true, it.currentBlock, it.highestBlock)
+                    }
                     syncProgress.postValue(newSyncProgress)
                 } else {
                     syncProgress.postValue(WallethSyncProgress())
