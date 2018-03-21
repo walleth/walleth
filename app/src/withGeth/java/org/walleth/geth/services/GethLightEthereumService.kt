@@ -6,6 +6,7 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.arch.lifecycle.LifecycleService
 import android.arch.lifecycle.Observer
+import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.SystemClock
@@ -36,6 +37,7 @@ import org.walleth.kethereum.geth.toGethAddr
 import java.io.File
 import java.math.BigInteger
 import java.util.concurrent.TimeUnit
+import org.ethereum.geth.Context as EthereumContext
 
 private const val NOTIFICATION_ID = 101
 private const val NOTIFICATION_CHANNEL_ID = "geth"
@@ -44,7 +46,7 @@ class GethLightEthereumService : LifecycleService() {
 
     companion object {
         const val STOP_SERVICE_ACTION = "STOPSERVICE"
-        fun android.content.Context.gethStopIntent() = Intent(this, GethLightEthereumService::class.java).apply {
+        fun Context.gethStopIntent() = Intent(this, GethLightEthereumService::class.java).apply {
             action = STOP_SERVICE_ACTION
         }
 
@@ -60,7 +62,7 @@ class GethLightEthereumService : LifecycleService() {
     private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
     private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
     private val path by lazy { File(baseContext.cacheDir, "ethereumdata").absolutePath }
-    private val notificationManager by lazy { getSystemService(android.content.Context.NOTIFICATION_SERVICE) as NotificationManager }
+    private val notificationManager by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 
     private var isSyncing = false
     private var finishedSyncing = false
@@ -79,7 +81,7 @@ class GethLightEthereumService : LifecycleService() {
 
         async(CommonPool) {
             Geth.setVerbosity(settings.currentGoVerbosity.toLong())
-            val ethereumContext = Context()
+            val ethereumContext = EthereumContext()
 
             var initial = true
             while (shouldRestart || initial) {
@@ -218,7 +220,7 @@ class GethLightEthereumService : LifecycleService() {
         notificationManager.createNotificationChannel(channel)
     }
 
-    private suspend fun syncTick(ethereumNode: Node, ethereumContext: Context) {
+    private suspend fun syncTick(ethereumNode: Node, ethereumContext: EthereumContext) {
         try {
             val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
 
@@ -242,7 +244,7 @@ class GethLightEthereumService : LifecycleService() {
     }
 
 
-    private fun executeTransaction(transaction: TransactionEntity, client: EthereumClient, ethereumContext: Context) {
+    private fun executeTransaction(transaction: TransactionEntity, client: EthereumClient, ethereumContext: EthereumContext) {
         try {
             val rlp = transaction.transaction.encodeRLP()
             val transactionWithSignature = Geth.newTransactionFromRLP(rlp)
