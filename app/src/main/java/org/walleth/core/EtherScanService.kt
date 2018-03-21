@@ -205,7 +205,7 @@ class EtherScanService : LifecycleService() {
                                 )
                         )
                     } catch (e: NumberFormatException) {
-                        Log.i("could not parse number " + balanceString)
+                        Log.i("could not parse number $balanceString")
                     }
                 }
             }
