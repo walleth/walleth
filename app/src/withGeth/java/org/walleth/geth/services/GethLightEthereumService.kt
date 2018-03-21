@@ -159,8 +159,8 @@ class GethLightEthereumService : LifecycleService() {
                 }
                 val transactionsLiveData = appDatabase.transactions.getAllToRelayLive()
                 val transactionObserver = Observer<List<TransactionEntity>> {
-                    it?.forEach {
-                        executeTransaction(it, ethereumNode.ethereumClient, ethereumContext)
+                    it?.forEach { transaction ->
+                        transaction.execute(ethereumNode.ethereumClient, ethereumContext)
                     }
                 }
                 transactionsLiveData.observe(this@GethLightEthereumService, transactionObserver)
@@ -244,14 +244,14 @@ class GethLightEthereumService : LifecycleService() {
     }
 
 
-    private fun executeTransaction(transaction: TransactionEntity, client: EthereumClient, ethereumContext: EthereumContext) {
+    private fun TransactionEntity.execute(client: EthereumClient, ethereumContext: EthereumContext) {
         try {
-            val rlp = transaction.transaction.encodeRLP()
+            val rlp = transaction.encodeRLP()
             val transactionWithSignature = Geth.newTransactionFromRLP(rlp)
             client.sendTransaction(ethereumContext, transactionWithSignature)
-            transaction.transactionState.relayedLightClient = true
+            transactionState.relayedLightClient = true
         } catch (e: Exception) {
-            transaction.transactionState.error = e.message
+            transactionState.error = e.message
         }
     }
 
