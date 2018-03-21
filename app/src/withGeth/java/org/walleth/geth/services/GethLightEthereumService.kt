@@ -43,7 +43,7 @@ private const val NOTIFICATION_CHANNEL_ID = "geth"
 class GethLightEthereumService : LifecycleService() {
 
     companion object {
-        val STOP_SERVICE_ACTION = "STOPSERVICE"
+        const val STOP_SERVICE_ACTION = "STOPSERVICE"
         fun android.content.Context.gethStopIntent() = Intent(this, GethLightEthereumService::class.java).apply {
             action = STOP_SERVICE_ACTION
         }
