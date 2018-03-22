@@ -154,7 +154,7 @@ class GethLightEthereumService : LifecycleService() {
                 ethereumNode.start()
                 isRunning = true
                 while (shouldRun && !finishedSyncing) {
-                    SystemClock.sleep(1000)
+                    delay(1000)
                     syncTick(ethereumNode, ethereumContext)
                 }
                 val transactionsLiveData = appDatabase.transactions.getAllToRelayLive()
