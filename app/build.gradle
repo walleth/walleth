@@ -198,6 +198,7 @@ dependencies {
     androidTestCompile 'com.linkedin.dexmaker:dexmaker-mockito:2.2.0'
 
     androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.1'
+    androidTestCompile 'com.android.support.test.espresso:espresso-intents:3.0.1'
     androidTestCompile 'com.github.ligi:trulesk:0.21'
 
     testCompile 'junit:junit:4.12'

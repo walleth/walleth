@@ -22,6 +22,8 @@ interface Settings {
     var filterAddressesStared: Boolean
     var filterAddressesKeyOnly: Boolean
 
+    var defaultExportLocation: String?
+
     fun isLightClientWanted(): Boolean
     fun getNightMode(): Int
     fun getStatsName(): String
@@ -31,4 +33,5 @@ interface Settings {
 
     fun getGasPriceFor(current: NetworkDefinition): BigInteger
     fun storeGasPriceFor(gasPrice:BigInteger, network: NetworkDefinition)
+
 }

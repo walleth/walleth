@@ -221,4 +221,19 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="or">or</string>
     <string name="trezor_not_initialized">TREZOR not initialized. Please use the TREZOR manager to initialize.</string>
     <string name="process_error">Process Error %s</string>
+    <string name="export_addresses">Export</string>
+    <string name="export_addresses_subtitle">Export addresses</string>
+    <string name="import_addresses">Import</string>
+    <string name="menu_export_addresses">Export</string>
+    <string name="menu_import_addresses">Import</string>
+    <string name="export_failed">Export failed</string>
+    <string name="import_failed">Import failed</string>
+    <plurals name="addresses_exported">
+        <item quantity="one">%1$d address exported</item>
+        <item quantity="other">%1$d addresses exported</item>
+    </plurals>
+    <plurals name="addresses_imported">
+        <item quantity="one">%1$d address imported</item>
+        <item quantity="other">%1$d addresses imported</item>
+    </plurals>
 </resources>
