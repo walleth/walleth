@@ -17,6 +17,7 @@ import org.kethereum.model.Address
 import org.ligi.kaxt.letIf
 import org.ligi.tracedroid.logging.Log
 import org.walleth.BuildConfig
+import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
@@ -41,6 +42,7 @@ class EtherScanService : LifecycleService() {
     private val tokenProvider: CurrentTokenProvider by lazyKodein.instance()
     private val appDatabase: AppDatabase by lazyKodein.instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
+    private val fourByteDirectory: FourByteDirectory by lazyKodein.instance()
 
     companion object {
         private var timing = 7_000 // in MilliSeconds
@@ -152,7 +154,7 @@ class EtherScanService : LifecycleService() {
                 val etherscanResult = getEtherscanResult(requestString, currentNetwork)
                 if (etherscanResult != null && etherscanResult.has("result")) {
                     val jsonArray = etherscanResult.getJSONArray("result")
-                    val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain)
+                    val newTransactions = parseEtherScanTransactions(jsonArray, currentNetwork.chain, fourByteDirectory)
 
                     lastSeenTransactionsBlock = newTransactions.highestBlock
 

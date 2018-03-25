@@ -221,4 +221,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="or">or</string>
     <string name="trezor_not_initialized">TREZOR not initialized. Please use the TREZOR manager to initialize.</string>
     <string name="process_error">Process Error %s</string>
+    <string name="token_transfer">Token transfer: %1$s%2$s -> %3$s</string>
+    <string name="unknown_token_transfer">Unkonwn token transfer %1$s</string>
+    <string name="contract">Contract</string>
 </resources>

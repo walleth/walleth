@@ -31,11 +31,11 @@ import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.functions.setQRCode
 import org.walleth.functions.toHexString
+import org.walleth.functions.toHumanReadableTextFor
 import org.walleth.khex.toHexString
 
 private const val HASH_KEY = "TXHASH"
-fun Context.getTransactionActivityIntentForHash(hex: String)
-        = Intent(this, ViewTransactionActivity::class.java).apply {
+fun Context.getTransactionActivityIntentForHash(hex: String) = Intent(this, ViewTransactionActivity::class.java).apply {
     putExtra(HASH_KEY, hex)
 }
 
@@ -144,16 +144,12 @@ class ViewTransactionActivity : AppCompatActivity() {
                         function_call_label.visibility = View.VISIBLE
                         function_call.visibility = View.VISIBLE
                         async(UI) {
-                            val signatures = async(CommonPool) {
-                                fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString())
+                            val functionCallText = async(CommonPool) {
+                                fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString(prefix = ""))
+                                        .toHumanReadableTextFor(it.toHexString(prefix = ""), transaction, appDatabase, this@ViewTransactionActivity)
                             }.await()
-                            function_call.text = if (signatures.isNotEmpty()) {
-                                signatures.joinToString(
-                                        separator = " ${getString(R.string.or)}\n",
-                                        transform = { sig -> sig.textSignature ?: sig.hexSignature })
-                            } else {
-                                "-"
-                            }
+
+                            function_call.text = functionCallText
                         }
                     }
                 }
@@ -162,8 +158,7 @@ class ViewTransactionActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?)
-            = super.onCreateOptionsMenu(menu.apply { menuInflater.inflate(R.menu.menu_transaction, menu) })
+    override fun onCreateOptionsMenu(menu: Menu?) = super.onCreateOptionsMenu(menu.apply { menuInflater.inflate(R.menu.menu_transaction, menu) })
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.findItem(R.id.menu_delete)?.isVisible = txEntity?.transactionState?.isPending ?: false

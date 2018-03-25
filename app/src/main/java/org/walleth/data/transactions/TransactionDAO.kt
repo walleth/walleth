@@ -26,16 +26,16 @@ interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE source = :source")
     fun getAllForSource(source: TransactionSource): LiveData<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE \"to\" = :address COLLATE NOCASE AND chain=:chain ORDER BY creationEpochSecond DESC")
+    @Query("SELECT * FROM transactions WHERE (\"to\" = :address COLLATE NOCASE OR \"relevantAddress1\" = :address COLLATE NOCASE OR \"relevantAddress2\" = :address COLLATE NOCASE) AND chain=:chain ORDER BY creationEpochSecond DESC")
     fun getIncomingTransactionsForAddressOnChainOrdered(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE  AND chain=:chain ORDER BY creationEpochSecond DESC")
     fun getOutgoingTransactionsForAddressOnChainOrdered(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses)")
+    @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses) OR \"relevantAddress1\" COLLATE NOCASE IN(:addresses) OR \"relevantAddress2\" COLLATE NOCASE IN(:addresses)")
     fun getAllTransactionsForAddressLive(addresses: List<Address>): LiveData<List<TransactionEntity>>
 
-    @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses)")
+    @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses) OR \"relevantAddress1\" COLLATE NOCASE IN(:addresses) OR \"relevantAddress2\" COLLATE NOCASE IN(:addresses)")
     fun getAllTransactionsForAddress(addresses: List<Address>): List<TransactionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
