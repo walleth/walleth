@@ -80,7 +80,7 @@ class TheImportAccountActivity {
 
         val accountName = TestApp.testDatabase.addressBook.byAddress(TestApp.keyStore.import_result_address)?.name
 
-        assertThat(accountName).isEqualTo("new name")
+        assertThat(accountName).isEqualTo("New name")
     }
 
 }
