@@ -85,10 +85,10 @@ class RequestActivity : AppCompatActivity() {
             val relevantAddress = currentToken.address.hex
 
             val userAddress = currentAddressProvider.getCurrent().hex
-            val functionParams = mutableMapOf("address" to userAddress)
+            val functionParams = mutableListOf("address" to userAddress)
             if (add_value_checkbox.isChecked) {
                 try {
-                    functionParams.put("uint256", value_input_edittext.text.toString().extractValueForToken(currentToken).toString())
+                    functionParams.add("uint256" to value_input_edittext.text.toString().extractValueForToken(currentToken).toString())
                 } catch (e: NumberFormatException) {
                 }
             }

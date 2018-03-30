@@ -152,7 +152,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="geth_service_notification_content_text">light client running on %1$s</string>
     <string name="geth_service_notification_channel_description">View and Stop Geth Service</string>
     <string name="no_key_for_sending_account">No key for sending account</string>
-    <string name="create_transation_to_label">To:</string>
+    <string name="create_transaction_to_label">To:</string>
     <string name="create_tx_please_specify_amount">Please specify the amount</string>
     <string name="create_tx_show_advanced_options">Show Advanced Options</string>
     <string name="create_tx_gas_price">Gas Price</string>
@@ -184,13 +184,17 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="network_details">network details</string>
     <string name="network_stats">network stats</string>
     <string name="wrong_network">Wrong Network</string>
+    <string name="warning_dynamic_length_params_unsupported">Dynamic length parameters are currently not supported (parameter %1$d - %2$s)</string>
+    <string name="warning_problem_with_parameter">Problem with parameter (parameter %1$d - %2$s = %3$s)</string>
+    <string name="warning_invalid_param">Invalid parameter detected (parameter %1$d - %2$s)</string>
     <string name="please_switch_network">Please switch network from %1$s to %2$s</string>
     <string name="info_activity_subtitle">Version %s</string>
     <string name="trezor_please_enter_your_pin">Please enter your PIN</string>
     <string name="warning_not_a_valid_address">not a valid address: %s</string>
     <string name="title_invalid_address_alert">invalid_address</string>
     <string name="please_connect_your_trezor">Please connect your TREZOR</string>
-    <string name="create_transation_from_label">From:</string>
+    <string name="create_transaction_from_label">From:</string>
+    <string name="create_transaction_function_label">Function:</string>
     <string name="unknown_token">Unknown Token</string>
     <string name="add_token_manually">Please add token with address %1$s manually.</string>
     <string name="no_token_address">Token address is missing!</string>

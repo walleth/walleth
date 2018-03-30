@@ -20,6 +20,7 @@ import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import org.kethereum.contract.abi.types.convertStringToABIType
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.isEthereumURLString
@@ -27,9 +28,12 @@ import org.kethereum.erc681.parseERC681
 import org.kethereum.functions.createTokenTransferTransactionInput
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
+import org.kethereum.methodsignatures.model.TextMethodSignature
+import org.kethereum.methodsignatures.toHexSignature
 import org.kethereum.model.Address
 import org.kethereum.model.createTransactionWithDefaults
 import org.ligi.kaxt.doAfterEdit
+import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -54,7 +58,9 @@ import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.functions.decimalsInZeroes
 import org.walleth.functions.toFullValueString
 import org.walleth.kethereum.android.TransactionParcel
+import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
+import org.walleth.khex.toNoPrefixHexString
 import org.walleth.ui.asyncAwait
 import org.walleth.util.question
 import java.math.BigDecimal
@@ -69,7 +75,7 @@ const val TOKEN_REQUEST_CODE = 3
 
 class CreateTransactionActivity : AppCompatActivity() {
 
-    private var currentERC67String: String? = null
+    private var currentERC681: ERC681? = null
     private var currentAmount: BigInteger? = null
     private var currentToAddress: Address? = null
 
@@ -81,7 +87,6 @@ class CreateTransactionActivity : AppCompatActivity() {
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
     private var currentBalanceLive: LiveData<Balance>? = null
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
@@ -113,22 +118,24 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     }
 
+    private fun String.toERC681() = if (startsWith("0x")) ERC681(address = this) else parseERC681(this)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_create_transaction)
 
-        currentERC67String = if (savedInstanceState != null && savedInstanceState.containsKey("ERC67")) {
+        currentERC681 = if (savedInstanceState != null && savedInstanceState.containsKey("ERC67")) {
             savedInstanceState.getString("ERC67")
         } else {
             intent.data?.toString()
-        }
+        }?.let { it.toERC681() }
 
         if (savedInstanceState != null && savedInstanceState.containsKey("lastERC67")) {
             lastWarningURI = savedInstanceState.getString("lastERC67")
         }
 
-        supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle,networkDefinitionProvider.getCurrent().getNetworkName())
+        supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, networkDefinitionProvider.getCurrent().getNetworkName())
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         onCurrentTokenChanged()
@@ -198,7 +205,7 @@ class CreateTransactionActivity : AppCompatActivity() {
             }.toString())
         })
         refreshFee()
-        setToFromURL(currentERC67String, false)
+        setToFromURL(currentERC681?.generateURL(), false)
 
         scan_button.setOnClickListener {
             startScanActivityForResult(this)
@@ -219,6 +226,13 @@ class CreateTransactionActivity : AppCompatActivity() {
             amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
         }
 
+        val functionVisibility = currentERC681?.function != null && currentERC681?.isTokenTransfer() != true
+        function_label.setVisibility(functionVisibility)
+        function_text.setVisibility(functionVisibility)
+
+        if (functionVisibility) {
+            function_text.text = currentERC681?.function + "(" + currentERC681?.functionParams?.joinToString(",") { it.second } + ")"
+        }
     }
 
     private fun onCurrentTokenChanged() {
@@ -250,9 +264,9 @@ class CreateTransactionActivity : AppCompatActivity() {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
             if (currentTokenProvider.currentToken.isETH() && currentAmount == ZERO) {
-                question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener({ _, _ -> startTransaction(isTrezorTransaction)}))
+                question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener({ _, _ -> startTransaction(isTrezorTransaction) }))
             } else if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
-                question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction)})
+                question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
             } else {
                 startTransaction(isTrezorTransaction)
             }
@@ -271,6 +285,20 @@ class CreateTransactionActivity : AppCompatActivity() {
                 from = currentAddressProvider.getCurrent(),
                 input = createTokenTransferTransactionInput(currentToAddress!!, currentAmount!!)
         )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
+
+        val localERC681 = currentERC681
+
+        if (currentTokenProvider.currentToken.isETH() && localERC681?.function != null) {
+            val parameterSignature = localERC681.functionParams.joinToString(",") { it.first }
+            val functionSignature = TextMethodSignature(localERC681.function + "($parameterSignature)")
+
+            val parameterContent = localERC681.functionParams.joinToString("") {
+                convertStringToABIType(it.first).apply {
+                    parseValueFromString(it.second)
+                }.toBytes().toNoPrefixHexString()
+            }
+            transaction.input = (functionSignature.toHexSignature().hex + parameterContent).hexToByteArray().toList()
+        }
 
         transaction.nonce = nonce_input.asBigInit()
         transaction.gasPrice = gas_price_input.asBigInit()
@@ -312,7 +340,7 @@ class CreateTransactionActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString("ERC67", currentERC67String)
+        outState.putString("ERC67", currentERC681?.generateURL())
         outState.putString("lastERC67", lastWarningURI)
         super.onSaveInstanceState(outState)
     }
@@ -332,23 +360,23 @@ class CreateTransactionActivity : AppCompatActivity() {
     private fun setToFromURL(uri: String?, fromUser: Boolean) {
         if (uri != null) {
 
-            currentERC67String = if (uri.startsWith("0x")) ERC681(address = uri).generateURL() else uri
+            val localERC681 = uri.toERC681()
+            currentERC681 = localERC681
 
-            if (parseERC681(currentERC67String!!).valid) {
-                val erc681 = parseERC681(currentERC67String!!)
+            if (currentERC681?.valid == true) {
 
-                showWarningOnWrongNetwork(erc681)
+                showWarningOnWrongNetwork(localERC681)
 
-                currentToAddress = erc681.getToAddress()?.apply {
+                currentToAddress = localERC681.getToAddress()?.apply {
                     to_address.text = this.hex
                     appDatabase.addressBook.resolveNameAsync(this) {
                         to_address.text = it
                     }
                 }
 
-                if (erc681.isTokenTransfer()) {
-                    if (erc681.address != null) {
-                        { appDatabase.tokens.forAddress(Address(erc681.address!!)) }.asyncAwait { token ->
+                if (localERC681.isTokenTransfer()) {
+                    if (localERC681.address != null) {
+                        { appDatabase.tokens.forAddress(Address(localERC681.address!!)) }.asyncAwait { token ->
                             if (token != null) {
 
                                 if (token != currentTokenProvider.currentToken) {
@@ -357,16 +385,21 @@ class CreateTransactionActivity : AppCompatActivity() {
                                     onCurrentTokenChanged()
                                 }
 
-                                amount_input.setText(BigDecimal(erc681.getValueForTokenTransfer()).divide(token.decimalsAsMultiplicator()).toPlainString())
+                                amount_input.setText(BigDecimal(localERC681.getValueForTokenTransfer()).divide(token.decimalsAsMultiplicator()).toPlainString())
                             } else {
-                                alert(getString(R.string.add_token_manually, erc681.address), getString(R.string.unknown_token))
+                                alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
                             }
                         }
                     } else {
                         alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
                     }
                 } else {
-                    erc681.value?.let {
+
+                    if (localERC681.function != null) {
+                        checkFunctionParameters(localERC681)
+
+                    }
+                    localERC681.value?.let {
 
                         if (!currentTokenProvider.currentToken.isETH()) {
                             currentTokenProvider.currentToken = getEthTokenForChain(networkDefinitionProvider.getCurrent())
@@ -376,13 +409,13 @@ class CreateTransactionActivity : AppCompatActivity() {
 
                         amount_input.setText(BigDecimal(it).divide(currentTokenProvider.currentToken.decimalsAsMultiplicator()).toPlainString())
 
-                        // when called from onCreate() the afterEdit hook is not yet added
+                        // when called from onCreate() the afterEdwer outage foit hook is not yet added
                         setAmountFromETHString(amount_input.text.toString())
                         amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
                     }
                 }
 
-                erc681.gas?.let {
+                localERC681.gas?.let {
                     show_advanced_button.callOnClick()
                     gas_limit_input.setText(it.toString())
                 }
@@ -400,6 +433,54 @@ class CreateTransactionActivity : AppCompatActivity() {
 
                 }
             }
+        }
+    }
+
+    private fun checkFunctionParameters(localERC681: ERC681) {
+        val functionToByteList = localERC681.functionParams.map {
+
+            val type = try {
+                convertStringToABIType(it.first)
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+
+            val bytes = try {
+                type?.parseValueFromString(it.second)
+                type?.toBytes()
+            } catch (e: NotImplementedError) {
+                null
+            } catch (e: IllegalArgumentException) {
+                null
+            }
+
+
+            type to bytes
+        }
+
+
+        val indexOfFirstInvalidParam = functionToByteList.indexOfFirst { it.first == null }
+
+        if (indexOfFirstInvalidParam >= 0) {
+            val type = localERC681.functionParams[indexOfFirstInvalidParam].first
+            alert(getString(R.string.warning_invalid_param, indexOfFirstInvalidParam, type))
+            return
+        }
+
+        val indexOfFirstDynamicType = functionToByteList.indexOfFirst { it.first?.isDynamic() == true }
+        if (indexOfFirstDynamicType >= 0) {
+            val type = localERC681.functionParams[indexOfFirstDynamicType].first
+            alert(getString(R.string.warning_dynamic_length_params_unsupported, indexOfFirstDynamicType, type))
+            return
+        }
+
+        val indexOfFirsInvalidParameter = functionToByteList.indexOfFirst { it.second == null }
+        if (indexOfFirsInvalidParameter >= 0) {
+            val parameter = localERC681.functionParams[indexOfFirsInvalidParameter]
+            val type = parameter.first
+            val value = parameter.second
+            alert(getString(R.string.warning_problem_with_parameter, indexOfFirsInvalidParameter, type, value))
+            return
         }
     }
 

@@ -3,7 +3,7 @@ buildscript {
         kotlin_version = '1.2.31'
         support_version = '26.1.0'
         firebase_version = '11.6.2'
-        kethereum_version = '0.40'
+        kethereum_version = '0.47'
         multidex_version = '1.0.3'
         arch_version = '1.1.1'
         room_version = '1.0.0'
@@ -12,6 +12,7 @@ buildscript {
 
     repositories {
         jcenter()
+        google()
     }
 
     dependencies {

@@ -7,9 +7,11 @@ import android.support.test.espresso.Espresso
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions
+import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.intent.Intents.intending
 import android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import android.support.test.espresso.matcher.ViewMatchers
+import android.support.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth
 import org.junit.Before
 import org.junit.Rule
@@ -52,7 +54,7 @@ class TheCreateTransactionActivity {
         val chainDefinition = TestApp.networkDefinitionProvider.getCurrent()
         rule.launchActivity()
 
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.create_transaction_on_network_subtitle,chainDefinition.getNetworkName())))
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.create_transaction_on_network_subtitle, chainDefinition.getNetworkName())))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         rule.screenShot("chain_name_in_subtitle")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
@@ -94,6 +96,57 @@ class TheCreateTransactionActivity {
         rule.screenShot("please_change_chain")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
     }
+
+
+
+    @Test
+    fun showsAlertWheInvalidParameterIsUsed() {
+        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/foo?yo=lo"))
+
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_invalid_param, 0, "yo"))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+    }
+
+    @Test
+    fun showsCorrectFunction() {
+        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/foo"))
+
+        Espresso.onView(ViewMatchers.withId(R.id.function_text)).check(matches(withText("foo()")))
+    }
+
+    @Test
+    fun showsCorrectFunctionParameters() {
+        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/otherFunction?uint256=23&uint256=5"))
+
+        Espresso.onView(ViewMatchers.withId(R.id.function_text)).check(matches(withText("otherFunction(23,5)")))
+    }
+
+    @Test
+    fun showsCorrectFunctionParametersWithNegativeValues() {
+        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/otherFunction?uint256=23&int256=-5"))
+
+        Espresso.onView(ViewMatchers.withId(R.id.function_text)).check(matches(withText("otherFunction(23,-5)")))
+    }
+
+
+    @Test
+    fun showsWarningWhenParameterTypeIsUnsignedButValueIsSigned() {
+        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/otherFunction?uint8=-23"))
+
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_problem_with_parameter,0, "uint8", "-23")))
+                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+    }
+
+
+    @Test
+    fun showsAlertWhenDynamicParameterIsUsed() {
+        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/foo?string=bar"))
+
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_dynamic_length_params_unsupported, 0, "string"))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+
+    }
+
 
     @Test
     fun acceptsSimpleAddress() {

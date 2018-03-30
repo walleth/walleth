@@ -4,6 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:animateLayoutChanges="true"
+        tools:context="org.walleth.activities.CreateTransactionActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     <ScrollView
@@ -14,42 +15,41 @@
         <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                tools:context="org.walleth.activities.CreateTransactionActivity">
+                android:padding="16dp">
 
             <TextView
-                android:text="@string/create_transation_from_label"
-                android:padding="8dp"
-                android:id="@+id/from_label"
-                android:fontFamily="sans-serif"
-                android:textStyle="bold"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                    android:text="@string/create_transaction_from_label"
+                    android:padding="8dp"
+                    android:id="@+id/from_label"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
 
             <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/from_address_list_button"
-                app:srcCompat="@drawable/ic_list_black_24dp"
-                android:layout_toLeftOf="@+id/scan_button"
-                android:layout_below="@id/from_label"
-                style="@style/button"/>
+                    android:id="@+id/from_address_list_button"
+                    app:srcCompat="@drawable/ic_list_black_24dp"
+                    android:layout_toLeftOf="@+id/scan_button"
+                    android:layout_below="@id/from_label"
+                    style="@style/button"/>
 
             <TextView
-                android:layout_below="@id/from_label"
-                android:layout_alignParentLeft="true"
-                android:layout_toLeftOf="@id/from_address_list_button"
-                android:singleLine="true"
-                android:ellipsize="middle"
-                android:padding="16dp"
-                android:id="@+id/from_address"
-                tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu"
-                android:fontFamily="sans-serif"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                    android:layout_below="@id/from_label"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/from_address_list_button"
+                    android:singleLine="true"
+                    android:ellipsize="middle"
+                    android:padding="16dp"
+                    android:id="@+id/from_address"
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu"
+                    android:fontFamily="sans-serif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
 
             <TextView
                     android:layout_below="@id/from_address"
-                    android:text="@string/create_transation_to_label"
+                    android:text="@string/create_transaction_to_label"
                     android:padding="8dp"
                     android:id="@+id/to_label"
                     android:fontFamily="sans-serif"
@@ -87,7 +87,29 @@
                     android:layout_height="wrap_content"/>
 
             <TextView
+                    android:text="@string/create_transaction_function_label"
+                    android:padding="8dp"
+                    android:id="@+id/function_label"
                     android:layout_below="@id/to_address"
+                    android:fontFamily="sans-serif"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:layout_below="@id/function_label"
+                    android:layout_alignParentLeft="true"
+                    android:singleLine="true"
+                    android:ellipsize="middle"
+                    android:padding="16dp"
+                    android:id="@+id/function_text"
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu"
+                    android:fontFamily="sans-serif"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:layout_below="@id/function_text"
                     android:text="@string/create_tx_amount"
                     style="@style/section_header"
                     android:id="@+id/amount_label"/>

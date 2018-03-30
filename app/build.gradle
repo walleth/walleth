@@ -4,7 +4,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'spoon'
-apply plugin: 'com.getkeepsafe.dexcount'
+//apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
 def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
@@ -151,6 +151,7 @@ dependencies {
     compile "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     compile "com.github.walleth.kethereum:method_signatures:$kethereum_version"
     compile "com.github.walleth.kethereum:rlp:$kethereum_version"
+    compile "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
 
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 
