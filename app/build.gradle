@@ -177,7 +177,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:preference-v14:$support_version"
 
-    compile "com.chibatching.kotpref:kotpref:2.4.0"
+    compile "com.chibatching.kotpref:kotpref:2.5.0"
 
     compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.github.ligi:ExtraCompats:0.4'
