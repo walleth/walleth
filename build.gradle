@@ -6,7 +6,7 @@ buildscript {
         kethereum_version = '0.40'
         multidex_version = '1.0.3'
         arch_version = "1.0.0"
-        truth = '0.39'
+        truth = '0.40'
     }
 
     repositories {
