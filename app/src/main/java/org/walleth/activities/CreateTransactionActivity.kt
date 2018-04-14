@@ -256,14 +256,14 @@ class CreateTransactionActivity : AppCompatActivity() {
     private fun onFabClick(isTrezorTransaction: Boolean) {
         if (to_address.text.isEmpty() || currentToAddress == null) {
             alert(R.string.create_tx_error_address_must_be_specified)
-        } else if (currentAmount == null) {
+        } else if (currentAmount == null && currentERC681?.function == null) {
             alert(R.string.create_tx_error_amount_must_be_specified)
-        } else if (currentTokenProvider.currentToken.isETH() && currentAmount!! + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
+        } else if (currentTokenProvider.currentToken.isETH() && currentAmount?:ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (nonce_input.text.isBlank()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
-            if (currentTokenProvider.currentToken.isETH() && currentAmount == ZERO) {
+            if (currentTokenProvider.currentToken.isETH() && currentERC681?.function == null && currentAmount == ZERO) {
                 question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener({ _, _ -> startTransaction(isTrezorTransaction) }))
             } else if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
                 question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
@@ -275,7 +275,7 @@ class CreateTransactionActivity : AppCompatActivity() {
 
     private fun startTransaction(isTrezorTransaction: Boolean) {
         val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                value = currentAmount!!,
+                value = currentAmount?:ZERO,
                 to = currentToAddress!!,
                 from = currentAddressProvider.getCurrent()
         ) else createTransactionWithDefaults(
