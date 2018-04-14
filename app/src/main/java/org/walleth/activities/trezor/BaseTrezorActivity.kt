@@ -22,6 +22,8 @@ import com.satoshilabs.trezor.lib.protobuf.TrezorType
 import kotlinx.android.synthetic.main.activity_trezor.*
 import kotlinx.android.synthetic.main.password_input.view.*
 import kotlinx.android.synthetic.main.pinput.view.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.ligi.compat.HtmlCompat
@@ -89,8 +91,11 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
                 trezor_status_text.visibility = View.GONE
 
                 try {
-                    val trezorResult = manager.sendMessage(getMessageForState())
-                    trezorResult.handleTrezorResult()
+                    async(UI) {
+                        val trezorResult = async { manager.sendMessage(getMessageForState()) }.await()
+                        trezorResult.handleTrezorResult()
+                    }
+
                 } catch (trezorException: TrezorException) {
                     // this can happen when the trezor is unplugged - don't really care in this case
                     trezorException.printStackTrace()
