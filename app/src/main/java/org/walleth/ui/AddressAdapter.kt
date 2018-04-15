@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addressbook.faucet
 import org.walleth.data.keystore.WallethKeyStore
 
 class AddressAdapter(val keyStore: WallethKeyStore,
@@ -32,6 +33,7 @@ class AddressAdapter(val keyStore: WallethKeyStore,
                 .filter { !starredOnly || it.starred  }
                 .filter { !writableOnly || keyStore.hasKeyForForAddress(it.address) }
                 .filter { !it.deleted }
+                .filter { it != faucet }
                 .sortedBy { it.name }
 
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
