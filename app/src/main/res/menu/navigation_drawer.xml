@@ -7,11 +7,6 @@
             android:icon="@drawable/ic_assistant_photo"/>
 
     <item
-            android:id="@+id/menu_edit"
-            android:title="@string/nav_drawer_edit_account"
-            android:icon="@drawable/ic_editor_mode_edit"/>
-
-    <item
             android:id="@+id/menu_accounts"
             android:title="@string/nav_drawer_accounts"
             android:icon="@drawable/ic_group_black_24dp"/>

@@ -25,6 +25,10 @@ class WalletNavigationFragment : Fragment() {
         NavigationView(activity).apply {
             inflateMenu(R.menu.navigation_drawer)
             inflateHeaderView(R.layout.navigation_drawer_header)
+            getHeaderView(0).edit_account_image.setOnClickListener {
+                context.startActivityFromClass(EditAccountActivity::class.java)
+            }
+
         }
     }
 
@@ -39,7 +43,6 @@ class WalletNavigationFragment : Fragment() {
         val idToClassMap = mapOf(
                 R.id.menu_switch_network to SwitchNetworkActivity::class,
                 R.id.menu_debug to DebugWallethActivity::class,
-                R.id.menu_edit to EditAccountActivity::class,
                 R.id.menu_save to ExportKeyActivity::class,
                 R.id.menu_accounts to SwitchAccountActivity::class,
                 R.id.menu_load to ImportActivity::class,
