@@ -12,14 +12,9 @@
             android:icon="@drawable/ic_group_black_24dp"/>
 
     <item
-            android:id="@+id/menu_save"
-            android:title="@string/nav_drawer_export_key"
-            android:icon="@drawable/ic_unarchive_black_24dp"/>
-
-    <item
-            android:id="@+id/menu_load"
-            android:title="@string/nav_drawer_import_key"
-            android:icon="@drawable/ic_archive_black_24dp"/>
+            android:id="@+id/menu_keys"
+            android:title="@string/nav_drawer_keys"
+            android:icon="@drawable/ic_key_menu"/>
 
     <item
             android:id="@+id/menu_settings"

@@ -107,6 +107,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="nav_drawer_switch_network">Switch network</string>
     <string name="nav_drawer_edit_account">Edit account</string>
     <string name="nav_drawer_accounts">Accounts</string>
+    <string name="nav_drawer_keys">Keys</string>
     <string name="nav_drawer_export_key">Export key</string>
     <string name="nav_drawer_import_key">Import key</string>
     <string name="nav_drawer_settings">Settings</string>

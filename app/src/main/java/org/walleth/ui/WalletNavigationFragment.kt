@@ -43,9 +43,8 @@ class WalletNavigationFragment : Fragment() {
         val idToClassMap = mapOf(
                 R.id.menu_switch_network to SwitchNetworkActivity::class,
                 R.id.menu_debug to DebugWallethActivity::class,
-                R.id.menu_save to ExportKeyActivity::class,
+                R.id.menu_keys to KeysActivity::class,
                 R.id.menu_accounts to SwitchAccountActivity::class,
-                R.id.menu_load to ImportActivity::class,
                 R.id.menu_offline_transaction to OfflineTransactionActivity::class,
                 R.id.menu_settings to PreferenceActivity::class
         )
@@ -72,7 +71,6 @@ class WalletNavigationFragment : Fragment() {
                 }
 
             })
-            navigationView.menu.findItem(R.id.menu_save).isVisible = keyStore.hasKeyForForAddress(it)
         })
 
         networkDefinitionProvider.observe(this, Observer {
