@@ -17,6 +17,7 @@ private const val TOKEN_INIT_VERSION = 11
 // so much garbage in this token-list ..
 
 fun mapToOrder(input: String) = when (input.toLowerCase()) {
+    "0x89d24A6b4CcB1B6fAA2625fE562bDD9a23260359".toLowerCase() -> 888 // DAI
     "0xd26114cd6EE289AccF82350c8d8487fedB8A0C07".toLowerCase() -> 230 // OMG
     "0x89205A3A3b2A69De6Dbf7f01ED13B2108B2c43e7".toLowerCase() -> 420 // Unicorn
     "0xE41d2489571d322189246DaFA5ebDe1F4699F498".toLowerCase() -> 50  // 0x
