@@ -178,6 +178,8 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="main_activity_no_data">No data</string>
     <string name="main_activity_block">Block %d</string>
     <string name="starred_only">Starred only</string>
+    <string name="transact">Transact</string>
+    <string name="transact_disabled">Transact disabled</string>
     <string name="scan">Scan</string>
     <string name="scan_disabled">Scan disabled</string>
     <string name="network_subtitle">Networks</string>
