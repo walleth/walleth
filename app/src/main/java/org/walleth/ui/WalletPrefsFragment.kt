@@ -45,14 +45,14 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
         if (key == getString(R.string.key_prefs_day_night)) {
 
             App.applyNightMode(settings)
-            activity.recreateWhenPossible()
+            activity!!.recreateWhenPossible()
         }
         if (key == getString(R.string.key_prefs_start_light)) {
             if ((findPreference(key) as CheckBoxPreference).isChecked != GethLightEthereumService.isRunning) {
                 if (GethLightEthereumService.isRunning) {
-                    context.startService(context.gethStopIntent())
+                    context!!.startService(context!!.gethStopIntent())
                 } else {
-                    context.startService(Intent(context, GethLightEthereumService::class.java))
+                    context!!.startService(Intent(context, GethLightEthereumService::class.java))
                 }
                 async(UI) {
                     val alert = AlertDialog.Builder(getContext())

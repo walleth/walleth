@@ -10,14 +10,14 @@ apply plugin: 'org.jetbrains.kotlin.android.extensions'
 def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "org.walleth"
 
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 27
 
         versionCode 35
         versionName "0.35"
@@ -121,18 +121,6 @@ spoon {
     failIfNoDeviceConnected = true
 }
 
-configurations {
-
-    // http://stackoverflow.com/questions/30578243/why-would-adding-espresso-contrib-cause-an-inflateexception
-    androidTestCompile.exclude group: 'com.android.support', module: 'appcompat-v7'
-    androidTestCompile.exclude group: 'com.android.support', module: 'design'
-    androidTestCompile.exclude group: 'com.android.support', module: 'support-v4'
-    androidTestCompile.exclude group: 'com.android.support', module: 'support-annotations'
-    androidTestCompile.exclude group: 'com.android.support', module: 'preference-v7'
-    androidTestCompile.exclude module: 'recyclerview-v7'
-    androidTestCompile.exclude module: 'kotlin-stdlib'
-}
-
 dependencies {
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5"
     compile "com.android.support:multidex:$multidex_version"
@@ -186,7 +174,7 @@ dependencies {
     compile 'com.github.ligi:ExtraCompats:0.4'
     compile 'com.github.ligi:KRoom:0.4'
 
-    compile "android.arch.lifecycle:extensions:$arch_version"
+    compile "android.arch.lifecycle:extensions:1.1.1"
 
     compile "android.arch.persistence.room:runtime:$room_version"
     kapt "android.arch.persistence.room:compiler:$room_version"
@@ -202,6 +190,7 @@ dependencies {
 
     androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.1'
     androidTestCompile 'com.github.ligi:trulesk:0.21'
+    androidTestImplementation "com.android.support:appcompat-v7:$support_version"
 
     testCompile 'junit:junit:4.12'
     testCompile "com.google.truth:truth:$truth"

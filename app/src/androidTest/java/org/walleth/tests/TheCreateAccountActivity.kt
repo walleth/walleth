@@ -9,8 +9,8 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.intent.Intents.intending
 import android.support.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import android.support.test.espresso.matcher.ViewMatchers.*
-import com.google.common.truth.Truth.assertThat
 import kotlinx.android.synthetic.main.activity_account_create.*
+import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.kethereum.model.Address
@@ -101,8 +101,8 @@ class TheCreateAccountActivity {
         val tested = TestApp.testDatabase.addressBook.byAddress(Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
 
         assertThat(tested).isNotNull()
-        assertThat(tested!!.name).isEqualTo("nameProbe")
-        assertThat(tested.note).isEqualTo("noteProbe")
+        assertThat(tested!!.name).isEqualTo("NameProbe")
+        assertThat(tested.note).isEqualTo("NoteProbe")
         assertThat(rule.activity.isFinishing).isTrue()
     }
 
