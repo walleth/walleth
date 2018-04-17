@@ -13,6 +13,7 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven { url "https://jitpack.io" }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
@@ -21,7 +22,7 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'de.mobilej.unmock:UnMockPlugin:0.6.4'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
-        classpath "com.jaredsburrows:gradle-spoon-plugin:1.4.0"
+        classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.6.0'
         classpath files('app/libs/gradle-witness.jar')
         classpath 'com.google.gms:google-services:3.1.1'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.2'

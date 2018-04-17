@@ -200,13 +200,7 @@ dependencies {
 
 if (hasProperty("isCI")) {
 
-    apply plugin: "com.jaredsburrows.spoon"
-
-    spoon {
-        debug = true
-        grantAllPermissions = true
-        failIfNoDeviceConnected = true
-    }
+    apply plugin: 'composer'
 
     apply plugin: 'witness'
 
