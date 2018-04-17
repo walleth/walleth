@@ -11,9 +11,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
@@ -21,6 +18,9 @@ import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import org.ethereum.geth.*
 import org.kethereum.functions.encodeRLP
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.MainActivity
@@ -42,7 +42,9 @@ import org.ethereum.geth.Context as EthereumContext
 private const val NOTIFICATION_ID = 101
 private const val NOTIFICATION_CHANNEL_ID = "geth"
 
-class GethLightEthereumService : LifecycleService() {
+class GethLightEthereumService : LifecycleService(), KodeinAware {
+
+    override val kodein by closestKodein()
 
     companion object {
         const val STOP_SERVICE_ACTION = "STOPSERVICE"
@@ -54,13 +56,11 @@ class GethLightEthereumService : LifecycleService() {
         var isRunning = false
     }
 
-    private val lazyKodein = LazyKodein(appKodein)
-
-    private val syncProgress: SyncProgressProvider by lazyKodein.instance()
-    private val appDatabase: AppDatabase by lazyKodein.instance()
-    private val settings: Settings by lazyKodein.instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
-    private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
+    private val syncProgress: SyncProgressProvider by instance()
+    private val appDatabase: AppDatabase by instance()
+    private val settings: Settings by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
     private val path by lazy { File(baseContext.cacheDir, "ethereumdata").absolutePath }
     private val notificationManager by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 

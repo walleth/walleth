@@ -15,11 +15,11 @@ import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list_stars.*
 import kotlinx.coroutines.experimental.launch
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
@@ -33,12 +33,13 @@ class TokenActivityViewModel : ViewModel() {
     var searchTerm: String = ""
 }
 
-class SelectTokenActivity : AppCompatActivity() {
+class SelectTokenActivity : AppCompatActivity(), KodeinAware {
 
-    private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    private val settings: Settings by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    private val currentTokenProvider: CurrentTokenProvider by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val appDatabase: AppDatabase by instance()
+    private val settings: Settings by instance()
 
     private var showDelete = false
 

@@ -3,14 +3,14 @@ package org.walleth.geth.services
 import android.arch.lifecycle.LifecycleService
 import android.arch.lifecycle.Observer
 import android.content.Intent
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import org.ethereum.geth.BigInt
 import org.ethereum.geth.Geth
 import org.kethereum.functions.encodeRLP
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
@@ -27,13 +27,13 @@ import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
 
 
-class GethTransactionSigner : LifecycleService() {
+class GethTransactionSigner : LifecycleService(), KodeinAware {
 
-    private val lazyKodein = LazyKodein(appKodein)
+    override val kodein by closestKodein()
 
-    private val keyStore: WallethKeyStore by lazyKodein.instance()
-    private val appDatabase: AppDatabase by lazyKodein.instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
+    private val keyStore: WallethKeyStore by instance()
+    private val appDatabase: AppDatabase by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
 
     val observer = Observer<List<TransactionEntity>> {
         it?.forEach {

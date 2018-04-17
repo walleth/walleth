@@ -6,10 +6,10 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list.*
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.AllNetworkDefinitions
@@ -17,9 +17,10 @@ import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.ui.NetworkAdapter
 
-open class SwitchNetworkActivity : AppCompatActivity() {
+open class SwitchNetworkActivity : AppCompatActivity(), KodeinAware {
 
-    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    val networkDefinitionProvider: NetworkDefinitionProvider by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

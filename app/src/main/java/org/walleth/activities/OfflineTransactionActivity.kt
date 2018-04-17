@@ -6,9 +6,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_relay.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -20,6 +17,9 @@ import org.kethereum.eip155.extractChainID
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.*
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
@@ -60,11 +60,12 @@ fun String.isSignedTransactionJSON() = try {
 }
 
 
-class OfflineTransactionActivity : AppCompatActivity() {
+class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
 
-    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val appDatabase: AppDatabase by instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

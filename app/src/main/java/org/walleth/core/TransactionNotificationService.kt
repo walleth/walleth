@@ -10,10 +10,10 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import org.kethereum.model.Address
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.walleth.R
@@ -22,11 +22,10 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.transactions.TransactionEntity
 
-class TransactionNotificationService : LifecycleService() {
+class TransactionNotificationService : LifecycleService(), KodeinAware {
 
-    private val lazyKodein = LazyKodein(appKodein)
-
-    private val appDatabase: AppDatabase by lazyKodein.instance()
+    override val kodein by closestKodein()
+    private val appDatabase: AppDatabase by instance()
 
     private val allThatWantNotificationsLive by lazy { appDatabase.addressBook.allThatWantNotificationsLive() }
     private var liveDataAllNotifications: LiveData<List<TransactionEntity>>? = null

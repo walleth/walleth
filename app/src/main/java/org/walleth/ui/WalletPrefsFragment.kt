@@ -7,13 +7,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.preference.CheckBoxPreference
 import android.support.v7.preference.PreferenceFragmentCompat
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.recreateWhenPossible
 import org.walleth.App
 import org.walleth.R
@@ -22,10 +22,11 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.geth.services.GethLightEthereumService
 import org.walleth.geth.services.GethLightEthereumService.Companion.gethStopIntent
 
-class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
+class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, KodeinAware {
 
-    private val settings: Settings by LazyKodein(appKodein).instance()
-    private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    private val settings: Settings by instance()
+    private val currentTokenProvider: CurrentTokenProvider by instance()
 
     override fun onResume() {
         super.onResume()
@@ -45,14 +46,14 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
         if (key == getString(R.string.key_prefs_day_night)) {
 
             App.applyNightMode(settings)
-            activity.recreateWhenPossible()
+            activity?.recreateWhenPossible()
         }
         if (key == getString(R.string.key_prefs_start_light)) {
             if ((findPreference(key) as CheckBoxPreference).isChecked != GethLightEthereumService.isRunning) {
                 if (GethLightEthereumService.isRunning) {
-                    context.startService(context.gethStopIntent())
+                    context?.let { it.startService(it.gethStopIntent()) }
                 } else {
-                    context.startService(Intent(context, GethLightEthereumService::class.java))
+                    context?.let { it.startService(Intent(context, GethLightEthereumService::class.java)) }
                 }
                 async(UI) {
                     val alert = AlertDialog.Builder(getContext())

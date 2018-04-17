@@ -11,14 +11,14 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.functions.encodeRLP
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
@@ -34,18 +34,18 @@ import org.walleth.functions.toHexString
 import org.walleth.khex.toHexString
 
 private const val HASH_KEY = "TXHASH"
-fun Context.getTransactionActivityIntentForHash(hex: String)
-        = Intent(this, ViewTransactionActivity::class.java).apply {
+fun Context.getTransactionActivityIntentForHash(hex: String) = Intent(this, ViewTransactionActivity::class.java).apply {
     putExtra(HASH_KEY, hex)
 }
 
-class ViewTransactionActivity : AppCompatActivity() {
-    val lazyKodein = LazyKodein(appKodein)
-    private val appDatabase: AppDatabase by lazyKodein.instance()
-    private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
+class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
+
+    override val kodein by closestKodein()
+    private val appDatabase: AppDatabase by instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private var txEntity: TransactionEntity? = null
-    private val fourByteDirectory: FourByteDirectory by lazyKodein.instance()
+    private val fourByteDirectory: FourByteDirectory by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -162,8 +162,7 @@ class ViewTransactionActivity : AppCompatActivity() {
 
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?)
-            = super.onCreateOptionsMenu(menu.apply { menuInflater.inflate(R.menu.menu_transaction, menu) })
+    override fun onCreateOptionsMenu(menu: Menu?) = super.onCreateOptionsMenu(menu.apply { menuInflater.inflate(R.menu.menu_transaction, menu) })
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
         menu?.findItem(R.id.menu_delete)?.isVisible = txEntity?.transactionState?.isPending ?: false

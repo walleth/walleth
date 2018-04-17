@@ -2,9 +2,6 @@ package org.walleth.core
 
 import android.arch.lifecycle.*
 import android.content.Intent
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import okhttp3.Call
@@ -14,6 +11,9 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.letIf
 import org.ligi.tracedroid.logging.Log
 import org.walleth.BuildConfig
@@ -32,15 +32,14 @@ import java.io.IOException
 import java.math.BigInteger
 import java.security.cert.CertPathValidatorException
 
-class EtherScanService : LifecycleService() {
+class EtherScanService : LifecycleService(), KodeinAware {
 
-    private val lazyKodein = LazyKodein(appKodein)
-
-    private val okHttpClient: OkHttpClient by lazyKodein.instance()
-    private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
-    private val tokenProvider: CurrentTokenProvider by lazyKodein.instance()
-    private val appDatabase: AppDatabase by lazyKodein.instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
+    override val kodein by closestKodein()
+    private val okHttpClient: OkHttpClient by instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val tokenProvider: CurrentTokenProvider by instance()
+    private val appDatabase: AppDatabase by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
 
     companion object {
         private var timing = 7_000 // in MilliSeconds

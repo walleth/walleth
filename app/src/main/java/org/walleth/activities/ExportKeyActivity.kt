@@ -17,14 +17,14 @@ import android.view.Menu
 import android.view.MenuItem
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_show_qr.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import net.glxn.qrgen.android.QRCode
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
@@ -34,10 +34,11 @@ import org.walleth.data.networks.CurrentAddressProvider
 import java.io.ByteArrayOutputStream
 
 
-class ExportKeyActivity : AppCompatActivity() {
+class ExportKeyActivity : AppCompatActivity(), KodeinAware {
 
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    val keyStore: WallethKeyStore by instance()
+    val currentAddressProvider: CurrentAddressProvider by instance()
 
     private lateinit var keyJSON: String
 

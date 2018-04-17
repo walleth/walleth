@@ -3,9 +3,9 @@ package org.walleth.infrastructure
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.singleton
+import org.kodein.di.Kodein
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.singleton
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock

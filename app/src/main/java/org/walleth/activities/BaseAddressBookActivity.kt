@@ -12,13 +12,13 @@ import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list_addresses.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
@@ -28,12 +28,13 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
 
-abstract class BaseAddressBookActivity : AppCompatActivity() {
+abstract class BaseAddressBookActivity : AppCompatActivity(), KodeinAware {
 
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val settings: Settings by LazyKodein(appKodein).instance()
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    val keyStore: WallethKeyStore by instance()
+    val appDatabase: AppDatabase by instance()
+    val settings: Settings by instance()
+    val currentAddressProvider: CurrentAddressProvider by instance()
 
     val adapter by lazy {
         AddressAdapter(keyStore, onClickAction = { onAddressClick(it) }, appDatabase = appDatabase).apply {

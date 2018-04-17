@@ -4,9 +4,6 @@ import android.app.Activity
 import android.content.DialogInterface.OnClickListener
 import android.content.Intent
 import android.os.Bundle
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import com.google.protobuf.ByteString
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
@@ -16,6 +13,9 @@ import kotlinx.coroutines.experimental.async
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.ligi.kroom.inTransaction
 import org.walleth.R
@@ -35,10 +35,11 @@ fun Activity.startTrezorActivity(transactionParcel: TransactionParcel) {
     startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
 }
 
-class TrezorSignTransactionActivity : BaseTrezorActivity() {
+class TrezorSignTransactionActivity : BaseTrezorActivity(), KodeinAware {
 
+    override val kodein by closestKodein()
     private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
-    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
 
     override fun handleAddress(address: Address) {
         if (address != transaction.transaction.from) {

@@ -1,7 +1,7 @@
 buildscript {
     ext {
         kotlin_version = '1.2.31'
-        support_version = '26.1.0'
+        support_version = '27.1.1'
         firebase_version = '11.6.2'
         kethereum_version = '0.47'
         multidex_version = '1.0.3'
@@ -13,14 +13,15 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'de.mobilej.unmock:UnMockPlugin:0.6.4'
-        classpath 'com.stanfy.spoon:spoon-gradle-plugin:1.2.2'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.17.0'
+        classpath "com.jaredsburrows:gradle-spoon-plugin:1.4.0"
         classpath files('app/libs/gradle-witness.jar')
         classpath 'com.google.gms:google-services:3.1.1'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.2'

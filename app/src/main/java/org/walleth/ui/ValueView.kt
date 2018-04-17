@@ -4,10 +4,10 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.value.view.*
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -20,10 +20,11 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
 
-open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
+open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs), KodeinAware {
 
-    private val exchangeRateProvider: ExchangeRateProvider by LazyKodein(appKodein).instance()
-    private val settings: Settings by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    private val exchangeRateProvider: ExchangeRateProvider by instance()
+    private val settings: Settings by instance()
 
     open val layoutRes = R.layout.value
 

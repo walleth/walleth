@@ -12,9 +12,6 @@ import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.experimental.CommonPool
@@ -32,6 +29,9 @@ import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.methodsignatures.toHexSignature
 import org.kethereum.model.Address
 import org.kethereum.model.createTransactionWithDefaults
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
@@ -73,17 +73,18 @@ const val TO_ADDRESS_REQUEST_CODE = 1
 const val FROM_ADDRESS_REQUEST_CODE = 2
 const val TOKEN_REQUEST_CODE = 3
 
-class CreateTransactionActivity : AppCompatActivity() {
+class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
 
     private var currentERC681: ERC681? = null
     private var currentAmount: BigInteger? = null
     private var currentToAddress: Address? = null
 
-    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
-    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    private val settings: Settings by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val currentTokenProvider: CurrentTokenProvider by instance()
+    private val appDatabase: AppDatabase by instance()
+    private val settings: Settings by instance()
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
     private var currentBalanceLive: LiveData<Balance>? = null
@@ -459,18 +460,18 @@ class CreateTransactionActivity : AppCompatActivity() {
         }
 
 
-        val indexOfFirstInvalidParam = functionToByteList.indexOfFirst { it.first == null }
+        val indexOfFirstInvalidParam: Int = functionToByteList.indexOfFirst { it.first == null }
 
         if (indexOfFirstInvalidParam >= 0) {
             val type = localERC681.functionParams[indexOfFirstInvalidParam].first
-            alert(getString(R.string.warning_invalid_param, indexOfFirstInvalidParam, type))
+            alert(getString(R.string.warning_invalid_param, indexOfFirstInvalidParam.toString(), type))
             return
         }
 
         val indexOfFirstDynamicType = functionToByteList.indexOfFirst { it.first?.isDynamic() == true }
         if (indexOfFirstDynamicType >= 0) {
             val type = localERC681.functionParams[indexOfFirstDynamicType].first
-            alert(getString(R.string.warning_dynamic_length_params_unsupported, indexOfFirstDynamicType, type))
+            alert(getString(R.string.warning_dynamic_length_params_unsupported, indexOfFirstDynamicType.toString(), type))
             return
         }
 
@@ -479,14 +480,14 @@ class CreateTransactionActivity : AppCompatActivity() {
             val parameter = localERC681.functionParams[indexOfFirsInvalidParameter]
             val type = parameter.first
             val value = parameter.second
-            alert(getString(R.string.warning_problem_with_parameter, indexOfFirsInvalidParameter, type, value))
+            alert(getString(R.string.warning_problem_with_parameter, indexOfFirsInvalidParameter.toString(), type, value))
             return
         }
     }
 
     private fun showWarningOnWrongNetwork(erc681: ERC681): Boolean {
         if (erc681.chainId != null && erc681.chainId != networkDefinitionProvider.getCurrent().chain.id) {
-            val chainForTransaction = getNetworkDefinitionByChainID(erc681.chainId!!)?.getNetworkName() ?: erc681.chainId
+            val chainForTransaction = getNetworkDefinitionByChainID(erc681.chainId!!)?.getNetworkName() ?: erc681.chainId.toString()
             val currentNetworkName = networkDefinitionProvider.getCurrent().getNetworkName()
             val message = getString(R.string.please_switch_network, currentNetworkName, chainForTransaction)
             alert(title = getString(R.string.wrong_network), message = message)

@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_account_edit.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
@@ -20,12 +20,13 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.util.copyToClipboard
 
-class EditAccountActivity : AppCompatActivity() {
+class EditAccountActivity : AppCompatActivity(), KodeinAware {
 
-    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    private lateinit var currentAddressInfo : AddressBookEntry
+    override val kodein by closestKodein()
+    private val appDatabase: AppDatabase by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private lateinit var currentAddressInfo: AddressBookEntry
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,8 +66,7 @@ class EditAccountActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?)
-            = super.onCreateOptionsMenu(menu.apply { menuInflater.inflate(R.menu.menu_edit, menu) })
+    override fun onCreateOptionsMenu(menu: Menu?) = super.onCreateOptionsMenu(menu.apply { menuInflater.inflate(R.menu.menu_edit, menu) })
 
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
