@@ -15,9 +15,6 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.INVISIBLE
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.value.*
@@ -26,6 +23,9 @@ import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.toERC681
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -49,18 +49,17 @@ import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
 
-class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener, KodeinAware {
 
-    private val lazyKodein = LazyKodein(appKodein)
-
+    override val kodein by closestKodein()
     private val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
-    private val syncProgressProvider: SyncProgressProvider by lazyKodein.instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by lazyKodein.instance()
-    private val appDatabase: AppDatabase by lazyKodein.instance()
-    private val settings: Settings by lazyKodein.instance()
-    private val currentTokenProvider: CurrentTokenProvider by lazyKodein.instance()
-    private val currentAddressProvider: CurrentAddressProvider by lazyKodein.instance()
+    private val syncProgressProvider: SyncProgressProvider by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val appDatabase: AppDatabase by instance()
+    private val settings: Settings by instance()
+    private val currentTokenProvider: CurrentTokenProvider by instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
     private var lastNightMode: Int? = null
     private var balanceLiveData: LiveData<Balance>? = null
     private var etherLiveData: LiveData<Balance>? = null

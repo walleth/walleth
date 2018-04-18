@@ -24,7 +24,7 @@ class FourByteDirectoryImpl(private val okHttpClient: OkHttpClient, context: Con
         return try {
             signatureStore.get(hex).map {
                 ContractFunction(
-                        textSignature = it,
+                        textSignature = it.signature,
                         hexSignature = hex
                 )
             }

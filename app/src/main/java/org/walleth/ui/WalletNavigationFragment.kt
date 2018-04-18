@@ -6,11 +6,11 @@ import android.support.design.widget.NavigationView
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.view.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.activities.*
@@ -19,19 +19,25 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 
-class WalletNavigationFragment : Fragment() {
+class WalletNavigationFragment : Fragment(), KodeinAware {
+
+    override val kodein by closestKodein()
 
     private val navigationView by lazy {
         NavigationView(activity).apply {
             inflateMenu(R.menu.navigation_drawer)
             inflateHeaderView(R.layout.navigation_drawer_header)
+            getHeaderView(0).edit_account_image.setOnClickListener {
+                context.startActivityFromClass(EditAccountActivity::class.java)
+            }
+
         }
     }
 
-    val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
-    val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    val keyStore: WallethKeyStore by instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    val currentAddressProvider: CurrentAddressProvider by instance()
+    val appDatabase: AppDatabase by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,10 +45,8 @@ class WalletNavigationFragment : Fragment() {
         val idToClassMap = mapOf(
                 R.id.menu_switch_network to SwitchNetworkActivity::class,
                 R.id.menu_debug to DebugWallethActivity::class,
-                R.id.menu_edit to EditAccountActivity::class,
-                R.id.menu_save to ExportKeyActivity::class,
+                R.id.menu_keys to KeysActivity::class,
                 R.id.menu_accounts to SwitchAccountActivity::class,
-                R.id.menu_load to ImportActivity::class,
                 R.id.menu_offline_transaction to OfflineTransactionActivity::class,
                 R.id.menu_settings to PreferenceActivity::class
         )
@@ -69,7 +73,6 @@ class WalletNavigationFragment : Fragment() {
                 }
 
             })
-            navigationView.menu.findItem(R.id.menu_save).isVisible = keyStore.hasKeyForForAddress(it)
         })
 
         networkDefinitionProvider.observe(this, Observer {

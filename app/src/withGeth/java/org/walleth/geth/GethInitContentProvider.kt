@@ -10,8 +10,8 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.support.v4.content.ContextCompat
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.walleth.App
 import org.walleth.data.config.Settings
 import org.walleth.geth.services.GethLightEthereumService
@@ -36,9 +36,10 @@ class GethInitContentProvider : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
-        App.postInitCallbacks.add({
-            val settings: Settings = context.appKodein.invoke().instance()
+        val kodein by closestKodein(context)
+        val settings: Settings by kodein.instance()
 
+        App.postInitCallbacks.add({
             ProcessLifecycleOwner.get().lifecycle.addObserver(GethInitAppLifecycleObserver(context, settings))
         })
 

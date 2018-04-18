@@ -12,12 +12,12 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_import_json.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.threeten.bp.LocalDateTime
@@ -45,10 +45,12 @@ fun Context.getKeyImportIntent(key: String, type: KeyType) = Intent(this, Import
 
 private const val READ_REQUEST_CODE = 42
 
-class ImportActivity : AppCompatActivity() {
+class ImportActivity : AppCompatActivity(), KodeinAware {
 
-    private val keyStore: WallethKeyStore by LazyKodein(appKodein).instance()
-    private val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+
+    private val keyStore: WallethKeyStore by instance()
+    private val appDatabase: AppDatabase by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

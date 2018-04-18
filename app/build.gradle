@@ -1,26 +1,25 @@
+def isCI = hasProperty("isCI")
+def includeFirebase = isCI || hasProperty("firebase")
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mobilej.unmock'
-apply plugin: 'spoon'
-apply plugin: 'com.getkeepsafe.dexcount'
 apply plugin: 'org.jetbrains.kotlin.android.extensions'
 
-def includeFirebase = hasProperty("isCI") || hasProperty("firebase")
-
 android {
-    compileSdkVersion 26
-    buildToolsVersion "26.0.2"
+    compileSdkVersion 27
+    buildToolsVersion "27.0.3"
 
     defaultConfig {
         applicationId "org.walleth"
 
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 27
 
-        versionCode 34
-        versionName "0.34"
+        versionCode 35
+        versionName "0.35"
         archivesBaseName = "WALLETH-$versionName"
 
         testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
@@ -115,24 +114,6 @@ android {
 
 }
 
-spoon {
-    debug = true
-    grantAllPermissions = true
-    failIfNoDeviceConnected = true
-}
-
-configurations {
-
-    // http://stackoverflow.com/questions/30578243/why-would-adding-espresso-contrib-cause-an-inflateexception
-    androidTestCompile.exclude group: 'com.android.support', module: 'appcompat-v7'
-    androidTestCompile.exclude group: 'com.android.support', module: 'design'
-    androidTestCompile.exclude group: 'com.android.support', module: 'support-v4'
-    androidTestCompile.exclude group: 'com.android.support', module: 'support-annotations'
-    androidTestCompile.exclude group: 'com.android.support', module: 'preference-v7'
-    androidTestCompile.exclude module: 'recyclerview-v7'
-    androidTestCompile.exclude module: 'kotlin-stdlib'
-}
-
 dependencies {
     compile "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5"
     compile "com.android.support:multidex:$multidex_version"
@@ -151,14 +132,17 @@ dependencies {
     compile "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     compile "com.github.walleth.kethereum:method_signatures:$kethereum_version"
     compile "com.github.walleth.kethereum:rlp:$kethereum_version"
+    compile "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
 
     compile 'com.github.amlcurran.showcaseview:library:5.4.3'
 
     compile 'com.github.ligi:tracedroid:1.4'
-    compile 'com.github.ligi:KAXT:0.19'
+    compile 'com.github.ligi:KAXT:0.20'
     compile 'com.github.ligi:KAXTUI:0.4'
-    compile 'com.github.ligi.trezor-android:trezor-lib:be8134c7c83d52a054ae7c7c116c5ff7e3248962'
 
+    compile ('com.github.trezor.trezor-android:trezor-lib:v2.0.1')  {
+        exclude group: 'com.android.support'
+    }
 
     compile 'com.github.kenglxn.QRGen:android:2.4.0'
     compile 'com.google.zxing:core:3.3.2'
@@ -168,8 +152,8 @@ dependencies {
     compile 'com.jakewharton.threetenabp:threetenabp:1.0.5'
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
 
-    compile 'com.github.salomonbrys.kodein:kodein:4.1.0'
-    compile 'com.github.salomonbrys.kodein:kodein-android:4.1.0'
+    compile "org.kodein.di:kodein-di-generic-jvm:5.0.0"
+    compile "org.kodein.di:kodein-di-framework-android:5.0.0"
 
     compile "com.android.support:appcompat-v7:$support_version"
     compile "com.android.support:design:$support_version"
@@ -177,7 +161,7 @@ dependencies {
     compile "com.android.support:recyclerview-v7:$support_version"
     compile "com.android.support:preference-v14:$support_version"
 
-    compile "com.chibatching.kotpref:kotpref:2.4.0"
+    compile "com.chibatching.kotpref:kotpref:2.5.0"
 
     compile 'com.squareup.moshi:moshi:1.5.0'
     compile 'com.github.ligi:ExtraCompats:0.4'
@@ -185,21 +169,20 @@ dependencies {
 
     compile "android.arch.lifecycle:extensions:$arch_version"
 
-    compile "android.arch.persistence.room:runtime:$arch_version"
-    kapt "android.arch.persistence.room:compiler:$arch_version"
+    compile "android.arch.persistence.room:runtime:$room_version"
+    kapt "android.arch.persistence.room:compiler:$room_version"
 
     kapt "android.arch.lifecycle:compiler:$arch_version"
 
     androidTestCompile "com.google.truth:truth:$truth"
 
-    testCompile "org.mockito:mockito-core:2.8.47"
+    testCompile "org.mockito:mockito-core:2.18.0"
 
-    androidTestCompile "org.mockito:mockito-core:2.8.47"
-    androidTestCompile 'com.linkedin.dexmaker:dexmaker-mockito:2.2.0'
+    androidTestCompile "org.mockito:mockito-core:2.18.0"
+    androidTestCompile 'com.linkedin.dexmaker:dexmaker-mockito:2.16.0'
 
     androidTestCompile 'com.android.support.test.espresso:espresso-contrib:3.0.1'
-    androidTestCompile 'com.android.support.test.espresso:espresso-intents:3.0.1'
-    androidTestCompile 'com.github.ligi:trulesk:0.21'
+    androidTestCompile 'com.github.ligi:trulesk:0.23'
 
     testCompile 'junit:junit:4.12'
     testCompile "com.google.truth:truth:$truth"
@@ -215,21 +198,23 @@ dependencies {
     }
 }
 
-if (hasProperty("singleFlavor")) {
+if (hasProperty("isCI")) {
 
+    apply plugin: 'composer'
+    composer {
+        configs {
+            withGethWithFirebaseForPlayDebug {
+                apkInstallTimeout 600
+            }
+        }
+    }
     apply plugin: 'witness'
 
     dependencyVerification {
         verify = [
-                'com.github.ligi:KAXTUI:7bd3745979d8db21010846303339e2debec5ab77c5c9323f136d70c093c1017a',
-                'com.github.salomonbrys.kodein:kodein:6727cb851a73a82fd5ded29877739749f7f89c26a23ababaf9a06d7cf9aa7bee',
-                'com.github.salomonbrys.kodein:kodein-android:98b1998e2477eb715720ddf7f016a1b828ceb87c1f11ce72dad3d518629a0330',
-                'com.github.salomonbrys.kodein:kodein-core:4876960b936d6becb00e7b5c614ba9f4be2b7d5d22a8a2433583d87373c342f8',
-
                 'com.github.ligi:tracedroid:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
                 'com.jakewharton:process-phoenix:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
                 'com.jakewharton.threetenabp:threetenabp:44b81823de861287f666c92a61c9e55259350f5bff588fec7819027a0291ddbf',
-
                 'com.squareup.moshi:moshi:91e9c49dc282f1e22570ad3cff7178b00a22180749c8427083ec9be2322c064e',
                 'com.github.ligi:ExtraCompats:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
                 'org.jetbrains:annotations:ace2a10dc8e2d5fd34925ecac03e4988b2c0f851650c94b8cef49ba1bd111478',

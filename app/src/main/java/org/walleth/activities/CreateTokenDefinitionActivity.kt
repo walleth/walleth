@@ -6,14 +6,14 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_create_token.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.model.Address
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
@@ -22,10 +22,12 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.Token
 
 
-class CreateTokenDefinitionActivity : AppCompatActivity() {
+class CreateTokenDefinitionActivity : AppCompatActivity(), KodeinAware {
 
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+
+    val appDatabase: AppDatabase by instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

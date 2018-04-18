@@ -15,8 +15,7 @@
         <android.support.v7.widget.AppCompatImageView
                 app:srcCompat="@drawable/ic_social_person_outline"
                 android:layout_width="64dp"
-                android:layout_height="64dp"
-        />
+                android:layout_height="64dp"        />
 
         <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/accountName"
@@ -26,8 +25,15 @@
                 android:textColor="@android:color/black"
                 android:lines="1"
                 android:gravity="center"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
+                android:layout_weight="1"
                 android:layout_height="match_parent"/>
+
+        <android.support.v7.widget.AppCompatImageView
+                app:srcCompat="@drawable/ic_editor_mode_edit"
+                android:id="@+id/edit_account_image"
+                style="@style/button"
+                android:layout_gravity="center"/>
 
     </LinearLayout>
 
@@ -40,4 +46,6 @@
             android:ellipsize="middle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+
 </LinearLayout>

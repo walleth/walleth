@@ -4,7 +4,6 @@
 
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.READ_LOGS"/>
 
     <uses-feature android:name="android.hardware.camera"
                   android:required="false"/>
@@ -36,6 +35,7 @@
         <activity android:name="org.walleth.activities.trezor.TrezorGetAddressActivity"/>
         <activity android:name="org.walleth.activities.ImportActivity"/>
         <activity android:name="org.walleth.activities.ExportKeyActivity"/>
+        <activity android:name="org.walleth.activities.KeysActivity"/>
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
         <activity android:name="org.walleth.activities.CreateAccountActivity"/>
         <activity android:name="org.walleth.activities.SelectReferenceActivity"/>

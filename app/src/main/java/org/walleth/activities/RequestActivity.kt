@@ -6,12 +6,12 @@ import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_request.*
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
@@ -25,12 +25,13 @@ import org.walleth.functions.extractValueForToken
 import org.walleth.functions.setQRCode
 import org.walleth.util.copyToClipboard
 
-class RequestActivity : AppCompatActivity() {
+class RequestActivity : AppCompatActivity(), KodeinAware {
 
+    override val kodein by closestKodein()
     private lateinit var currentERC67String: String
-    private val currentAddressProvider: CurrentAddressProvider by LazyKodein(appKodein).instance()
-    private val currentTokenProvider: CurrentTokenProvider by LazyKodein(appKodein).instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val currentTokenProvider: CurrentTokenProvider by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,10 +86,10 @@ class RequestActivity : AppCompatActivity() {
             val relevantAddress = currentToken.address.hex
 
             val userAddress = currentAddressProvider.getCurrent().hex
-            val functionParams = mutableMapOf("address" to userAddress)
+            val functionParams = mutableListOf("address" to userAddress)
             if (add_value_checkbox.isChecked) {
                 try {
-                    functionParams.put("uint256", value_input_edittext.text.toString().extractValueForToken(currentToken).toString())
+                    functionParams.add("uint256" to value_input_edittext.text.toString().extractValueForToken(currentToken).toString())
                 } catch (e: NumberFormatException) {
                 }
             }

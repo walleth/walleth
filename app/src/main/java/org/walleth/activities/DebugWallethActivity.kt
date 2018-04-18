@@ -8,20 +8,19 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_logs.*
 import org.ethereum.geth.Geth
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.walleth.R
 import org.walleth.data.config.Settings
 import java.io.IOException
 
-class DebugWallethActivity : AppCompatActivity() {
+class DebugWallethActivity : AppCompatActivity(), KodeinAware {
 
-
-    private val lazyKodein = LazyKodein(appKodein)
-    private val settings: Settings by lazyKodein.instance()
+    override val kodein by closestKodein()
+    private val settings: Settings by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,7 +31,7 @@ class DebugWallethActivity : AppCompatActivity() {
             displayLog()
         }
 
-        val verbosityList = listOf( "silent",  "error", "warn", "info", "debug", "detail","max")
+        val verbosityList = listOf("silent", "error", "warn", "info", "debug", "detail", "max")
         geth_verbosity_spinner.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, verbosityList)
         geth_verbosity_spinner.setSelection(settings.currentGoVerbosity)
         geth_verbosity_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {

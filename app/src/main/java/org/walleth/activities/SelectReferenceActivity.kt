@@ -7,20 +7,21 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.MenuItem
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.dialog_add_reference.view.*
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.ui.FiatListAdapter
 
-class SelectReferenceActivity : AppCompatActivity() {
+class SelectReferenceActivity : AppCompatActivity(), KodeinAware {
 
-    private val exchangeRateProvider: ExchangeRateProvider by LazyKodein(appKodein).instance()
-    private val settings: Settings by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    private val exchangeRateProvider: ExchangeRateProvider by instance()
+    private val settings: Settings by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

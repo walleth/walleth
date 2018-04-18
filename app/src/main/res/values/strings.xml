@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WALLΞTH</string>
+    <string name="app_name">WallΞTH</string>
     <string name="welcome">Welcome,\n\n there was no account for you yet - so one was created. Note - this one is not secured with any password for easy use - so only use it as a hot walleth for a few beverages. Also be aware that this alpha operates currently on the rinkeby network only.</string>
     <string name="request_transaction_subtitle">Request Transaction</string>
     <string name="edit_account_subtitle">Edit Account</string>
@@ -8,7 +8,7 @@
     <string name="transaction_subtitle">Transaction details</string>
 
     <string name="scan_instructions">Center a QR code inside the frame.</string>
-    <string name="no_camera_permission">WALLΞTH does not have permission to access the camera.</string>
+    <string name="no_camera_permission">WallΞTH does not have permission to access the camera.</string>
 
     <string name="request_subtitle">Request</string>
     <string name="drawer_open">open</string>
@@ -32,7 +32,7 @@ Be aware that this is an alpha and there will be bugs. There are also some known
 <br/><br/>
 The project was started by <a href="http://ligi.de">ligi</a> as this is not only needed as a wallet - but also as a building block for the <a href="http://espass.it">espass</a> project
 <br/><br/>
-The project is libre software (aka FOSS/free/open source) - you can find code and open issues on the <a href="https://github.com/walleth">WALLΞTH GitHub Organisation</a>
+The project is libre software (aka FOSS/free/open source) - you can find code and open issues on the <a href="https://github.com/walleth">WallΞTH GitHub Organisation</a>
 <br/><br/>
 Please have a great time with this app and we are happy about feedback, donations, pull-requests ..-)
 <br/><br/>
@@ -91,7 +91,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="copy">Copy</string>
     <string name="share">Share</string>
     <string name="print">Print</string>
-    <string name="paper_wallet_title">WALLΞTH Paper Ethereum Wallet</string>
+    <string name="paper_wallet_title">WallΞTH Paper Ethereum Wallet</string>
     <string name="paper_wallet_text">This is the private key for your Ethereum account - store it safely and remember the corresponding password.</string>
     <string name="imported_key_alert_message">Imported %s</string>
     <string name="imported_key_default_entry_name">Imported</string>
@@ -107,6 +107,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="nav_drawer_switch_network">Switch network</string>
     <string name="nav_drawer_edit_account">Edit account</string>
     <string name="nav_drawer_accounts">Accounts</string>
+    <string name="nav_drawer_keys">Keys</string>
     <string name="nav_drawer_export_key">Export key</string>
     <string name="nav_drawer_import_key">Import key</string>
     <string name="nav_drawer_settings">Settings</string>
@@ -148,11 +149,11 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="trezor_account">%d.Account</string>
     <string name="trezor_select_address">Select Address</string>
     <string name="trezor_no_valid_input">No valid input</string>
-    <string name="geth_service_notification_title">WALLETH Geth</string>
+    <string name="geth_service_notification_title">WallETH Geth</string>
     <string name="geth_service_notification_content_text">light client running on %1$s</string>
     <string name="geth_service_notification_channel_description">View and Stop Geth Service</string>
     <string name="no_key_for_sending_account">No key for sending account</string>
-    <string name="create_transation_to_label">To:</string>
+    <string name="create_transaction_to_label">To:</string>
     <string name="create_tx_please_specify_amount">Please specify the amount</string>
     <string name="create_tx_show_advanced_options">Show Advanced Options</string>
     <string name="create_tx_gas_price">Gas Price</string>
@@ -178,19 +179,25 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="main_activity_no_data">No data</string>
     <string name="main_activity_block">Block %d</string>
     <string name="starred_only">Starred only</string>
+    <string name="transact">Transact</string>
+    <string name="transact_disabled">Transact disabled</string>
     <string name="scan">Scan</string>
     <string name="scan_disabled">Scan disabled</string>
     <string name="network_subtitle">Networks</string>
     <string name="network_details">network details</string>
     <string name="network_stats">network stats</string>
     <string name="wrong_network">Wrong Network</string>
+    <string name="warning_dynamic_length_params_unsupported">Dynamic length parameters are currently not supported (parameter %1$s - %2$s)</string>
+    <string name="warning_problem_with_parameter">Problem with parameter (parameter %1$s - %2$s = %3$s)</string>
+    <string name="warning_invalid_param">Invalid parameter detected (parameter %1$s - %2$s)</string>
     <string name="please_switch_network">Please switch network from %1$s to %2$s</string>
     <string name="info_activity_subtitle">Version %s</string>
     <string name="trezor_please_enter_your_pin">Please enter your PIN</string>
     <string name="warning_not_a_valid_address">not a valid address: %s</string>
     <string name="title_invalid_address_alert">invalid_address</string>
     <string name="please_connect_your_trezor">Please connect your TREZOR</string>
-    <string name="create_transation_from_label">From:</string>
+    <string name="create_transaction_from_label">From:</string>
+    <string name="create_transaction_function_label">Function:</string>
     <string name="unknown_token">Unknown Token</string>
     <string name="add_token_manually">Please add token with address %1$s manually.</string>
     <string name="no_token_address">Token address is missing!</string>

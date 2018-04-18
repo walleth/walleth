@@ -9,14 +9,17 @@ import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.support.v7.app.AppCompatDelegate
 import com.chibatching.kotpref.Kotpref
-import com.github.salomonbrys.kodein.*
-import com.github.salomonbrys.kodein.android.appKodein
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import okhttp3.OkHttpClient
 import org.kethereum.model.Address
+import org.kodein.di.Kodein
+import org.kodein.di.KodeinAware
+import org.kodein.di.generic.bind
+import org.kodein.di.generic.instance
+import org.kodein.di.generic.singleton
 import org.ligi.tracedroid.TraceDroid
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.contracts.FourByteDirectoryImpl
@@ -24,6 +27,7 @@ import org.walleth.core.EtherScanService
 import org.walleth.core.TransactionNotificationService
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addressbook.allPrePopulationAddresses
 import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
@@ -42,7 +46,7 @@ import javax.net.SocketFactory
 
 open class App : MultiDexApplication(), KodeinAware {
 
-    override val kodein by Kodein.lazy {
+    override val kodein = Kodein.lazy {
         bind<OkHttpClient>() with singleton {
             val socketFactory = object : DelegatingSocketFactory(SocketFactory.getDefault()) {
                 override fun configureSocket(socket: Socket): Socket {
@@ -60,8 +64,8 @@ open class App : MultiDexApplication(), KodeinAware {
     }
 
     private val gethBackedWallethKeyStore by lazy { GethBackedWallethKeyStore(this) }
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val settings: Settings by LazyKodein(appKodein).instance()
+    val appDatabase: AppDatabase by instance()
+    val settings: Settings by instance()
 
     open fun createKodein(): Kodein.Module {
 
@@ -107,7 +111,7 @@ open class App : MultiDexApplication(), KodeinAware {
         TraceDroid.init(this)
         AndroidThreeTen.init(this)
 
-        applyNightMode(kodein.instance())
+        applyNightMode(settings)
         executeCodeWeWillIgnoreInTests()
         initTokens(settings, assets, appDatabase)
         if (settings.addressInitVersion < 1) {
@@ -125,26 +129,7 @@ open class App : MultiDexApplication(), KodeinAware {
                             trezorDerivationPath = null
                     ))
                 }
-                appDatabase.addressBook.upsert(listOf(AddressBookEntry(
-                        name = "Michael Cook",
-                        address = Address("0xbE27686a93c54Af2f55f16e8dE9E6Dc5dccE915e"),
-                        note = "Icon designer - please tip him well if you want things to look nice",
-                        isNotificationWanted = false,
-                        trezorDerivationPath = null
-                ), AddressBookEntry(
-                        name = "LIGI",
-                        address = Address("0x381e247bef0ebc21b6611786c665dd5514dcc31f"),
-                        note = "Developer & Ideator - send some ETH if you like this project and want it to continue",
-                        isNotificationWanted = false,
-                        trezorDerivationPath = null
-
-                ), AddressBookEntry(
-                        name = "Faucet",
-                        address = Address("0x31b98d14007bdee637298086988a0bbd31184523"),
-                        note = "The source of some rinkeby ether",
-                        isNotificationWanted = false,
-                        trezorDerivationPath = null
-                )))
+                appDatabase.addressBook.upsert(allPrePopulationAddresses)
             }
         }
         postInitCallbacks.forEach { it.invoke() }

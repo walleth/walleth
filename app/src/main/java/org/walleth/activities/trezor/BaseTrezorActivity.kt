@@ -10,9 +10,6 @@ import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.TrezorException
@@ -22,8 +19,13 @@ import com.satoshilabs.trezor.lib.protobuf.TrezorType
 import kotlinx.android.synthetic.main.activity_trezor.*
 import kotlinx.android.synthetic.main.password_input.view.*
 import kotlinx.android.synthetic.main.pinput.view.*
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.inflate
 import org.ligi.kaxt.setVisibility
@@ -35,15 +37,16 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.khex.toHexString
 
 
-abstract class BaseTrezorActivity : AppCompatActivity() {
+abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
 
     abstract fun handleExtraMessage(res: Message?)
     abstract fun handleAddress(address: Address)
     abstract fun getTaskSpecificMessage(): GeneratedMessageV3?
 
     protected var currentBIP44: BIP44? = null
-    protected val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    protected val networkDefinitionProvider: NetworkDefinitionProvider by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+    protected val appDatabase: AppDatabase by instance()
+    protected val networkDefinitionProvider: NetworkDefinitionProvider by instance()
 
     protected val handler = Handler()
     private val manager by lazy { TrezorManager(this) }
@@ -89,8 +92,11 @@ abstract class BaseTrezorActivity : AppCompatActivity() {
                 trezor_status_text.visibility = View.GONE
 
                 try {
-                    val trezorResult = manager.sendMessage(getMessageForState())
-                    trezorResult.handleTrezorResult()
+                    async(UI) {
+                        val trezorResult = async { manager.sendMessage(getMessageForState()) }.await()
+                        trezorResult.handleTrezorResult()
+                    }
+
                 } catch (trezorException: TrezorException) {
                     // this can happen when the trezor is unplugged - don't really care in this case
                     trezorException.printStackTrace()

@@ -10,24 +10,24 @@ data class TokenTransfer(
         val value: BigInteger)
 
 fun TokenTransfer.toERC681() = ERC681(address = token.address.hex, function = "transfer",
-        functionParams = mapOf("address" to to.hex, "uint256" to value.toString()))
+        functionParams = listOf("address" to to.hex, "uint256" to value.toString()))
 
 fun ERC681.getToAddress(): Address? {
     val address = if (this.function == "transfer") {
-        this.functionParams["address"]
+        this.functionParams.first { it.first == "address" }.second
     } else {
         this.address
     }
-    if (address != null) {
-        return Address(address)
+    return if (address != null) {
+        Address(address)
     } else {
-        return null
+        null
     }
 }
 
 fun ERC681.isTokenTransfer() = this.function == "transfer"
 fun ERC681.getValueForTokenTransfer(): BigInteger {
-    val value = this.functionParams["uint256"]
+    val value = functionParams.first { it.first == "uint256" }.second
     if (value != null) {
         try {
             return BigInteger(value)

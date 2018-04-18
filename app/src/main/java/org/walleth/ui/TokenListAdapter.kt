@@ -39,7 +39,7 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
             !starredOny || it.starred
         }.filter {
             it.symbol.contains(search, true) || it.name.contains(search, true)
-        }.sortedBy { it.order }
+        }.sortedByDescending { it.order }
 
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = sortedList.size
