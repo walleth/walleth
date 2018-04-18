@@ -201,7 +201,13 @@ dependencies {
 if (hasProperty("isCI")) {
 
     apply plugin: 'composer'
-
+    composer {
+        configs {
+            withGethWithFirebaseForPlayDebug {
+                apkInstallTimeout 600
+            }
+        }
+    }
     apply plugin: 'witness'
 
     dependencyVerification {
