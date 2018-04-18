@@ -10,9 +10,6 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Toast
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.android.synthetic.main.activity_addresses_transfer.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -20,6 +17,9 @@ import kotlinx.coroutines.experimental.async
 import org.json.JSONArray
 import org.json.JSONObject
 import org.kethereum.model.Address
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.AppDatabase
@@ -45,10 +45,12 @@ fun Context.getImportAccountsIntent()
 }
 
 @TargetApi(Build.VERSION_CODES.KITKAT) // for devices with document providers only
-class TransferAccountsActivity : AppCompatActivity() {
+class TransferAccountsActivity : AppCompatActivity(), KodeinAware {
 
-    val appDatabase: AppDatabase by LazyKodein(appKodein).instance()
-    val settings: Settings by LazyKodein(appKodein).instance()
+    override val kodein by closestKodein()
+
+    val appDatabase: AppDatabase by instance()
+    val settings: Settings by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
