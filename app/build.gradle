@@ -203,8 +203,8 @@ if (hasProperty("isCI")) {
     apply plugin: 'composer'
     composer {
         configs {
-            WithGethWithFirebaseForPlayDebug {
-                apkInstallTimeout 900
+            withGethWithFirebaseForPlayDebug {
+                apkInstallTimeout 600
             }
         }
     }
