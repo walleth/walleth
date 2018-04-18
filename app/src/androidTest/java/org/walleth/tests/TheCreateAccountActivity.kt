@@ -89,9 +89,9 @@ class TheCreateAccountActivity {
     @Test
     fun savesValidAddress() {
 
-        onView(withId(R.id.hexInput)).perform(scrollTo(), click(), typeText("0xfdf1210fc262c73d0436236a0e07be419babbbc4"))
-        onView(withId(R.id.nameInput)).perform(scrollTo(), click(), typeText("nameProbe"))
-        onView(withId(R.id.noteInput)).perform(scrollTo(), click(), typeText("noteProbe"))
+        onView(withId(R.id.hexInput)).perform(scrollTo(), click(), typeText("0xfdf1210fc262c73d0436236a0e07be419babbbc4"), closeSoftKeyboard())
+        onView(withId(R.id.nameInput)).perform(scrollTo(), click(), typeText("nameProbe"), closeSoftKeyboard())
+        onView(withId(R.id.noteInput)).perform(scrollTo(), click(), typeText("noteProbe"), closeSoftKeyboard())
 
 
         rule.screenShot("create")
