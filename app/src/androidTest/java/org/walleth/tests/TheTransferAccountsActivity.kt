@@ -46,7 +46,7 @@ class TheTransferAccountsActivity {
 
         assertThat(addressesFile.exists()).isTrue()
 
-        // import
+        /* import
         TestApp.testDatabase.addressBook.deleteAll()
         InstrumentationRegistry.getTargetContext().startActivity(Intent(InstrumentationRegistry.getTargetContext(), TransferAccountsActivity::class.java))
 
@@ -54,6 +54,7 @@ class TheTransferAccountsActivity {
 
         assertThat(TestApp.testDatabase.addressBook.all().size).isEqualTo(addressCount)
         assertThat(TestApp.testDatabase.addressBook.byAddress(address)!!.name).isEqualTo(accountName)
+        */
     }
 
 }
