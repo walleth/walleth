@@ -7,6 +7,7 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mobilej.unmock'
 apply plugin: 'org.jetbrains.kotlin.android.extensions'
+apply plugin: 'com.google.gms.oss.licenses.plugin'
 
 android {
     compileSdkVersion 27
@@ -143,6 +144,8 @@ dependencies {
     compile ('com.github.trezor.trezor-android:trezor-lib:v2.0.1')  {
         exclude group: 'com.android.support'
     }
+
+    implementation 'com.google.android.gms:play-services-oss-licenses:15.0.0'
 
     compile 'com.github.kenglxn.QRGen:android:2.4.0'
     compile 'com.google.zxing:core:3.3.2'

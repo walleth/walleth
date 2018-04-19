@@ -14,30 +14,26 @@
     <string name="drawer_open">open</string>
     <string name="drawer_close">close</string>
     <string name="info_text"><![CDATA[
-This is a native Android <a href="http://ethereum.org">Ethereum</a> light client wallet.
+This is a native Android <a href="http://ethereum.org">Ethereum</a> wallet.
 <br/><br/>
-It uses the in process node as ethereum light client from the <a href="https://github.com/ethereum/go-ethereum">go-ethereum</a> project.
-<br/><br/>
-Big shout out to <a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/fjl">fjl</a>, <a href="https://github.com/zsfelfoldi">zsfelfoldi</a> and <a href="https://github.com/obscuren">obscuren</a> here - awesome work!
-<br/><br/>
-This alpha uses the <a href="http://www.rinkeby.io">rinkeby</a> testnet.
-<br/><br/>
-WALLΞTH is trying to be as decentralized as possible. Hence it is using a light client and not centralized pre-configured nodes. Unfortunately we cannot be fully decentralized yet.
-For getting the exchange rates for (fiat) references we are querying <a href="https://www.cryptocompare.com">cryptocompare</> and to get transactions we use the great <a href="https://etherscan.io">etherscan.io</a> service. The app will work if these services are down for some reason - but you might miss some features like up to date exchange rates. As soon as it is possible to get these things in a decentralized manner we will try to use it.
+WallΞTH is trying to be as decentralized as possible. Hence it is offering a light. But light clients are still in early development. We cannot be fully decentralized *yet*. For getting the exchange rates for (fiat) references we are querying <a href="https://www.cryptocompare.com">cryptocompare</> and to get transactions we use the great <a href="https://etherscan.io">etherscan.io</a> service. The app should work if these services are down for some reason - but you might miss some features like up to date exchange rates. As soon as it is possible to get these things in a decentralized manner we will try to use it.
 <br/><br/>
 Our wonderful Icon is from <a href="https://cookicons.co">Michael Cook</a>.
 <br/><br/>
-Be aware that this is an alpha and there will be bugs. There are also some known issues like <a href="https://github.com/ethereum/go-ethereum/issues/14367">this one</a>
- and <a href="https://github.com/ethereum/go-ethereum/issues/14340">this one</a>
+The light client comes via the go-ethereum project. Big shout out to <a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/holiman">holiman</a>, <a href="https://github.com/fjl">fjl</a>, <a href="https://github.com/zsfelfoldi">zsfelfoldi</a> and <a href="https://github.com/obscuren">obscuren</a> here - awesome work!
+<br/><br/>
+Be aware that this is an alpha and there will be bugs.
 <br/><br/>
 The project was started by <a href="http://ligi.de">ligi</a> as this is not only needed as a wallet - but also as a building block for the <a href="http://espass.it">espass</a> project
 <br/><br/>
 The project is libre software (aka FOSS/free/open source) - you can find code and open issues on the <a href="https://github.com/walleth">WallΞTH GitHub Organisation</a>
 <br/><br/>
+Find the <a href="org.walleth.licenses://intentjump"> opensource licenses here.</a>
+<br/><br/>
 Please have a great time with this app and we are happy about feedback, donations, pull-requests ..-)
 <br/><br/>
 The ideal place for feedback is our sub-reddit <a href="https://www.reddit.com/r/walleth">https://www.reddit.com/r/walleth</a>
-You can find the source <a href="https://github.com/walleth">on github</a>
+You can find the source <a href="https://github.com/walleth">on github</a> and more information on <a href="http://walleth.org">the Blog.</a>
 ]]></string>
     <string name="qr_code">QR-Code</string>
     <string name="text_extract_funds">You can use this QR-Code to request a transaction:</string>
@@ -142,7 +138,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="create_tx_error_invalid_erc67_title">Invalid ERC67</string>
     <string name="create_tx_error_invalid_address">%s is not a valid Ethereum-Address</string>
     <string name="default_account_name">Default Account</string>
-    <string name="new_address_note">This Account was created for you when WALLΞTH started for the first time</string>
+    <string name="new_address_note">This Account was created for you when WallΞTH started for the first time</string>
     <string name="request_funds_add_value">Add Value</string>
     <string name="request_funds_value_hint">Value</string>
     <string name="trezor_custom_derivation_path">Custom</string>
