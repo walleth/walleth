@@ -68,6 +68,15 @@
             <meta-data android:name="android.app.shortcuts"
                        android:resource="@xml/shortcuts" />
         </activity>
+
+        <activity
+                android:name="com.google.android.gms.oss.licenses.OssLicensesMenuActivity">
+            <intent-filter>
+                <category android:name="android.intent.category.DEFAULT" />
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="org.walleth.licenses" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
