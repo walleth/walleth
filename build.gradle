@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        kotlin_version = '1.2.31'
+        kotlin_version = '1.2.40'
         support_version = '27.1.1'
         firebase_version = '15.0.0'
         kethereum_version = '0.47'
