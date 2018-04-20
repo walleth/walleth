@@ -19,7 +19,7 @@ fun getEthTokenForChain(networkDefinition: NetworkDefinition) = Token(
         order = 0
 )
 
-@Entity(tableName = "tokens", primaryKeys = arrayOf("address", "chain"))
+@Entity(tableName = "tokens", primaryKeys = ["address", "chain"])
 data class Token(
         val name: String,
         val symbol: String,
