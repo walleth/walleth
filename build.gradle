@@ -40,5 +40,6 @@ allprojects {
         jcenter()
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         maven { url 'https://jitpack.io' }
+        maven { url 'https://raw.githubusercontent.com/walleth/geth_mvn_repository/master/' }
     }
 }
