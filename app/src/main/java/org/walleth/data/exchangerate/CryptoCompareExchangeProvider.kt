@@ -24,6 +24,7 @@ class CryptoCompareExchangeProvider(context: Context, val okHttpClient: OkHttpCl
             setFromFile()
         } else {
             fiatInfoMap.putAll(mapOf(
+                    "DAI" to FiatInfo("DAI"),
                     "EUR" to FiatInfo("EUR"),
                     "NZD" to FiatInfo("NZD"),
                     "CHF" to FiatInfo("CHF"),
