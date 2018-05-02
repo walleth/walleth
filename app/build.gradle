@@ -94,7 +94,6 @@ android {
 
 
         if ((project.hasProperty("singleFlavor") && (store != 'forPlay'))
-                || ((geth == 'noGeth') && project.hasProperty("isCI"))
                 || ((store == 'forAmazon' || store == 'forPlay') && firebase == 'noFirebase')
                 || (store == 'forFDroid' && firebase != 'noFirebase')) {
             variant.setIgnore(true)
