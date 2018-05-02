@@ -75,6 +75,9 @@
                 <data android:scheme="org.walleth.licenses" />
             </intent-filter>
         </activity>
+
+        <activity android:name="org.walleth.activities.OfflineTransactionActivity"
+                  android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

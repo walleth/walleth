@@ -13,12 +13,12 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.CheckBoxPreference
 import android.support.v7.preference.Preference
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.delay
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.walleth.App
 import org.walleth.R
 import org.walleth.activities.OfflineTransactionActivity

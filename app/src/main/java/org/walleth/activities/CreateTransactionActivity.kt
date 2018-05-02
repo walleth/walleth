@@ -18,6 +18,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.contract.abi.types.convertStringToABIType
+import org.kethereum.eip155.signViaEIP155
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.isEthereumURLString
@@ -43,10 +44,12 @@ import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
 import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
+import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
+import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.networks.getNetworkDefinitionByChainID
@@ -73,7 +76,7 @@ const val TO_ADDRESS_REQUEST_CODE = 1
 const val FROM_ADDRESS_REQUEST_CODE = 2
 const val TOKEN_REQUEST_CODE = 3
 
-class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
+class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
 
     private var currentERC681: ERC681? = null
     private var currentAmount: BigInteger? = null
@@ -83,6 +86,7 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private val currentTokenProvider: CurrentTokenProvider by instance()
+    private val keyStore: WallethKeyStore by instance()
     private val appDatabase: AppDatabase by instance()
     private val settings: Settings by instance()
     private var currentBalance: Balance? = null
@@ -259,7 +263,7 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
             alert(R.string.create_tx_error_address_must_be_specified)
         } else if (currentAmount == null && currentERC681?.function == null) {
             alert(R.string.create_tx_error_amount_must_be_specified)
-        } else if (currentTokenProvider.currentToken.isETH() && currentAmount?:ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
+        } else if (currentTokenProvider.currentToken.isETH() && currentAmount ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (nonce_input.text.isBlank()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
@@ -276,7 +280,7 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
 
     private fun startTransaction(isTrezorTransaction: Boolean) {
         val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                value = currentAmount?:ZERO,
+                value = currentAmount ?: ZERO,
                 to = currentToAddress!!,
                 from = currentAddressProvider.getCurrent()
         ) else createTransactionWithDefaults(
@@ -304,6 +308,11 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
         transaction.nonce = nonce_input.asBigInit()
         transaction.gasPrice = gas_price_input.asBigInit()
         transaction.gasLimit = gas_limit_input.asBigInit()
+
+        val signatureData = keyStore.getKeyForAddress(currentAddressProvider.getCurrent(), DEFAULT_PASSWORD)?.let {
+            transaction.signViaEIP155(it, networkDefinitionProvider.getCurrent().chain)
+        }
+
         transaction.txHash = transaction.encodeRLP().keccak().toHexString()
 
         when {
@@ -311,7 +320,7 @@ class CreateTransactionActivity : AppCompatActivity() , KodeinAware {
             isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
             else -> async(UI) {
                 async(CommonPool) {
-                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = null, transactionState = TransactionState()))
+                    appDatabase.transactions.upsert(transaction.toEntity(signatureData = signatureData, transactionState = TransactionState()))
                 }.await()
                 storeDefaultGasPrice()
             }

@@ -4,9 +4,9 @@ package org.walleth.ui
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.preference.PreferenceFragmentCompat
-import com.github.salomonbrys.kodein.LazyKodein
-import com.github.salomonbrys.kodein.android.appKodein
-import com.github.salomonbrys.kodein.instance
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxt.recreateWhenPossible
 import org.walleth.App
 import org.walleth.R

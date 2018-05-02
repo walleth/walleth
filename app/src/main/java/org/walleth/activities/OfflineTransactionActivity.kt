@@ -10,13 +10,11 @@ import kotlinx.android.synthetic.main.activity_relay.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
-import org.ethereum.geth.BigInt
-import org.ethereum.geth.Geth
 import org.json.JSONObject
-import org.kethereum.eip155.extractChainID
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.*
+import org.kodein.di.Kodein
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -28,41 +26,29 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
-import org.walleth.kethereum.geth.extractSignatureData
-import org.walleth.kethereum.geth.toBigInteger
-import org.walleth.kethereum.geth.toKethereumAddress
 import org.walleth.khex.clean0xPrefix
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
+import org.walleth.util.isSignedTransactionJSON
+import org.walleth.util.isUnsignedTransactionJSON
 import java.math.BigInteger
 
 private const val KEY_CONTENT = "KEY_OFFLINE_TX_CONTENT"
+
+const val FLAVOR_HAS_OFFLINE_TX_OPTION = true
+
+fun Context.startOfflineTransactionFlow(content: String) {
+    startActivity(getOfflineTransactionIntent(content))
+}
 
 fun Context.getOfflineTransactionIntent(content: String) = Intent(this, OfflineTransactionActivity::class.java).apply {
     putExtra(KEY_CONTENT, content)
 }
 
-fun String.isUnsignedTransactionJSON() = try {
-    JSONObject(this).let {
-        it.has("to") && it.has("from") && it.has("chainId") && it.has("nonce") && it.has("value")
-                && it.has("gasLimit") && it.has("gasPrice") && it.has("data") && it.has("nonce")
-    }
-} catch (e: Exception) {
-    false
-}
-
-fun String.isSignedTransactionJSON() = try {
-    JSONObject(this).let {
-        it.has("signedTransactionRLP") && it.has("chainId")
-    }
-} catch (e: Exception) {
-    false
-}
-
-
 class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
 
-    override val kodein by closestKodein()
+    override val kodein: Kodein by closestKodein()
+
     private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private val appDatabase: AppDatabase by instance()
     private val currentAddressProvider: CurrentAddressProvider by instance()
@@ -80,8 +66,10 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
         }
 
         intent.getStringExtra(KEY_CONTENT)?.let {
-            transaction_to_relay_hex.setText(it)
-            execute()
+            if (!it.isEmpty()) {
+                transaction_to_relay_hex.setText(it)
+                execute()
+            }
         }
 
     }
@@ -128,6 +116,8 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
 
         } else if (content.isSignedTransactionJSON()) {
             val json = JSONObject(content)
+/*
+        TODO-GETHOPT
 
             try {
                 val transactionRLP = json.getString("signedTransactionRLP").hexToByteArray()
@@ -157,40 +147,48 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
             } catch (e: Exception) {
                 alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
             }
+                */
         } else {
             executeForRLP()
         }
+
     }
 
     private fun executeForRLP() {
-        try {
-            val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
-            val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
-            val signatureData = gethTransaction.extractSignatureData()
+        /*
 
-            if (signatureData == null) {
-                alert("Found RLP without signature - this is not supported anymore - the transaction source must be in JSON and include the chainID")
-            } else {
-                val extractChainID = signatureData.extractChainID()
-                val chainId = if (extractChainID == null) {
-                    BigInt(networkDefinitionProvider.getCurrent().chain.id)
-                } else {
-                    BigInt(extractChainID.toLong())
-                }
-                val transaction = createTransactionWithDefaults(
-                        value = BigInteger(gethTransaction.value.toString()),
-                        from = gethTransaction.getFrom(chainId).toKethereumAddress(),
-                        to = gethTransaction.to!!.toKethereumAddress(),
-                        chain = ChainDefinition(chainId.toBigInteger().toLong()),
-                        nonce = BigInteger(gethTransaction.nonce.toString()),
-                        creationEpochSecond = System.currentTimeMillis() / 1000,
-                        txHash = gethTransaction.hash.hex
-                )
-                createTransaction(transaction, signatureData)
-            }
-        } catch (e: Exception) {
-            alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
-        }
+        TODO-GETHOPT
+
+      try {
+
+          val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
+          val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
+          val signatureData = gethTransaction.extractSignatureData()
+
+          if (signatureData == null) {
+              alert("Found RLP without signature - this is not supported anymore - the transaction source must be in JSON and include the chainID")
+          } else {
+              val extractChainID = signatureData.extractChainID()
+              val chainId = if (extractChainID == null) {
+                  BigInt(networkDefinitionProvider.getCurrent().chain.id)
+              } else {
+                  BigInt(extractChainID.toLong())
+              }
+              val transaction = createTransactionWithDefaults(
+                      value = BigInteger(gethTransaction.value.toString()),
+                      from = gethTransaction.getFrom(chainId).toKethereumAddress(),
+                      to = gethTransaction.to!!.toKethereumAddress(),
+                      chain = ChainDefinition(chainId.toBigInteger().toLong()),
+                      nonce = BigInteger(gethTransaction.nonce.toString()),
+                      creationEpochSecond = System.currentTimeMillis() / 1000,
+                      txHash = gethTransaction.hash.hex
+              )
+              createTransaction(transaction, signatureData)
+          }
+      } catch (e: Exception) {
+          alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
+      }
+      */
     }
 
     private fun createTransaction(transaction: Transaction, signatureData: SignatureData?) {

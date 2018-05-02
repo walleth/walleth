@@ -23,6 +23,7 @@ import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.toERC681
+import org.kethereum.model.EthereumURI
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip.getItemAt(0).text?.toString()
-            val erc681 = item?.toERC681()
+            val erc681 = item?.let { EthereumURI(it).toERC681() }
             if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != currentAddressProvider.value?.hex.let { ERC681(address = it).generateURL() }) {
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {

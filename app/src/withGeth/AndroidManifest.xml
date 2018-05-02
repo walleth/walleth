@@ -11,8 +11,6 @@
         <service android:name="org.walleth.geth.services.GethTransactionSigner"/>
         <service android:name="org.walleth.geth.services.GethLightEthereumService"/>
 
-        <activity android:name="org.walleth.activities.OfflineTransactionActivity"
-                  android:windowSoftInputMode="adjustResize"/>
     </application>
 
 </manifest>

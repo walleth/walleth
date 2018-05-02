@@ -10,6 +10,9 @@ import kotlinx.android.synthetic.main.activity_account_create.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import org.kethereum.crypto.ECKeyPair
+import org.kethereum.crypto.createEcKeyPair
+import org.kethereum.crypto.getAddress
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.parseERC681
@@ -44,7 +47,7 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
     override val kodein by closestKodein()
     private val keyStore: WallethKeyStore by instance()
     private val appDatabase: AppDatabase by instance()
-    private var lastCreatedAddress: Address? = null
+    private var lastCreatedAddress: ECKeyPair? = null
     private var trezorPath: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -67,7 +70,9 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
             } else if (nameInput.text.isBlank()) {
                 alert(title = alert_problem_title, message = please_enter_name)
             } else {
-                lastCreatedAddress = null // prevent cleanup
+                lastCreatedAddress?.let {
+                    keyStore.importKey(it, DEFAULT_PASSWORD)
+                }
 
                 async(UI) {
                     async(CommonPool) {
@@ -91,10 +96,12 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
         }
 
         new_address_button.setOnClickListener {
-            cleanupGeneratedKeyWhenNeeded()
-            val newAddress = keyStore.newAddress(DEFAULT_PASSWORD)
-            lastCreatedAddress = newAddress
-            setAddressFromExternalApplyingChecksum(newAddress.hex)
+
+            lastCreatedAddress = createEcKeyPair()
+            lastCreatedAddress?.getAddress()?.let {
+                setAddressFromExternalApplyingChecksum(it)
+            }
+
             notify_checkbox.isChecked = true
         }
 
@@ -102,13 +109,6 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
             startScanActivityForResult(this)
         }
     }
-
-    private fun cleanupGeneratedKeyWhenNeeded() {
-        lastCreatedAddress?.let {
-            keyStore.deleteKey(it, DEFAULT_PASSWORD)
-        }
-    }
-
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK) {
@@ -138,14 +138,10 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
         if (Address(addressHex).isValid()) {
             hexInput.setText(Address(addressHex).withERC55Checksum().hex)
         } else {
-            alert(getString(R.string.warning_not_a_valid_address, addressHex),getString(R.string.title_invalid_address_alert))
+            alert(getString(R.string.warning_not_a_valid_address, addressHex), getString(R.string.title_invalid_address_alert))
         }
     }
 
-    override fun onPause() {
-        super.onPause()
-        cleanupGeneratedKeyWhenNeeded()
-    }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> {

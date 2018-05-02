@@ -15,6 +15,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_import_json.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
+import org.kethereum.crypto.ECKeyPair
+import org.kethereum.wallet.loadKeysFromWalletJsonString
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -28,6 +30,7 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.khex.hexToByteArray
 import java.io.FileNotFoundException
 
 enum class KeyType {
@@ -67,7 +70,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
         type_ecdsa_select.isChecked = !type_json_select.isChecked
 
         key_type_select.setOnCheckedChangeListener { _, _ ->
-            password.setVisibility(type_json_select.isChecked)
+            password_container.setVisibility(type_json_select.isChecked)
         }
 
         supportActionBar?.subtitle = getString(R.string.import_json_subtitle)
@@ -76,10 +79,12 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
         fab.setOnClickListener {
             val alertBuilder = AlertDialog.Builder(this)
             try {
-                val importKey = if (type_json_select.isChecked)
-                    keyStore.importJSONKey(key_content.text.toString(), importPassword = password.text.toString(), storePassword = DEFAULT_PASSWORD)
+                val key = if (type_json_select.isChecked)
+                    key_content.text.toString().loadKeysFromWalletJsonString(password.text.toString())
                 else
-                    keyStore.importECDSAKey(key_content.text.toString(), storePassword = DEFAULT_PASSWORD)
+                    ECKeyPair.create(key_content.text.toString().hexToByteArray())
+
+                val importKey = keyStore.importKey(key, DEFAULT_PASSWORD)
 
                 alertBuilder
                         .setMessage(getString(R.string.imported_key_alert_message, importKey?.hex))
