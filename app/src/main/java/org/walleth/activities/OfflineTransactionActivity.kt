@@ -20,6 +20,8 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.R.id.fab
+import org.walleth.R.id.transaction_to_relay_hex
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.CurrentAddressProvider
@@ -34,8 +36,6 @@ import org.walleth.util.isUnsignedTransactionJSON
 import java.math.BigInteger
 
 private const val KEY_CONTENT = "KEY_OFFLINE_TX_CONTENT"
-
-const val FLAVOR_HAS_OFFLINE_TX_OPTION = true
 
 fun Context.startOfflineTransactionFlow(content: String) {
     startActivity(getOfflineTransactionIntent(content))

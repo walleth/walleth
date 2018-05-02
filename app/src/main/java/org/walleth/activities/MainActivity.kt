@@ -32,6 +32,7 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.R.id.*
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
@@ -131,7 +132,7 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                     startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
                 }
 
-                FLAVOR_HAS_OFFLINE_TX_OPTION && scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() -> {
+                scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() -> {
                     startOfflineTransactionFlow(scanResult)
                 }
 

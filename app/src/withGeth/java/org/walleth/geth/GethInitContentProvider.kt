@@ -25,14 +25,12 @@ import org.walleth.activities.OfflineTransactionActivity
 import org.walleth.data.config.Settings
 import org.walleth.geth.services.GethLightEthereumService
 import org.walleth.geth.services.GethLightEthereumService.Companion.gethStopIntent
-import org.walleth.geth.services.GethTransactionSigner
 
 class GethInitContentProvider : ContentProvider() {
 
     class GethInitAppLifecycleObserver(val context: Context, val settings: Settings) : LifecycleObserver {
         @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
         fun connectListener() {
-            context.startService(Intent(context, GethTransactionSigner::class.java))
 
             if (settings.isLightClientWanted()) {
                 Intent(context, GethLightEthereumService::class.java).run {
