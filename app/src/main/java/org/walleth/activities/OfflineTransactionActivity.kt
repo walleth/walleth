@@ -12,6 +12,8 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
+import org.kethereum.functions.rlp.RLPList
+import org.kethereum.functions.rlp.decodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.*
 import org.kodein.di.Kodein
@@ -20,8 +22,6 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.R.id.fab
-import org.walleth.R.id.transaction_to_relay_hex
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.CurrentAddressProvider
@@ -116,12 +116,12 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
 
         } else if (content.isSignedTransactionJSON()) {
             val json = JSONObject(content)
-/*
-        TODO-GETHOPT
 
             try {
                 val transactionRLP = json.getString("signedTransactionRLP").hexToByteArray()
-                val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
+                val gethTransaction = transactionRLP.decodeRLP()
+                alert(" gethTransaction "  + (gethTransaction is RLPList))
+                /*
                 val signatureData = gethTransaction.extractSignatureData()
 
                 if (signatureData == null) {
@@ -144,10 +144,11 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
                     )
                     createTransaction(transaction, signatureData)
                 }
+                */
             } catch (e: Exception) {
                 alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
             }
-                */
+
         } else {
             executeForRLP()
         }
