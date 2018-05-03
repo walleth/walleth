@@ -2,12 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
-        <provider
-                android:authorities="org.walleth.GethInitContentProvider"
-                android:exported="false"
-                android:enabled="true"
-                android:name="org.walleth.GethInitContentProvider" />
-
         <service
                 android:name="org.walleth.fcm.WallethFirebaseMessageService">
             <intent-filter>
