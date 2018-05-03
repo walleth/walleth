@@ -85,7 +85,7 @@ class TheMainActivity {
         onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))
                 .check(matches(withText("0")))
 
-        onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(INVISIBLE)))
+        onView(withId(R.id.send_button)).check(matches(withEffectiveVisibility(INVISIBLE)))
         onView(withId(R.id.empty_view)).check(matches(withEffectiveVisibility(VISIBLE)))
 
         onView(withId(R.id.transaction_recycler_in)).check(matches(withEffectiveVisibility(GONE)))
@@ -108,7 +108,7 @@ class TheMainActivity {
         onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))
                 .check(matches(withText("1")))
 
-        onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(VISIBLE)))
+        onView(withId(R.id.send_button)).check(matches(withEffectiveVisibility(VISIBLE)))
         onView(withId(R.id.empty_view)).check(matches(withEffectiveVisibility(GONE)))
 
         onView(withId(R.id.transaction_recycler_in)).check(matches(withEffectiveVisibility(VISIBLE)))
@@ -133,7 +133,7 @@ class TheMainActivity {
         onView(allOf(isDescendantOfA(withId(R.id.value_view)), withId(R.id.current_eth)))
                 .check(matches(withText("0")))
 
-        onView(withId(R.id.send_container)).check(matches(withEffectiveVisibility(VISIBLE)))
+        onView(withId(R.id.send_button)).check(matches(withEffectiveVisibility(VISIBLE)))
 
         rule.screenShot("balance_zero_token")
     }

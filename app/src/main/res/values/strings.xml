@@ -20,6 +20,8 @@ WallΞTH is trying to be as decentralized as possible. Hence it is offering a li
 <br/><br/>
 Our wonderful Icon is from <a href="https://cookicons.co">Michael Cook</a>.
 <br/><br/>
+<div>The base for the  send and receive icons are made by <a href="https://www.flaticon.com/authors/catalin-fertu" title="Catalin Fertu">Catalin Fertu</a> from <a href="https://www.flaticon.com/" title="Flaticon">flaticon.com</a>
+<br/><br/>
 The light client comes via the go-ethereum project. Big shout out to <a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/holiman">holiman</a>, <a href="https://github.com/fjl">fjl</a>, <a href="https://github.com/zsfelfoldi">zsfelfoldi</a> and <a href="https://github.com/obscuren">obscuren</a> here - awesome work!
 <br/><br/>
 Be aware that this is an alpha and there will be bugs.

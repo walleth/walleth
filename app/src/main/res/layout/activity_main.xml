@@ -24,16 +24,11 @@
                 android:layout_height="wrap_content">
             <FrameLayout android:layout_width="0dp"
                          android:layout_weight="38"
-                         android:id="@+id/receive_container"
-
                          android:layout_height="match_parent">
                 <android.support.v7.widget.AppCompatImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        style="@style/button"
                         android:layout_gravity="center"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:duplicateParentState="true"
-                        android:id="@+id/rec"
+                        android:id="@+id/receive_button"
                         app:srcCompat="@drawable/ic_rec"/>
             </FrameLayout>
 
@@ -46,15 +41,11 @@
 
             <FrameLayout android:layout_width="0dp"
                          android:layout_weight="38"
-                         android:id="@+id/send_container"
                          android:layout_height="match_parent">
                 <android.support.v7.widget.AppCompatImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        style="@style/button"
                         android:layout_gravity="center"
-                        android:background="?selectableItemBackgroundBorderless"
-                        android:duplicateParentState="true"
-                        android:id="@+id/send"
+                        android:id="@+id/send_button"
                         app:srcCompat="@drawable/ic_send"/>
             </FrameLayout>
         </LinearLayout>

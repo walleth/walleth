@@ -169,12 +169,12 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         drawer_layout.addDrawerListener(actionBarDrawerToggle)
 
-        receive_container.setOnClickListener {
+        receive_button.setOnClickListener {
             onboardingController.dismiss()
             startActivityFromClass(RequestActivity::class)
         }
 
-        send_container.setOnClickListener {
+        send_button.setOnClickListener {
             startActivityFromClass(CreateTransactionActivity::class)
         }
 
@@ -273,9 +273,9 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
 
     private val etherObserver = Observer<Balance> {
         if (it != null) {
-            send_container.setVisibility(it.balance > ZERO, INVISIBLE)
+            send_button.setVisibility(it.balance > ZERO, INVISIBLE)
         } else {
-            send_container.visibility = INVISIBLE
+            send_button.visibility = INVISIBLE
         }
     }
 

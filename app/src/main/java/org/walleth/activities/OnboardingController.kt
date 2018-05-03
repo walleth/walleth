@@ -19,7 +19,7 @@ class OnboardingController(val activity: MainActivity, val settings: Settings) {
 
     private val showcaseView by lazy {
         ShowcaseView.Builder(activity)
-                .setTarget(ViewTarget(R.id.receive_container, activity))
+                .setTarget(ViewTarget(R.id.receive_button, activity))
                 .setContentText(R.string.onboard_showcase_message)
                 .setContentTextPaint(contentPaint)
                 .build()
