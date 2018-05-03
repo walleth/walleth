@@ -1,4 +1,4 @@
 {
 "type":"android",
-"stages":["testWithGethWithFirebaseForPlayDebugComposer","lint","test","assemble"]
+"stages":["testNoGethWithFirebaseForPlayDebugComposer","lint","test","assemble"]
 }
