@@ -11,7 +11,11 @@ import java.io.File
 
 class FileBasedWallethKeyStore(val context: Context) : WallethKeyStore {
 
-    private val keyStoreDirectory = File(context.filesDir, "keystore")
+    private val keyStoreDirectory by lazy {
+        File(context.filesDir, "keystore").also {
+            it.mkdirs()
+        }
+    }
 
     private val fileMap by lazy {
         mutableMapOf<Address, File>().apply {
@@ -38,7 +42,7 @@ class FileBasedWallethKeyStore(val context: Context) : WallethKeyStore {
     override fun getAddresses() = fileMap.keys
 
     override fun importKey(key: ECKeyPair, password: String) =
-            key.generateWalletFile(DEFAULT_PASSWORD, keyStoreDirectory, LIGHT_SCRYPT_CONFIG).address?.let {
+            key.generateWalletFile(DEFAULT_PASSWORD, keyStoreDirectory, LIGHT_SCRYPT_CONFIG).wallet.address?.let {
                 fileMap.rebuildList()
                 Address(it)
             }

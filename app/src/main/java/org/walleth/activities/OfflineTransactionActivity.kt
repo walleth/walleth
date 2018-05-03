@@ -11,9 +11,13 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.json.JSONObject
+import org.kethereum.eip155.extractChainID
 import org.kethereum.functions.encodeRLP
 import org.kethereum.functions.rlp.RLPList
 import org.kethereum.functions.rlp.decodeRLP
+import org.kethereum.functions.rlp.encode
+import org.kethereum.functions.toTransaction
+import org.kethereum.functions.toTransactionSignatureData
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.*
 import org.kodein.di.Kodein
@@ -120,7 +124,7 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
             try {
                 val transactionRLP = json.getString("signedTransactionRLP").hexToByteArray()
                 val gethTransaction = transactionRLP.decodeRLP()
-                alert(" gethTransaction "  + (gethTransaction is RLPList))
+                alert(" gethTransaction " + (gethTransaction is RLPList))
                 /*
                 val signatureData = gethTransaction.extractSignatureData()
 
@@ -156,40 +160,36 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
     }
 
     private fun executeForRLP() {
-        /*
 
-        TODO-GETHOPT
+        try {
+            val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
 
-      try {
+            val rlp = transactionRLP.decodeRLP()
 
-          val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
-          val gethTransaction = Geth.newTransactionFromRLP(transactionRLP)
-          val signatureData = gethTransaction.extractSignatureData()
+            val rlpList = rlp as RLPList
 
-          if (signatureData == null) {
-              alert("Found RLP without signature - this is not supported anymore - the transaction source must be in JSON and include the chainID")
-          } else {
-              val extractChainID = signatureData.extractChainID()
-              val chainId = if (extractChainID == null) {
-                  BigInt(networkDefinitionProvider.getCurrent().chain.id)
-              } else {
-                  BigInt(extractChainID.toLong())
-              }
-              val transaction = createTransactionWithDefaults(
-                      value = BigInteger(gethTransaction.value.toString()),
-                      from = gethTransaction.getFrom(chainId).toKethereumAddress(),
-                      to = gethTransaction.to!!.toKethereumAddress(),
-                      chain = ChainDefinition(chainId.toBigInteger().toLong()),
-                      nonce = BigInteger(gethTransaction.nonce.toString()),
-                      creationEpochSecond = System.currentTimeMillis() / 1000,
-                      txHash = gethTransaction.hash.hex
-              )
-              createTransaction(transaction, signatureData)
-          }
-      } catch (e: Exception) {
-          alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
-      }
-      */
+            val signatureData = rlpList.toTransactionSignatureData()
+            val transaction = rlpList.toTransaction()?.apply {
+                txHash = rlpList.encode().keccak().toHexString()
+            }
+
+            //alert("rlp " + (rlp is RLPList))
+
+/*            if (signatureData == null) {
+                alert("Found RLP without signature - this is not supported anymore - the transaction source must be in JSON and include the chainID")
+            } else {*/
+
+            val extractChainID = signatureData.extractChainID()
+            val chainId = extractChainID?.toLong() ?: networkDefinitionProvider.getCurrent().chain.id
+
+            transaction?.chain = ChainDefinition(chainId)
+            transaction?.let {
+                createTransaction(it, signatureData)
+            }
+
+        } catch (e: Exception) {
+            alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
+        }
     }
 
     private fun createTransaction(transaction: Transaction, signatureData: SignatureData?) {
