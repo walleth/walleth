@@ -230,7 +230,7 @@
                 <android.support.design.widget.TextInputEditText
                         android:minWidth="128dp"
                         android:id="@+id/nonce_input"
-                        android:inputType="number|numberDecimal"
+                        android:inputType="number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
             </android.support.design.widget.TextInputLayout>
