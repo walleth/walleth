@@ -40,7 +40,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
         <android.support.v7.widget.AppCompatImageView
-                app:srcCompat="@drawable/ic_warning_24dp"
+                app:srcCompat="@drawable/ic_warning_red_24dp"
                 android:padding="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         <android.support.v7.widget.AppCompatImageView
-                app:srcCompat="@drawable/ic_warning_24dp"
+                app:srcCompat="@drawable/ic_warning_red_24dp"
                 android:padding="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

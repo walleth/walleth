@@ -224,6 +224,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="or">or</string>
     <string name="trezor_not_initialized">TREZOR not initialized. Please use the TREZOR manager to initialize.</string>
     <string name="process_error">Process Error %s</string>
+    <string name="security_info">Security Information</string>
     <string name="click_for_details">Click for details</string>
     <string name="activity_subtitle_oss_license">OSS licenses information</string>
 </resources>

@@ -167,6 +167,8 @@ dependencies {
     implementation 'com.github.ligi:ExtraCompats:0.4'
     implementation 'com.github.ligi:KRoom:0.4'
 
+    implementation 'com.scottyab:rootbeer-lib:0.0.6'
+
     implementation "android.arch.lifecycle:extensions:$arch_version"
 
     implementation "android.arch.persistence.room:runtime:$room_version"

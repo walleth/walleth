@@ -31,4 +31,9 @@
             android:title="Debug"
             android:icon="@drawable/ic_adb_black_24dp"/>
 
+    <item
+            android:id="@+id/menu_security"
+            android:title="Security Information"
+            android:icon="@drawable/ic_security_black_24dp"/>
+
 </menu>
