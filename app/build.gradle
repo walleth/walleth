@@ -232,8 +232,6 @@ if (hasProperty("isCI")) {
                 'android.arch.persistence.room:runtime:1.1.0:runtime-1.1.0.aar:776b87ef41f1ae7dc035a6ebfce28f394a9a89a7664929799e930de8e8f2f372',
                 'android.arch.persistence:db-framework:1.1.0:db-framework-1.1.0.aar:b1ac06047a1244cbe97908b7d875fd7c48c46d25a84acf9497b59a8e71a7916c',
                 'android.arch.persistence:db:1.1.0:db-1.1.0.aar:0952938cf7262b810f3682e9f03a7aedd4dc987538ba93b0db0da831f26e252b',
-                'com.android.support.test:rules:1.0.1:rules-1.0.1.aar:7ca0f88390c6472177c576355955b63dc64c990405a946fd1e316f6fce233434',
-                'com.android.support.test:runner:1.0.1:runner-1.0.1.aar:c773e2cecbb0a86351f284c91620e7badeac5413da5a95e86f243d411774c42d',
                 'com.android.support:animated-vector-drawable:27.1.1:animated-vector-drawable-27.1.1.aar:59670473f6e98fda792f7bef25dd7292b0a3106031c7a5e30eb020bf26f077bd',
                 'com.android.support:appcompat-v7:27.1.1:appcompat-v7-27.1.1.aar:0c7808fbbc5838d831e32e3c0a6f84e1f2c981deb8f11e010650f2b57923a335',
                 'com.android.support:cardview-v7:27.1.1:cardview-v7-27.1.1.aar:8ed955dd037d82a7b4bbcaedb4f896523c3e4c1bf3ca698ce807c350767a2886',
