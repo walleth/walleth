@@ -33,15 +33,3 @@ License
 =======
 
 GPL
-
-Build Walleth
-=============
-The app has three flavor dimensions: geth, store, firebase 
-The simplest way to build for development is 
-```
-./gradlew assembleWithGethNoFirebaseForFDroidDebug
-```
-If you are using Android Studio do not upgrade to Android plugin 3.+ but keep using the following dependency for 2.3.3 due to issues for android tests mentionend in [#88](https://github.com/walleth/walleth/pull/88)
-```
-classpath 'com.android.tools.build:gradle:2.3.3'
-```
