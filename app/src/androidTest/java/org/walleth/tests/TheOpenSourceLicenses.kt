@@ -1,16 +1,16 @@
 package org.walleth.tests
 
-import com.google.android.gms.oss.licenses.OssLicensesMenuActivity
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskIntentRule
+import org.walleth.activities.OpenSourceLicenseDisplayActivity
 
 
-class TheOpensourceLicenses {
+class TheOpenSourceLicenses {
 
 
         @get:Rule
-        var rule = TruleskIntentRule(OssLicensesMenuActivity::class.java)
+        var rule = TruleskIntentRule(OpenSourceLicenseDisplayActivity::class.java)
 
         @Test
         fun rejectsCriticallyLongAddress() {
