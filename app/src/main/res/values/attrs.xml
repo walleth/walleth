@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ValueView">
+        <attr name="showPrecise" format="boolean"/>
+    </declare-styleable>
+</resources>
