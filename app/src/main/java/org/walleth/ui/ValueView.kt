@@ -1,6 +1,7 @@
 package org.walleth.ui
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
@@ -27,27 +28,43 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     private val settings: Settings by instance()
 
     open val layoutRes = R.layout.value
+    private val showsPrecise: Boolean
 
     private var currentValue = ZERO
     private var currentExchangeValue: BigDecimal? = null
     private var currentToken: Token? = null
 
+    init {
+        // extract the showPrecise value
+        val a: TypedArray = context.theme.obtainStyledAttributes(attrs,R.styleable.ValueView,
+                0, 0)
+        try {
+            showsPrecise = a.getBoolean(R.styleable.ValueView_showPrecise, true)
+        } finally {
+            a.recycle()
+        }
+    }
+
     override fun onFinishInflate() {
         super.onFinishInflate()
         orientation = VERTICAL
         LayoutInflater.from(context).inflate(layoutRes, this, true)
-        current_eth.setOnClickListener {
-            currentToken?.let { tokenNotNull ->
-                if (current_eth.text.isValueImprecise()) {
-                    showPreciseAmountAlert(currentValue.toFullValueString(tokenNotNull) + current_token_symbol.text)
+
+        // only intercept touch through click listener if view can show precise
+        if (showsPrecise) {
+            current_eth.setOnClickListener {
+                currentToken?.let { tokenNotNull ->
+                    if (current_eth.text.isValueImprecise()) {
+                        showPreciseAmountAlert(currentValue.toFullValueString(tokenNotNull) + current_token_symbol.text)
+                    }
                 }
             }
-        }
 
-        current_fiat.setOnClickListener {
-            currentExchangeValue?.let { currentExchangeValueNotNull ->
-                if (current_fiat.text.isValueImprecise()) {
-                    showPreciseAmountAlert(String.format("%f", currentExchangeValueNotNull) + current_fiat_symbol.text)
+            current_fiat.setOnClickListener {
+                currentExchangeValue?.let { currentExchangeValueNotNull ->
+                    if (current_fiat.text.isValueImprecise()) {
+                        showPreciseAmountAlert(String.format("%f", currentExchangeValueNotNull) + current_fiat_symbol.text)
+                    }
                 }
             }
         }
