@@ -125,7 +125,7 @@ dependencies {
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
-    withGethImplementation "org.ethereum:geth:1.8.5"
+    withGethImplementation "org.ethereum:geth:1.8.8"
 
     implementation "com.github.walleth.kethereum:functions:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip44:$kethereum_version"
@@ -398,7 +398,6 @@ if (hasProperty("isCI")) {
                 'org.bouncycastle:bcprov-jdk15on:1.56:bcprov-jdk15on-1.56.jar:963e1ee14f808ffb99897d848ddcdb28fa91ddda867eb18d303e82728f878349',
                 'org.codehaus.groovy:groovy-all:2.4.12:groovy-all-2.4.12.jar:6a56af4bd48903d56bec62821876cadefafd007360cc6bd0d8f7aa8d72b38be4',
                 'org.codehaus.mojo:animal-sniffer-annotations:1.14:animal-sniffer-annotations-1.14.jar:2068320bd6bad744c3673ab048f67e30bef8f518996fa380033556600669905d',
-                'org.ethereum:geth:1.8.5:geth-1.8.5.aar:89f3a22896ed91271ab04de2a216d2e02164c0767b6058c84966d58cbf8c5cd0',
                 'org.glassfish.jaxb:jaxb-core:2.2.11:jaxb-core-2.2.11.jar:37bcaee8ebb04362c8352a5bf6221b86967ecdab5164c696b10b9a2bb587b2aa',
                 'org.glassfish.jaxb:jaxb-runtime:2.2.11:jaxb-runtime-2.2.11.jar:a874f2351cfba8e2946be3002d10c18a6da8f21b52ba2acf52f2b85d5520ed70',
                 'org.glassfish.jaxb:txw2:2.2.11:txw2-2.2.11.jar:272a3ccad45a4511351920cd2a8633c53cab8d5220c7a92954da5526bb5eafea',
