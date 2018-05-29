@@ -1,4 +1,4 @@
-package org.walleth.core
+package org.walleth.etherscan
 
 import android.arch.lifecycle.*
 import android.content.Intent

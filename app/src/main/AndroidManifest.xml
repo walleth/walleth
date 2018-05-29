@@ -3,7 +3,6 @@
           package="org.walleth">
 
     <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
 
     <uses-feature android:name="android.hardware.camera"
                   android:required="false"/>
@@ -18,7 +17,6 @@
             android:theme="@style/AppTheme">
 
         <service android:name="org.walleth.core.TransactionNotificationService"/>
-        <service android:name="org.walleth.core.EtherScanService"/>
 
         <activity
             android:name="org.walleth.activities.qrscan.QRScanActivity"

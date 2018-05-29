@@ -1,4 +1,4 @@
-package org.walleth.core
+package org.walleth.etherscan
 
 import org.json.JSONArray
 import org.kethereum.model.Address

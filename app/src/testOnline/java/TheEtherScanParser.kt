@@ -4,7 +4,7 @@ import data.faucet_transactions
 import org.json.JSONArray
 import org.junit.Test
 import org.kethereum.model.ChainDefinition
-import org.walleth.core.parseEtherScanTransactions
+import org.walleth.etherscan.parseEtherScanTransactions
 
 class TheEtherScanParser {
 

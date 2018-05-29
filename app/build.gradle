@@ -48,7 +48,7 @@ android {
         warning 'MissingTranslation'
     }
 
-    flavorDimensions "geth", "fire", "store"
+    flavorDimensions "geth", "fire", "store", "connectivity"
 
     productFlavors {
         withGeth {
@@ -84,6 +84,15 @@ android {
             dimension "fire"
         }
 
+        online {
+            dimension "connectivity"
+        }
+
+        offline {
+            dimension "connectivity"
+            applicationIdSuffix ".offline"
+        }
+
     }
 
 
@@ -91,11 +100,12 @@ android {
         def geth = variant.getFlavors().get(0).name
         def firebase = variant.getFlavors().get(1).name
         def store = variant.getFlavors().get(2).name
-
+        def connectivity = variant.getFlavors().get(3).name
 
         if ((project.hasProperty("singleFlavor") && (store != 'forPlay'))
                 || ((store == 'forAmazon' || store == 'forPlay') && firebase == 'noFirebase')
-                || (store == 'forFDroid' && firebase != 'noFirebase')) {
+                || (store == 'forFDroid' && firebase != 'noFirebase')
+                || (connectivity == 'offline' && (firebase == 'withFirebase' || geth == 'withGeth'))) {
             variant.setIgnore(true)
         }
     }

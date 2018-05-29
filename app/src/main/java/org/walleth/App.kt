@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.TrafficStats
 import android.os.StrictMode
-
 import android.support.annotation.XmlRes
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
@@ -26,7 +25,6 @@ import org.kodein.di.generic.singleton
 import org.ligi.tracedroid.TraceDroid
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.contracts.FourByteDirectoryImpl
-import org.walleth.core.EtherScanService
 import org.walleth.core.TransactionNotificationService
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
@@ -139,7 +137,6 @@ open class App : MultiDexApplication(), KodeinAware {
 
     open fun executeCodeWeWillIgnoreInTests() {
         try {
-            startService(Intent(this, EtherScanService::class.java))
             startService(Intent(this, TransactionNotificationService::class.java))
         } catch (e: IllegalStateException) {
         }
