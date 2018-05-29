@@ -1,7 +1,6 @@
 package org.walleth.activities.trezor
 
 import android.app.Activity
-import android.content.DialogInterface.OnClickListener
 import android.content.Intent
 import android.os.Bundle
 import com.google.protobuf.ByteString
@@ -44,10 +43,10 @@ class TrezorSignTransactionActivity : BaseTrezorActivity(), KodeinAware {
     override fun handleAddress(address: Address) {
         if (address != transaction.transaction.from) {
             val message = getString(R.string.trezor_reported_different_address, address, transaction.transaction.from)
-            alert(message, onOKListener = OnClickListener { _, _ ->
+            alert(message) {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
-            })
+            }
         } else {
             enterNewState(STATES.PROCESS_TASK)
         }

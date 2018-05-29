@@ -2,7 +2,6 @@ package org.walleth.ui
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -25,7 +24,7 @@ fun Context.chainIDAlert(networkDefinitionProvider: NetworkDefinitionProvider,
             alert(
                     message = getString(R.string.alert_network_unsupported_message, chainId),
                     title = getString(R.string.alert_network_unsupported_title),
-                    onOKListener = DialogInterface.OnClickListener { _: DialogInterface, _: Int ->
+                    onOK = {
                         continuationWithWrongChainId()
                     }
             )

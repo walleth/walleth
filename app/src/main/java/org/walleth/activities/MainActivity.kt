@@ -2,7 +2,10 @@ package org.walleth.activities
 
 import android.arch.lifecycle.LiveData
 import android.arch.lifecycle.Observer
-import android.content.*
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
@@ -95,11 +98,11 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                             }
                         })
                         .setAction(R.string.paste_from_clipboard_action, {
-                            alert(R.string.copied_string_warning_message, R.string.copied_string_warning_title, DialogInterface.OnClickListener { _, _ ->
+                            alert(R.string.copied_string_warning_message, R.string.copied_string_warning_title) {
                                 startActivity(Intent(this@MainActivity, CreateTransactionActivity::class.java).apply {
                                     data = Uri.parse(item)
                                 })
-                            })
+                            }
 
                         })
                         .show()

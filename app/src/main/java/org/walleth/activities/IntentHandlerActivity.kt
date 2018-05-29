@@ -1,7 +1,6 @@
 package org.walleth.activities
 
 import android.content.Context
-import android.content.DialogInterface.OnClickListener
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -44,9 +43,10 @@ class IntentHandlerActivity : AppCompatActivity() {
                                     })
                                     finish()
                                 }
-                                2 -> {
-                                    alert("TODO", "add token definition", OnClickListener { _, _ -> finish() })
+                                2 -> alert("TODO", "add token definition") {
+                                    finish()
                                 }
+
                             }
                         })
                         .setNegativeButton(android.R.string.cancel) { _, _ ->
@@ -56,7 +56,9 @@ class IntentHandlerActivity : AppCompatActivity() {
 
             }
         } else {
-            alert(getString(R.string.create_tx_error_invalid_erc67_msg, intent.data.toString()), getString(R.string.create_tx_error_invalid_erc67_title), OnClickListener { _, _ -> finish() })
+            alert(getString(R.string.create_tx_error_invalid_erc67_msg, intent.data.toString()), getString(R.string.create_tx_error_invalid_erc67_title)) {
+                finish()
+            }
         }
     }
 }

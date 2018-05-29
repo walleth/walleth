@@ -1,6 +1,5 @@
 package org.walleth.activities
 
-import android.content.DialogInterface
 import android.graphics.Paint
 import android.text.TextPaint
 import android.util.TypedValue
@@ -39,28 +38,25 @@ class OnboardingController(val activity: MainActivity, val settings: Settings) {
         if (!settings.startupWarningDone) {
             activity.alert(
                     title = R.string.onboarding_warning_title,
-                    message = R.string.onboarding_warning_message,
-                    onOKListener = DialogInterface.OnClickListener { _, _ ->
-                        isShowing = true
-                        activity.refresh()
+                    message = R.string.onboarding_warning_message) {
+                isShowing = true
+                activity.refresh()
 
+                activity.fab.hide()
 
+                showcaseView.setOnShowcaseEventListener(object : OnShowcaseEventListener {
+                    override fun onShowcaseViewShow(p0: ShowcaseView?) {}
+                    override fun onShowcaseViewHide(p0: ShowcaseView?) {}
+                    override fun onShowcaseViewDidHide(p0: ShowcaseView?) {
+                        dismiss()
+                    }
 
-                        activity.fab.hide()
+                    override fun onShowcaseViewTouchBlocked(p0: MotionEvent?) {}
+                })
 
-                        showcaseView.setOnShowcaseEventListener(object : OnShowcaseEventListener {
-                            override fun onShowcaseViewShow(p0: ShowcaseView?) {}
-                            override fun onShowcaseViewHide(p0: ShowcaseView?) {}
-                            override fun onShowcaseViewDidHide(p0: ShowcaseView?) {
-                                dismiss()
-                            }
+                showcaseView.show()
 
-                            override fun onShowcaseViewTouchBlocked(p0: MotionEvent?) {}
-                        })
-
-                        showcaseView.show()
-
-                    })
+            }
             settings.startupWarningDone = true
         } else {
             if (TraceDroid.getStackTraceFiles().isNotEmpty()) {

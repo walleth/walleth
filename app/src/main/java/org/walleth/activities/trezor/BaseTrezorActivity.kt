@@ -1,7 +1,6 @@
 package org.walleth.activities.trezor
 
 import android.app.Activity
-import android.content.DialogInterface.OnClickListener
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
@@ -132,15 +131,11 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
             is TrezorMessage.Features -> enterNewState(READ_ADDRESS)
             is TrezorMessage.EthereumAddress -> handleAddress(Address(address.toByteArray().toHexString()))
             is TrezorMessage.Failure -> when (code) {
-                TrezorType.FailureType.Failure_PinInvalid -> alert(R.string.trezor_pin_invalid, R.string.dialog_title_error, OnClickListener { _, _ ->
-                    cancel()
-                })
+                TrezorType.FailureType.Failure_PinInvalid -> alert(R.string.trezor_pin_invalid, R.string.dialog_title_error) { cancel() }
                 TrezorType.FailureType.Failure_UnexpectedMessage -> Unit
                 TrezorType.FailureType.Failure_ActionCancelled -> cancel()
                 TrezorType.FailureType.Failure_ProcessError -> if (message.contains("not initialized")) {
-                    alert(R.string.trezor_not_initialized, R.string.dialog_title_error, OnClickListener { _, _ ->
-                        cancel()
-                    })
+                    alert(R.string.trezor_not_initialized, R.string.dialog_title_error) { cancel() }
                 } else {
                     alert(getString(R.string.process_error, message))
                 }
