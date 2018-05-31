@@ -161,7 +161,7 @@ dependencies {
     }
 
     implementation 'com.github.kenglxn.QRGen:android:2.4.0'
-    implementation 'com.google.zxing:core:3.3.2'
+    implementation 'com.google.zxing:core:3.3.3'
 
     implementation 'com.jakewharton:process-phoenix:2.0.0'
 
@@ -370,7 +370,6 @@ if (hasProperty("isCI")) {
                 'com.google.protobuf:protobuf-java:3.3.0:protobuf-java-3.3.0.jar:f3411ade77523d5f0d013d4f25c36879e66f0c5e1e4310f7096d54d0d2553554',
                 'com.google.protobuf:protobuf-java:3.4.0:protobuf-java-3.4.0.jar:dce7e66b32456a1b1198da0caff3a8acb71548658391e798c79369241e6490a4',
                 'com.google.truth:truth:0.40:truth-0.40.jar:4868998229b155dcbe68416803975d491704f7cdb6847346cf9a49f65067d6fd',
-                'com.google.zxing:core:3.3.2:core-3.3.2.jar:52dd6211bbaf4e600de693834d597e49707f3e6606e1f5d3740fbb8274466abe',
                 'com.googlecode.java-diff-utils:diffutils:1.3.0:diffutils-1.3.0.jar:61ba4dc49adca95243beaa0569adc2a23aedb5292ae78aa01186fa782ebdc5c2',
                 'com.googlecode.json-simple:json-simple:1.1:json-simple-1.1.jar:2d9484f4c649f708f47f9a479465fc729770ee65617dca3011836602264f6439',
                 'com.jakewharton.android.repackaged:dalvik-dx:7.1.0_r7:dalvik-dx-7.1.0_r7.jar:6a30bc82e66320a5398e6e366a6fc73f76b51bac499c2bc4c13abe7d57425c5c',
