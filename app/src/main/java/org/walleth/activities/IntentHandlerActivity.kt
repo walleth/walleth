@@ -13,6 +13,8 @@ import org.walleth.R
 import org.walleth.data.tokens.isTokenTransfer
 import java.math.BigInteger.ZERO
 
+private const val REQUEST_CODE = 10123
+
 fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentHandlerActivity::class.java).apply {
     data = Uri.parse(ethereumString)
 }
@@ -25,7 +27,7 @@ class IntentHandlerActivity : AppCompatActivity() {
         if (erc681.valid) {
             if (erc681.address == null || erc681.isTokenTransfer() || erc681.value != null && erc681.value != ZERO) {
                 startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
-                    setData(intent.data)
+                    data = intent.data
                 })
                 finish()
             } else {
@@ -38,10 +40,10 @@ class IntentHandlerActivity : AppCompatActivity() {
                                     finish()
                                 }
                                 1 -> {
-                                    startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
-                                        setData(intent.data)
-                                    })
-                                    finish()
+                                    val intent = Intent(this, CreateTransactionActivity::class.java).apply {
+                                        data = intent.data
+                                    }
+                                    startActivityForResult(intent, REQUEST_CODE)
                                 }
                                 2 -> alert("TODO", "add token definition") {
                                     finish()
@@ -60,5 +62,11 @@ class IntentHandlerActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        setResult(resultCode, data)
+        finish()
     }
 }

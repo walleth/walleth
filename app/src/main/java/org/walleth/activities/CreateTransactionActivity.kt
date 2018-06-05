@@ -99,6 +99,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
     private var lastWarningURI: String? = null
     private var currentBalanceLive: LiveData<Balance>? = null
     private var currentSignatureData: SignatureData? = null
+    private var currentTxHash: String? = null
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
@@ -353,10 +354,11 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
                             transaction.signViaEIP155(it, networkDefinitionProvider.getCurrent().chain)
                         }
 
-
                         currentSignatureData = signatureData
 
+                        currentTxHash = transaction.encodeRLP(signatureData).keccak().toHexString()
                         transaction.txHash = transaction.encodeRLP(signatureData).keccak().toHexString()
+
 
                         val entity = transaction.toEntity(signatureData = signatureData, transactionState = TransactionState())
                         appDatabase.transactions.upsert(entity)
@@ -583,6 +585,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
                 startActivity(intent)
             }
         }
+        setResult(RESULT_OK, Intent().apply { putExtra("TXHASH", currentTxHash) })
         finish()
     }
 
