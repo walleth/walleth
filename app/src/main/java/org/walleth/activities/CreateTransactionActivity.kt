@@ -357,7 +357,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
                         currentSignatureData = signatureData
 
                         currentTxHash = transaction.encodeRLP(signatureData).keccak().toHexString()
-                        transaction.txHash = transaction.encodeRLP(signatureData).keccak().toHexString()
+                        transaction.txHash = currentTxHash
 
 
                         val entity = transaction.toEntity(signatureData = signatureData, transactionState = TransactionState())
