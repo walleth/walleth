@@ -10,6 +10,8 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.bip44.BIP44
+import org.kethereum.functions.encodeRLP
+import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kodein.di.KodeinAware
@@ -25,6 +27,7 @@ import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.hexToByteArray
+import org.walleth.khex.toHexString
 import java.math.BigInteger
 
 const val TREZOR_REQUEST_CODE = 7688
@@ -74,6 +77,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity(), KodeinAware {
                     s = BigInteger(res.signatureS.toByteArray()),
                     v = res.signatureV.toByte()
             )
+            transaction.transaction.txHash = transaction.transaction.encodeRLP(signatureData).keccak().toHexString()
             async(UI) {
                 async(CommonPool) {
                     appDatabase.inTransaction {
