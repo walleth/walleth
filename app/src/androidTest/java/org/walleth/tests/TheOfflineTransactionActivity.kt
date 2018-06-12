@@ -55,6 +55,8 @@ class TheOfflineTransactionActivity {
 
         onView(withId(R.id.fab)).perform(click())
 
+        onView(withId(R.id.nonce)).check(matches(withText("0")))
+
         assertThat(TestApp.testDatabase.transactions.getTransactions().size).isEqualTo(1)
     }
 
