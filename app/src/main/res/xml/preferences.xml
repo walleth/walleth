@@ -14,7 +14,7 @@
             android:title="@string/select_token">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="org.walleth"
+                android:targetPackage="@string/package_name"
                 android:targetClass="org.walleth.activities.SelectTokenActivity"/>
     </Preference>
 
@@ -23,12 +23,14 @@
             android:title="@string/select_fiat_reference">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="org.walleth"
+                android:targetPackage="@string/package_name"
                 android:targetClass="org.walleth.activities.SelectReferenceActivity"/>
     </Preference>
 
     <EditTextPreference
             android:key="@string/key_prefs_stats_username"
             android:title="@string/settings_stats_name"/>
+
+
 
 </PreferenceScreen>

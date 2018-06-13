@@ -95,6 +95,9 @@ android {
 
     }
 
+    applicationVariants.all { variant ->
+        variant.resValue "string", "package_name", "${variant.properties.applicationId}"
+    }
 
     android.variantFilter { variant ->
         def geth = variant.getFlavors().get(0).name
