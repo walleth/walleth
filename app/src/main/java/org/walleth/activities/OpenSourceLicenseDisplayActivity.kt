@@ -5,15 +5,11 @@ import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_list_simple.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.walleth.R
 import org.walleth.ui.info.licenses.LicenseInfoAdapter
 import org.walleth.ui.info.licenses.LicenseInfoEntry
 
-class OpenSourceLicenseDisplayActivity : AppCompatActivity(), KodeinAware {
-
-    override val kodein by closestKodein()
+class OpenSourceLicenseDisplayActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
