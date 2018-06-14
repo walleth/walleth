@@ -158,6 +158,7 @@ dependencies {
     implementation 'com.github.ligi:tracedroid:1.4'
     implementation 'com.github.ligi:KAXT:0.20'
     implementation 'com.github.ligi:KAXTUI:0.5'
+    implementation 'com.github.ligi:thirdpartylicensedisplay:0.2'
 
     implementation('com.github.trezor.trezor-android:trezor-lib:v2.0.1') {
         exclude group: 'com.android.support'
@@ -318,6 +319,7 @@ if (hasProperty("isCI")) {
                 'com.github.ligi:KAXT:0.20:KAXT-0.20.aar:65505d2328db8bde4870a3ca536d5bb3191822bd7d68922666fae3ea874981a1',
                 'com.github.ligi:KAXTUI:0.5:KAXTUI-0.5.aar:f2fac4ccf985e1f8e4b97384900c7a7c81c7967f4bda97f26a83e8622aa7b54e',
                 'com.github.ligi:KRoom:0.4:KRoom-0.4.aar:44a3d2279de2385892f9fc1335a73e740c7942bc445ae34436e265b1abbb225b',
+                'com.github.ligi:thirdpartylicensedisplay:0.2:thirdpartylicensedisplay-0.2.aar:2ab2a6ea5134328401a25fc26cdf7754c92aaff5166262ef30407f34c45ac682',
                 'com.github.ligi:tracedroid:1.4:tracedroid-1.4.jar:7166d047a3622676357645414751d911b0e507e78d0a9102e38b7500a44fda8b',
                 'com.github.ligi:trulesk:0.23:trulesk-0.23.aar:2cad3a849c170dcf5b521b24cca4d3de78986450bba424aced0a898fc91a916e',
                 'com.github.trezor.trezor-android:trezor-lib:v2.0.1:trezor-lib-v2.0.1.aar:58f71f9b8c8611bfe44eeed3e6cdd74b0aeb2bcbec9cd90bfbaf2b4273816c72',
