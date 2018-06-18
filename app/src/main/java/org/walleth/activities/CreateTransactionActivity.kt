@@ -225,9 +225,9 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
             nonce_input_container.visibility = View.VISIBLE
         }
 
-        Transformations.switchMap(currentAddressProvider, { address ->
+        Transformations.switchMap(currentAddressProvider) { address ->
             appDatabase.transactions.getNonceForAddressLive(address, networkDefinitionProvider.getCurrent().chain)
-        }).observe(this, Observer {
+        }.observe(this, Observer {
 
             if (intent.getStringExtra("nonce") == null) {
                 val nonceBigInt = if (it != null && !it.isEmpty()) {
@@ -272,9 +272,9 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
 
     private fun onCurrentTokenChanged() {
         val currentToken = currentTokenProvider.currentToken
-        currentBalanceLive = Transformations.switchMap(currentAddressProvider, { address ->
+        currentBalanceLive = Transformations.switchMap(currentAddressProvider) { address ->
             appDatabase.balances.getBalanceLive(address, currentToken.address, networkDefinitionProvider.getCurrent().chain)
-        })
+        }
         currentBalanceLive!!.observe(this, Observer {
             currentBalance = it
         })
@@ -299,7 +299,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
             if (currentTokenProvider.currentToken.isETH() && currentERC681?.function == null && currentAmount == ZERO) {
-                question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener({ _, _ -> startTransaction(isTrezorTransaction) }))
+                question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
             } else if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
                 question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
             } else {
