@@ -131,7 +131,7 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3"
     implementation "com.android.support:multidex:$multidex_version"
     androidTestImplementation "com.android.support:multidex:$multidex_version"
     androidTestImplementation "com.android.support:multidex-instrumentation:$multidex_version"
@@ -443,13 +443,16 @@ if (hasProperty("isCI")) {
                 'org.jetbrains.kotlin:kotlin-runtime:1.1.1:kotlin-runtime-1.1.1.jar:e02c2ae02c177aeeed7ca2fbfc11f80ce64fe9a89133f3d1e926ac945b28ba8d',
                 'org.jetbrains.kotlin:kotlin-script-runtime:1.2.50:kotlin-script-runtime-1.2.50.jar:b7dfcf2570f333c61c6c50590ee7c042e022d90c9359dd179fdb4820a6bf64d1',
                 'org.jetbrains.kotlin:kotlin-stdlib-common:1.2.50:kotlin-stdlib-common-1.2.50.jar:77129af18d7fc2d3f19e4f2cb140fa47dd602e493c33bd02e79134a62a1bb000',
+                'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.2.50:kotlin-stdlib-jdk7-1.2.50.jar:d5b7968cf9d623436cb2d781031a12c79438d1f0b96f47a79a8dc5acfe20ee59',
                 'org.jetbrains.kotlin:kotlin-stdlib-jre7:1.2.0:kotlin-stdlib-jre7-1.2.0.jar:c7a20fb951d437797afe8980aff6c1e5a03f310c661ba58ba1d4fa90cb0f2926',
                 'org.jetbrains.kotlin:kotlin-stdlib-jre8:1.2.0:kotlin-stdlib-jre8-1.2.0.jar:633524eee6ef1941f7cb1dab7ee3927b0a221ceee9047aeb5515f4cbb990c82a',
                 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1:kotlin-stdlib-1.1.1.jar:f64bab90b8efecc0396dff957c5ce72c63116bf944830f37af2277e0fa6d8c0c',
                 'org.jetbrains.kotlin:kotlin-stdlib:1.2.0:kotlin-stdlib-1.2.0.jar:05cfd9f5ac0b41910703a8925f7211a495909b27a2ffdd1c5106f1689aeafcd4',
                 'org.jetbrains.kotlin:kotlin-stdlib:1.2.50:kotlin-stdlib-1.2.50.jar:620b79d2ed94273b73588747b543adfe89b37e5d7aa2e34bab13eb2b92a15714',
-                'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.22.5:kotlinx-coroutines-android-0.22.5.jar:c5c14cb8a236a8da09cdaa768a64586c7cf44612f114197289748c384239aea4',
-                'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.22.5:kotlinx-coroutines-core-0.22.5.jar:aa85adb7bf5a47c14bcbcc929a9df6eff70eb522f4103a3ae0061d4ee22db38f',
+                'org.jetbrains.kotlinx:atomicfu-common:0.10.3:atomicfu-common-0.10.3.jar:b668c979189c730f23051123fcb9b57428fd222090ddb8f40c726a99503d99d2',
+                'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3:kotlinx-coroutines-android-0.23.3.jar:3815db6fe9aad53e0d5a41a222cb1e89e0e77ce89fee099cd0a5f94242209fe2',
+                'org.jetbrains.kotlinx:kotlinx-coroutines-core-common:0.23.3:kotlinx-coroutines-core-common-0.23.3.jar:aad2f901d5d051917b2af1820b9214a4eb460c429f69a59bca5a89ca41f4cd8c',
+                'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.3:kotlinx-coroutines-core-0.23.3.jar:f4356a181978f1dbe70345ebfb8e4287953c447e22525d9e626f316195c1d0ce',
                 'org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.5.0:kotlinx-serialization-runtime-common-0.5.0.jar:a2e331d68cc458c76fb351ba9e8d9cc5af01a0c23f5b1febb3d619ac1e0770ab',
                 'org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.5.0:kotlinx-serialization-runtime-0.5.0.jar:e52c5d8aa8a334683b65ae9f0fcd7ad0ab5b8fbf435f73de2fb0e165c3551fe8',
                 'org.jetbrains.trove4j:trove4j:20160824:trove4j-20160824.jar:1917871c8deb468307a584680c87a44572f5a8b0b98c6d397fc0f5f86596dbe7',
@@ -472,7 +475,6 @@ if (hasProperty("isCI")) {
                 'org.xerial:sqlite-jdbc:3.20.1:sqlite-jdbc-3.20.1.jar:3d09ac1caebd6ea3bd82a1d1819a2cf6e251869dbaae43712caf6a65f40d40eb',
         ]
     }
-
 
 }
 if (includeFirebase) {
