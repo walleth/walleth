@@ -2,6 +2,19 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <application>
+
+        <provider
+                android:authorities="org.walleth.fcm.FirebaseInitContentProvider"
+                android:exported="false"
+                android:enabled="true"
+                android:name="org.walleth.fcm.FirebaseInitContentProvider" />
+
+        <service android:name="org.walleth.etherscan.EtherScanService"/>
+
+        <service
+                android:name="org.walleth.fcm.FirebaseIntentService">
+        </service>
+
         <service
                 android:name="org.walleth.fcm.WallethFirebaseMessageService">
             <intent-filter>

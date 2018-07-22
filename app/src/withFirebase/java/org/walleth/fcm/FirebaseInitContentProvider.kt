@@ -1,4 +1,4 @@
-package org.walleth
+package org.walleth.fcm
 
 import android.content.ContentProvider
 import android.content.ContentValues
