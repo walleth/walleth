@@ -97,14 +97,14 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
                                 }
                             }
                         })
-                        .setAction(R.string.paste_from_clipboard_action, {
+                        .setAction(R.string.paste_from_clipboard_action) {
                             alert(R.string.copied_string_warning_message, R.string.copied_string_warning_title) {
                                 startActivity(Intent(this@MainActivity, CreateTransactionActivity::class.java).apply {
                                     data = Uri.parse(item)
                                 })
                             }
 
-                        })
+                        }
                         .show()
             }
         }
