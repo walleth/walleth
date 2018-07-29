@@ -8,6 +8,7 @@ import org.kodein.di.generic.instance
 import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.walletconnect.WalletConnectDriver
 
 class FirebaseIntentService : LifecycleService(), KodeinAware {
 
@@ -18,8 +19,9 @@ class FirebaseIntentService : LifecycleService(), KodeinAware {
         Log.i("starting FirebaseIntentService")
         val appDatabase: AppDatabase by instance()
         val okHttpClient: OkHttpClient by instance()
+        val walletConnectInteractor: WalletConnectDriver by instance()
         appDatabase.addressBook.allThatWantNotificationsLive().observe(this, android.arch.lifecycle.Observer { list: List<AddressBookEntry>? ->
-            list?.let { registerPush(okHttpClient, it.map { it.address.hex }) }
+            list?.let { registerPush(walletConnectInteractor, okHttpClient, it.map { it.address.hex }) }
         })
     }
 

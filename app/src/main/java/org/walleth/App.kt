@@ -13,6 +13,7 @@ import android.support.v7.preference.PreferenceScreen
 import com.chibatching.kotpref.Kotpref
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
+import com.squareup.moshi.Moshi
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
 import okhttp3.OkHttpClient
@@ -42,12 +43,14 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.util.DelegatingSocketFactory
+import org.walleth.walletconnect.WalletConnectDriver
 import java.net.Socket
 import javax.net.SocketFactory
 
 open class App : MultiDexApplication(), KodeinAware {
 
     override val kodein = Kodein.lazy {
+        bind<Moshi>() with singleton { Moshi.Builder().build() }
         bind<OkHttpClient>() with singleton {
             val socketFactory = object : DelegatingSocketFactory(SocketFactory.getDefault()) {
                 override fun configureSocket(socket: Socket): Socket {
@@ -77,8 +80,10 @@ open class App : MultiDexApplication(), KodeinAware {
             bind<Settings>() with singleton { KotprefSettings }
 
             bind<CurrentTokenProvider>() with singleton { CurrentTokenProvider(instance()) }
+            bind<WalletConnectDriver>() with singleton { WalletConnectDriver(applicationContext, "https://us-central1-walleth-abbd0.cloudfunctions.net/push", instance()) }
 
             bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
+
             bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
             bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(keyStore, instance(), instance(), applicationContext) }
             bind<FourByteDirectory>() with singleton { FourByteDirectoryImpl(instance(), applicationContext) }

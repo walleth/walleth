@@ -15,7 +15,11 @@ import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import org.kethereum.functions.encodeRLP
+import org.kethereum.functions.isTokenTransfer
+import org.kethereum.model.Transaction
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -70,11 +74,11 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
 
                 fab.setVisibility(it.transactionState.needsSigningConfirmation)
                 fab.setOnClickListener { _ ->
-                    async(UI) {
-                        async(CommonPool) {
+                    launch(UI) {
+                        launch(CommonPool) {
                             it.transactionState.needsSigningConfirmation = false
                             appDatabase.transactions.upsert(it)
-                        }.await()
+                        }
 
                         finish()
                     }
@@ -135,7 +139,7 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
 
                 var message = "Hash:" + it.transaction.txHash
                 it.transactionState.error?.let { error ->
-                    message += "\nError:" + error
+                    message += "\nError:$error"
                 }
                 details.text = message
 
@@ -143,10 +147,11 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
                     if (it.size >= 4) {
                         function_call_label.visibility = View.VISIBLE
                         function_call.visibility = View.VISIBLE
-                        async(UI) {
-                            val signatures = async(CommonPool) {
+                        launch(UI) {
+                            val signatures = withContext(CommonPool) {
                                 fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString())
-                            }.await()
+                            }
+                            Transaction().isTokenTransfer()
                             function_call.text = if (signatures.isNotEmpty()) {
                                 signatures.joinToString(
                                         separator = " ${getString(R.string.or)}\n",

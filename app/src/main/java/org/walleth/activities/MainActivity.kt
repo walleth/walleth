@@ -52,6 +52,7 @@ import org.walleth.util.copyToClipboard
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
 import org.walleth.util.isUnsignedTransactionJSON
+import org.walleth.walletconnect.isWalletConnectJSON
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -133,6 +134,10 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
 
                 scanResult.isJSONKey() -> {
                     startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
+                }
+
+                scanResult.isWalletConnectJSON() -> {
+                    startActivity(getWalletConnectIntent(scanResult))
                 }
 
                 scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() || scanResult.isParityUnsignedTransactionJSON() -> {

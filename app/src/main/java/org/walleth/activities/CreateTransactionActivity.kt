@@ -27,13 +27,13 @@ import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.parseERC681
 import org.kethereum.extensions.maybeHexToBigInteger
 import org.kethereum.extensions.toHexStringZeroPadded
-import org.kethereum.functions.createTokenTransferTransactionInput
-import org.kethereum.functions.encodeRLP
+import org.kethereum.functions.*
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.methodsignatures.toHexSignature
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
+import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -42,6 +42,7 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
+import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
@@ -84,7 +85,7 @@ const val TOKEN_REQUEST_CODE = 3
 
 class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
 
-    private var currentERC681: ERC681? = null
+    private var currentERC681: ERC681 = ERC681()
     private var currentAmount: BigInteger? = null
     private var currentToAddress: Address? = null
 
@@ -144,7 +145,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
             savedInstanceState.getString("ERC67")
         } else {
             intent.data?.toString()
-        }?.let { it.toERC681() }
+        }?.toERC681() ?: ERC681()
 
         if (savedInstanceState != null && savedInstanceState.containsKey("lastERC67")) {
             lastWarningURI = savedInstanceState.getString("lastERC67")
@@ -189,6 +190,27 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
         } else {
             settings.getGasPriceFor(networkDefinitionProvider.getCurrent()).toString()
         })
+
+        intent.getStringExtra("data")?.let {
+            val data = it.hexToByteArray().toList()
+
+            if (data.startsWith(tokenTransferSignature)) {
+                currentERC681.function = "transfer"
+
+                Log.i("TXData" + data.toHexString())
+
+                val tmpTX = Transaction().apply {
+                    input = data
+                }
+
+                currentERC681.functionParams = listOf(
+                        "address" to tmpTX.getTokenTransferTo().hex,
+                        "uint256" to tmpTX.getTokenTransferValue().toString()
+                )
+            }
+
+        }
+
         sweep_button.setOnClickListener {
             val balance = currentBalanceSafely()
             if (currentTokenProvider.currentToken.isETH()) {
@@ -477,7 +499,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
 
                                     amount_input.setText(BigDecimal(it).divide(currentTokenProvider.currentToken.decimalsAsMultiplicator()).toPlainString())
 
-                                    // when called from onCreate() the afterEdwer outage foit hook is not yet added
+                                    // when called from onCreate() the afterEdit hook is not yet added
                                     setAmountFromETHString(amount_input.text.toString())
                                     amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
                                 }

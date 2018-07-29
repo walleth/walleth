@@ -4,11 +4,19 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.squareup.moshi.Moshi
 import okhttp3.*
 import org.ligi.tracedroid.logging.Log
+import org.walleth.data.JSON_MEDIA_TYPE
+import org.walleth.walletconnect.WalletConnectDriver
 import java.io.IOException
 
 
-fun registerPush(okHttp: OkHttpClient , addresses: List<String>) {
+fun registerPush(walletConnectInteractor: WalletConnectDriver,
+                 okHttp: OkHttpClient,
+                 addresses: List<String>) {
     val firebaseToken = FirebaseInstanceId.getInstance().token
+    firebaseToken?.let {
+        walletConnectInteractor.fcmToken = it
+    }
+
     if (firebaseToken != null) {
         val adapter = Moshi.Builder().build().adapter(PushMapping::class.java)
 
@@ -16,7 +24,7 @@ fun registerPush(okHttp: OkHttpClient , addresses: List<String>) {
 
         okHttp.newCall(Request.Builder().url("https://li5.ddns.net")
 
-                .post(RequestBody.create(MediaType.parse("application/json"), adapter.toJson(pushMapping)))
+                .post(RequestBody.create(JSON_MEDIA_TYPE, adapter.toJson(pushMapping)))
                 .build())
                 .enqueue(object : Callback {
                     override fun onResponse(call: Call?, response: Response?) {
