@@ -131,7 +131,7 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.24.0"
     implementation "com.android.support:multidex:$multidex_version"
     androidTestImplementation "com.android.support:multidex:$multidex_version"
     androidTestImplementation "com.android.support:multidex-instrumentation:$multidex_version"
@@ -426,10 +426,10 @@ if (hasProperty("isCI")) {
                 'org.jetbrains.kotlin:kotlin-stdlib:1.1.1:kotlin-stdlib-1.1.1.jar:f64bab90b8efecc0396dff957c5ce72c63116bf944830f37af2277e0fa6d8c0c',
                 'org.jetbrains.kotlin:kotlin-stdlib:1.2.0:kotlin-stdlib-1.2.0.jar:05cfd9f5ac0b41910703a8925f7211a495909b27a2ffdd1c5106f1689aeafcd4',
                 'org.jetbrains.kotlin:kotlin-stdlib:1.2.51:kotlin-stdlib-1.2.51.jar:12c862d478aad2cb72251ee6541f04b0b7651bdf05577a81d95e907cecf8802c',
-                'org.jetbrains.kotlinx:atomicfu-common:0.10.3:atomicfu-common-0.10.3.jar:b668c979189c730f23051123fcb9b57428fd222090ddb8f40c726a99503d99d2',
-                'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.23.3:kotlinx-coroutines-android-0.23.3.jar:3815db6fe9aad53e0d5a41a222cb1e89e0e77ce89fee099cd0a5f94242209fe2',
-                'org.jetbrains.kotlinx:kotlinx-coroutines-core-common:0.23.3:kotlinx-coroutines-core-common-0.23.3.jar:aad2f901d5d051917b2af1820b9214a4eb460c429f69a59bca5a89ca41f4cd8c',
-                'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.23.3:kotlinx-coroutines-core-0.23.3.jar:f4356a181978f1dbe70345ebfb8e4287953c447e22525d9e626f316195c1d0ce',
+                'org.jetbrains.kotlinx:atomicfu-common:0.11.0:atomicfu-common-0.11.0.jar:134d10f277e62b26de92a41e6bdc365759dcbc2c1a94850b1d0e89085741b9c2',
+                'org.jetbrains.kotlinx:kotlinx-coroutines-android:0.24.0:kotlinx-coroutines-android-0.24.0.jar:6e4f7da61225af49a01ef9e63d2edcca643448b1fab2db5a5fd7a5f82cc1b1c9',
+                'org.jetbrains.kotlinx:kotlinx-coroutines-core-common:0.24.0:kotlinx-coroutines-core-common-0.24.0.jar:f562ed283ffb7a04386a3e3c1f80e93d7aec8d1c712eab8f4b802c3c5a45d12d',
+                'org.jetbrains.kotlinx:kotlinx-coroutines-core:0.24.0:kotlinx-coroutines-core-0.24.0.jar:cef5c81a8118d48808fad82097031cfd43d78e65b53076680ae7342f9a7f7a3d',
                 'org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.5.0:kotlinx-serialization-runtime-common-0.5.0.jar:a2e331d68cc458c76fb351ba9e8d9cc5af01a0c23f5b1febb3d619ac1e0770ab',
                 'org.jetbrains.kotlinx:kotlinx-serialization-runtime:0.5.0:kotlinx-serialization-runtime-0.5.0.jar:e52c5d8aa8a334683b65ae9f0fcd7ad0ab5b8fbf435f73de2fb0e165c3551fe8',
                 'org.jetbrains.trove4j:trove4j:20160824:trove4j-20160824.jar:1917871c8deb468307a584680c87a44572f5a8b0b98c6d397fc0f5f86596dbe7',
