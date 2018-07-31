@@ -164,7 +164,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation 'com.github.kenglxn.QRGen:android:2.4.0'
+    implementation 'com.github.kenglxn.QRGen:android:2.5.0'
     implementation 'com.google.zxing:core:3.3.3'
 
     implementation 'com.jakewharton:process-phoenix:2.0.0'
@@ -304,8 +304,8 @@ if (hasProperty("isCI")) {
                 'com.chibatching.kotpref:kotpref:2.5.0:kotpref-2.5.0.aar:964ff0c4c376f0bf5b1d8ebec3c1fffb37cb79b244cfbc6873f44d5279b993fc',
                 'com.dmitrymalkovich.android:progress-fab:1.6:progress-fab-1.6.aar:bf43e560352f006e0255d5138cbe187fbf0a67784f7b62c6ea61b9fcd9d034cc',
                 'com.github.amlcurran.showcaseview:library:5.4.3:library-5.4.3.aar:a52c34bcf4ab8118e28efd5a10dd16a7a56685556f77e5f532862b2de56c8c8a',
-                'com.github.kenglxn.QRGen:android:2.4.0:android-2.4.0.jar:9a8e48c0c701f52874c32b73e5407a9da62cec70c3ded145cb37e5fb03a1c1b1',
-                'com.github.kenglxn.QRGen:core:2.4.0:core-2.4.0.jar:242360e614d92cd8f1e85e8419c6a7d91ecdd429cac587ba10a7d9feb0b2135a',
+                'com.github.kenglxn.QRGen:android:2.5.0:android-2.5.0.jar:fb956f99761ce17080e19d3277f7e47661d7e1ac097395ea483fea087eacded6',
+                'com.github.kenglxn.QRGen:core:2.5.0:core-2.5.0.jar:2452f2d8b3bf6a0f39bf6e979e1e07c83cffcc93da16c79a3f0cf08d9c4c793b',
                 'com.github.ligi:ExtraCompats:0.4:ExtraCompats-0.4.aar:3e4315f0f3b35e6e6dd5f37494480fd7ceaa09546c4361c7e7ff5b8563c936e0',
                 'com.github.ligi:KAXT:0.20:KAXT-0.20.aar:65505d2328db8bde4870a3ca536d5bb3191822bd7d68922666fae3ea874981a1',
                 'com.github.ligi:KAXTUI:0.5:KAXTUI-0.5.aar:f2fac4ccf985e1f8e4b97384900c7a7c81c7967f4bda97f26a83e8622aa7b54e',
