@@ -86,7 +86,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity(), KodeinAware {
                         transactions.upsert(transaction.transaction.toEntity(signatureData, TransactionState()))
                     }
                 }
-                setResult(Activity.RESULT_OK)
+                setResult(RESULT_OK, Intent().apply { putExtra("TXHASH", transaction.transaction.txHash) })
                 finish()
             }
         }

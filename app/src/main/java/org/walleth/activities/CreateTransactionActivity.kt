@@ -106,6 +106,9 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
         when (requestCode) {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
+                    if (data?.hasExtra("TXHASH") == true) {
+                        currentTxHash = data.getStringExtra("TXHASH")
+                    }
                     storeDefaultGasPriceAndFinish()
                 }
             }
