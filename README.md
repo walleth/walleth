@@ -14,6 +14,7 @@ Features
  - Tokens(ERC-20)
  - ERC-67 / ERC-681 URLS
  - ERC-55 Checksums
+ - [WalletConnect](https://walletconnect.org) Support
  - Offline signing (compatible to Parity signing flow)
  - JSON UTC key import/export
  - display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI 
