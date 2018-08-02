@@ -15,11 +15,13 @@ import android.support.v7.app.AppCompatActivity
 import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.activity_show_qr.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.delay
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import kotlinx.serialization.json.JSON
@@ -44,7 +46,8 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
     val keyStore: WallethKeyStore by instance()
     val currentAddressProvider: CurrentAddressProvider by instance()
 
-    private lateinit var keyJSON: String
+    private var keyJSON: String? = null
+    var mWebView: WebView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +63,7 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
         }
 
         password_input.doAfterEdit {
-            generate()
+            reGenerate()
             checkConfirmation()
         }
 
@@ -69,14 +72,15 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
         }
 
         checkConfirmation()
-        generate()
+        reGenerate()
     }
 
     private fun checkConfirmation() {
         confirmation_warning.setVisibility(password_input.text.toString() != password_input_confirmation.text.toString())
     }
 
-    private fun generate() {
+    private fun reGenerate() {
+        keyJSON = null
         launch(UI) {
             val bmpScaled = withContext(CommonPool) {
 
@@ -108,13 +112,15 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
         }
 
         R.id.menu_share -> {
-            val sendIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, keyJSON)
-                type = "text/plain"
-            }
+            startAfterKeyIsReady {
+                val sendIntent = Intent().apply {
 
-            startActivity(sendIntent)
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, keyJSON)
+                    type = "text/plain"
+                }
+                startActivity(sendIntent)
+            }
             true
         }
 
@@ -125,8 +131,20 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
         else -> super.onOptionsItemSelected(item)
     }
 
-    var mWebView: WebView? = null
-    private fun doWebViewPrint() {
+    private fun startAfterKeyIsReady(action: () -> Unit) = launch(UI) {
+        key_progress.visibility = View.VISIBLE
+
+        withContext(CommonPool) {
+            while (keyJSON == null) {
+                delay(10)
+            }
+        }
+
+        key_progress.visibility = View.GONE
+        action.invoke()
+    }
+
+    private fun doWebViewPrint() = startAfterKeyIsReady {
         val webView = WebView(this)
         webView.webViewClient = object : WebViewClient() {
 
@@ -162,5 +180,4 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
         printManager.print(jobName, printAdapter, PrintAttributes.Builder().build())
 
     }
-
 }
