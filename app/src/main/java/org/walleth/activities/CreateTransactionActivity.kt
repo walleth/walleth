@@ -164,9 +164,9 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
 
         currentAddressProvider.observe(this, Observer { address ->
             address?.let {
-                appDatabase.addressBook.getByAddressAsync(address) {
-                    from_address.text = it?.name
-                    val isTrezorTransaction = it?.trezorDerivationPath != null
+                appDatabase.addressBook.getByAddressAsync(address) { entry ->
+                    from_address.text = entry?.name
+                    val isTrezorTransaction = entry?.trezorDerivationPath != null
 
                     fab.setImageResource(when {
                         isTrezorTransaction
@@ -177,7 +177,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
 
                         else -> R.drawable.ic_action_done
                     })
-                    fab.setOnClickListener {
+                    fab.setOnClickListener { _ ->
                         onFabClick(isTrezorTransaction)
                     }
                 }
@@ -265,7 +265,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
 
         })
         refreshFee()
-        setToFromURL(currentERC681?.generateURL(), false)
+        setToFromURL(currentERC681.generateURL(), false)
 
         scan_button.setOnClickListener {
             startScanActivityForResult(this)
@@ -286,12 +286,12 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
             amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
         }
 
-        val functionVisibility = currentERC681?.function != null && currentERC681?.isTokenTransfer() != true
+        val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
         function_label.setVisibility(functionVisibility)
         function_text.setVisibility(functionVisibility)
 
         if (functionVisibility) {
-            function_text.text = currentERC681?.function + "(" + currentERC681?.functionParams?.joinToString(",") { it.second } + ")"
+            function_text.text = currentERC681.function + "(" + currentERC681.functionParams?.joinToString(",") { it.second } + ")"
         }
     }
 
@@ -447,7 +447,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
             val localERC681 = uri.toERC681()
             currentERC681 = localERC681
 
-            if (currentERC681?.valid == true) {
+            if (currentERC681.valid) {
 
                 chainIDAlert(networkDefinitionProvider,
                         localERC681.chainId,
