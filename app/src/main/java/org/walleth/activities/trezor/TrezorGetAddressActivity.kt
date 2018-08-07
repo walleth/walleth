@@ -100,7 +100,7 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
         AlertDialog.Builder(this)
                 .setView(currentDerivationDialogView)
                 .setTitle(R.string.trezor_select_address)
-                .setPositiveButton(android.R.string.ok, { _, _ ->
+                .setPositiveButton(android.R.string.ok) { _, _ ->
                     if (currentBIP44 == null || currentAddress == null) {
                         alert(R.string.trezor_no_valid_input)
                     } else {
@@ -110,10 +110,10 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
                         setResult(Activity.RESULT_OK, resultIntent)
                         finish()
                     }
-                })
-                .setNegativeButton(android.R.string.cancel, { _, _ ->
+                }
+                .setNegativeButton(android.R.string.cancel) { _, _ ->
                     finish()
-                })
+                }
                 .show()
     }
 
