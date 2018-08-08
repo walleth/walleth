@@ -18,6 +18,8 @@ import kotlinx.coroutines.experimental.launch
 import org.kethereum.bip39.MnemonicWords
 import org.kethereum.bip39.toKey
 import org.kethereum.crypto.ECKeyPair
+import org.kethereum.erc55.withERC55Checksum
+import org.kethereum.model.Address
 import org.kethereum.wallet.loadKeysFromWalletJsonString
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
@@ -95,11 +97,13 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
 
                 val importKey = keyStore.importKey(key, DEFAULT_PASSWORD)
 
-                alertBuilder
-                        .setMessage(getString(R.string.imported_key_alert_message, importKey?.hex))
-                        .setTitle(getString(R.string.dialog_title_success))
-
                 if (importKey != null) {
+
+                    val address = Address(importKey.hex).withERC55Checksum()
+                    alertBuilder
+                            .setMessage(getString(R.string.imported_key_alert_message, address))
+                            .setTitle(getString(R.string.dialog_title_success))
+
                     appDatabase.addressBook.getByAddressAsync(importKey) { oldEntry ->
                         val accountName = if (account_name.text.isBlank()) {
                             oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
