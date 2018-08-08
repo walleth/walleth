@@ -10,7 +10,7 @@ import java.util.*
 
 
 private const val GETPROP_EXECUTABLE_PATH = "/system/bin/getprop"
-private val PATCH_LEVEL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-mm-DD", Locale.ENGLISH)
+private val PATCH_LEVEL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
 fun getDaysSincePatch() = getSecurityPatchDate()?.let {
     ChronoUnit.DAYS.between(it, LocalDate.now())
