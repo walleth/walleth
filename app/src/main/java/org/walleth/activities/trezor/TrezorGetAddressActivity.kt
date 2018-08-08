@@ -14,6 +14,7 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.data.DEFAULT_ETHEREUM_BIP44_PATH
 import org.walleth.kethereum.android.TransactionParcel
 
 private const val ADDRESS_HEX_KEY = "address_hex"
@@ -27,7 +28,7 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
     val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX").transaction }
 
     private var isDerivationDialogShown = false
-    private val initialBIP44 = BIP44.fromPath("m/44'/60'/0'/0/0")
+    private val initialBIP44 = BIP44.fromPath(DEFAULT_ETHEREUM_BIP44_PATH)
     private var currentAddress: Address? = null
 
     private val currentDerivationDialogView by lazy {

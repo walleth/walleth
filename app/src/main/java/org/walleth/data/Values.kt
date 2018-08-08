@@ -12,3 +12,5 @@ var DEFAULT_GAS_LIMIT_ERC_20_TX = BigInteger("73000")
 const val DEFAULT_PASSWORD = "default"
 
 val JSON_MEDIA_TYPE = MediaType.parse("application/json")
+
+const val DEFAULT_ETHEREUM_BIP44_PATH = "m/44'/60'/0'/0/0"

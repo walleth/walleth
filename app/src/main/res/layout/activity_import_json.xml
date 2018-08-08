@@ -38,6 +38,12 @@
                         android:id="@+id/key_type_select"
                         android:layout_below="@id/account_name_container">
 
+
+                <RadioButton android:layout_width="wrap_content"
+                             android:id="@+id/type_wordlist_select"
+                             android:layout_height="wrap_content"
+                             android:text="WordList"/>
+
                 <RadioButton android:layout_width="wrap_content"
                              android:id="@+id/type_json_select"
                              android:layout_height="wrap_content"

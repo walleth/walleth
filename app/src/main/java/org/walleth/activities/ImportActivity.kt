@@ -14,7 +14,9 @@ import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_import_json.*
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import org.kethereum.bip39.MnemonicWords
+import org.kethereum.bip39.toKey
 import org.kethereum.crypto.ECKeyPair
 import org.kethereum.wallet.loadKeysFromWalletJsonString
 import org.kodein.di.KodeinAware
@@ -26,6 +28,7 @@ import org.threeten.bp.LocalDateTime
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
+import org.walleth.data.DEFAULT_ETHEREUM_BIP44_PATH
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
@@ -34,7 +37,7 @@ import org.walleth.khex.hexToByteArray
 import java.io.FileNotFoundException
 
 enum class KeyType {
-    ECDSA, JSON
+    ECDSA, JSON, WORDLIST
 }
 
 
@@ -64,10 +67,11 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
             key_content.setText(it)
         }
 
-        val typeExtra = intent.getStringExtra(KEY_INTENT_EXTRA_TYPE)
+        val typeExtra = intent.getStringExtra(KEY_INTENT_EXTRA_TYPE)?: KeyType.WORDLIST.toString()
 
-        type_json_select.isChecked = typeExtra == null || KeyType.valueOf(typeExtra) == KeyType.JSON
-        type_ecdsa_select.isChecked = !type_json_select.isChecked
+        type_wordlist_select.isChecked = KeyType.valueOf(typeExtra) == KeyType.WORDLIST
+        type_json_select.isChecked = KeyType.valueOf(typeExtra) == KeyType.JSON
+        type_ecdsa_select.isChecked = !type_json_select.isChecked && !type_wordlist_select.isChecked
 
         key_type_select.setOnCheckedChangeListener { _, _ ->
             password_container.setVisibility(type_json_select.isChecked)
@@ -79,10 +83,15 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
         fab.setOnClickListener {
             val alertBuilder = AlertDialog.Builder(this)
             try {
-                val key = if (type_json_select.isChecked)
-                    key_content.text.toString().loadKeysFromWalletJsonString(password.text.toString())
-                else
-                    ECKeyPair.create(key_content.text.toString().hexToByteArray())
+
+                val content = key_content.text.toString()
+                val key = when {
+                    type_json_select.isChecked ->
+                        content.loadKeysFromWalletJsonString(password.text.toString())
+                    type_wordlist_select.isChecked -> MnemonicWords(content).toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
+                    else -> ECKeyPair.create(content.hexToByteArray())
+                }
+
 
                 val importKey = keyStore.importKey(key, DEFAULT_PASSWORD)
 
@@ -100,7 +109,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
                         val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
 
 
-                        async(CommonPool) {
+                        launch(CommonPool) {
                             appDatabase.addressBook.upsert(AddressBookEntry(name = accountName.toString(), address = importKey, note = note, isNotificationWanted = false, trezorDerivationPath = null))
                         }
                     }
