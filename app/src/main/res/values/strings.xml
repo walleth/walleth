@@ -95,6 +95,7 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="imported_key_default_entry_name">Imported</string>
     <string name="imported_key_entry_note">Imported on %s</string>
     <string name="key_input_key_hint">The key</string>
+    <string name="key_input_wordlist_hint">The wordlist</string>
     <string name="key_import_password_input_hint">Password</string>
     <string name="key_import_account_name_input_hint">Account name</string>
     <string name="scan_not_interpreted_error_message">Could not interpret your intent for the scan. Currently only support: ERC67, Address, ECDSA-Key, JSON(UTC-) Key</string>

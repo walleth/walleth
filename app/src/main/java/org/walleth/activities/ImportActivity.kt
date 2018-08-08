@@ -12,11 +12,16 @@ import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import kotlinx.android.synthetic.main.activity_import_json.*
 import kotlinx.coroutines.experimental.CommonPool
+import kotlinx.coroutines.experimental.android.UI
+import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import org.kethereum.bip39.MnemonicWords
 import org.kethereum.bip39.toKey
+import org.kethereum.bip39.validate
+import org.kethereum.bip39.wordlists.ENGLISH
 import org.kethereum.crypto.ECKeyPair
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.model.Address
@@ -69,64 +74,101 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
             key_content.setText(it)
         }
 
-        val typeExtra = intent.getStringExtra(KEY_INTENT_EXTRA_TYPE)?: KeyType.WORDLIST.toString()
+        val typeExtra = intent.getStringExtra(KEY_INTENT_EXTRA_TYPE) ?: KeyType.WORDLIST.toString()
 
         type_wordlist_select.isChecked = KeyType.valueOf(typeExtra) == KeyType.WORDLIST
         type_json_select.isChecked = KeyType.valueOf(typeExtra) == KeyType.JSON
         type_ecdsa_select.isChecked = !type_json_select.isChecked && !type_wordlist_select.isChecked
 
         key_type_select.setOnCheckedChangeListener { _, _ ->
-            password_container.setVisibility(type_json_select.isChecked)
+            refreshKeyTypeDependingUI()
         }
 
         supportActionBar?.subtitle = getString(R.string.import_json_subtitle)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {
-            val alertBuilder = AlertDialog.Builder(this)
-            try {
+            doImport()
+        }
 
-                val content = key_content.text.toString()
+        refreshKeyTypeDependingUI()
+    }
+
+    fun refreshKeyTypeDependingUI() {
+        password_container.setVisibility(!type_ecdsa_select.isChecked)
+        key_container.hint = getString(if (type_wordlist_select.isChecked) {
+            R.string.key_input_wordlist_hint
+        } else {
+            R.string.key_input_key_hint
+        })
+    }
+
+    var importing = false
+    private fun doImport() = launch(UI) {
+        if (importing) {
+            return@launch
+        }
+        importing = true
+
+        val alert = AlertDialog.Builder(this@ImportActivity)
+        fab_progress_bar.visibility = View.VISIBLE
+        try {
+
+            val content = key_content.text.toString()
+
+            val importKey = async {
                 val key = when {
                     type_json_select.isChecked ->
                         content.loadKeysFromWalletJsonString(password.text.toString())
-                    type_wordlist_select.isChecked -> MnemonicWords(content).toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
+                    type_wordlist_select.isChecked -> {
+                        val mnemonicWords = MnemonicWords(content)
+                        if (!mnemonicWords.validate(ENGLISH)) {
+                            throw IllegalArgumentException("Mnemonic phrase not valid")
+                        }
+                        mnemonicWords.toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
+
+                    }
                     else -> ECKeyPair.create(content.hexToByteArray())
                 }
 
-
-                val importKey = keyStore.importKey(key, DEFAULT_PASSWORD)
-
-                if (importKey != null) {
-
-                    val address = Address(importKey.hex).withERC55Checksum()
-                    alertBuilder
-                            .setMessage(getString(R.string.imported_key_alert_message, address))
-                            .setTitle(getString(R.string.dialog_title_success))
-
-                    appDatabase.addressBook.getByAddressAsync(importKey) { oldEntry ->
-                        val accountName = if (account_name.text.isBlank()) {
-                            oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
-                        } else {
-                            account_name.text
-                        }
-                        val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
+                keyStore.importKey(key, DEFAULT_PASSWORD)
+            }.await()
 
 
-                        launch(CommonPool) {
-                            appDatabase.addressBook.upsert(AddressBookEntry(name = accountName.toString(), address = importKey, note = note, isNotificationWanted = false, trezorDerivationPath = null))
-                        }
+            if (importKey != null) {
+
+                val address = Address(importKey.hex).withERC55Checksum()
+                alert
+                        .setMessage(getString(R.string.imported_key_alert_message, address))
+                        .setTitle(getString(R.string.dialog_title_success))
+
+                appDatabase.addressBook.getByAddressAsync(importKey) { oldEntry ->
+                    val accountName = if (account_name.text.isBlank()) {
+                        oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
+                    } else {
+                        account_name.text
                     }
+                    val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
 
+
+                    launch(CommonPool) {
+                        appDatabase.addressBook.upsert(AddressBookEntry(name = accountName.toString(), address = importKey, note = note, isNotificationWanted = false, trezorDerivationPath = null))
+                    }
                 }
-            } catch (e: Exception) {
-                alertBuilder
-                        .setMessage(e.message)
-                        .setTitle(getString(R.string.dialog_title_error))
-                        .show()
+
             }
-            alertBuilder.setPositiveButton(android.R.string.ok, null).show()
+
+            alert.setPositiveButton(android.R.string.ok) { _, _ -> finish() }
+
+        } catch (e: Exception) {
+            alert.setMessage(e.message)
+                    .setTitle(getString(R.string.dialog_title_error))
+                    .setPositiveButton(android.R.string.ok, null)
         }
+
+        alert.show()
+        fab_progress_bar.visibility = View.INVISIBLE
+        importing = false
     }
 
 

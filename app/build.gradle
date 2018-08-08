@@ -142,6 +142,7 @@ dependencies {
 
     implementation "com.github.walleth.kethereum:functions:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip39:$kethereum_version"
+    implementation "com.github.walleth.kethereum:bip39_wordlist_en:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip44:$kethereum_version"
     implementation "com.github.walleth.kethereum:erc55:$kethereum_version"
     implementation "com.github.walleth.kethereum:eip155:$kethereum_version"
