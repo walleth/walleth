@@ -67,6 +67,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
+                        android:importantForAccessibility="no"
                         android:fontFamily="sans-serif"
                         android:textSize="16sp"
                         android:padding="16dp"/>
@@ -83,6 +84,7 @@
                 <android.support.design.widget.TextInputEditText
                         android:id="@+id/password"
                         android:inputType="textPassword"
+                        android:importantForAccessibility="no"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
