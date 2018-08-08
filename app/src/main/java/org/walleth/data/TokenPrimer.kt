@@ -2,7 +2,7 @@ package org.walleth.data
 
 import android.content.res.AssetManager
 import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import org.kethereum.model.Address
@@ -31,7 +31,7 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
     if (settings.tokensInitVersion < TOKEN_INIT_VERSION) {
         settings.tokensInitVersion = TOKEN_INIT_VERSION
 
-        async(CommonPool) {
+        launch(CommonPool) {
             AllNetworkDefinitions.forEach {
                 try {
                     val chain = it.chain
@@ -56,8 +56,8 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
                     }
                     appDatabase.tokens.upsert(newTokens)
                     appDatabase.tokens.upsert(getEthTokenForChain(it).copy(order = 8888))
-                } catch (ioe: Exception) {
-                    Log.e("Could not load Token " + ioe)
+                } catch (exception: Exception) {
+                    Log.e("Could not load Token $exception")
                 }
 
             }
