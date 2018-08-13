@@ -9,7 +9,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_account_create.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import org.kethereum.crypto.ECKeyPair
 import org.kethereum.crypto.createEcKeyPair
 import org.kethereum.crypto.getAddress
@@ -74,8 +75,8 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
                     keyStore.importKey(it, DEFAULT_PASSWORD)
                 }
 
-                async(UI) {
-                    async(CommonPool) {
+                launch(UI) {
+                    withContext(CommonPool) {
                         appDatabase.addressBook.upsert(AddressBookEntry(
                                 name = nameInput.text.toString(),
                                 address = Address(hex),
@@ -83,7 +84,7 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
                                 trezorDerivationPath = trezorPath,
                                 isNotificationWanted = notify_checkbox.isChecked)
                         )
-                    }.await()
+                    }
                     finish()
                 }
 
