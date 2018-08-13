@@ -3,6 +3,7 @@ package org.walleth.activities
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager.FEATURE_USB_HOST
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.MenuItem
@@ -22,6 +23,7 @@ import org.kethereum.model.Address
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
+import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string.*
@@ -92,6 +94,7 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
 
         }
 
+        add_trezor.setVisibility(packageManager.hasSystemFeature(FEATURE_USB_HOST))
         add_trezor.setOnClickListener {
             startActivityForResult(Intent(this, TrezorGetAddressActivity::class.java), REQUEST_CODE_TREZOR)
         }
