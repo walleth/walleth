@@ -1,15 +1,34 @@
 package org.walleth.fcm
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleObserver
+import android.arch.lifecycle.OnLifecycleEvent
+import android.arch.lifecycle.ProcessLifecycleOwner
 import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 
-class FirebaseInitContentProvider : ContentProvider() {
+class FirebaseInitContentProvider : ContentProvider(), LifecycleObserver {
 
     override fun onCreate(): Boolean {
-        context.startService(Intent(context, FirebaseIntentService::class.java))
+        tryStartService()
         return true
+    }
+
+    private fun tryStartService() {
+        try {
+            context.startService(Intent(context, FirebaseIntentService::class.java))
+            ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
+        } catch (ise: IllegalStateException) {
+            // happens on android 8+ when app is not in foreground
+            ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun onEnterForeground() {
+        tryStartService()
     }
 
     override fun insert(uri: Uri?, values: ContentValues?) = null
