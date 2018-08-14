@@ -10,7 +10,8 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_relay.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import org.json.JSONObject
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.extractFrom
@@ -252,27 +253,25 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
         }
     }
 
-    private fun createTransaction(transaction: Transaction, signatureData: SignatureData?) {
-        async(UI) {
-            try {
+    private fun createTransaction(transaction: Transaction,
+                                  signatureData: SignatureData?) = launch(UI) {
+        try {
 
-                async(CommonPool) {
+            withContext(CommonPool) {
 
-                    val transactionState = TransactionState(needsSigningConfirmation = signatureData == null)
+                val transactionState = TransactionState(needsSigningConfirmation = signatureData == null)
 
-                    appDatabase.transactions.upsert(transaction.toEntity(signatureData, transactionState))
+                appDatabase.transactions.upsert(transaction.toEntity(signatureData, transactionState))
 
-                }.await()
-
-                startActivity(getTransactionActivityIntentForHash(transaction.txHash!!))
-                finish()
-
-            } catch (e: Exception) {
-                alert("Problem " + e.message)
             }
+
+            startActivity(getTransactionActivityIntentForHash(transaction.txHash!!))
+            finish()
+
+        } catch (e: Exception) {
+            alert("Problem " + e.message)
         }
     }
-
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_offline_transaction, menu)
