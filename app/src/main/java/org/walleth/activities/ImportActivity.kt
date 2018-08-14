@@ -18,7 +18,7 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
-import org.kethereum.bip39.MnemonicWords
+import org.kethereum.bip39.dirtyPhraseToMnemonicWords
 import org.kethereum.bip39.toKey
 import org.kethereum.bip39.validate
 import org.kethereum.bip39.wordlists.ENGLISH
@@ -94,7 +94,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
         refreshKeyTypeDependingUI()
     }
 
-    fun refreshKeyTypeDependingUI() {
+    private fun refreshKeyTypeDependingUI() {
         password_container.setVisibility(!type_ecdsa_select.isChecked)
         key_container.hint = getString(if (type_wordlist_select.isChecked) {
             R.string.key_input_wordlist_hint
@@ -121,7 +121,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
                     type_json_select.isChecked ->
                         content.loadKeysFromWalletJsonString(password.text.toString())
                     type_wordlist_select.isChecked -> {
-                        val mnemonicWords = MnemonicWords(content)
+                        val mnemonicWords = dirtyPhraseToMnemonicWords(content)
                         if (!mnemonicWords.validate(ENGLISH)) {
                             throw IllegalArgumentException("Mnemonic phrase not valid")
                         }
