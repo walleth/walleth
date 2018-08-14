@@ -138,8 +138,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
             if (importKey != null) {
 
                 val address = Address(importKey.hex).withERC55Checksum()
-                alert
-                        .setMessage(getString(R.string.imported_key_alert_message, address))
+                alert.setMessage(getString(R.string.imported_key_alert_message, address))
                         .setTitle(getString(R.string.dialog_title_success))
 
                 appDatabase.addressBook.getByAddressAsync(importKey) { oldEntry ->
@@ -152,7 +151,13 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
 
 
                     launch(CommonPool) {
-                        appDatabase.addressBook.upsert(AddressBookEntry(name = accountName.toString(), address = importKey, note = note, isNotificationWanted = false, trezorDerivationPath = null))
+                        val newEntry = AddressBookEntry(
+                                name = accountName.toString(),
+                                address = importKey,
+                                note = note, isNotificationWanted = false,
+                                trezorDerivationPath = null
+                        )
+                        appDatabase.addressBook.upsert(newEntry)
                     }
                 }
 
@@ -189,11 +194,8 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
             if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
                 key_content.setText(readTextFromUri(it.data))
-
             }
         }
-
-
     }
 
     private fun readTextFromUri(uri: Uri) = try {
