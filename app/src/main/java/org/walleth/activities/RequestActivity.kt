@@ -61,11 +61,11 @@ class RequestActivity : AppCompatActivity(), KodeinAware {
             refreshQR()
         }
 
-        receive_qrcode.setOnClickListener({
+        receive_qrcode.setOnClickListener {
             startActivity(Intent(this, FullscreenQRCodeActivity::class.java).apply {
                 putExtra(KEY_ERC681, currentERC67String)
             })
-        })
+        }
     }
 
     private fun refreshQR() {
@@ -107,7 +107,7 @@ class RequestActivity : AppCompatActivity(), KodeinAware {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.menu_share -> {
+        R.id.menu_share -> true.also {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TEXT, currentERC67String)
@@ -115,15 +115,12 @@ class RequestActivity : AppCompatActivity(), KodeinAware {
             }
 
             startActivity(sendIntent)
-            true
         }
-        R.id.menu_copy -> {
+        R.id.menu_copy -> true.also {
             copyToClipboard(currentERC67String, receive_qrcode)
-            true
         }
-        android.R.id.home -> {
+        android.R.id.home -> true.also {
             finish()
-            true
         }
         else -> super.onOptionsItemSelected(item)
     }
