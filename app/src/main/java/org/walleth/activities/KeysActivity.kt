@@ -29,13 +29,13 @@ class KeysActivity : AppCompatActivity(), KodeinAware {
                     .setOnCancelListener {
                         finish()
                     }
-                    .setItems(items, { _, i ->
+                    .setItems(items) { _, i ->
                         when (i) {
                             0 -> startActivityFromClass(ImportActivity::class.java)
                             else -> startActivityFromClass(ExportKeyActivity::class.java)
                         }
                         finish()
-                    })
+                    }
                     .show()
         }
 
