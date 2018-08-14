@@ -2,6 +2,7 @@
 <LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:background="@color/colorPrimary"
@@ -15,15 +16,17 @@
         <android.support.v7.widget.AppCompatImageView
                 app:srcCompat="@drawable/ic_social_person_outline"
                 android:layout_width="64dp"
-                android:layout_height="64dp"        />
+                android:layout_height="64dp"/>
 
         <android.support.v7.widget.AppCompatTextView
+                tools:text="Account name"
                 android:id="@+id/accountName"
+                app:autoSizeTextType="uniform"
                 android:paddingRight="8dp"
                 android:fontFamily="sans-serif"
-                android:textSize="24sp"
                 android:textColor="@android:color/black"
                 android:lines="1"
+                android:maxLines="1"
                 android:gravity="center"
                 android:layout_width="0dp"
                 android:layout_weight="1"
