@@ -174,8 +174,9 @@ dependencies {
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
 
-    implementation "org.kodein.di:kodein-di-generic-jvm:5.0.0"
-    implementation "org.kodein.di:kodein-di-framework-android:5.0.0"
+
+    implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
+    implementation "org.kodein.di:kodein-di-framework-android:$kodein_version"
 
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:design:$support_version"
