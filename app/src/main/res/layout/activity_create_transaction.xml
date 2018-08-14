@@ -213,7 +213,7 @@
             <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Nonce"
+                    android:text="@string/nonce"
                     android:visibility="gone"
                     android:id="@+id/nonce_title"
                     android:layout_below="@id/gas_limit_input_container"
