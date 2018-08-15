@@ -19,8 +19,8 @@ import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.walletconnect.Session
-import org.walleth.walletconnect.StatefulWalletConnectTransaction
+import org.walleth.walletconnect.model.Session
+import org.walleth.walletconnect.model.StatefulWalletConnectTransaction
 import org.walleth.walletconnect.WalletConnectDriver
 import org.walleth.walletconnect.createIntentForTransaction
 
