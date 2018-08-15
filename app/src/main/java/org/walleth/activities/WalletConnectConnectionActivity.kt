@@ -19,10 +19,10 @@ import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.walletconnect.model.Session
-import org.walleth.walletconnect.model.StatefulWalletConnectTransaction
 import org.walleth.walletconnect.WalletConnectDriver
 import org.walleth.walletconnect.createIntentForTransaction
+import org.walleth.walletconnect.model.Session
+import org.walleth.walletconnect.model.StatefulWalletConnectTransaction
 
 private const val KEY_INTENT_JSON = "JSON_KEY"
 
@@ -50,7 +50,7 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_wallet_connect)
-        supportActionBar?.subtitle = getString(R.string.wallet_connect) + currentSession?.dappName
+        supportActionBar?.subtitle = getString(R.string.wallet_connect) + " " + currentSession?.dappName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         status_text.text = "Connecting to ${currentSession?.dappName}"
