@@ -90,8 +90,12 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
         currentSession?.let {
             async(UI) {
                 val result = try {
-                    withContext(DefaultDispatcher) { walletConnectDriver.sendAddress(it, address) }?.code()
+                    val response = withContext(DefaultDispatcher) {
+                        walletConnectDriver.sendAddress(it, address)
+                     }
+                    response?.code()
                 } catch (e: Exception) {
+                    e.printStackTrace()
                     e.message
                 }
                 if (result == 200) {
