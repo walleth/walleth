@@ -1,15 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
+<LinearLayout
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/activity_main"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
         android:padding="16dp"
-        android:animateLayoutChanges="true"
-        tools:context="org.walleth.activities.ImportActivity">
-    <TextView android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <ProgressBar
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:indeterminate="true"
+            android:visibility="visible"/>
+
+    <TextView android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_gravity="center"
+              tools:text="Waiting for interaction with application"
+              android:textAlignment="center"
+              android:textAppearance="?android:attr/textAppearanceLarge"
               android:id="@+id/status_text"/>
-</FrameLayout>
+
+</LinearLayout>
