@@ -53,12 +53,12 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
         supportActionBar?.subtitle = getString(R.string.wallet_connect) + " " + currentSession?.dappName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        status_text.text = "Connecting to ${currentSession?.dappName}"
+        status_text.text = getString(R.string.walletconnect_connecting_to, currentSession?.dappName)
         currentSession?.let {
 
             AlertDialog.Builder(this)
-                    .setTitle("Do you want to use ${currentSession?.dappName}")
-                    .setItems(arrayOf("Current Account", "Select Account", "Abort")) { _, i ->
+                    .setTitle(getString(R.string.walletconnect_do_you_want_to_use, currentSession?.dappName))
+                    .setItems(R.array.walletconnect_options) { _, i ->
                         when (i) {
                             0 -> start(currentAddressProvider.getCurrent())
 
@@ -92,16 +92,16 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
                 val result = try {
                     val response = withContext(DefaultDispatcher) {
                         walletConnectDriver.sendAddress(it, address)
-                     }
+                    }
                     response?.code()
                 } catch (e: Exception) {
                     e.printStackTrace()
                     e.message
                 }
                 if (result == 200) {
-                    status_text.text = "Waiting for interaction on ${currentSession?.dappName}"
+                    status_text.text = getString(R.string.walletconnect_waiting_for_app, currentSession?.dappName)
                 } else {
-                    alert("There was a problem connection to ${currentSession?.dappName}") {
+                    alert(getString(R.string.walletconnect_problem_connecting, currentSession?.dappName)) {
                         finish()
                     }
                 }

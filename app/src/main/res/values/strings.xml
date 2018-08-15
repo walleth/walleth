@@ -48,7 +48,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
 <br/><a href="http://ligi.de">LIGI</a> will monitor twitter and has some test-ether collected since the launch of <a href="http://www.rinkeby.io">rinkeby</a>.
 <br/>Also you can pass on the test ether you got to users you see using this hashtag and exercise transactions this way.
 ]]>
-</string>
+    </string>
 
     <string name="request_hint_no_test_net"><![CDATA[
 Unfortunately there is no faucet for the test-net. So if you want to try out things - better use the test-net..
@@ -232,4 +232,13 @@ Unfortunately there is no faucet for the test-net. So if you want to try out thi
     <string name="alert_network_unsupported_message">WallETH is not supporting network with chainId %d</string>
     <string name="wallet_connect">Wallet Connect</string>
     <string name="nonce">Nonce</string>
+    <string name="walletconnect_waiting_for_app">Waiting for interaction with %s</string>
+    <string name="walletconnect_problem_connecting">There was a problem connection to %s</string>
+    <string name="walletconnect_connecting_to">Connecting to %s</string>
+    <string name="walletconnect_do_you_want_to_use">Do you want to use %s</string>
+    <string-array name="walletconnect_options">
+        <item>Current Account</item>
+        <item>Select Account</item>
+        <item>Abort</item>
+    </string-array>
 </resources>
