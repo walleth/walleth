@@ -51,7 +51,7 @@ You might share this address with the hashtag <a href="https://twitter.com/searc
     </string>
 
     <string name="request_hint_no_test_net"><![CDATA[
-Unfortunately there is no faucet for the test-net. So if you want to try out things - better use the test-net..
+Unfortunately there is no faucet for the main-net. So if you want to try out things - better use the test-net..
 ]]>
     </string>
     <array name="day_night">
