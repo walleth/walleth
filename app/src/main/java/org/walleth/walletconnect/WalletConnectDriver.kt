@@ -32,9 +32,9 @@ class WalletConnectDriver(
         private val okHttpClient: OkHttpClient) {
 
     var txAction: ((tx: StatefulWalletConnectTransaction) -> Unit)? = null
+    var fcmToken = ""
 
     private val sessionStore by lazy { SessionStore(File(context.cacheDir, "walletconnect_sessionstore.json")) }
-    private var fcmToken = ""
 
     private var aad = 1
 
