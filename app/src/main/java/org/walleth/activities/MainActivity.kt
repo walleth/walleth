@@ -9,7 +9,6 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.BaseTransientBottomBar
 import android.support.design.widget.Snackbar
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
@@ -89,15 +88,9 @@ class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceCh
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip.getItemAt(0).text?.toString()
             val erc681 = item?.let { EthereumURI(it).toERC681() }
-            if (erc681?.valid == true && erc681?.address != null && item != lastPastedData && item != currentAddressProvider.value?.hex.let { ERC681(address = it).generateURL() }) {
+            if (erc681?.valid == true && erc681.address != null && item != lastPastedData && item != currentAddressProvider.value?.hex.let { ERC681(address = it).generateURL() }) {
+                lastPastedData = item
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
-                        .addCallback(object : BaseTransientBottomBar.BaseCallback<Snackbar>() {
-                            override fun onDismissed(transientBottomBar: Snackbar?, event: Int) {
-                                if (event == DISMISS_EVENT_ACTION || event == DISMISS_EVENT_SWIPE) {
-                                    lastPastedData = item
-                                }
-                            }
-                        })
                         .setAction(R.string.paste_from_clipboard_action) {
                             alert(R.string.copied_string_warning_message, R.string.copied_string_warning_title) {
                                 startActivity(Intent(this@MainActivity, CreateTransactionActivity::class.java).apply {
