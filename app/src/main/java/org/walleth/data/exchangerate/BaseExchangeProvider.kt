@@ -6,10 +6,10 @@ import java.math.BigInteger
 
 abstract class BaseExchangeProvider : ExchangeRateProvider {
 
-    open protected val fiatInfoMap = mutableMapOf<String, FiatInfo>()
+    protected open val fiatInfoMap = mutableMapOf<String, FiatInfo>()
 
     override fun addFiat(name: String) {
-        fiatInfoMap.put(name, FiatInfo(name))
+        fiatInfoMap[name] = FiatInfo(name)
     }
 
     override fun getAvailableFiatInfoMap() = fiatInfoMap
