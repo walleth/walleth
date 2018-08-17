@@ -45,12 +45,6 @@ WALLΞTH は可能な限り分散化しようとしています。 したがっ�
     <string name="import_json_subtitle">キーをインポート</string>
     <string name="export_account_subtitle">キーをエクスポート</string>
 
-    <string name="request_hint_test_net"><![CDATA[
-ソーシャルメディアでこのアドレスをハッシュタグ <a href="https://twitter.com/search?q=%23walleth">#walleth</a> で共有して、テスト Ether を入手することができます。
-<br/><a href="http://ligi.de">LIGI</a> は Twitter をモニターして、<a href="http://www.rinkeby.io">rinkeby</a> のローンチしたテスト Ether を集めました。
-<br/>あなたも手に入れたテスト Ether を、このハッシュタグを使用して見つけたユーザーに渡して、この方法でトランザクションを練習することができます。
-]]>
-</string>
     <array name="day_night">
         <item>日中</item>
         <item>夜間</item>

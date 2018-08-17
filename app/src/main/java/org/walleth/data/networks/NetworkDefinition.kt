@@ -14,4 +14,5 @@ interface NetworkDefinition {
     val bootNodes: List<String>
     val statsSuffix: String
     val infoUrl: String
+    val faucetURL: String?
 }

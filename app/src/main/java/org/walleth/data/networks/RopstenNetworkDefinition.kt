@@ -806,4 +806,5 @@ class RopstenNetworkDefinition : BaseNetworkDefinition() {
         """
 
     override val infoUrl = "https://github.com/ethereum/ropsten"
+    override val faucetURL = "https://faucet.ropsten.be"
 }

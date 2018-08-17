@@ -43,15 +43,13 @@ You can find the source <a href="https://github.com/walleth">on github</a> and m
     <string name="import_json_subtitle">Import Key</string>
     <string name="export_account_subtitle">Export key</string>
 
-    <string name="request_hint_test_net"><![CDATA[
-You might share this address with the hashtag <a href="https://twitter.com/search?q=%23walleth">#walleth</a> on social media to get test ether.
-<br/><a href="http://ligi.de">LIGI</a> will monitor twitter and has some test-ether collected since the launch of <a href="http://www.rinkeby.io">rinkeby</a>.
-<br/>Also you can pass on the test ether you got to users you see using this hashtag and exercise transactions this way.
+    <string name="request_faucet_message"><![CDATA[
+You can request test-ether for %1$s <a href="%2$s">from this faucet.</a>
 ]]>
     </string>
 
-    <string name="request_hint_no_test_net"><![CDATA[
-Unfortunately there is no faucet for the main-net. So if you want to try out things - better use the test-net..
+    <string name="no_faucet"><![CDATA[
+Unfortunately there is no faucet for the main network. So if you want to try out things - better use some test network..
 ]]>
     </string>
     <array name="day_night">

@@ -18,7 +18,6 @@ import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.networks.isNoTestNet
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
 import org.walleth.functions.extractValueForToken
@@ -44,11 +43,13 @@ class RequestActivity : AppCompatActivity(), KodeinAware {
         refreshQR()
 
 
-        val initText = getString(if (networkDefinitionProvider.getCurrent().isNoTestNet()) {
-            R.string.request_hint_no_test_net
+        val initText = if (networkDefinitionProvider.getCurrent().faucetURL != null) {
+            getString(R.string.request_faucet_message,
+                    networkDefinitionProvider.getCurrent().getNetworkName(),
+                    networkDefinitionProvider.getCurrent().faucetURL)
         } else {
-            R.string.request_hint_test_net
-        })
+            getString(R.string.no_faucet)
+        }
         request_hint.text = HtmlCompat.fromHtml(initText)
         request_hint.movementMethod = LinkMovementMethod()
 

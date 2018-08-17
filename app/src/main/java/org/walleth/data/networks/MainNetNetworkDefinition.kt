@@ -16,5 +16,6 @@ class MainNetNetworkDefinition : BaseNetworkDefinition() {
 
     override val genesis = ""
 
-    override val infoUrl = "https://ethstats.net/"
+    override val infoUrl = "https://ethstats.net"
+    override val faucetURL = null
 }
