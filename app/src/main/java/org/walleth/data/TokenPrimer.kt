@@ -8,7 +8,7 @@ import org.json.JSONObject
 import org.kethereum.model.Address
 import org.ligi.tracedroid.logging.Log
 import org.walleth.data.config.Settings
-import org.walleth.data.networks.AllNetworkDefinitions
+import org.walleth.data.networks.ALL_NETWORKS
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.getEthTokenForChain
 
@@ -32,7 +32,7 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
         settings.tokensInitVersion = TOKEN_INIT_VERSION
 
         launch(CommonPool) {
-            AllNetworkDefinitions.forEach {
+            ALL_NETWORKS.forEach {
                 try {
                     val chain = it.chain
                     val open = assets.open("token_init/${chain.id}.json")

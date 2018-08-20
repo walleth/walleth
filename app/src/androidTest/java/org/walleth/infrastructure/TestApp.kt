@@ -18,7 +18,6 @@ import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.networks.RINKEBY_CHAIN_ID
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.CurrentTokenProvider
@@ -65,7 +64,7 @@ class TestApp : App() {
             `when`(currentFiat).thenReturn("EUR")
             `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
             `when`(startupWarningDone).thenReturn(true)
-            `when`(chain).thenReturn(RINKEBY_CHAIN_ID)
+            `when`(chain).thenReturn(4L)
             `when`(isLightClientWanted()).thenReturn(false)
             `when`(addressInitVersion).thenReturn(0)
             `when`(tokensInitVersion).thenReturn(0)

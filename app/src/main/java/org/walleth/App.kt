@@ -30,6 +30,7 @@ import org.walleth.core.TransactionNotificationService
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.allPrePopulationAddresses
+import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
@@ -85,6 +86,7 @@ open class App : MultiDexApplication(), KodeinAware {
             bind<AppDatabase>() with singleton { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
 
             bind<NetworkDefinitionProvider>() with singleton { NetworkDefinitionProvider(instance()) }
+            bind<BlockExplorerProvider>() with singleton { BlockExplorerProvider(instance()) }
             bind<CurrentAddressProvider>() with singleton { InitializingCurrentAddressProvider(keyStore, instance(), instance(), applicationContext) }
             bind<FourByteDirectory>() with singleton { FourByteDirectoryImpl(instance(), applicationContext) }
         }

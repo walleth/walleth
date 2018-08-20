@@ -7,7 +7,6 @@ import com.chibatching.kotpref.KotprefModel
 import org.walleth.R
 import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.networks.NetworkDefinition
-import org.walleth.data.networks.RINKEBY_CHAIN_ID
 import org.walleth.functions.asBigDecimal
 import java.math.BigInteger
 import java.security.SecureRandom
@@ -21,7 +20,7 @@ object KotprefSettings : KotprefModel(), Settings {
     override var filterAddressesStared by booleanPref(default = false)
     override var filterAddressesKeyOnly by booleanPref(default = false)
 
-    override var chain by longPref(RINKEBY_CHAIN_ID)
+    override var chain by longPref(4L)
     override var accountAddress by nullableStringPref(null)
 
     override var addressInitVersion by intPref(0)

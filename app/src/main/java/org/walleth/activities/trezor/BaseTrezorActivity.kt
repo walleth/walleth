@@ -154,7 +154,7 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
     protected open fun getMessageForState(): GeneratedMessageV3 = when (state) {
         INIT, REQUEST_PERMISSION -> TrezorMessage.Initialize.getDefaultInstance()
         READ_ADDRESS -> TrezorMessage.EthereumGetAddress.newBuilder()
-                .addAllAddressN(currentBIP44!!.toIntList())
+                .addAllAddressN(currentBIP44!!.path.map { it.numberWithHardeningFlag })
                 .build()
         PWD_STATE -> TrezorMessage.PassphraseStateAck.newBuilder().build()
         PWD_ON_DEVICE -> TrezorMessage.PassphraseAck.newBuilder().build()

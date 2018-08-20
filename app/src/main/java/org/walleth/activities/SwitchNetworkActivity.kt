@@ -12,7 +12,7 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.networks.AllNetworkDefinitions
+import org.walleth.data.networks.ALL_NETWORKS
 import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.ui.NetworkAdapter
@@ -50,7 +50,7 @@ open class SwitchNetworkActivity : AppCompatActivity(), KodeinAware {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun getAdapter() = NetworkAdapter(AllNetworkDefinitions, {
+    private fun getAdapter() = NetworkAdapter(ALL_NETWORKS, {
         networkDefinitionProvider.setCurrent(it)
         finish()
     }, { networkDefinition: NetworkDefinition ->

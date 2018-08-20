@@ -16,6 +16,7 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
+import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.util.copyToClipboard
@@ -25,6 +26,7 @@ class EditAccountActivity : AppCompatActivity(), KodeinAware {
     override val kodein by closestKodein()
     private val appDatabase: AppDatabase by instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val blockExplorerProvider: BlockExplorerProvider by instance()
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private lateinit var currentAddressInfo: AddressBookEntry
 
@@ -74,7 +76,7 @@ class EditAccountActivity : AppCompatActivity(), KodeinAware {
             copyToClipboard(currentAddressInfo.address, activity_main)
         }
         R.id.menu_etherscan -> true.also {
-            startActivityFromURL(networkDefinitionProvider.value!!.getBlockExplorer().getURLforAddress(currentAddressProvider.getCurrent()))
+            startActivityFromURL(blockExplorerProvider.get().getAddressURL(currentAddressProvider.getCurrent()))
         }
         android.R.id.home -> true.also {
             finish()

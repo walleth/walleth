@@ -29,6 +29,7 @@ import org.walleth.R
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameAsync
+import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.getEthTokenForChain
@@ -47,6 +48,7 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
     override val kodein by closestKodein()
     private val appDatabase: AppDatabase by instance()
     private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val blockExplorerProvider: BlockExplorerProvider by instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private var txEntity: TransactionEntity? = null
     private val fourByteDirectory: FourByteDirectory by instance()
@@ -189,7 +191,7 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
 
         R.id.menu_etherscan -> {
             txEntity?.let {
-                val url = networkDefinitionProvider.value!!.getBlockExplorer().getURLforTransaction(it.transaction.txHash!!)
+                val url = blockExplorerProvider.get().getTransactionURL(it.transaction.txHash!!)
                 startActivityFromURL(url)
             }
             true

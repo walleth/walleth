@@ -149,6 +149,8 @@ dependencies {
     implementation "com.github.walleth.kethereum:erc681:$kethereum_version"
     implementation "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     implementation "com.github.walleth.kethereum:method_signatures:$kethereum_version"
+    implementation "com.github.walleth.kethereum:networks:$kethereum_version"
+    implementation "com.github.walleth.kethereum:etherscan:$kethereum_version"
     implementation "com.github.walleth.kethereum:rlp:$kethereum_version"
     implementation "com.github.walleth.kethereum:wallet:$kethereum_version"
     implementation "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
@@ -173,7 +175,6 @@ dependencies {
 
     implementation 'com.jakewharton.threetenabp:threetenabp:1.1.0'
     implementation 'com.squareup.okhttp3:okhttp:3.10.0'
-
 
     implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
     implementation "org.kodein.di:kodein-di-framework-android:$kodein_version"
@@ -204,6 +205,7 @@ dependencies {
     testImplementation "org.mockito:mockito-core:$mockito_version"
 
     androidTestImplementation "org.mockito:mockito-core:$mockito_version"
+
     androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.16.0'
 
     androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.1'

@@ -27,6 +27,7 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.setHash
+import org.walleth.kethereum.etherscan.getEtherScanAPIBaseURL
 import org.walleth.khex.toHexString
 import java.io.IOException
 import java.math.BigInteger
@@ -218,7 +219,7 @@ class EtherScanService : LifecycleService(), KodeinAware {
     }
 
     private fun getEtherscanResult(requestString: String, networkDefinition: NetworkDefinition, httpFallback: Boolean): JSONObject? {
-        val baseURL = networkDefinition.getBlockExplorer().baseAPIURL.letIf(httpFallback) {
+        val baseURL = getEtherScanAPIBaseURL(networkDefinition.chain).letIf(httpFallback) {
             replace("https://", "http://") // :-( https://github.com/walleth/walleth/issues/134 )
         }
         val urlString = "$baseURL/api?$requestString&apikey=$" + BuildConfig.ETHERSCAN_APIKEY

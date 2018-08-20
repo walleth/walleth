@@ -28,7 +28,7 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
     val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX").transaction }
 
     private var isDerivationDialogShown = false
-    private val initialBIP44 = BIP44.fromPath(DEFAULT_ETHEREUM_BIP44_PATH)
+    private val initialBIP44 = BIP44(DEFAULT_ETHEREUM_BIP44_PATH)
     private var currentAddress: Address? = null
 
     private val currentDerivationDialogView by lazy {
@@ -67,7 +67,7 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
 
         currentDerivationDialogView.derivation_text.doAfterEdit {
             currentBIP44 = try {
-                BIP44.fromPath(currentDerivationDialogView.derivation_text.text.toString())
+                BIP44(currentDerivationDialogView.derivation_text.text.toString())
             } catch (e: IllegalArgumentException) {
                 initialBIP44
             }

@@ -21,7 +21,7 @@ import kotlinx.coroutines.experimental.launch
 import org.kethereum.bip39.dirtyPhraseToMnemonicWords
 import org.kethereum.bip39.toKey
 import org.kethereum.bip39.validate
-import org.kethereum.bip39.wordlists.ENGLISH
+import org.kethereum.bip39.wordlists.WORDLIST_ENGLISH
 import org.kethereum.crypto.ECKeyPair
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.model.Address
@@ -122,7 +122,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
                         content.loadKeysFromWalletJsonString(password.text.toString())
                     type_wordlist_select.isChecked -> {
                         val mnemonicWords = dirtyPhraseToMnemonicWords(content)
-                        if (!mnemonicWords.validate(ENGLISH)) {
+                        if (!mnemonicWords.validate(WORDLIST_ENGLISH)) {
                             throw IllegalArgumentException("Mnemonic phrase not valid")
                         }
                         mnemonicWords.toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair

@@ -65,7 +65,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity(), KodeinAware {
             .setChainId(networkDefinitionProvider.value!!.chain.id.toInt())
             .setDataLength(transaction.transaction.input.size)
             .setDataInitialChunk(ByteString.copyFrom(transaction.transaction.input.toByteArray()))
-            .addAllAddressN(currentBIP44!!.toIntList())
+            .addAllAddressN(currentBIP44!!.path.map { it.numberWithHardeningFlag })
             .build()!!
 
 
@@ -96,7 +96,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity(), KodeinAware {
         super.onResume()
 
         appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
-            currentBIP44 = it?.trezorDerivationPath?.let { BIP44.fromPath(it) } ?: throw IllegalArgumentException("Starting TREZOR Activity")
+            currentBIP44 = it?.trezorDerivationPath?.let { BIP44(it) } ?: throw IllegalArgumentException("Starting TREZOR Activity")
             handler.post(mainRunnable)
         }
 

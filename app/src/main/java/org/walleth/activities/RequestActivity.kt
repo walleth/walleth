@@ -43,10 +43,13 @@ class RequestActivity : AppCompatActivity(), KodeinAware {
         refreshQR()
 
 
-        val initText = if (networkDefinitionProvider.getCurrent().faucetURL != null) {
+        val initText = if (networkDefinitionProvider.getCurrent().faucets.isNotEmpty()) {
+            val faucetURL = networkDefinitionProvider.getCurrent()
+                    .faucets.first()
+                    .replace("%address%",currentAddressProvider.getCurrent().hex)
             getString(R.string.request_faucet_message,
                     networkDefinitionProvider.getCurrent().getNetworkName(),
-                    networkDefinitionProvider.getCurrent().faucetURL)
+                    faucetURL)
         } else {
             getString(R.string.no_faucet)
         }

@@ -89,7 +89,7 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
                 shouldRestart = false // just did restart
                 shouldRun = true
 
-                async (UI) {
+                async(UI) {
                     val pendingStopIntent = PendingIntent.getService(baseContext, 0, gethStopIntent(), 0)
                     val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, MainActivity::class.java), 0)
 
@@ -121,32 +121,15 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
                 subPath.mkdirs()
                 val nodeConfig = NodeConfig().apply {
 
-                    if (network.bootNodes.isEmpty()) {
-                        val bootNodes = Enodes()
-
-                        network.bootNodes.forEach {
-                            bootNodes.append(Enode(it))
-                        }
-
-                        bootstrapNodes = bootNodes
-                    }
-
                     ethereumNetworkID = network.chain.id
 
-                    ethereumGenesis = if (!network.genesis.isEmpty()) {
-                        network.genesis
-                    } else {
-                        when (network.chain.id) {
-                            1L -> Geth.mainnetGenesis()
-                            3L -> Geth.testnetGenesis()
-                            4L -> Geth.rinkebyGenesis()
-                            else -> throw (IllegalStateException("NO genesis"))
-                        }
+                    ethereumGenesis = when (network.chain.id) {
+                        1L -> Geth.mainnetGenesis()
+                        3L -> Geth.testnetGenesis()
+                        4L -> Geth.rinkebyGenesis()
+                        else -> throw (IllegalStateException("NO genesis"))
                     }
 
-                    if (!network.statsSuffix.isEmpty()) {
-                        ethereumNetStats = settings.getStatsName() + network.statsSuffix
-                    }
                 }
                 val ethereumNode = Geth.newNode(subPath.absolutePath, nodeConfig)
 
@@ -239,7 +222,7 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
             e.printStackTrace()
         }
 
-        delay(1,TimeUnit.SECONDS)
+        delay(1, TimeUnit.SECONDS)
     }
 
 
