@@ -10,7 +10,7 @@ Native Android Ethereum wallet.
 Features
 ========
 
- - Networks main(1), ropsten(3), rinkeby(4)
+ - Networks main, ropsten, rinkeby, kovan
  - Tokens(ERC-20)
  - ERC-67 / ERC-681 URLS
  - ERC-55 Checksums
