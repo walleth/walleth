@@ -69,6 +69,7 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
                             else -> finish()
                         }
                     }
+                    .setOnCancelListener { _ -> finish() }
                     .show()
 
 
