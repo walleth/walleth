@@ -226,7 +226,8 @@ dependencyVerification {
         'org.ow2.asm:asm:5.1:asm-5.1.jar:d2da399a9967c69f0a21739256fa79d284222c223082cacadc17372244764b54',
         'org.slf4j:slf4j-api:1.7.25:slf4j-api-1.7.25.jar:18c4a0095d5c1da6b817592e767bb23d29dd2f560ad74df75ff3961dbde25b79',
         'org.threeten:threetenbp:1.3.6:threetenbp-1.3.6-no-tzdb.jar:603491865c4c20c221426f0a38090d33232c2fab91382def2d9a98136413a09a',
-        'org.threeten:threetenbp:1.3.6:threetenbp-1.3.6.jar:f4c23ffaaed717c3b99c003e0ee02d6d66377fd47d866fec7d971bd8644fc1a7',
+        'org.threeten:threetenbp:1.3.7:threetenbp-1.3.7-no-tzdb.jar:ce0ff30ff8fd9ee1b8d87334d1a3517b96b4d6289212b81e7546043a3d9d049e',
+        'org.threeten:threetenbp:1.3.7:threetenbp-1.3.7.jar:4d480a0f8d145a0f7852860295cdca7c393094cddad07b5568700653e7a3a98e',
         'org.xerial:sqlite-jdbc:3.20.1:sqlite-jdbc-3.20.1.jar:3d09ac1caebd6ea3bd82a1d1819a2cf6e251869dbaae43712caf6a65f40d40eb',
     ]
 }
