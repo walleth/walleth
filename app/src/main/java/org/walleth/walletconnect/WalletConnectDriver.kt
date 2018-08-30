@@ -38,6 +38,8 @@ class WalletConnectDriver(
 
     private var aad = 1
 
+    fun hasFCMToken() = fcmToken.isNotBlank()
+
     fun sendAddress(session: Session, address: Address): Response? {
         sessionStore.put(session)
 

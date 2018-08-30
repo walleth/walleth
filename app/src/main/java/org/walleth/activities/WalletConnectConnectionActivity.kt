@@ -53,6 +53,12 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
         supportActionBar?.subtitle = getString(R.string.wallet_connect) + " " + currentSession?.dappName
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        if (!walletConnectDriver.hasFCMToken()) {
+            alert(R.string.walletconnect_error_needs_fcm_message, R.string.walletconnect_error_needs_fcm_title) {
+                finish()
+            }
+            return
+        }
         status_text.text = getString(R.string.walletconnect_connecting_to, currentSession?.dappName)
         currentSession?.let {
 
@@ -71,8 +77,6 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
                     }
                     .setOnCancelListener { _ -> finish() }
                     .show()
-
-
         }
     }
 

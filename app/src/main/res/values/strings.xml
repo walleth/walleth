@@ -234,6 +234,8 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="walletconnect_problem_connecting">There was a problem connection to %s</string>
     <string name="walletconnect_connecting_to">Connecting to %s</string>
     <string name="walletconnect_do_you_want_to_use">Do you want to use %s</string>
+    <string name="walletconnect_error_needs_fcm_message">Unfortunately WalletConnect needs FCM. You are running a flavor of WallETH without FCM (e.g. from f-droid) or google play services is not working on your device. So sadly you cannot use this feature now.</string>
+    <string name="walletconnect_error_needs_fcm_title">WalletConnect needs FCM</string>
     <string-array name="walletconnect_options">
         <item>Current Account</item>
         <item>Select Account</item>
