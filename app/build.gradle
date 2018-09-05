@@ -1,4 +1,5 @@
 def isCI = hasProperty("isCI")
+def isLightCI = hasProperty("isLightCI")
 def includeFirebase = isCI || hasProperty("firebase")
 
 apply plugin: 'com.android.application'
@@ -225,7 +226,7 @@ dependencies {
     }
 }
 
-if (hasProperty("isCI")) {
+if (isCI || isLightCI) {
 
     apply plugin: 'composer'
     composer {
