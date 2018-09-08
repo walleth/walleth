@@ -38,7 +38,7 @@
         <activity android:name="org.walleth.activities.CreateAccountActivity"/>
         <activity android:name="org.walleth.activities.SelectReferenceActivity"/>
         <activity android:name="org.walleth.activities.ParitySignerQRActivity"/>
-
+        <activity android:name="org.walleth.activities.SignTextActivity"/>
         <activity android:name="org.walleth.activities.SelectTokenActivity"/>
         <activity android:name="org.walleth.activities.CreateTokenDefinitionActivity"/>
         <activity android:name="org.walleth.activities.SecurityInfoActivity"/>

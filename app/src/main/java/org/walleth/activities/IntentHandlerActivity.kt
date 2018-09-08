@@ -16,13 +16,17 @@ import org.walleth.R
 import org.walleth.data.tokens.isTokenTransfer
 import java.math.BigInteger.ZERO
 
-private const val REQUEST_CODE = 10123
+private const val CREATE_TX_REQUEST_CODE = 10123
+private const val SIGN_TX_REQUEST_CODE = 10124
 
 fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentHandlerActivity::class.java).apply {
     data = Uri.parse(ethereumString)
 }
 
 class IntentHandlerActivity : AppCompatActivity() {
+
+    var textToSign: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,6 +38,13 @@ class IntentHandlerActivity : AppCompatActivity() {
                     process681(erC681)
                 }
             }
+
+            if (commonURI.prefix == "signtext") {
+                textToSign = commonURI.address // TODO this is not really cool
+                val intent = Intent(this, AddressBookActivity::class.java)
+                startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
+            }
+
         } else {
             alert(getString(R.string.create_tx_error_invalid_erc67_msg, intent.data.toString()), getString(R.string.create_tx_error_invalid_erc67_title)) {
                 finish()
@@ -41,7 +52,8 @@ class IntentHandlerActivity : AppCompatActivity() {
         }
     }
 
-    fun process681(erC681: ERC681) {
+
+    private fun process681(erC681: ERC681) {
         if (erC681.address == null || erC681.isTokenTransfer() || erC681.value != null && erC681.value != ZERO) {
             startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
                 data = intent.data
@@ -60,7 +72,7 @@ class IntentHandlerActivity : AppCompatActivity() {
                                 val intent = Intent(this, CreateTransactionActivity::class.java).apply {
                                     data = intent.data
                                 }
-                                startActivityForResult(intent, REQUEST_CODE)
+                                startActivityForResult(intent, CREATE_TX_REQUEST_CODE)
                             }
                             2 -> alert("TODO", "add token definition") {
                                 finish()
@@ -77,7 +89,18 @@ class IntentHandlerActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        setResult(resultCode, data)
-        finish()
+
+        when (requestCode) {
+            SIGN_TX_REQUEST_CODE, CREATE_TX_REQUEST_CODE -> {
+                setResult(resultCode, data)
+                finish()
+            }
+
+            TO_ADDRESS_REQUEST_CODE -> {
+                val intent = Intent(this, SignTextActivity::class.java)
+                intent.putExtra("TEXT", textToSign)
+                startActivityForResult(intent, SIGN_TX_REQUEST_CODE)
+            }
+        }
     }
 }
