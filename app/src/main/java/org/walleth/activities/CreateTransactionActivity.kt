@@ -23,8 +23,8 @@ import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
-import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.parseERC681
+import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.extensions.maybeHexToBigInteger
 import org.kethereum.extensions.toHexStringZeroPadded
 import org.kethereum.functions.*

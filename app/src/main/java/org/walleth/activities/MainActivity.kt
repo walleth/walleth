@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
-import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.toERC681
+import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.model.EthereumURI
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein

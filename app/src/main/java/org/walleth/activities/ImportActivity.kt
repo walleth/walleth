@@ -131,7 +131,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
                     else -> ECKeyPair.create(content.hexToByteArray())
                 }
 
-                keyStore.importKey(key, DEFAULT_PASSWORD)
+                keyStore.importKey(key!!, DEFAULT_PASSWORD)
             }.await()
 
 

@@ -16,8 +16,8 @@ import org.kethereum.crypto.ECKeyPair
 import org.kethereum.crypto.createEcKeyPair
 import org.kethereum.crypto.getAddress
 import org.kethereum.erc55.withERC55Checksum
-import org.kethereum.erc681.isEthereumURLString
 import org.kethereum.erc681.parseERC681
+import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.functions.isValid
 import org.kethereum.model.Address
 import org.kodein.di.KodeinAware
