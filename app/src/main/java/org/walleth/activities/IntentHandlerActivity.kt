@@ -9,10 +9,16 @@ import android.support.v7.app.AppCompatActivity
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.isERC681
 import org.kethereum.erc681.toERC681
+import org.kethereum.model.Address
 import org.kethereum.model.EthereumURI
 import org.kethereum.uri.common.parseCommonURI
+import org.kodein.di.KodeinAware
+import org.kodein.di.android.closestKodein
+import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.isTokenTransfer
 import java.math.BigInteger.ZERO
 
@@ -23,9 +29,13 @@ fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentH
     data = Uri.parse(ethereumString)
 }
 
-class IntentHandlerActivity : AppCompatActivity() {
+class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
 
     var textToSign: String? = null
+
+    override val kodein by closestKodein()
+    private val keyStore: WallethKeyStore by instance()
+    private val currentAddressProvider: CurrentAddressProvider by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -97,6 +107,11 @@ class IntentHandlerActivity : AppCompatActivity() {
             }
 
             TO_ADDRESS_REQUEST_CODE -> {
+
+                if (data?.hasExtra("HEX") == true) {
+                    currentAddressProvider.setCurrent(Address(data.getStringExtra("HEX")))
+                }
+
                 val intent = Intent(this, SignTextActivity::class.java)
                 intent.putExtra("TEXT", textToSign)
                 startActivityForResult(intent, SIGN_TX_REQUEST_CODE)
