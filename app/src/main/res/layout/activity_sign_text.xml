@@ -7,13 +7,30 @@
         android:layout_height="match_parent"
         tools:context="org.walleth.activities.CreateAccountActivity">
 
-    <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="8dp"
-            android:id="@+id/textToSign"
-            tools:text="yolo"
-    />
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:textStyle="bold"
+                android:text="Text to sign:"
+        />
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                android:textAppearance="?android:textAppearanceLarge"
+                android:id="@+id/textToSign"
+                tools:text="yolo"
+        />
+
+    </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab"
