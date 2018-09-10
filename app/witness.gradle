@@ -67,7 +67,7 @@ dependencyVerification {
         'com.android.tools:sdk-common:26.1.4:sdk-common-26.1.4.jar:789d3d193d75f1ddafb803e8fd27880d9b35268843fb4e91965b09814f3c9eab',
         'com.android.tools:sdklib:26.1.4:sdklib-26.1.4.jar:7a897ebc2b30c884fc152aba3b9c1f68276211bbd0ca6af7fe5f9d89ab7ee80a',
         'com.beust:jcommander:1.71:jcommander-1.71.jar:b78ba8f80afc3defe5cbec954495d650273205b715edf4578212f78517d8b804',
-        'com.chibatching.kotpref:kotpref:2.5.0:kotpref-2.5.0.aar:964ff0c4c376f0bf5b1d8ebec3c1fffb37cb79b244cfbc6873f44d5279b993fc',
+        'com.chibatching.kotpref:kotpref:2.6.0:kotpref-2.6.0.aar:dd1a88c7830c1f68203a0bd0b50fb99319bc8e1ead466430297ba281ff00ee6e',
         'com.dmitrymalkovich.android:progress-fab:1.6:progress-fab-1.6.aar:bf43e560352f006e0255d5138cbe187fbf0a67784f7b62c6ea61b9fcd9d034cc',
         'com.github.amlcurran.showcaseview:library:5.4.3:library-5.4.3.aar:a52c34bcf4ab8118e28efd5a10dd16a7a56685556f77e5f532862b2de56c8c8a',
         'com.github.kenglxn.QRGen:android:2.5.0:android-2.5.0.jar:fb956f99761ce17080e19d3277f7e47661d7e1ac097395ea483fea087eacded6',
