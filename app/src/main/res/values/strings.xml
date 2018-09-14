@@ -220,6 +220,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="create_tx_negative_token_balance">You have less tokens than you want to send. However, some tokens allow to do that. Do you want to continue?</string>
     <string name="create_tx_zero_amount">The amount is set to ZERO ether. Do you want to continue?</string>
     <string name="function_call">Function call:</string>
+    <string name="function_data">Data:</string>
     <string name="or">or</string>
     <string name="trezor_not_initialized">TREZOR not initialized. Please use the TREZOR manager to initialize.</string>
     <string name="process_error">Process Error %s</string>

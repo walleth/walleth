@@ -18,8 +18,6 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import org.kethereum.functions.encodeRLP
-import org.kethereum.functions.isTokenTransfer
-import org.kethereum.model.Transaction
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -146,21 +144,26 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
                 details.text = message
 
                 transaction.input.let {
-                    if (it.size >= 4) {
-                        function_call_label.visibility = View.VISIBLE
-                        function_call.visibility = View.VISIBLE
-                        launch(UI) {
-                            val signatures = withContext(CommonPool) {
+                    launch(UI) {
+                        val signatures = if (it.size >= 4) {
+                            withContext(CommonPool) {
                                 fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString())
                             }
-                            Transaction().isTokenTransfer()
-                            function_call.text = if (signatures.isNotEmpty()) {
-                                signatures.joinToString(
-                                        separator = " ${getString(R.string.or)}\n",
-                                        transform = { sig -> sig.textSignature ?: sig.hexSignature })
-                            } else {
-                                "-"
-                            }
+                        } else null
+
+                        val hasFunction = it.isNotEmpty()
+
+                        function_call_label.setVisibility(hasFunction)
+                        function_call.setVisibility(hasFunction)
+
+                        function_call.text = if (signatures?.isNotEmpty() == true) {
+                            function_call_label.setText(R.string.function_call)
+                            signatures.joinToString(
+                                    separator = " ${getString(R.string.or)}\n",
+                                    transform = { sig -> sig.textSignature ?: sig.hexSignature })
+                        } else {
+                            function_call_label.setText(R.string.function_data)
+                            transaction.input.toHexString()
                         }
                     }
                 }
