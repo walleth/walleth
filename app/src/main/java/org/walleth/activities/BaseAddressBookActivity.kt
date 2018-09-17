@@ -15,7 +15,8 @@ import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_list_addresses.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.experimental.withContext
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -59,10 +60,10 @@ abstract class BaseAddressBookActivity : AppCompatActivity(), KodeinAware {
         }
 
         starred_only.isChecked = settings.filterAddressesStared
-        starred_only.setOnCheckedChangeListener({ _: CompoundButton, isOn: Boolean ->
+        starred_only.setOnCheckedChangeListener { _: CompoundButton, isOn: Boolean ->
             settings.filterAddressesStared = isOn
             refresh()
-        })
+        }
 
         key_only.isChecked = settings.filterAddressesKeyOnly
         key_only.setOnCheckedChangeListener { _: CompoundButton, isOn: Boolean ->
@@ -79,24 +80,23 @@ abstract class BaseAddressBookActivity : AppCompatActivity(), KodeinAware {
 
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
 
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder)
-                    = false
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
 
                 val current = adapter.displayList[viewHolder.adapterPosition]
                 fun changeDeleteState(state: Boolean) {
-                    async(UI) {
-                        async(CommonPool) {
+                    launch(UI) {
+                        withContext(CommonPool) {
                             appDatabase.addressBook.upsert(current.apply {
                                 deleted = state
                             })
-                        }.await()
+                        }
                     }
                 }
                 changeDeleteState(true)
                 Snackbar.make(coordinator, R.string.deleted_account_snack, Snackbar.LENGTH_LONG)
-                        .setAction(getString(R.string.undo), { changeDeleteState(false) })
+                        .setAction(getString(R.string.undo)) { changeDeleteState(false) }
                         .show()
             }
         }
@@ -122,10 +122,10 @@ abstract class BaseAddressBookActivity : AppCompatActivity(), KodeinAware {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_undelete -> true.also {
-            async(UI) {
-                async(CommonPool) {
+            launch(UI) {
+                withContext(CommonPool) {
                     appDatabase.addressBook.undeleteAll()
-                }.await()
+                }
                 refresh()
             }
         }
