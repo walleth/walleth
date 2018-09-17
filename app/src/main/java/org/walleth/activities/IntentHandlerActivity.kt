@@ -18,6 +18,7 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.data.config.Settings
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.isTokenTransfer
@@ -37,6 +38,8 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
     override val kodein by closestKodein()
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private val keyStore: WallethKeyStore by instance()
+    val settings: Settings by instance()
+    private var oldFilterAddressesKeyOnly = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,7 +63,8 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
 
                 textToSign = split.last()
                 if (split.first().isEmpty()) {
-
+                    oldFilterAddressesKeyOnly = settings.filterAddressesKeyOnly
+                    settings.filterAddressesKeyOnly = true
                     val intent = Intent(this, AddressBookActivity::class.java)
                     startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
                 } else {
@@ -132,6 +136,7 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
                     currentAddressProvider.setCurrent(Address(data.getStringExtra("HEX")))
                 }
 
+                settings.filterAddressesKeyOnly = oldFilterAddressesKeyOnly
                 startEthereumSignedMessage()
             }
         }
