@@ -9,9 +9,10 @@ import android.support.v7.app.AppCompatActivity
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.isERC681
 import org.kethereum.erc681.toERC681
+import org.kethereum.erc831.isERC831
+import org.kethereum.erc831.toERC831
 import org.kethereum.model.Address
 import org.kethereum.model.EthereumURI
-import org.kethereum.uri.common.parseCommonURI
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -38,17 +39,18 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val commonURI = EthereumURI(intent.data.toString()).parseCommonURI()
-        if (commonURI.valid) {
-            if (commonURI.isERC681()) {
-                val erC681 = commonURI.toERC681()
+        val parsed831 = EthereumURI(intent.data.toString()).toERC831()
+
+        if (parsed831.isERC831()) {
+            if (parsed831.isERC681()) {
+                val erC681 = parsed831.toERC681()
                 if (erC681.valid) {
                     process681(erC681)
                 }
             }
 
-            if (commonURI.prefix == "signtext") {
-                textToSign = commonURI.address // TODO this is not really cool
+            if (parsed831.prefix == "signtext") {
+                textToSign = parsed831.payload
                 val intent = Intent(this, AddressBookActivity::class.java)
                 startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
             }
