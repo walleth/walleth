@@ -18,6 +18,7 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.isTokenTransfer
 import java.math.BigInteger.ZERO
@@ -35,6 +36,7 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
 
     override val kodein by closestKodein()
     private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val keyStore: WallethKeyStore by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +51,28 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
                 }
             }
 
-            if (parsed831.prefix == "signtext") {
-                textToSign = parsed831.payload
-                val intent = Intent(this, AddressBookActivity::class.java)
-                startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
+            if (parsed831.prefix == "esm") {
+                val split = parsed831.payload?.split("/")
+                if (split?.size != 2) {
+                    alert("Invalid request. " + intent.data.toString() + " If you think this should be valid - please drop ligi a mail (ligi@ligi.de).")
+                    return
+                }
+
+                textToSign = split.last()
+                if (split.first().isEmpty()) {
+
+                    val intent = Intent(this, AddressBookActivity::class.java)
+                    startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
+                } else {
+                    val wantedAddress = Address(split.first())
+
+                    if (keyStore.hasKeyForForAddress(wantedAddress)) {
+                        currentAddressProvider.setCurrent(wantedAddress)
+                        startEthereumSignedMessage()
+                    } else {
+                        alert("Don't have the key for the requested address $wantedAddress")
+                    }
+                }
             }
 
         } else {
@@ -112,10 +132,14 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
                     currentAddressProvider.setCurrent(Address(data.getStringExtra("HEX")))
                 }
 
-                val intent = Intent(this, SignTextActivity::class.java)
-                intent.putExtra("TEXT", textToSign)
-                startActivityForResult(intent, SIGN_TX_REQUEST_CODE)
+                startEthereumSignedMessage()
             }
         }
+    }
+
+    private fun startEthereumSignedMessage() {
+        val intent = Intent(this, SignTextActivity::class.java)
+        intent.putExtra("TEXT", textToSign)
+        startActivityForResult(intent, SIGN_TX_REQUEST_CODE)
     }
 }
