@@ -232,11 +232,7 @@ if (isCI || isLightCI) {
 
     apply plugin: 'composer'
     composer {
-        configs {
-            noGethNoFirebaseForFDroidOfflineDebugComposer {
-                apkInstallTimeout 600
-            }
-        }
+        apkInstallTimeout 600
     }
     apply plugin: 'witness'
     apply from: 'witness.gradle'

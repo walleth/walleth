@@ -131,7 +131,7 @@ dependencyVerification {
         'com.github.walleth:khex:0.6:khex-0.6.jar:ffa8f099f38e6f14a3ede09ad2e75389ce96a2b93fbc4578c5f8eda43c15eb8d',
         'com.gojuno.commander:android:0.1.6:android-0.1.6.jar:fe232d2e06ce412fd9e01f29523b41cd3be1596e8968bf7363490083d8a431da',
         'com.gojuno.commander:os:0.1.6:os-0.1.6.jar:9ad8a479ce8baecfae5bac929be7da430925f9868e421c7edc9432eda0f485bb',
-        'com.gojuno.composer:composer:0.3.2:composer-0.3.2.jar:8432bc54834f8559e2137a9bc6dd20daa496cfc517e7ee254574eb09521e1bf8',
+        'com.gojuno.composer:composer:0.3.3:composer-0.3.3.jar:fa8a9b30e9e71aff39d745d77bee03f2b988ff2ce566e89e6b48991eeb44f3aa',
         'com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:2.0:accessibility-test-framework-2.0.jar:cdf16ef8f5b8023d003ce3cc1b0d51bda737762e2dab2fedf43d1c4292353f7f',
         'com.google.android.gms:play-services-ads-identifier:15.0.1:play-services-ads-identifier-15.0.1.aar:f76301c300ebbca92d1a22e7fdd849e14f9160c6e72a75eaf6d808113e467605',
         'com.google.android.gms:play-services-base:15.0.1:play-services-base-15.0.1.aar:9271ee2a67f3dbf1b1958694913d88f0798ec17396b5f8baeff50f7ed00ea2be',
