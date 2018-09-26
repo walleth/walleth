@@ -6,6 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import org.kethereum.erc1328.isERC1328
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.isERC681
 import org.kethereum.erc681.toERC681
@@ -52,6 +53,13 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
                 if (erC681.valid) {
                     process681(erC681)
                 }
+            }
+
+            if (parsed831.isERC1328()) {
+                val wcIntent = Intent(this, WalletConnectConnectionActivity::class.java)
+                wcIntent.data = intent.data
+                startActivity(wcIntent)
+                finish()
             }
 
             if (parsed831.prefix == "esm") {

@@ -149,6 +149,7 @@ dependencies {
     implementation "com.github.walleth.kethereum:eip155:$kethereum_version"
     implementation "com.github.walleth.kethereum:erc681:$kethereum_version"
     implementation "com.github.walleth.kethereum:erc831:$kethereum_version"
+    implementation "com.github.walleth.kethereum:erc1328:$kethereum_version"
     implementation "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     implementation "com.github.walleth.kethereum:method_signatures:$kethereum_version"
     implementation "com.github.walleth.kethereum:networks:$kethereum_version"

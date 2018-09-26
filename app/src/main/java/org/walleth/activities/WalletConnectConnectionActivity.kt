@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.util.Base64
 import android.view.MenuItem
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
@@ -12,23 +13,37 @@ import kotlinx.coroutines.experimental.DefaultDispatcher
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.withContext
+import org.kethereum.erc1328.ERC1328
+import org.kethereum.erc1328.isERC1328
+import org.kethereum.erc1328.toERC1328
+
 import org.kethereum.model.Address
+import org.kethereum.model.EthereumURI
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.khex.toHexString
 import org.walleth.walletconnect.WalletConnectDriver
 import org.walleth.walletconnect.createIntentForTransaction
 import org.walleth.walletconnect.model.Session
 import org.walleth.walletconnect.model.StatefulWalletConnectTransaction
+import java.net.URLDecoder
 
 private const val KEY_INTENT_JSON = "JSON_KEY"
 
 fun Context.getWalletConnectIntent(json: String) = Intent(this, WalletConnectConnectionActivity::class.java).apply {
     putExtra(KEY_INTENT_JSON, json)
 }
+
+fun ERC1328.toSession() = Session(
+        sessionId = sessionID!!,
+        domain = URLDecoder.decode(bridge!!, "utf-8"),
+        dappName = URLDecoder.decode(name!!, "utf-8"),
+        sharedKey = Base64.decode(symKey!!, Base64.DEFAULT).toHexString()
+)
 
 class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
 
@@ -41,7 +56,10 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
     private var currentTransaction: StatefulWalletConnectTransaction? = null
 
     private val currentSession by lazy {
-        intent.getStringExtra(KEY_INTENT_JSON)?.let {
+        val erc831 = EthereumURI(intent.data.toString())
+        if (erc831.isERC1328()) {
+            erc831.toERC1328().toSession()
+        } else intent.getStringExtra(KEY_INTENT_JSON)?.let {
             moshi.adapter(Session::class.java).fromJson(it)
         }
     }
