@@ -8,15 +8,12 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_logs.*
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
 import org.walleth.R
-import org.walleth.data.config.Settings
 import java.io.IOException
 
 class DebugWallethActivity : AppCompatActivity(), KodeinAware {
 
     override val kodein by closestKodein()
-    private val settings: Settings by instance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,7 +54,9 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
                 val process = Runtime.getRuntime().exec("logcat -d")
                 val text = process.inputStream.reader().readText()
                 val textToPrint = if (golog_switch.isChecked) {
-                    text.lines().filter { it.contains("GoLog") }.joinToString("\n")
+                    text.lines().asSequence().filter {
+                        it.contains("GoLog")
+                    }.joinToString("\n")
                 } else {
                     text
                 }
@@ -73,11 +72,10 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
+        android.R.id.home -> true.also {
             finish()
-            true
         }
-        R.id.menu_share -> {
+        R.id.menu_share -> true.also {
             val sendIntent = Intent().apply {
                 action = Intent.ACTION_SEND
                 putExtra(Intent.EXTRA_TEXT, log_text.text)
@@ -85,7 +83,6 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
             }
 
             startActivity(sendIntent)
-            true
         }
         else -> super.onOptionsItemSelected(item)
     }
