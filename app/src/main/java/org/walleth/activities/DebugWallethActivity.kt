@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_logs.*
+import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.walleth.R
@@ -50,26 +52,28 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
 
     private fun displayLog() {
         try {
-            Thread(Runnable {
-                val process = Runtime.getRuntime().exec("logcat -d")
-                val text = process.inputStream.reader().readText()
-                val textToPrint = if (golog_switch.isChecked) {
-                    text.lines().asSequence().filter {
-                        it.contains("GoLog")
-                    }.joinToString("\n")
-                } else {
-                    text
-                }
+            launch {
+                val textToPrint = async {
+                    if (golog_switch.isChecked) {
+                        readLogcatString().lines().asSequence().filter {
+                            it.contains("GoLog")
+                        }.joinToString("\n")
+                    } else {
+                        readLogcatString()
+                    }
+                }.await()
 
                 runOnUiThread {
                     log_text.text = textToPrint
                 }
-            }).start()
+            }
 
         } catch (e: IOException) {
             log_text.text = e.message
         }
     }
+
+    private fun readLogcatString() = Runtime.getRuntime().exec("logcat -d").inputStream.reader().readText()
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> true.also {
