@@ -2,6 +2,7 @@ package org.walleth.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.os.TransactionTooLargeException
 import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
@@ -10,6 +11,7 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
+import org.ligi.kaxtui.alert
 import org.walleth.R
 import java.io.IOException
 
@@ -80,15 +82,26 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
             finish()
         }
         R.id.menu_share -> true.also {
-            val sendIntent = Intent().apply {
-                action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, log_text.text)
-                type = "text/plain"
+            try {
+                sendLog(log_text.text)
+            } catch (e: TransactionTooLargeException) {
+                alert("Log too long - we need to shorten it") {
+                    val textLength = log_text.text.length
+                    val shortened = log_text.text.substring(Math.max(log_text.text.length - 4096, 0), textLength)
+                    sendLog(shortened)
+                }
             }
-
-            startActivity(sendIntent)
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+    private fun sendLog(charSequence: CharSequence?) {
+        val sendIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            putExtra(Intent.EXTRA_TEXT, charSequence)
+            type = "text/plain"
+        }
+        startActivity(sendIntent)
     }
 
 
