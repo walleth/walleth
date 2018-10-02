@@ -56,8 +56,8 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
     private var currentTransaction: StatefulWalletConnectTransaction? = null
 
     private val currentSession by lazy {
-        val erc831 = EthereumURI(intent.data.toString())
-        if (erc831.isERC1328()) {
+        val erc831 = intent.data?.let { EthereumURI(it.toString()) }
+        if (erc831?.isERC1328() == true) {
             erc831.toERC1328().toSession()
         } else intent.getStringExtra(KEY_INTENT_JSON)?.let {
             moshi.adapter(Session::class.java).fromJson(it)
