@@ -1,20 +1,19 @@
 package org.walleth.testdata
 
-import org.kethereum.crypto.createEcKeyPair
-import org.kethereum.crypto.getAddress
+import org.kethereum.crypto.createEthereumKeyPair
 import org.kethereum.crypto.initializeCrypto
-import org.kethereum.model.Address
+import org.kethereum.crypto.toAddress
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
 
-val DEFAULT_TEST_KEY = createEcKeyPair()
-val DEFAULT_TEST_KEY2 = createEcKeyPair()
-val DEFAULT_TEST_KEY3 = createEcKeyPair()
+val DEFAULT_TEST_KEY = createEthereumKeyPair()
+val DEFAULT_TEST_KEY2 = createEthereumKeyPair()
+val DEFAULT_TEST_KEY3 = createEthereumKeyPair()
 
-val DEFAULT_TEST_ADDRESS = Address(DEFAULT_TEST_KEY.getAddress())
-val DEFAULT_TEST_ADDRESS2 = Address(DEFAULT_TEST_KEY2.getAddress())
-val DEFAULT_TEST_ADDRESS3 = Address(DEFAULT_TEST_KEY3.getAddress())
+val DEFAULT_TEST_ADDRESS = DEFAULT_TEST_KEY.toAddress()
+val DEFAULT_TEST_ADDRESS2 = DEFAULT_TEST_KEY2.toAddress()
+val DEFAULT_TEST_ADDRESS3 = DEFAULT_TEST_KEY3.toAddress()
 
 class DefaultCurrentAddressProvider(settings: Settings, keyStore: TestKeyStore) : CurrentAddressProvider(settings) {
 

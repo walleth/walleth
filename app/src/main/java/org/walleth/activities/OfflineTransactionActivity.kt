@@ -21,7 +21,6 @@ import org.kethereum.functions.rlp.*
 import org.kethereum.functions.toTransaction
 import org.kethereum.functions.toTransactionSignatureData
 import org.kethereum.keccakshortcut.keccak
-import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
@@ -113,7 +112,7 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
                             ?: throw IllegalArgumentException("Cannot extract chainID from RLP"))
                     transaction.chain = ChainDefinition(chainID.toLong())
 
-                    transaction.from = Address(transaction.extractFrom(signatureData, chainID))
+                    transaction.from = transaction.extractFrom(signatureData, chainID)
                     transaction.txHash = txRLP.encode().keccak().toHexString()
                     createTransaction(transaction, signatureData)
                 } catch (e: Exception) {

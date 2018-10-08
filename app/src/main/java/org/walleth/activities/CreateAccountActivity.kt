@@ -12,9 +12,9 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
-import org.kethereum.crypto.ECKeyPair
-import org.kethereum.crypto.createEcKeyPair
-import org.kethereum.crypto.getAddress
+import org.kethereum.crypto.createEthereumKeyPair
+import org.kethereum.crypto.model.ECKeyPair
+import org.kethereum.crypto.toAddress
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.erc681.parseERC681
 import org.kethereum.erc831.isEthereumURLString
@@ -101,8 +101,8 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
 
         new_address_button.setOnClickListener {
 
-            lastCreatedAddress = createEcKeyPair()
-            lastCreatedAddress?.getAddress()?.let {
+            lastCreatedAddress = createEthereumKeyPair()
+            lastCreatedAddress?.toAddress()?.let {
                 setAddressFromExternalApplyingChecksum(it)
             }
 
@@ -127,20 +127,20 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
                     stringExtra
                 }
                 if (address != null) {
-                    setAddressFromExternalApplyingChecksum(address)
+                    setAddressFromExternalApplyingChecksum(Address(address))
                 }
             }
 
             if (hasAddressResult()) {
                 trezorPath = getPATHResult()
-                setAddressFromExternalApplyingChecksum(getAddressResult())
+                setAddressFromExternalApplyingChecksum(Address(getAddressResult()))
             }
         }
     }
 
-    private fun setAddressFromExternalApplyingChecksum(addressHex: String) {
-        if (Address(addressHex).isValid()) {
-            hexInput.setText(Address(addressHex).withERC55Checksum().hex)
+    private fun setAddressFromExternalApplyingChecksum(addressHex: Address) {
+        if (addressHex.isValid()) {
+            hexInput.setText(addressHex.withERC55Checksum().hex)
         } else {
             alert(getString(R.string.warning_not_a_valid_address, addressHex), getString(R.string.title_invalid_address_alert))
         }

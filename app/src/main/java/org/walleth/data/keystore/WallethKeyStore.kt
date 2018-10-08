@@ -1,6 +1,6 @@
 package org.walleth.data.keystore
 
-import org.kethereum.crypto.ECKeyPair
+import org.kethereum.crypto.model.ECKeyPair
 import org.kethereum.model.Address
 
 interface WallethKeyStore {

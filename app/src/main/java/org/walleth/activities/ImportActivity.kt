@@ -22,7 +22,8 @@ import org.kethereum.bip39.dirtyPhraseToMnemonicWords
 import org.kethereum.bip39.toKey
 import org.kethereum.bip39.validate
 import org.kethereum.bip39.wordlists.WORDLIST_ENGLISH
-import org.kethereum.crypto.ECKeyPair
+import org.kethereum.crypto.model.PrivateKey
+import org.kethereum.crypto.toECKeyPair
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.model.Address
 import org.kethereum.wallet.loadKeysFromWalletJsonString
@@ -128,7 +129,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
                         mnemonicWords.toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
 
                     }
-                    else -> ECKeyPair.create(content.hexToByteArray())
+                    else -> PrivateKey(content.hexToByteArray()).toECKeyPair()
                 }
 
                 keyStore.importKey(key!!, DEFAULT_PASSWORD)

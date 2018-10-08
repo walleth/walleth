@@ -3,7 +3,7 @@ package org.walleth.data.networks
 import android.content.Context
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
-import org.kethereum.crypto.createEcKeyPair
+import org.kethereum.crypto.createEthereumKeyPair
 import org.kethereum.model.Address
 import org.walleth.R
 import org.walleth.data.AppDatabase
@@ -23,7 +23,7 @@ class InitializingCurrentAddressProvider(keyStore: WallethKeyStore, appDatabase:
                 if (!keyStore.getAddresses().isEmpty()) {
                     postValue(keyStore.getAddresses().first())
                 } else {
-                    val newAccountAddress = keyStore.importKey(createEcKeyPair(), DEFAULT_PASSWORD)
+                    val newAccountAddress = keyStore.importKey(createEthereumKeyPair(), DEFAULT_PASSWORD)
                     ?:throw (IllegalArgumentException("Could not create key"))
 
                     postValue(newAccountAddress)
