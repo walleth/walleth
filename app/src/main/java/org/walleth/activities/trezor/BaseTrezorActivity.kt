@@ -31,6 +31,7 @@ import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.khex.toHexString
+import org.walleth.ui.KEY_MAP_NUM_PAD
 import org.walleth.ui.showPINDialog
 
 
@@ -127,7 +128,8 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
                         currentSecret = pin
                         state = PIN_REQUEST
                         handler.post(mainRunnable)
-                    }
+                    },
+                    pinPadMapping = KEY_MAP_NUM_PAD
             )
             is TrezorMessage.PassphraseRequest -> if (hasOnDevice() && onDevice) {
                 enterNewState(PWD_ON_DEVICE)

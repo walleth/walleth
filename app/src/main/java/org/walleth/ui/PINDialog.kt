@@ -8,7 +8,15 @@ import org.ligi.kaxt.inflate
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 
-fun Activity.showPINDialog(onPIN: (pin: String) -> Unit, onCancel: () -> Unit) {
+val KEY_MAP_TOUCH = arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
+val KEY_MAP_NUM_PAD = arrayOf(7, 8, 9, 4, 5, 6, 1, 2, 3) // mainly for TREZOR
+
+fun Activity.showPINDialog(
+        onPIN: (pin: String) -> Unit,
+        onCancel: () -> Unit,
+        labelButtons: Boolean = false,
+        pinPadMapping: Array<Int> = KEY_MAP_TOUCH
+) {
     val view = inflate(R.layout.pinput)
     var dialogPin = ""
     val displayPin = {
@@ -16,10 +24,9 @@ fun Activity.showPINDialog(onPIN: (pin: String) -> Unit, onCancel: () -> Unit) {
         view.pin_back.setVisibility(!dialogPin.isEmpty())
     }
     displayPin.invoke()
-    val pinPadMapping = arrayOf(7, 8, 9, 4, 5, 6, 1, 2, 3)
     for (i in 0..8) {
         val button = Button(this)
-        button.text = "*"
+        button.text = if (labelButtons) pinPadMapping[i].toString() else "*"
         button.setOnClickListener {
             if (dialogPin.length <= 10)
                 dialogPin += pinPadMapping[i]
