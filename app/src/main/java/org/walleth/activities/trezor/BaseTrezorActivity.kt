@@ -171,15 +171,15 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
         AlertDialog.Builder(this)
                 .setView(inputLayout)
                 .setTitle(R.string.trezor_please_enter_your_passphrase)
-                .setPositiveButton(android.R.string.ok, { _, _ ->
+                .setPositiveButton(android.R.string.ok) { _, _ ->
                     currentSecret = inputLayout.password_input.text.toString()
                     state = PWD_REQUEST
                     handler.post(mainRunnable)
-                })
-                .setNegativeButton(android.R.string.cancel, { _, _ ->
+                }
+                .setNegativeButton(android.R.string.cancel) { _, _ ->
                     state = CANCEL
                     handler.post(mainRunnable)
-                })
+                }
 
                 .show()
     }
@@ -213,15 +213,15 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
             AlertDialog.Builder(this)
                     .setView(view)
                     .setTitle(R.string.trezor_please_enter_your_pin)
-                    .setPositiveButton(android.R.string.ok, { _, _ ->
+                    .setPositiveButton(android.R.string.ok) { _, _ ->
                         currentSecret = dialogPin
                         state = PIN_REQUEST
                         handler.post(mainRunnable)
-                    })
-                    .setNegativeButton(android.R.string.cancel, { _, _ ->
+                    }
+                    .setNegativeButton(android.R.string.cancel) { _, _ ->
                         state = CANCEL
                         handler.post(mainRunnable)
-                    })
+                    }
                     .show()
         }
     }
