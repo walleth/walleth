@@ -11,13 +11,13 @@ apply plugin: 'org.jetbrains.kotlin.android.extensions'
 apply plugin: "com.jaredsburrows.license"
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
 
     defaultConfig {
         applicationId "org.walleth"
 
         minSdkVersion 15
-        targetSdkVersion 27
+        targetSdkVersion 28
 
         versionCode 425
         versionName "0.42.5"
@@ -182,6 +182,7 @@ dependencies {
     implementation "org.kodein.di:kodein-di-generic-jvm:$kodein_version"
     implementation "org.kodein.di:kodein-di-framework-android:$kodein_version"
 
+    implementation "com.android.support:support-v4:$support_version"
     implementation "com.android.support:appcompat-v7:$support_version"
     implementation "com.android.support:design:$support_version"
     implementation "com.android.support:cardview-v7:$support_version"
@@ -212,7 +213,7 @@ dependencies {
     androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.16.0'
 
     androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.1'
-    androidTestImplementation 'com.github.ligi:trulesk:0.23'
+    androidTestImplementation 'com.github.ligi:trulesk:0.26'
 
     testImplementation 'junit:junit:4.12'
     testImplementation "com.google.truth:truth:$truth"

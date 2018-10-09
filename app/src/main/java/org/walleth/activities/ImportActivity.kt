@@ -42,6 +42,7 @@ import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.khex.hexToByteArray
+import org.walleth.util.hasText
 import java.io.FileNotFoundException
 
 enum class KeyType {
@@ -143,7 +144,7 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
                         .setTitle(getString(R.string.dialog_title_success))
 
                 appDatabase.addressBook.getByAddressAsync(importKey) { oldEntry ->
-                    val accountName = if (account_name.text.isBlank()) {
+                    val accountName = if (!account_name.hasText()) {
                         oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
                     } else {
                         account_name.text

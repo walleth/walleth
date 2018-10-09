@@ -36,6 +36,7 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.keystore.WallethKeyStore
+import org.walleth.util.hasText
 
 private const val HEX_INTENT_EXTRA_KEY = "HEX"
 private const val REQUEST_CODE_TREZOR = 7965
@@ -70,7 +71,7 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
 
             if (!Address(hex).isValid()) {
                 alert(title = alert_problem_title, message = address_not_valid)
-            } else if (nameInput.text.isBlank()) {
+            } else if (!nameInput.hasText()) {
                 alert(title = alert_problem_title, message = please_enter_name)
             } else {
                 lastCreatedAddress?.let {

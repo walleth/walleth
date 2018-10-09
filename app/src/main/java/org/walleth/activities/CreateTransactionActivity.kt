@@ -71,6 +71,7 @@ import org.walleth.khex.toHexString
 import org.walleth.khex.toNoPrefixHexString
 import org.walleth.ui.asyncAwait
 import org.walleth.ui.chainIDAlert
+import org.walleth.util.hasText
 import org.walleth.util.question
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -320,7 +321,7 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
             alert(R.string.create_tx_error_amount_must_be_specified)
         } else if (currentTokenProvider.currentToken.isETH() && currentAmount ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
-        } else if (nonce_input.text.isBlank()) {
+        } else if (!nonce_input.hasText()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
             if (currentTokenProvider.currentToken.isETH() && currentERC681?.function == null && currentAmount == ZERO) {
