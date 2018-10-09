@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.TrezorException
@@ -17,7 +16,6 @@ import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
 import com.satoshilabs.trezor.lib.protobuf.TrezorType
 import kotlinx.android.synthetic.main.activity_trezor.*
 import kotlinx.android.synthetic.main.password_input.view.*
-import kotlinx.android.synthetic.main.pinput.view.*
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.bip44.BIP44
@@ -27,13 +25,13 @@ import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.inflate
-import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.khex.toHexString
+import org.walleth.ui.showPINDialog
 
 
 abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
@@ -120,7 +118,17 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
 
 
         when (this) {
-            is TrezorMessage.PinMatrixRequest -> showPINDialog()
+            is TrezorMessage.PinMatrixRequest -> showPINDialog(
+                    onCancel = {
+                        state = CANCEL
+                        handler.post(mainRunnable)
+                    },
+                    onPIN = { pin ->
+                        currentSecret = pin
+                        state = PIN_REQUEST
+                        handler.post(mainRunnable)
+                    }
+            )
             is TrezorMessage.PassphraseRequest -> if (hasOnDevice() && onDevice) {
                 enterNewState(PWD_ON_DEVICE)
             } else {
@@ -184,47 +192,6 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
                 .show()
     }
 
-
-    private fun showPINDialog() {
-        val view = inflate(R.layout.pinput)
-        var dialogPin = ""
-        val displayPin = {
-            view.pin_textview.text = "*".repeat(dialogPin.length)
-            view.pin_back.setVisibility(!dialogPin.isEmpty())
-        }
-        displayPin.invoke()
-        val pinPadMapping = arrayOf(7, 8, 9, 4, 5, 6, 1, 2, 3)
-        for (i in 0..8) {
-            val button = Button(this)
-            button.text = "*"
-            button.setOnClickListener {
-                if (dialogPin.length <= 10)
-                    dialogPin += pinPadMapping[i]
-                displayPin.invoke()
-            }
-            view.pin_grid.addView(button)
-        }
-        view.pin_back.setOnClickListener {
-            if (dialogPin.isNotEmpty())
-                dialogPin = dialogPin.substring(0, dialogPin.length - 1)
-            displayPin.invoke()
-        }
-        if (!isFinishing) {
-            AlertDialog.Builder(this)
-                    .setView(view)
-                    .setTitle(R.string.trezor_please_enter_your_pin)
-                    .setPositiveButton(android.R.string.ok) { _, _ ->
-                        currentSecret = dialogPin
-                        state = PIN_REQUEST
-                        handler.post(mainRunnable)
-                    }
-                    .setNegativeButton(android.R.string.cancel) { _, _ ->
-                        state = CANCEL
-                        handler.post(mainRunnable)
-                    }
-                    .show()
-        }
-    }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> true.also {
