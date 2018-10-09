@@ -34,5 +34,5 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/notification_checkbox"
-            android:text="Notify on transactions"/>
+            android:text="@string/notify_on_transactions"/>
 </LinearLayout>
