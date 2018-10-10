@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
             android:defaultValue="@string/default_day_night"
+            app:iconSpaceReserved="false"
             android:entries="@array/day_night"
             android:entryValues="@array/day_night_keys"
             android:key="@string/key_prefs_day_night"
@@ -11,6 +14,7 @@
 
     <Preference
             android:key="@string/key_token"
+            app:iconSpaceReserved="false"
             android:title="@string/select_token">
         <intent
                 android:action="android.intent.action.VIEW"
@@ -20,6 +24,7 @@
 
     <Preference
             android:key="@string/key_reference"
+            app:iconSpaceReserved="false"
             android:title="@string/select_fiat_reference">
         <intent
                 android:action="android.intent.action.VIEW"
@@ -29,8 +34,8 @@
 
     <EditTextPreference
             android:key="@string/key_prefs_stats_username"
+            app:iconSpaceReserved="false"
             android:title="@string/settings_stats_name"/>
-
 
 
 </PreferenceScreen>
