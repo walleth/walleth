@@ -1,8 +1,9 @@
 package org.walleth.ui
 
 import android.app.Activity
+import android.support.design.button.MaterialButton
 import android.support.v7.app.AlertDialog
-import android.widget.Button
+import android.widget.GridLayout
 import kotlinx.android.synthetic.main.pinput.view.*
 import org.ligi.kaxt.inflate
 import org.ligi.kaxt.setVisibility
@@ -25,14 +26,19 @@ fun Activity.showPINDialog(
     }
     displayPin.invoke()
     for (i in 0..8) {
-        val button = Button(this)
-        button.text = if (labelButtons) pinPadMapping[i].toString() else "*"
-        button.setOnClickListener {
-            if (dialogPin.length <= 10)
-                dialogPin += pinPadMapping[i]
-            displayPin.invoke()
-        }
-        view.pin_grid.addView(button)
+        view.pin_grid.addView(MaterialButton(this).apply {
+            text = if (labelButtons) pinPadMapping[i].toString() else "*"
+            setOnClickListener {
+                if (dialogPin.length <= 10)
+                    dialogPin += pinPadMapping[i]
+                displayPin.invoke()
+            }
+
+            layoutParams = GridLayout.LayoutParams().apply {
+                setMargins(5,5,5,5)
+            }
+        })
+
     }
     view.pin_back.setOnClickListener {
         if (dialogPin.isNotEmpty())
