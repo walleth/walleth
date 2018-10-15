@@ -213,7 +213,7 @@ class EtherScanService : LifecycleService(), KodeinAware {
     }
 
     private fun getEtherscanResult(requestString: String, networkDefinition: NetworkDefinition) = try {
-        getEtherscanResult(requestString, networkDefinition, true)
+        getEtherscanResult(requestString, networkDefinition, false)
     } catch (e: CertPathValidatorException) {
         getEtherscanResult(requestString, networkDefinition, true)
     }
