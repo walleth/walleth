@@ -3,9 +3,7 @@ package org.walleth.activities
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.LayoutInflater
-import android.view.MenuItem
 import com.scottyab.rootbeer.RootBeer
 import kotlinx.android.synthetic.main.activity_security_info.*
 import kotlinx.android.synthetic.main.activity_security_item.view.*
@@ -15,7 +13,6 @@ import org.walleth.activities.ProblemLevel.*
 import org.walleth.util.security.getDaysSincePatch
 import org.walleth.util.security.isDeviceLockScreenProtected
 
-
 private enum class ProblemLevel {
     GOOD,
     OK,
@@ -24,23 +21,20 @@ private enum class ProblemLevel {
 
 private data class SecurityInfoItem(val level: ProblemLevel, val message: String)
 
-class SecurityInfoActivity : AppCompatActivity() {
+class SecurityInfoActivity : BaseSubActivity() {
 
-    public override fun onCreate(savedInstanceState: Bundle?) {
+    override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_security_info)
 
         supportActionBar?.run {
-            setDisplayShowTitleEnabled(true)
-            setDisplayHomeAsUpEnabled(true)
             subtitle = getString(R.string.security_info)
         }
     }
 
     override fun onResume() {
         super.onResume()
-
 
         val inflater = LayoutInflater.from(this)
 
@@ -66,12 +60,6 @@ class SecurityInfoActivity : AppCompatActivity() {
 
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            finish()
-        }
-        return super.onOptionsItemSelected(item)
-    }
 }
 
 private fun getLockInfo(context: Context) = if (isDeviceLockScreenProtected(context)) {

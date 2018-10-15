@@ -2,18 +2,14 @@ package org.walleth.activities
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 
-class KeysActivity : AppCompatActivity(), KodeinAware {
+class KeysActivity : BaseSubActivity() {
 
-    override val kodein by closestKodein()
     val keyStore: WallethKeyStore by instance()
     val currentAddressProvider: CurrentAddressProvider by instance()
 

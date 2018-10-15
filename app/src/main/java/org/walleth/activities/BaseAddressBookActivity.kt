@@ -3,7 +3,6 @@ package org.walleth.activities
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -17,8 +16,6 @@ import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
@@ -29,9 +26,8 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
 
-abstract class BaseAddressBookActivity : AppCompatActivity(), KodeinAware {
+abstract class BaseAddressBookActivity : BaseSubActivity() {
 
-    override val kodein by closestKodein()
     val keyStore: WallethKeyStore by instance()
     val appDatabase: AppDatabase by instance()
     val settings: Settings by instance()
@@ -51,7 +47,6 @@ abstract class BaseAddressBookActivity : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_list_addresses)
 
         supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         recycler_view.layoutManager = LinearLayoutManager(this)
 
@@ -128,9 +123,6 @@ abstract class BaseAddressBookActivity : AppCompatActivity(), KodeinAware {
                 }
                 refresh()
             }
-        }
-        android.R.id.home -> true.also {
-            finish()
         }
         else -> super.onOptionsItemSelected(item)
     }

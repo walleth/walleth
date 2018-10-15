@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -18,8 +17,6 @@ import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
 import kotlinx.coroutines.experimental.withContext
 import org.kethereum.functions.encodeRLP
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
@@ -41,9 +38,8 @@ fun Context.getTransactionActivityIntentForHash(hex: String) = Intent(this, View
     putExtra(HASH_KEY, hex)
 }
 
-class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
+class ViewTransactionActivity : BaseSubActivity() {
 
-    override val kodein by closestKodein()
     private val appDatabase: AppDatabase by instance()
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private val blockExplorerProvider: BlockExplorerProvider by instance()
@@ -67,7 +63,6 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
                 val transaction = it.transaction
 
                 supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
-                supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
                 nonce.text = transaction.nonce.toString()
                 event_log_textview.text = it.transactionState.eventLog
@@ -180,7 +175,7 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.menu_delete -> {
+        R.id.menu_delete -> true.also {
             txEntity?.hash?.let {
                 async(UI) {
                     async(CommonPool) {
@@ -189,19 +184,13 @@ class ViewTransactionActivity : AppCompatActivity(), KodeinAware {
                     finish()
                 }
             }
-            true
         }
 
-        R.id.menu_etherscan -> {
+        R.id.menu_etherscan -> true.also {
             txEntity?.let {
                 val url = blockExplorerProvider.get().getTransactionURL(it.transaction.txHash!!)
                 startActivityFromURL(url)
             }
-            true
-        }
-        android.R.id.home -> {
-            finish()
-            true
         }
         else -> super.onOptionsItemSelected(item)
     }

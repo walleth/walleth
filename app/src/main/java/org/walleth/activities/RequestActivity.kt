@@ -2,15 +2,12 @@ package org.walleth.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_request.*
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
@@ -24,9 +21,8 @@ import org.walleth.functions.extractValueForToken
 import org.walleth.functions.setQRCode
 import org.walleth.util.copyToClipboard
 
-class RequestActivity : AppCompatActivity(), KodeinAware {
+class RequestActivity : BaseSubActivity() {
 
-    override val kodein by closestKodein()
     private lateinit var currentERC67String: String
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private val currentTokenProvider: CurrentTokenProvider by instance()
@@ -38,10 +34,8 @@ class RequestActivity : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_request)
 
         supportActionBar?.subtitle = getString(R.string.request_transaction_subtitle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         refreshQR()
-
 
         val initText = if (networkDefinitionProvider.getCurrent().faucets.isNotEmpty()) {
             val faucetURL = networkDefinitionProvider.getCurrent()
@@ -122,9 +116,6 @@ class RequestActivity : AppCompatActivity(), KodeinAware {
         }
         R.id.menu_copy -> true.also {
             copyToClipboard(currentERC67String, receive_qrcode)
-        }
-        android.R.id.home -> true.also {
-            finish()
         }
         else -> super.onOptionsItemSelected(item)
     }

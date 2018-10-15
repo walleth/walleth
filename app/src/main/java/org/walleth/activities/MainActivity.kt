@@ -19,6 +19,7 @@ import android.view.MenuItem
 import android.view.View.INVISIBLE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
+import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
 import org.kethereum.erc681.ERC681

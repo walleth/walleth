@@ -9,7 +9,6 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -27,8 +26,6 @@ import org.kethereum.crypto.toECKeyPair
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.model.Address
 import org.kethereum.wallet.loadKeysFromWalletJsonString
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
@@ -60,9 +57,7 @@ fun Context.getKeyImportIntent(key: String, type: KeyType) = Intent(this, Import
 
 private const val READ_REQUEST_CODE = 42
 
-class ImportActivity : AppCompatActivity(), KodeinAware {
-
-    override val kodein by closestKodein()
+class ImportActivity : BaseSubActivity() {
 
     private val keyStore: WallethKeyStore by instance()
     private val appDatabase: AppDatabase by instance()
@@ -87,7 +82,6 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
         }
 
         supportActionBar?.subtitle = getString(R.string.import_json_subtitle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {
             doImport()
@@ -215,10 +209,6 @@ class ImportActivity : AppCompatActivity(), KodeinAware {
 
         R.id.menu_scan -> true.also {
             startScanActivityForResult(this)
-        }
-
-        android.R.id.home -> true.also {
-            finish()
         }
 
         else -> super.onOptionsItemSelected(item)

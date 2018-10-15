@@ -4,9 +4,7 @@ import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.text.method.LinkMovementMethod
-import android.view.MenuItem
 import android.view.View
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Message
@@ -20,13 +18,12 @@ import kotlinx.coroutines.experimental.android.UI
 import kotlinx.coroutines.experimental.async
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.BaseSubActivity
 import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -35,14 +32,13 @@ import org.walleth.ui.KEY_MAP_NUM_PAD
 import org.walleth.ui.showPINDialog
 
 
-abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
+abstract class BaseTrezorActivity : BaseSubActivity() {
 
     abstract fun handleExtraMessage(res: Message?)
     abstract fun handleAddress(address: Address)
     abstract fun getTaskSpecificMessage(): GeneratedMessageV3?
 
     protected var currentBIP44: BIP44? = null
-    override val kodein by closestKodein()
     protected val appDatabase: AppDatabase by instance()
     protected val networkDefinitionProvider: NetworkDefinitionProvider by instance()
 
@@ -73,7 +69,6 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
 
         trezor_status_text.text = HtmlCompat.fromHtml(getString(R.string.connect_trezor_message))
         trezor_status_text.movementMethod = LinkMovementMethod()
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
     }
 
@@ -194,11 +189,4 @@ abstract class BaseTrezorActivity : AppCompatActivity(), KodeinAware {
                 .show()
     }
 
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> true.also {
-            cancel()
-        }
-        else -> super.onOptionsItemSelected(item)
-    }
 }

@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
 import android.support.annotation.RequiresApi
-import android.support.v7.app.AppCompatActivity
 import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
@@ -28,8 +27,6 @@ import kotlinx.coroutines.experimental.withContext
 import net.glxn.qrgen.android.QRCode
 import org.kethereum.wallet.LIGHT_SCRYPT_CONFIG
 import org.kethereum.wallet.generateWalletJSON
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
@@ -40,9 +37,8 @@ import org.walleth.data.networks.CurrentAddressProvider
 import java.io.ByteArrayOutputStream
 
 
-class ExportKeyActivity : AppCompatActivity(), KodeinAware {
+class ExportKeyActivity : BaseSubActivity() {
 
-    override val kodein by closestKodein()
     val keyStore: WallethKeyStore by instance()
     val moshi: Moshi by instance()
     val currentAddressProvider: CurrentAddressProvider by instance()
@@ -56,7 +52,6 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_show_qr)
 
         supportActionBar?.subtitle = getString(R.string.export_account_subtitle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         qrcode_image.setVisibility(false)
         show_qr_switch.setOnCheckedChangeListener { _, isChecked ->
@@ -87,7 +82,7 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
 
                 val key = keyStore.getKeyForAddress(currentAddressProvider.getCurrent(), DEFAULT_PASSWORD)
 
-                keyJSON =key?.generateWalletJSON(password_input.text.toString(), LIGHT_SCRYPT_CONFIG)
+                keyJSON = key?.generateWalletJSON(password_input.text.toString(), LIGHT_SCRYPT_CONFIG)
                         ?: throw (IllegalStateException("Could not create JSON from key"))
 
                 val point = Point()
@@ -108,12 +103,8 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> {
-            finish()
-            true
-        }
 
-        R.id.menu_share -> {
+        R.id.menu_share -> true.also {
             startAfterKeyIsReady {
                 val sendIntent = Intent().apply {
 
@@ -123,12 +114,10 @@ class ExportKeyActivity : AppCompatActivity(), KodeinAware {
                 }
                 startActivity(sendIntent)
             }
-            true
         }
 
-        R.id.menu_print -> {
+        R.id.menu_print -> true.also {
             doWebViewPrint()
-            true
         }
         else -> super.onOptionsItemSelected(item)
     }

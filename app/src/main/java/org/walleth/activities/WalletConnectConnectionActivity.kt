@@ -4,9 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.util.Base64
-import android.view.MenuItem
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.experimental.DefaultDispatcher
@@ -16,11 +14,8 @@ import kotlinx.coroutines.experimental.withContext
 import org.kethereum.erc1328.ERC1328
 import org.kethereum.erc1328.isERC1328
 import org.kethereum.erc1328.toERC1328
-
 import org.kethereum.model.Address
 import org.kethereum.model.EthereumURI
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -45,9 +40,7 @@ fun ERC1328.toSession() = Session(
         sharedKey = Base64.decode(symKey!!, Base64.DEFAULT).toHexString()
 )
 
-class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
-
-    override val kodein by closestKodein()
+class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private val moshi: Moshi by instance()
     private val walletConnectDriver: WalletConnectDriver by instance()
@@ -69,7 +62,6 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
 
         setContentView(R.layout.activity_wallet_connect)
         supportActionBar?.subtitle = getString(R.string.wallet_connect) + " " + currentSession?.dappName
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         if (!walletConnectDriver.hasFCMToken()) {
             alert(R.string.walletconnect_error_needs_fcm_message, R.string.walletconnect_error_needs_fcm_title) {
@@ -150,12 +142,5 @@ class WalletConnectConnectionActivity : AppCompatActivity(), KodeinAware {
                 }
             }
         }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> true.also {
-            finish()
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 }

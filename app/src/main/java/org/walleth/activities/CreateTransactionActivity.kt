@@ -9,8 +9,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_create_transaction.*
@@ -35,8 +33,6 @@ import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
@@ -84,13 +80,12 @@ const val TO_ADDRESS_REQUEST_CODE = 1
 const val FROM_ADDRESS_REQUEST_CODE = 2
 const val TOKEN_REQUEST_CODE = 3
 
-class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
+class CreateTransactionActivity : BaseSubActivity() {
 
     private var currentERC681: ERC681 = ERC681()
     private var currentAmount: BigInteger? = null
     private var currentToAddress: Address? = null
 
-    override val kodein by closestKodein()
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private val currentTokenProvider: CurrentTokenProvider by instance()
@@ -158,8 +153,6 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
         networkDefinitionProvider.observe(this, Observer {
             supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, networkDefinitionProvider.getCurrent().getNetworkName())
         })
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         onCurrentTokenChanged()
 
@@ -613,12 +606,5 @@ class CreateTransactionActivity : AppCompatActivity(), KodeinAware {
         }
         setResult(RESULT_OK, Intent().apply { putExtra("TXHASH", currentTxHash) })
         finish()
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> true.also {
-            finish()
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 }

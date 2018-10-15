@@ -1,0 +1,3 @@
+<resources>
+    <style name="Base.Theme.YourApp.DayNight" parent="Theme.WallETH.Dark" />
+</resources>

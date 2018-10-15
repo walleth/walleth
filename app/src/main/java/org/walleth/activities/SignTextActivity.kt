@@ -3,12 +3,9 @@ package org.walleth.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_sign_text.*
 import org.kethereum.crypto.signMessage
 import org.kethereum.extensions.toHexStringZeroPadded
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.walleth.R
 import org.walleth.data.DEFAULT_PASSWORD
@@ -16,9 +13,8 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.khex.toHexString
 
-class SignTextActivity : AppCompatActivity(), KodeinAware {
+class SignTextActivity : BaseSubActivity() {
 
-    override val kodein by closestKodein()
     private val keyStore: WallethKeyStore by instance()
     private val currentAddressProvider: CurrentAddressProvider by instance()
 

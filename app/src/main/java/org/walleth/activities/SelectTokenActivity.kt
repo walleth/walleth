@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.SearchView
@@ -17,8 +16,6 @@ import android.view.MenuItem
 import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_list_stars.*
 import kotlinx.coroutines.experimental.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
@@ -33,9 +30,8 @@ class TokenActivityViewModel : ViewModel() {
     var searchTerm: String = ""
 }
 
-class SelectTokenActivity : AppCompatActivity(), KodeinAware {
+class SelectTokenActivity : BaseSubActivity() {
 
-    override val kodein by closestKodein()
     private val currentTokenProvider: CurrentTokenProvider by instance()
     private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private val appDatabase: AppDatabase by instance()
@@ -43,7 +39,9 @@ class SelectTokenActivity : AppCompatActivity(), KodeinAware {
 
     private var showDelete = false
 
-    private val viewModel by lazy { ViewModelProviders.of(this).get(TokenActivityViewModel::class.java) }
+    private val viewModel by lazy {
+        ViewModelProviders.of(this).get(TokenActivityViewModel::class.java)
+    }
 
     private val tokenListAdapter by lazy {
         TokenListAdapter(currentTokenProvider, this, appDatabase).apply {
@@ -59,7 +57,6 @@ class SelectTokenActivity : AppCompatActivity(), KodeinAware {
         starred_only.isChecked = settings.showOnlyStaredTokens
 
         supportActionBar?.subtitle = getString(R.string.select_token_activity_select_token)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         recycler_view.layoutManager = LinearLayoutManager(this)
 
@@ -67,10 +64,10 @@ class SelectTokenActivity : AppCompatActivity(), KodeinAware {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
 
-        starred_only.setOnCheckedChangeListener({ compoundButton: CompoundButton, isOn: Boolean ->
+        starred_only.setOnCheckedChangeListener { compoundButton: CompoundButton, isOn: Boolean ->
             tokenListAdapter.filter(viewModel.searchTerm, isOn)
             settings.showOnlyStaredTokens = isOn
-        })
+        }
 
         appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
 
@@ -155,9 +152,6 @@ class SelectTokenActivity : AppCompatActivity(), KodeinAware {
             launch {
                 appDatabase.tokens.showAll()
             }
-        }
-        android.R.id.home -> true.also {
-            finish()
         }
         else -> super.onOptionsItemSelected(item)
     }

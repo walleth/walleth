@@ -1,14 +1,11 @@
 package org.walleth.activities
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_account_edit.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.async
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
@@ -18,14 +15,11 @@ import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.util.copyToClipboard
 
-class EditAccountActivity : AppCompatActivity(), KodeinAware {
+class EditAccountActivity : BaseSubActivity() {
 
-    override val kodein by closestKodein()
     private val appDatabase: AppDatabase by instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private val blockExplorerProvider: BlockExplorerProvider by instance()
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private lateinit var currentAddressInfo: AddressBookEntry
@@ -36,7 +30,6 @@ class EditAccountActivity : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_account_edit)
 
         supportActionBar?.subtitle = getString(R.string.edit_account_subtitle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
             currentAddressInfo = it!!
@@ -77,9 +70,6 @@ class EditAccountActivity : AppCompatActivity(), KodeinAware {
         }
         R.id.menu_etherscan -> true.also {
             startActivityFromURL(blockExplorerProvider.get().getAddressURL(currentAddressProvider.getCurrent()))
-        }
-        android.R.id.home -> true.also {
-            finish()
         }
         else -> super.onOptionsItemSelected(item)
     }

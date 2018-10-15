@@ -5,8 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager.FEATURE_USB_HOST
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
-import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_account_create.*
 import kotlinx.coroutines.experimental.CommonPool
 import kotlinx.coroutines.experimental.android.UI
@@ -20,8 +18,6 @@ import org.kethereum.erc681.parseERC681
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.functions.isValid
 import org.kethereum.model.Address
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
@@ -47,8 +43,8 @@ fun Context.startCreateAccountActivity(hex: String) {
     })
 }
 
-class CreateAccountActivity : AppCompatActivity(), KodeinAware {
-    override val kodein by closestKodein()
+class CreateAccountActivity : BaseSubActivity() {
+
     private val keyStore: WallethKeyStore by instance()
     private val appDatabase: AppDatabase by instance()
     private var lastCreatedAddress: ECKeyPair? = null
@@ -60,7 +56,6 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_account_create)
 
         supportActionBar?.subtitle = getString(create_account_subtitle)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         intent.getStringExtra(HEX_INTENT_EXTRA_KEY)?.let {
             hexInput.setText(it)
@@ -145,13 +140,5 @@ class CreateAccountActivity : AppCompatActivity(), KodeinAware {
         } else {
             alert(getString(R.string.warning_not_a_valid_address, addressHex), getString(R.string.title_invalid_address_alert))
         }
-    }
-
-
-    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> true.also {
-            finish()
-        }
-        else -> super.onOptionsItemSelected(item)
     }
 }

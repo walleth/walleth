@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_relay.*
@@ -24,9 +23,6 @@ import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.ChainDefinition
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
-import org.kodein.di.Kodein
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
@@ -54,9 +50,7 @@ fun Context.getOfflineTransactionIntent(content: String) = Intent(this, OfflineT
     putExtra(KEY_CONTENT, content)
 }
 
-class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
-
-    override val kodein: Kodein by closestKodein()
+class OfflineTransactionActivity : BaseSubActivity() {
 
     private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
     private val appDatabase: AppDatabase by instance()
@@ -68,7 +62,6 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
         setContentView(R.layout.activity_relay)
 
         supportActionBar?.subtitle = getString(R.string.relay_transaction)
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         fab.setOnClickListener {
             execute()
@@ -299,11 +292,6 @@ class OfflineTransactionActivity : AppCompatActivity(), KodeinAware {
         R.id.menu_scan -> true.also {
             startScanActivityForResult(this)
         }
-
-        android.R.id.home -> true.also {
-            finish()
-        }
-
         else -> super.onOptionsItemSelected(item)
     }
 }

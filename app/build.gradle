@@ -164,7 +164,7 @@ dependencies {
 
     implementation 'com.github.ligi:tracedroid:1.4'
     implementation 'com.github.ligi:KAXT:0.20'
-    implementation 'com.github.ligi:KAXTUI:0.5'
+    implementation 'com.github.ligi:KAXTUI:0.6'
     implementation 'com.github.ligi:thirdpartylicensedisplay:0.2'
 
     implementation('com.github.trezor.trezor-android:trezor-lib:v2.0.1') {

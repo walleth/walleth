@@ -3,21 +3,16 @@ package org.walleth.activities
 import android.content.Intent
 import android.os.Bundle
 import android.os.TransactionTooLargeException
-import android.support.v7.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_logs.*
 import kotlinx.coroutines.experimental.async
 import kotlinx.coroutines.experimental.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import java.io.IOException
 
-class DebugWallethActivity : AppCompatActivity(), KodeinAware {
-
-    override val kodein by closestKodein()
+class DebugWallethActivity : BaseSubActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,8 +43,6 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
 
         golog_switch.isChecked = true
 
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
     }
 
     private fun displayLog() {
@@ -78,9 +71,6 @@ class DebugWallethActivity : AppCompatActivity(), KodeinAware {
     private fun readLogcatString() = Runtime.getRuntime().exec("logcat -d").inputStream.reader().readText()
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        android.R.id.home -> true.also {
-            finish()
-        }
         R.id.menu_share -> true.also {
             try {
                 sendLog(log_text.text)
