@@ -34,16 +34,17 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-        if (key == getString(R.string.key_prefs_day_night)) {
+        try {
+            if (key == getString(R.string.key_prefs_day_night)) {
 
-            App.applyNightMode(settings)
-            activity?.recreateWhenPossible()
-        }
-        if (key == getString(R.string.key_prefs_start_light)) {
+                App.applyNightMode(settings)
+                activity?.recreateWhenPossible()
+            }
+            if (key == getString(R.string.key_prefs_start_light)) {
 
-        }
-        setUserNameSummary()
-
+            }
+            setUserNameSummary()
+        } catch (ignored: IllegalStateException) {}
     }
 
     private fun setUserNameSummary() {
