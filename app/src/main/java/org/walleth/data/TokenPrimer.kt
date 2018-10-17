@@ -12,7 +12,7 @@ import org.walleth.data.networks.ALL_NETWORKS
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.getEthTokenForChain
 
-private const val TOKEN_INIT_VERSION = 15
+private const val TOKEN_INIT_VERSION = 16
 // yes this is opinionated - but it also cuts to the chase
 // so much garbage in this token-list ..
 
