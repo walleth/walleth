@@ -46,6 +46,9 @@
         <activity android:name="org.walleth.activities.PreferenceActivity"/>
         <activity android:name="org.walleth.activities.ViewTransactionActivity"/>
         <activity android:name="org.walleth.activities.CreateTransactionActivity"/>
+
+        <activity android:name="org.walleth.activities.ToolbarSetupActivity"/>
+
         <activity android:name="org.walleth.activities.IntentHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
@@ -77,6 +80,7 @@
 
         <activity android:name="org.walleth.activities.OfflineTransactionActivity"
                   android:windowSoftInputMode="adjustResize"/>
+
     </application>
 
 </manifest>

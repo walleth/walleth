@@ -2,7 +2,6 @@
 <PreferenceScreen
         xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
-
     <ListPreference
             android:defaultValue="@string/default_day_night"
             app:iconSpaceReserved="false"
@@ -11,6 +10,15 @@
             android:key="@string/key_prefs_day_night"
             android:summary="@string/day_or_night_summary"
             android:title="@string/day_or_night"/>
+
+    <Preference
+            app:iconSpaceReserved="false"
+            android:title="@string/customize_toolbar">
+        <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="@string/package_name"
+                android:targetClass="org.walleth.activities.ToolbarSetupActivity"/>
+    </Preference>
 
     <Preference
             android:key="@string/key_token"

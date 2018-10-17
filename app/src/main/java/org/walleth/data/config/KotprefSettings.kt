@@ -1,7 +1,9 @@
 package org.walleth.data.config
 
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.preference.PreferenceManager
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatDelegate
 import com.chibatching.kotpref.KotprefModel
 import org.walleth.R
@@ -28,10 +30,12 @@ object KotprefSettings : KotprefModel(), Settings {
 
     override var currentGoVerbosity by intPref(3)
 
+    override var toolbarBackgroundColor by intPref(ContextCompat.getColor(context, R.color.colorPrimary))
+    override var toolbarForegroundColor by intPref(Color.BLACK)
+
     private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 
-    private fun createRandomUsername()
-            = context.getString(R.string.default_stats_username) + " " + BigInteger(130, SecureRandom()).toString(32).substring(0, 5)
+    private fun createRandomUsername() = context.getString(R.string.default_stats_username) + " " + BigInteger(130, SecureRandom()).toString(32).substring(0, 5)
 
     override fun getStatsName(): String {
         val key = context.getString(R.string.key_prefs_stats_username)
@@ -40,14 +44,13 @@ object KotprefSettings : KotprefModel(), Settings {
             return string
         }
         val newName = createRandomUsername()
-        sharedPreferences.edit().putString(key,newName).apply()
+        sharedPreferences.edit().putString(key, newName).apply()
         return newName
     }
 
     override fun isLightClientWanted() = sharedPreferences.getBoolean(context.getString(R.string.key_prefs_start_light), false)
 
-    override fun getNightMode()
-            = when (sharedPreferences.getString(context.getString(R.string.key_prefs_day_night), context.getString(R.string.default_day_night))) {
+    override fun getNightMode() = when (sharedPreferences.getString(context.getString(R.string.key_prefs_day_night), context.getString(R.string.default_day_night))) {
         "day" -> AppCompatDelegate.MODE_NIGHT_NO
         "night" -> AppCompatDelegate.MODE_NIGHT_YES
         "auto" -> AppCompatDelegate.MODE_NIGHT_AUTO

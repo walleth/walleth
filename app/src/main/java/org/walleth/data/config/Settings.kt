@@ -22,6 +22,9 @@ interface Settings {
     var filterAddressesStared: Boolean
     var filterAddressesKeyOnly: Boolean
 
+    var toolbarBackgroundColor: Int
+    var toolbarForegroundColor: Int
+
     fun isLightClientWanted(): Boolean
     fun getNightMode(): Int
     fun getStatsName(): String
@@ -30,5 +33,5 @@ interface Settings {
     fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
 
     fun getGasPriceFor(current: NetworkDefinition): BigInteger
-    fun storeGasPriceFor(gasPrice:BigInteger, network: NetworkDefinition)
+    fun storeGasPriceFor(gasPrice: BigInteger, network: NetworkDefinition)
 }
