@@ -16,7 +16,8 @@ fun Activity.showPINDialog(
         onPIN: (pin: String) -> Unit,
         onCancel: () -> Unit,
         labelButtons: Boolean = false,
-        pinPadMapping: Array<Int> = KEY_MAP_TOUCH
+        pinPadMapping: Array<Int> = KEY_MAP_TOUCH,
+        maxLength: Int = 10
 ) {
     val view = inflate(R.layout.pinput)
     var dialogPin = ""
@@ -29,7 +30,7 @@ fun Activity.showPINDialog(
         view.pin_grid.addView(MaterialButton(this).apply {
             text = if (labelButtons) pinPadMapping[i].toString() else "*"
             setOnClickListener {
-                if (dialogPin.length <= 10)
+                if (dialogPin.length <= maxLength)
                     dialogPin += pinPadMapping[i]
                 displayPin.invoke()
             }
