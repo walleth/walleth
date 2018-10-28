@@ -125,6 +125,9 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
                     .setNegativeButton(android.R.string.cancel) { _, _ ->
                         finish()
                     }
+                    .setOnCancelListener {
+                        finish()
+                    }
                     .show()
         }
     }
