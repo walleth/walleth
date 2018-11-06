@@ -1,4 +1,4 @@
 {
 "type":"android",
-"stages":["lint","test","assemble"]
+"stages":["testNoGethNoFirebaseForFDroidOfflineDebugComposer","lint","test","assemble"]
 }
