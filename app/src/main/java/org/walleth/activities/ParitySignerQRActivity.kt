@@ -1,10 +1,8 @@
 package org.walleth.activities
 
 import android.os.Bundle
-import android.text.method.LinkMovementMethod
 import kotlinx.android.synthetic.main.activity_parity_signer_qr.*
 import org.kodein.di.generic.instance
-import org.ligi.compat.HtmlCompat
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.functions.setQRCode
@@ -23,12 +21,10 @@ class ParitySignerQRActivity : BaseSubActivity() {
             supportActionBar?.subtitle = "Parity signer QR code (Signed TX)"
             parity_address_qr_image.setQRCode(intent.getStringExtra("signatureHex"))
         } else {
-            supportActionBar?.subtitle = "Parity signer QR code (Address)"
+            supportActionBar?.subtitle = "Address QR Code"
 
-            parity_address_qr_image.setQRCode(currentAddressProvider.getCurrent().hex.removePrefix("0x"))
+            parity_address_qr_image.setQRCode("ethereum:" + currentAddressProvider.getCurrent())
         }
 
-        textview_parity_explanation.text = HtmlCompat.fromHtml("Please upvote <a href='https://github.com/paritytech/parity-signer/issues/103'>this issue to the parity signer</a> so they use ERC-681 and we can have better UX afterwards.")
-        textview_parity_explanation.movementMethod = LinkMovementMethod()
     }
 }

@@ -27,7 +27,7 @@
     <Button
             android:layout_below="@id/account_name_container"
             android:id="@+id/parity_signer_button"
-            android:text="show parity signer QR-Code"
+            android:text="Show address QR-Code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
