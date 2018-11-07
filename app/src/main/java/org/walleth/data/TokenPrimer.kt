@@ -1,8 +1,9 @@
 package org.walleth.data
 
 import android.content.res.AssetManager
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import org.kethereum.model.Address
@@ -31,7 +32,7 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
     if (settings.tokensInitVersion < TOKEN_INIT_VERSION) {
         settings.tokensInitVersion = TOKEN_INIT_VERSION
 
-        launch(CommonPool) {
+        GlobalScope.launch(Dispatchers.Default) {
             ALL_NETWORKS.forEach {
                 try {
                     val chain = it.chain

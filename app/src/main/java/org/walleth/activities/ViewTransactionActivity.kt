@@ -11,11 +11,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_view_transaction.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
 import org.kethereum.functions.encodeRLP
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
@@ -68,9 +64,9 @@ class ViewTransactionActivity : BaseSubActivity() {
                 event_log_textview.text = it.transactionState.eventLog
 
                 fab.setVisibility(it.transactionState.needsSigningConfirmation)
-                fab.setOnClickListener { _ ->
-                    launch(UI) {
-                        launch(CommonPool) {
+                fab.setOnClickListener {_->
+                    GlobalScope.launch(Dispatchers.Main) {
+                        launch(Dispatchers.Default) {
                             it.transactionState.needsSigningConfirmation = false
                             appDatabase.transactions.upsert(it)
                         }
@@ -139,9 +135,9 @@ class ViewTransactionActivity : BaseSubActivity() {
                 details.text = message
 
                 transaction.input.let {
-                    launch(UI) {
+                    GlobalScope.launch(Dispatchers.Main) {
                         val signatures = if (it.size >= 4) {
-                            withContext(CommonPool) {
+                            withContext(Dispatchers.Default) {
                                 fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString())
                             }
                         } else null
@@ -177,8 +173,8 @@ class ViewTransactionActivity : BaseSubActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_delete -> true.also {
             txEntity?.hash?.let {
-                async(UI) {
-                    async(CommonPool) {
+                GlobalScope.async(Dispatchers.Main) {
+                    async(Dispatchers.Default) {
                         appDatabase.transactions.deleteByHash(it)
                     }.await()
                     finish()

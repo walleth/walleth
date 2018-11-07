@@ -15,7 +15,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_list_stars.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
@@ -85,7 +86,7 @@ class SelectTokenActivity : BaseSubActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 val currentToken = tokenListAdapter.sortedList.get(viewHolder.adapterPosition)
                 fun changeDeleteState(state: Boolean) {
-                    launch {
+                    GlobalScope.launch {
                         upsert(appDatabase, currentToken.copy(showInList = state))
                     }
                 }
@@ -149,7 +150,7 @@ class SelectTokenActivity : BaseSubActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_undelete -> true.also {
-            launch {
+            GlobalScope.launch {
                 appDatabase.tokens.showAll()
             }
         }

@@ -13,10 +13,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_import_json.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.kethereum.bip39.dirtyPhraseToMnemonicWords
 import org.kethereum.bip39.toKey
 import org.kethereum.bip39.validate
@@ -36,7 +36,6 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_ETHEREUM_BIP44_PATH
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.khex.hexToByteArray
 import org.walleth.util.hasText
@@ -100,7 +99,7 @@ class ImportActivity : BaseSubActivity() {
     }
 
     var importing = false
-    private fun doImport() = launch(UI) {
+    private fun doImport() = GlobalScope.launch(Dispatchers.Main) {
         if (importing) {
             return@launch
         }
@@ -112,7 +111,7 @@ class ImportActivity : BaseSubActivity() {
 
             val content = key_content.text.toString()
 
-            val importKey = async {
+            val importKey = GlobalScope.async {
                 val key = when {
                     type_json_select.isChecked ->
                         content.loadKeysFromWalletJsonString(password.text.toString())
@@ -137,26 +136,27 @@ class ImportActivity : BaseSubActivity() {
                 alert.setMessage(getString(R.string.imported_key_alert_message, address))
                         .setTitle(getString(R.string.dialog_title_success))
 
-                appDatabase.addressBook.getByAddressAsync(importKey) { oldEntry ->
-                    val accountName = if (!account_name.hasText()) {
-                        oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
-                    } else {
-                        account_name.text
-                    }
-                    val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
+                val oldEntry = async(Dispatchers.Default) {
+                    appDatabase.addressBook.byAddress(importKey)
+                }.await()
 
-
-                    launch(CommonPool) {
-                        val newEntry = AddressBookEntry(
-                                name = accountName.toString(),
-                                address = importKey,
-                                note = note, isNotificationWanted = false,
-                                trezorDerivationPath = null
-                        )
-                        appDatabase.addressBook.upsert(newEntry)
-                    }
+                val accountName = if (!account_name.hasText()) {
+                    oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
+                } else {
+                    account_name.text
                 }
+                val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
 
+
+                async(Dispatchers.Default) {
+                    val newEntry = AddressBookEntry(
+                            name = accountName.toString(),
+                            address = importKey,
+                            note = note, isNotificationWanted = false,
+                            trezorDerivationPath = null
+                    )
+                    appDatabase.addressBook.upsert(newEntry)
+                }.await()
             }
 
             alert.setPositiveButton(android.R.string.ok) { _, _ -> finish() }

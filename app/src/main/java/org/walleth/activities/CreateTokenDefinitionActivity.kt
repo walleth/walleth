@@ -6,9 +6,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_create_token.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.kethereum.model.Address
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
@@ -47,8 +47,8 @@ class CreateTokenDefinitionActivity : BaseSubActivity() {
                     if (networkDefinition == null)
                         throw IllegalStateException("NetworkDefinition should not be null")
 
-                    async(UI) {
-                        async(CommonPool) {
+                    GlobalScope.async(Dispatchers.Main) {
+                        async(Dispatchers.Default) {
                             appDatabase.tokens.upsert(Token(
                                     name = newTokenName,
                                     symbol = newTokenName,

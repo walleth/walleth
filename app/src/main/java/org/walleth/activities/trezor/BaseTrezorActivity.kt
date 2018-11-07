@@ -14,8 +14,9 @@ import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
 import com.satoshilabs.trezor.lib.protobuf.TrezorType
 import kotlinx.android.synthetic.main.activity_trezor.*
 import kotlinx.android.synthetic.main.password_input.view.*
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.kodein.di.generic.instance
@@ -85,7 +86,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                 trezor_status_text.visibility = View.GONE
 
                 try {
-                    async(UI) {
+                    GlobalScope.async(Dispatchers.Main) {
                         val trezorResult = async { manager.sendMessage(getMessageForState()) }.await()
                         trezorResult.handleTrezorResult()
                     }

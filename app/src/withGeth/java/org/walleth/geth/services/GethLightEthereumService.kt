@@ -11,11 +11,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.support.v4.app.NotificationCompat
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.*
 import org.ethereum.geth.*
 import org.kethereum.functions.encodeRLP
 import org.kodein.di.KodeinAware
@@ -36,7 +32,6 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.geth.toGethAddr
 import java.io.File
 import java.math.BigInteger
-import java.util.concurrent.TimeUnit
 import org.ethereum.geth.Context as EthereumContext
 
 private const val NOTIFICATION_ID = 101
@@ -79,7 +74,7 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
         shouldRun = true
 
 
-        async(CommonPool) {
+        GlobalScope.async(Dispatchers.Default) {
             Geth.setVerbosity(settings.currentGoVerbosity.toLong())
             val ethereumContext = EthereumContext()
 
@@ -89,7 +84,7 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
                 shouldRestart = false // just did restart
                 shouldRun = true
 
-                async(UI) {
+                async(Dispatchers.Main) {
                     val pendingStopIntent = PendingIntent.getService(baseContext, 0, gethStopIntent(), 0)
                     val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, MainActivity::class.java), 0)
 
@@ -173,7 +168,7 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
                     syncTick(ethereumNode, ethereumContext)
                 }
 
-                async(UI) {
+                async(Dispatchers.Main) {
                     transactionsLiveData.removeObserver(transactionObserver)
                     launch {
                         ethereumNode.stop()
@@ -204,7 +199,7 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
         try {
             val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
 
-            async(UI) {
+            GlobalScope.async(Dispatchers.Main) {
                 if (ethereumSyncProgress != null) {
                     isSyncing = true
                     val newSyncProgress = ethereumSyncProgress.let {
@@ -222,7 +217,7 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
             e.printStackTrace()
         }
 
-        delay(1, TimeUnit.SECONDS)
+        delay(1000)
     }
 
 

@@ -5,7 +5,8 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import kotlinx.android.synthetic.main.item_address_book.view.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
@@ -41,7 +42,7 @@ class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.address_starred.isChecked = addressBookEntry.starred
 
         itemView.address_starred.setOnClickListener {
-            launch {
+            GlobalScope.launch {
                 val updatedEntry = addressBookEntry.copy(starred = !addressBookEntry.starred)
                 appDatabase.addressBook.upsert(updatedEntry)
             }

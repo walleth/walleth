@@ -5,18 +5,19 @@ import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.kethereum.model.Address
 
 fun AddressBookDAO.resolveName(address: Address) = byAddress(address)?.name ?: address.hex
-fun AddressBookDAO.resolveNameAsync(address: Address, callback: (name: String) -> Unit) = async(UI) {
-    callback(async(CommonPool) { resolveName(address) }.await())
+fun AddressBookDAO.resolveNameAsync(address: Address, callback: (name: String) -> Unit) = GlobalScope.launch(Dispatchers.Main) {
+    callback(async(Dispatchers.Default) { resolveName(address) }.await())
 }
 
-fun AddressBookDAO.getByAddressAsync(address: Address, callback: (name: AddressBookEntry?) -> Unit) = async(UI) {
-    callback(async(CommonPool) { byAddress(address) }.await())
+fun AddressBookDAO.getByAddressAsync(address: Address, callback: (name: AddressBookEntry?) -> Unit) = GlobalScope.launch(Dispatchers.Main) {
+    callback(async(Dispatchers.Default) { byAddress(address) }.await())
 }
 
 @Dao

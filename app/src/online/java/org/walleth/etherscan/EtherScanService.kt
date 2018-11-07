@@ -2,8 +2,9 @@ package org.walleth.etherscan
 
 import android.arch.lifecycle.*
 import android.content.Intent
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -80,7 +81,7 @@ class EtherScanService : LifecycleService(), KodeinAware {
 
         lifecycle.addObserver(TimingModifyingLifecycleObserver())
 
-        launch {
+        GlobalScope.launch {
 
             while (true) {
                 last_run = System.currentTimeMillis()
@@ -108,7 +109,7 @@ class EtherScanService : LifecycleService(), KodeinAware {
     }
 
     private fun relayTransaction(transaction: TransactionEntity) {
-        launch {
+        GlobalScope.launch {
             val url = "module=proxy&action=eth_sendRawTransaction&hex=" + transaction.transaction.encodeRLP(transaction.signatureData).toHexString("0x")
             val result = getEtherscanResult(url, networkDefinitionProvider.value!!)
 

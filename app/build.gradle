@@ -132,7 +132,7 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:0.24.0"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.0.0"
     implementation "com.android.support:multidex:$multidex_version"
     androidTestImplementation "com.android.support:multidex:$multidex_version"
     androidTestImplementation "com.android.support:multidex-instrumentation:$multidex_version"
@@ -245,9 +245,3 @@ if (includeFirebase) {
 }
 
 apply plugin: 'com.github.ben-manes.versions'
-
-kotlin {
-    experimental {
-        coroutines "enable"
-    }
-}

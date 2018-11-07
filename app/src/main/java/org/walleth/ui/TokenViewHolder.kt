@@ -4,7 +4,8 @@ import android.app.Activity
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.token_list_item.view.*
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.tokens.CurrentTokenProvider
@@ -31,7 +32,7 @@ class TokenViewHolder(itemView: View, val activity: Activity, private val curren
         }
 
         itemView.token_starred.setOnClickListener {
-            launch {
+            GlobalScope.launch {
                 appDatabase.tokens.upsert(tokenDescriptor.copy(starred = !tokenDescriptor.starred))
             }
         }

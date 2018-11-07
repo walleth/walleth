@@ -6,8 +6,10 @@ import android.os.TransactionTooLargeException
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_logs.*
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import java.io.IOException
@@ -47,7 +49,7 @@ class DebugWallethActivity : BaseSubActivity() {
 
     private fun displayLog() {
         try {
-            launch {
+            GlobalScope.launch(Dispatchers.Main) {
                 val textToPrint = async {
                     if (golog_switch.isChecked) {
                         readLogcatString().lines().asSequence().filter {

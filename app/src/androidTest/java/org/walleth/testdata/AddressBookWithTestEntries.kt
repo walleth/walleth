@@ -1,8 +1,8 @@
 package org.walleth.testdata
 
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.kethereum.model.Address
 import org.walleth.data.addressbook.AddressBookDAO
 import org.walleth.data.addressbook.AddressBookEntry
@@ -15,8 +15,8 @@ val Faucet = Address("0x31b98d14007bdee637298086988a0bbd31184523")
 val Ligi = Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4")
 
 fun AddressBookDAO.addTestAddresses() {
-    async(UI) {
-        async(CommonPool) {
+    GlobalScope.async(Dispatchers.Main) {
+        async(Dispatchers.Default) {
             upsert(listOf(
                     AddressBookEntry(Room77, "Room77"),
                     AddressBookEntry(ShapeShift, "ShapeShift"),

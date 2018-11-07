@@ -3,7 +3,8 @@ package org.walleth.activities
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import kotlinx.coroutines.experimental.launch
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
@@ -49,7 +50,7 @@ class WalletConnectSendTransactionActivity : AppCompatActivity(), KodeinAware {
             }
 
         }
-        launch {
+        GlobalScope.launch {
             walletConnectDriver.setTransactionHash(transactionId, sessionId, transactionHash , transactionHash.isNotEmpty())
         }
         finish()

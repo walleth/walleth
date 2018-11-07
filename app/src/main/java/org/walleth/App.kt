@@ -14,8 +14,9 @@ import com.chibatching.kotpref.Kotpref
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
 import com.squareup.moshi.Moshi
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.kethereum.crypto.initializeCrypto
 import org.kodein.di.Kodein
@@ -125,7 +126,7 @@ open class App : MultiDexApplication(), KodeinAware {
         if (settings.addressInitVersion < 1) {
             settings.addressInitVersion = 1
 
-            async(CommonPool) {
+            GlobalScope.launch(Dispatchers.Default) {
                 keyStore.getAddresses().forEachIndexed { index, address ->
 
                     appDatabase.addressBook.upsert(AddressBookEntry(

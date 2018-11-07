@@ -12,10 +12,10 @@ import android.net.Uri
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.preference.CheckBoxPreference
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.delay
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.walleth.App
@@ -60,13 +60,13 @@ class GethInitContentProvider : ContentProvider() {
                     } else {
                         preference.context.startService(Intent(preference.context, GethLightEthereumService::class.java))
                     }
-                    async(UI) {
+                    GlobalScope.async(Dispatchers.Main) {
                         val alert = AlertDialog.Builder(preference.context)
                                 .setCancelable(false)
                                 .setMessage(R.string.settings_please_wait)
                                 .show()
 
-                        async(CommonPool) {
+                        async(Dispatchers.Default) {
                             while (GethLightEthereumService.isRunning != GethLightEthereumService.shouldRun) {
                                 delay(100)
                             }

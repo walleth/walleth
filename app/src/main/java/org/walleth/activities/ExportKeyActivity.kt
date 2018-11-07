@@ -19,11 +19,7 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_show_qr.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.delay
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.*
 import net.glxn.qrgen.android.QRCode
 import org.kethereum.wallet.LIGHT_SCRYPT_CONFIG
 import org.kethereum.wallet.generateWalletJSON
@@ -77,8 +73,8 @@ class ExportKeyActivity : BaseSubActivity() {
 
     private fun reGenerate() {
         keyJSON = null
-        launch(UI) {
-            val bmpScaled = withContext(CommonPool) {
+        GlobalScope.launch(Dispatchers.Main) {
+            val bmpScaled = withContext(Dispatchers.Default) {
 
                 val key = keyStore.getKeyForAddress(currentAddressProvider.getCurrent(), DEFAULT_PASSWORD)
 
@@ -122,10 +118,10 @@ class ExportKeyActivity : BaseSubActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun startAfterKeyIsReady(action: () -> Unit) = launch(UI) {
+    private fun startAfterKeyIsReady(action: () -> Unit) = GlobalScope.launch(Dispatchers.Main) {
         key_progress.visibility = View.VISIBLE
 
-        withContext(CommonPool) {
+        withContext(Dispatchers.Default) {
             while (keyJSON == null) {
                 delay(10)
             }

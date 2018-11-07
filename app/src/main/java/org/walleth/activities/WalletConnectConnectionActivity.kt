@@ -7,10 +7,10 @@ import android.support.v7.app.AlertDialog
 import android.util.Base64
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
-import kotlinx.coroutines.experimental.DefaultDispatcher
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import org.kethereum.erc1328.ERC1328
 import org.kethereum.erc1328.isERC1328
 import org.kethereum.erc1328.toERC1328
@@ -103,9 +103,9 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private fun start(address: Address) {
         currentSession?.let {
-            async(UI) {
+            GlobalScope.async (Dispatchers.Main) {
                 val result = try {
-                    val response = withContext(DefaultDispatcher) {
+                    val response = withContext(Dispatchers.Default) {
                         walletConnectDriver.sendAddress(it, address)
                     }
                     response?.code()

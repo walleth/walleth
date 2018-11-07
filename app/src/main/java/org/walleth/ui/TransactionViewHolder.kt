@@ -4,9 +4,10 @@ import android.support.v7.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.View
 import kotlinx.android.synthetic.main.transaction_item.view.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.kethereum.functions.getTokenTransferTo
 import org.kethereum.functions.getTokenTransferValue
 import org.kethereum.functions.isTokenTransfer
@@ -84,8 +85,8 @@ class TransactionViewHolder(itemView: View, private val direction: TransactionAd
 }
 
 fun <T> (() -> T).asyncAwait(resultCall: (T) -> Unit) {
-    async(UI) {
-        resultCall(async(CommonPool) {
+    GlobalScope.launch (Dispatchers.Main) {
+        resultCall(async(Dispatchers.Default) {
             invoke()
         }.await())
     }
@@ -93,8 +94,8 @@ fun <T> (() -> T).asyncAwait(resultCall: (T) -> Unit) {
 
 
 fun <T> (() -> T?).asyncAwaitNonNull(resultCall: (T) -> Unit) {
-    async(UI) {
-        async(CommonPool) {
+    GlobalScope.launch (Dispatchers.Main) {
+        async(Dispatchers.Default) {
             invoke()
         }.await()?.let { resultCall(it) }
     }

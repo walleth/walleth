@@ -12,10 +12,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_list_addresses.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
@@ -81,8 +81,8 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
 
                 val current = adapter.displayList[viewHolder.adapterPosition]
                 fun changeDeleteState(state: Boolean) {
-                    launch(UI) {
-                        withContext(CommonPool) {
+                    GlobalScope.launch(Dispatchers.Main) {
+                        withContext(Dispatchers.Default) {
                             appDatabase.addressBook.upsert(current.apply {
                                 deleted = state
                             })
@@ -117,8 +117,8 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_undelete -> true.also {
-            launch(UI) {
-                withContext(CommonPool) {
+            GlobalScope.launch(Dispatchers.Main) {
+                withContext(Dispatchers.Default) {
                     appDatabase.addressBook.undeleteAll()
                 }
                 refresh()

@@ -1,8 +1,9 @@
 package org.walleth.data.networks
 
 import android.content.Context
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.kethereum.crypto.createEthereumKeyPair
 import org.kethereum.model.Address
 import org.walleth.R
@@ -19,7 +20,7 @@ class InitializingCurrentAddressProvider(keyStore: WallethKeyStore, appDatabase:
         if (lastAddress != null) {
             value = Address(lastAddress)
         } else {
-            async(CommonPool) {
+            GlobalScope.async(Dispatchers.Default) {
                 if (!keyStore.getAddresses().isEmpty()) {
                     postValue(keyStore.getAddresses().first())
                 } else {

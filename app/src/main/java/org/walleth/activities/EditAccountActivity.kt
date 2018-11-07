@@ -4,8 +4,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_account_edit.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
@@ -56,7 +57,7 @@ class EditAccountActivity : BaseSubActivity() {
 
     override fun onPause() {
         super.onPause()
-        async(CommonPool) {
+        GlobalScope.async(Dispatchers.Main) {
             appDatabase.addressBook.upsert(currentAddressInfo)
         }
     }

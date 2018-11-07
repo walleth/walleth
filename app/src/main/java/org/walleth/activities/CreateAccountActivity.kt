@@ -6,10 +6,10 @@ import android.content.Intent
 import android.content.pm.PackageManager.FEATURE_USB_HOST
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_account_create.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kethereum.crypto.createEthereumKeyPair
 import org.kethereum.crypto.model.ECKeyPair
 import org.kethereum.crypto.toAddress
@@ -73,8 +73,8 @@ class CreateAccountActivity : BaseSubActivity() {
                     keyStore.importKey(it, DEFAULT_PASSWORD)
                 }
 
-                launch(UI) {
-                    withContext(CommonPool) {
+                GlobalScope.launch(Dispatchers.Main) {
+                    withContext(Dispatchers.Default) {
                         appDatabase.addressBook.upsert(AddressBookEntry(
                                 name = nameInput.text.toString(),
                                 address = Address(hex),

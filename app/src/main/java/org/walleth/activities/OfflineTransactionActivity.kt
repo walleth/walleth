@@ -7,10 +7,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_relay.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.json.JSONObject
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.extractFrom
@@ -246,10 +246,10 @@ class OfflineTransactionActivity : BaseSubActivity() {
     }
 
     private fun createTransaction(transaction: Transaction,
-                                  signatureData: SignatureData?) = launch(UI) {
+                                  signatureData: SignatureData?) = GlobalScope.launch(Dispatchers.Main) {
         try {
 
-            withContext(CommonPool) {
+            withContext(Dispatchers.Default) {
 
                 val transactionState = TransactionState(needsSigningConfirmation = signatureData == null)
 

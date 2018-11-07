@@ -6,10 +6,10 @@ import android.os.Bundle
 import com.google.protobuf.ByteString
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.launch
-import kotlinx.coroutines.experimental.withContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kethereum.bip44.BIP44
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
@@ -79,8 +79,8 @@ class TrezorSignTransactionActivity : BaseTrezorActivity(), KodeinAware {
                     v = res.signatureV.toByte()
             )
             transaction.transaction.txHash = transaction.transaction.encodeRLP(signatureData).keccak().toHexString()
-            launch(UI) {
-                withContext(CommonPool) {
+            GlobalScope.launch(Dispatchers.Main) {
+                withContext(Dispatchers.Default) {
                     appDatabase.inTransaction {
                         oldHash?.let { transactions.deleteByHash(it) }
                         transactions.upsert(transaction.transaction.toEntity(signatureData, TransactionState()))

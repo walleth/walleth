@@ -13,9 +13,10 @@ import android.view.View
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.kethereum.contract.abi.types.convertStringToABIType
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
@@ -361,12 +362,12 @@ class CreateTransactionActivity : BaseSubActivity() {
         when {
 
             isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-            else -> async(UI) {
+            else -> GlobalScope.launch(Dispatchers.Main) {
 
                 fab_progress_bar.visibility = View.VISIBLE
                 fab.isEnabled = false
 
-                val error: String? = async(CommonPool) {
+                val error: String? = async(Dispatchers.Default) {
                     try {
                         val signatureData = keyStore.getKeyForAddress(currentAddressProvider.getCurrent(), DEFAULT_PASSWORD)?.let {
                             Snackbar.make(fab, "Signing transaction", Snackbar.LENGTH_INDEFINITE).show()

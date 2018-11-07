@@ -4,9 +4,9 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.contrib.DrawerActions.open
 import android.support.test.espresso.matcher.ViewMatchers.*
-import kotlinx.coroutines.experimental.CommonPool
-import kotlinx.coroutines.experimental.android.UI
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.async
 import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
@@ -43,8 +43,8 @@ class TheNavigationDrawer {
     fun testNameIsDisplayedCorrectly() {
         `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
 
-        async(UI) {
-            async(CommonPool) {
+        GlobalScope.async(Dispatchers.Main) {
+            async(Dispatchers.Default) {
                 TestApp.testDatabase.addressBook.upsert(AddressBookEntry(name = "espresso ligi", address = TestApp.currentAddressProvider.getCurrent()))
             }.await()
         }
