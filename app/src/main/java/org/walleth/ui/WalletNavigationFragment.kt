@@ -15,6 +15,7 @@ import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.activities.*
 import org.walleth.data.AppDatabase
+import org.walleth.data.config.Settings
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -22,6 +23,12 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 class WalletNavigationFragment : Fragment(), KodeinAware {
 
     override val kodein by closestKodein()
+
+    val keyStore: WallethKeyStore by instance()
+    val settings: Settings by instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    val currentAddressProvider: CurrentAddressProvider by instance()
+    val appDatabase: AppDatabase by instance()
 
     private val navigationView by lazy {
         NavigationView(activity).apply {
@@ -34,10 +41,14 @@ class WalletNavigationFragment : Fragment(), KodeinAware {
         }
     }
 
-    val keyStore: WallethKeyStore by instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by instance()
-    val currentAddressProvider: CurrentAddressProvider by instance()
-    val appDatabase: AppDatabase by instance()
+    override fun onResume() {
+        super.onResume()
+        (navigationView.getHeaderView(0) as ViewGroup).apply {
+            setBackgroundColor(settings.toolbarBackgroundColor)
+            colorize(settings.toolbarForegroundColor)
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,12 +75,12 @@ class WalletNavigationFragment : Fragment(), KodeinAware {
             }
         }
 
-        currentAddressProvider.observe(this, Observer {
-            appDatabase.addressBook.byAddressLiveData(it!!).observe(this@WalletNavigationFragment, Observer { currentAddress ->
+        currentAddressProvider.observe(this, Observer { address ->
+            appDatabase.addressBook.byAddressLiveData(address!!).observe(this@WalletNavigationFragment, Observer { currentAddress ->
                 navigationView.getHeaderView(0).let { header ->
-                    currentAddress?.let {
-                        header.accountHash.text = it.address.hex
-                        header.accountName.text = it.name
+                    currentAddress?.let { entry ->
+                        header.accountHash.text = entry.address.hex
+                        header.accountName.text = entry.name
                     }
                 }
 
