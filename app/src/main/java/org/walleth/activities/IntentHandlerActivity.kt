@@ -52,6 +52,10 @@ class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
                 val erC681 = parsed831.toERC681()
                 if (erC681.valid) {
                     process681(erC681)
+                } else {
+                    alert("This URL is illegal ERC-681. Please contact the provider to change this!") {
+                        finish()
+                    }
                 }
             }
 
