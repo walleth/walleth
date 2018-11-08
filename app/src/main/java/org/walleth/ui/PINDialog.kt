@@ -9,14 +9,15 @@ import org.ligi.kaxt.inflate
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 
-val KEY_MAP_TOUCH = arrayOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
-val KEY_MAP_NUM_PAD = arrayOf(7, 8, 9, 4, 5, 6, 1, 2, 3) // mainly for TREZOR
+val KEY_MAP_TOUCH = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9)
+val KEY_MAP_NUM_PAD = listOf(7, 8, 9, 4, 5, 6, 1, 2, 3) // mainly for TREZOR
+val KEY_MAP_TOUCH_WITH_ZERO = listOf(1, 2, 3, 4, 5, 6, 7, 8, 9, null, 0, null)
 
 fun Activity.showPINDialog(
         onPIN: (pin: String) -> Unit,
         onCancel: () -> Unit,
         labelButtons: Boolean = false,
-        pinPadMapping: Array<Int> = KEY_MAP_TOUCH,
+        pinPadMapping: List<Int?> = KEY_MAP_TOUCH,
         maxLength: Int = 10
 ) {
     val view = inflate(R.layout.pinput)
@@ -26,18 +27,20 @@ fun Activity.showPINDialog(
         view.pin_back.setVisibility(!dialogPin.isEmpty())
     }
     displayPin.invoke()
-    for (i in 0..8) {
+    pinPadMapping.forEach { number ->
         view.pin_grid.addView(MaterialButton(this).apply {
-            text = if (labelButtons) pinPadMapping[i].toString() else "*"
+            text = if (labelButtons) number.toString() else "*"
             setOnClickListener {
                 if (dialogPin.length <= maxLength)
-                    dialogPin += pinPadMapping[i]
+                    dialogPin += number
                 displayPin.invoke()
             }
 
+
             layoutParams = GridLayout.LayoutParams().apply {
-                setMargins(5,5,5,5)
+                setMargins(5, 5, 5, 5)
             }
+            setVisibility(number != null)
         })
 
     }
