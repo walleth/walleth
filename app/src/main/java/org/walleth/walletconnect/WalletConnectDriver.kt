@@ -1,7 +1,6 @@
 package org.walleth.walletconnect
 
 import android.content.Context
-import com.squareup.moshi.Moshi
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -21,8 +20,6 @@ import org.walleth.data.JSON_MEDIA_TYPE
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toNoPrefixHexString
 import org.walleth.walletconnect.model.Session
-import org.walleth.walletconnect.model.StatefulWalletConnectTransaction
-import org.walleth.walletconnect.model.WrappedWalletConnectTransaction
 import java.io.File
 import java.security.SecureRandom
 
@@ -31,7 +28,7 @@ open class WalletConnectDriver(
         private val pushServerURL: String,
         private val okHttpClient: OkHttpClient) {
 
-    var txAction: ((tx: StatefulWalletConnectTransaction) -> Unit)? = null
+    var txAction: ((tx: StatefulJSONRPCCall) -> Unit)? = null
     var fcmToken = ""
 
     private val sessionStore by lazy { SessionStore(File(context.cacheDir, "walletconnect_sessionstore.json")) }
@@ -43,15 +40,17 @@ open class WalletConnectDriver(
     fun sendAddress(session: Session, address: Address): Response? {
         sessionStore.put(session)
 
-        val dataToEncrypt = """{"data":["$address"]}""".toByteArray()
+        val dataToEncrypt = """{"data":{"accounts":["$address"],"approved":true}}""".toByteArray()
 
         val encryptedJSON = encrypt(session.sharedKey.hexToByteArray(), dataToEncrypt)
 
         val payload = """
-                    { "data" : $encryptedJSON ,
-                    "fcmToken":"$fcmToken",
-                    "pushEndpoint":"$pushServerURL",
-                    "aad": $aad
+                    { "encryptionPayload" : $encryptedJSON ,
+                      "push": {
+                    "type":"fcm",
+                    "token":"$fcmToken",
+                    "webhook":"$pushServerURL"
+                    }
                     }
                 """.trimIndent()
         val url = "${session.domain}/session/${session.sessionId}"
@@ -96,19 +95,23 @@ open class WalletConnectDriver(
             "iv": "$ivHex" }""".trimIndent()
     }
 
-    fun setTransactionHash(transactionId: String,
-                           sessionId: String,
-                           hash: String,
-                           success: Boolean = true) {
+    fun setResult(transactionId: String,
+                  sessionId: String,
+                  hash: String,
+                  success: Boolean = true) {
 
         sessionStore.get(sessionId)?.let { session ->
 
-            val dataToEncrypt = """{ "data" : {"txHash": "$hash" , "success":$success }}""".toByteArray()
+            val dataToEncrypt = (
+                    """{ "data" : {"approved":$success """ +
+                            (if (success) ""","result": "0x$hash"""" else "") +
+                            "}}"
+                    ).toByteArray()
 
             val encryptedJSON = encrypt(session.sharedKey.hexToByteArray(), dataToEncrypt)
 
-            val payload = """{ "data" : $encryptedJSON ,"aad": $aad}"""
-            val url = "${session.domain}/transaction-status/$transactionId/new"
+            val payload = """{ "encryptionPayload" : $encryptedJSON ,"aad": $aad}"""
+            val url = "${session.domain}/call-status/$transactionId/new"
 
             aad++
 
@@ -123,15 +126,22 @@ open class WalletConnectDriver(
         }
     }
 
-    fun getTransaction(transactionId: String, sessionId: String): StatefulWalletConnectTransaction? {
-        sessionStore.get(sessionId)?.let { session ->
+    class JSONRPCCall(val method: String, val paramsJSON: String, val id: String)
+    class StatefulJSONRPCCall(val session: Session, val call: JSONRPCCall)
 
-            val url = "${session.domain}/session/${session.sessionId}/transaction/$transactionId"
+    fun getCalls(sessionId: String): StatefulJSONRPCCall? {
+        sessionStore.get(sessionId)?.let { session ->
+            val url = "${session.domain}/session/${session.sessionId}/calls"
 
             val sessionData = okHttpClient.newCall(Request.Builder()
                     .url(url).build())
                     .execute().use { it.body().use { it?.string() } }
-                    ?.let { JSONObject(it).getJSONObject("data") }
+                    ?.let {
+                        JSONObject(it).getJSONObject("data").let { sessionData ->
+                            val callId = sessionData.keys().next()
+                            sessionData.getJSONObject(callId).getJSONObject("encryptionPayload").put("callId", callId)
+                        }
+                    }
 
             if (sessionData == null) {
                 Log.w("Could not get session data from $url")
@@ -154,15 +164,15 @@ open class WalletConnectDriver(
             val length1 = aes.processBytes(data, 0, data.size, outBuf, 0)
             val length2 = aes.doFinal(outBuf, length1)
 
-            val string = String(outBuf.copyOf(length1 + length2))
+            val jsonString = String(outBuf.copyOf(length1 + length2))
+            val rpcCall = JSONObject(jsonString).getJSONObject("data")
 
-            val res = Moshi.Builder()
-                    .build()
-                    .adapter(WrappedWalletConnectTransaction::class.java)
-                    .fromJson(string)
-
-            return res?.data?.let { StatefulWalletConnectTransaction(it, session, transactionId) }
+            val method = rpcCall.getString("method")
+            val params = rpcCall.getString("params")
+            val id = sessionData.getString("callId")
+            return StatefulJSONRPCCall(session, JSONRPCCall(method = method, paramsJSON = params, id = id))
         }
-        return null
+
     }
+
 }

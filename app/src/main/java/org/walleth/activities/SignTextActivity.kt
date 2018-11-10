@@ -22,7 +22,8 @@ class SignTextActivity : BaseSubActivity() {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_sign_text)
-        val text = intent.getStringExtra("TEXT")
+
+        val text = intent.getStringExtra(Intent.EXTRA_TEXT)
 
         textToSign.text = text
 

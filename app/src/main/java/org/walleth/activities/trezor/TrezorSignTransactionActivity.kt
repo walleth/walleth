@@ -36,7 +36,7 @@ fun Activity.startTrezorActivity(transactionParcel: TransactionParcel) {
     startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
 }
 
-class TrezorSignTransactionActivity : BaseTrezorActivity(){
+class TrezorSignTransactionActivity : BaseTrezorActivity() {
 
     private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
     private val currentAddressProvider: CurrentAddressProvider by inject()
@@ -93,7 +93,9 @@ class TrezorSignTransactionActivity : BaseTrezorActivity(){
         super.onResume()
 
         appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
-            currentBIP44 = it?.trezorDerivationPath?.let { BIP44(it) } ?: throw IllegalArgumentException("Starting TREZOR Activity")
+            currentBIP44 = it?.trezorDerivationPath?.let { trezorDerivationPath ->
+                BIP44(trezorDerivationPath)
+            } ?: throw IllegalArgumentException("Starting TREZOR Activity")
             handler.post(mainRunnable)
         }
 

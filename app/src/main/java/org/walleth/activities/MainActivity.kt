@@ -32,6 +32,7 @@ import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
+import org.walleth.activities.walletconnect.getWalletConnectIntent
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings

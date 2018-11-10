@@ -16,6 +16,7 @@ import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.walletconnect.WalletConnectConnectionActivity
 import org.walleth.data.config.Settings
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider

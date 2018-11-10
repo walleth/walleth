@@ -28,8 +28,12 @@
         <activity android:name="org.walleth.activities.trezor.TrezorSignTransactionActivity"/>
         <activity android:name="org.walleth.activities.trezor.TrezorGetAddressActivity"/>
         <activity android:name="org.walleth.activities.ImportActivity"/>
-        <activity android:name="org.walleth.activities.WalletConnectConnectionActivity"/>
-        <activity android:name="org.walleth.activities.WalletConnectSendTransactionActivity"/>
+
+        <activity android:name="org.walleth.activities.walletconnect.WalletConnectConnectionActivity"/>
+        <activity android:name="org.walleth.activities.walletconnect.WalletConnectSignTextActivity"/>
+        <activity android:name="org.walleth.activities.walletconnect.WalletConnectSendTransactionActivity"/>
+        <activity android:name="org.walleth.activities.walletconnect.WalletConnectErrorActivity"/>
+
         <activity android:name="org.walleth.activities.ExportKeyActivity"/>
         <activity android:name="org.walleth.activities.KeysActivity"/>
         <activity android:name="org.walleth.activities.EditAccountActivity"/>

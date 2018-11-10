@@ -1,4 +1,4 @@
-package org.walleth.activities
+package org.walleth.activities.walletconnect
 
 import android.content.Context
 import android.content.Intent
@@ -19,12 +19,15 @@ import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.AddressBookActivity
+import org.walleth.activities.BaseSubActivity
+import org.walleth.activities.FROM_ADDRESS_REQUEST_CODE
+import org.walleth.activities.TO_ADDRESS_REQUEST_CODE
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.khex.toHexString
 import org.walleth.walletconnect.WalletConnectDriver
 import org.walleth.walletconnect.createIntentForTransaction
 import org.walleth.walletconnect.model.Session
-import org.walleth.walletconnect.model.StatefulWalletConnectTransaction
 import java.net.URLDecoder
 
 private const val KEY_INTENT_JSON = "JSON_KEY"
@@ -48,7 +51,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     private val walletConnectDriver: WalletConnectDriver by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
 
-    private var currentTransaction: StatefulWalletConnectTransaction? = null
+    private var currentTransaction: WalletConnectDriver.StatefulJSONRPCCall? = null
 
     private val currentSession by lazy {
         val erc831 = intent.data?.let { EthereumURI(it.toString()) }
@@ -95,7 +98,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                             else -> finish()
                         }
                     }
-                    .setOnCancelListener { _ -> finish() }
+                    .setOnCancelListener { finish() }
                     .show()
         }
     }
@@ -134,7 +137,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         }
     }
 
-    private val processTX: (StatefulWalletConnectTransaction) -> Unit = { statefulWalletConnectTransaction ->
+    private val processTX: (WalletConnectDriver.StatefulJSONRPCCall) -> Unit = { statefulWalletConnectTransaction ->
         currentTransaction = statefulWalletConnectTransaction
         startActivity(createIntentForTransaction(statefulWalletConnectTransaction))
     }

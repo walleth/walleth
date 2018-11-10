@@ -1,23 +1,25 @@
-package org.walleth.activities
+package org.walleth.activities.walletconnect
 
 import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
-import org.walleth.walletconnect.INTENT_KEY_WCSESSIONID
-import org.walleth.walletconnect.INTENT_KEY_WCTXID
+import org.walleth.activities.CreateTransactionActivity
+import org.walleth.activities.WallethActivity
+import org.walleth.walletconnect.INTENT_KEY_WC_CALL_ID
+import org.walleth.walletconnect.INTENT_KEY_WC_SESSION_ID
 import org.walleth.walletconnect.WalletConnectDriver
 
-private const val ACTIVITY_RESULT_TXHASH = 10589
+private const val ACTIVITY_REQUEST_ID_WC_ACTION = 10589
 
 
 class WalletConnectSendTransactionActivity : WallethActivity() {
 
     private val walletConnectDriver: WalletConnectDriver by inject()
 
-    private val transactionId by lazy { intent.getStringExtra(INTENT_KEY_WCTXID) }
-    private val sessionId by lazy { intent.getStringExtra(INTENT_KEY_WCSESSIONID) }
+    private val callId by lazy { intent.getStringExtra(INTENT_KEY_WC_CALL_ID) }
+    private val sessionId by lazy { intent.getStringExtra(INTENT_KEY_WC_SESSION_ID) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,27 +28,27 @@ class WalletConnectSendTransactionActivity : WallethActivity() {
         newIntent.data = intent.data
         newIntent.putExtras(intent)
 
-        startActivityForResult(newIntent, ACTIVITY_RESULT_TXHASH)
+        startActivityForResult(newIntent, ACTIVITY_REQUEST_ID_WC_ACTION)
     }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        var transactionHash = ""
+        var result = ""
 
         data?.let {
             when (requestCode) {
-                ACTIVITY_RESULT_TXHASH -> {
+                ACTIVITY_REQUEST_ID_WC_ACTION -> {
                     if (data.hasExtra("TXHASH")) {
-                        transactionHash = data.getStringExtra("TXHASH")
+                        result = data.getStringExtra("TXHASH")
                     }
                 }
             }
 
         }
         GlobalScope.launch {
-            walletConnectDriver.setTransactionHash(transactionId, sessionId, transactionHash , transactionHash.isNotEmpty())
+            walletConnectDriver.setResult(callId, sessionId, result , result.isNotEmpty())
         }
         finish()
     }
