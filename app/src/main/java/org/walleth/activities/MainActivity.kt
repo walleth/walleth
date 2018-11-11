@@ -12,7 +12,6 @@ import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.ActionBarDrawerToggle
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
@@ -27,7 +26,6 @@ import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.toERC681
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.model.EthereumURI
-import org.kodein.di.KodeinAware
 import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxt.recreateWhenPossible
@@ -57,7 +55,7 @@ import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
 
-class MainActivity : AppCompatActivity(), SharedPreferences.OnSharedPreferenceChangeListener, KodeinAware {
+class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
     override val kodein by closestKodein()
     private val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }

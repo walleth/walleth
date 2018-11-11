@@ -1,7 +1,6 @@
 package org.walleth.activities
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
 import kotlinx.android.synthetic.main.activity_fullscreen_qrcode.*
 import org.walleth.R
@@ -9,7 +8,7 @@ import org.walleth.functions.setQRCode
 
 const val KEY_ERC681 = "erc681"
 
-class FullscreenQRCodeActivity : AppCompatActivity() {
+class FullscreenQRCodeActivity : WallethActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

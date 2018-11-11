@@ -57,6 +57,9 @@ object KotprefSettings : KotprefModel(), Settings {
         else -> AppCompatDelegate.MODE_NIGHT_AUTO
     }
 
+
+    override fun isScreenshotsDisabled() = sharedPreferences.getBoolean(context.getString(R.string.key_noscreenshots), false)
+
     override fun registerListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.registerOnSharedPreferenceChangeListener(listener)
     override fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.unregisterOnSharedPreferenceChangeListener(listener)
 

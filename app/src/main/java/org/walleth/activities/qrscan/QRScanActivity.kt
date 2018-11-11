@@ -3,9 +3,9 @@ package org.walleth.activities.qrscan
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_scan.*
 import org.walleth.R
+import org.walleth.activities.WallethActivity
 
 const val REQUEST_CODE = 0x00006983
 
@@ -14,7 +14,7 @@ fun startScanActivityForResult(activity: Activity, requestCode: Int = REQUEST_CO
     activity.startActivityForResult(intent, requestCode)
 }
 
-class QRScanActivity : AppCompatActivity() {
+class QRScanActivity : WallethActivity() {
     private val videographer = Videographer(this).also {
         it.onSuccessfulScan = this::finishWithResult
     }

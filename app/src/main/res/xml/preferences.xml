@@ -40,6 +40,12 @@
                 android:targetClass="org.walleth.activities.SelectReferenceActivity"/>
     </Preference>
 
+    <CheckBoxPreference
+            android:key="@string/key_noscreenshots"
+            app:iconSpaceReserved="false"
+            android:title="@string/preferences_no_screenshots_title"
+            android:summary="@string/preferences_no_screenshots_summary"/>
+
     <EditTextPreference
             android:key="@string/key_prefs_stats_username"
             app:iconSpaceReserved="false"

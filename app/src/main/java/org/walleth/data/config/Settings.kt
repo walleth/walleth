@@ -34,4 +34,5 @@ interface Settings {
 
     fun getGasPriceFor(current: NetworkDefinition): BigInteger
     fun storeGasPriceFor(gasPrice: BigInteger, network: NetworkDefinition)
+    fun isScreenshotsDisabled(): Boolean
 }

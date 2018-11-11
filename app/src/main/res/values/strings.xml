@@ -71,6 +71,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="dialog_title_error">Error</string>
 
     <string name="select_fiat_reference">Select (Fiat) Reference</string>
+    <string name="preferences_no_screenshots_title">Prevent ScreenShots</string>
     <string name="select_token">Select Token</string>
     <string name="create_account_subtitle">Create Account</string>
     <string name="open_in_etherscan">Open in EtherScan</string>
@@ -239,6 +240,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="walletconnect_error_needs_fcm_title">WalletConnect needs FCM</string>
     <string name="notify_on_transactions">Notify on transactions</string>
     <string name="customize_toolbar">Customize ToolBar</string>
+    <string name="preferences_no_screenshots_summary">For privacy and security.</string>
     <string-array name="walletconnect_options">
         <item>Current Account</item>
         <item>Select Account</item>

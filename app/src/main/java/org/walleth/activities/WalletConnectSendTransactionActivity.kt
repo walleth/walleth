@@ -2,11 +2,8 @@ package org.walleth.activities
 
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.walleth.walletconnect.INTENT_KEY_WCSESSIONID
 import org.walleth.walletconnect.INTENT_KEY_WCTXID
@@ -15,9 +12,7 @@ import org.walleth.walletconnect.WalletConnectDriver
 private const val ACTIVITY_RESULT_TXHASH = 10589
 
 
-class WalletConnectSendTransactionActivity : AppCompatActivity(), KodeinAware {
-
-    override val kodein by closestKodein()
+class WalletConnectSendTransactionActivity : WallethActivity() {
 
     private val walletConnectDriver: WalletConnectDriver by instance()
 

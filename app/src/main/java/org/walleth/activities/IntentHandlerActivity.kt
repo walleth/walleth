@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import org.kethereum.erc1328.isERC1328
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.isERC681
@@ -14,8 +13,6 @@ import org.kethereum.erc831.isERC831
 import org.kethereum.erc831.toERC831
 import org.kethereum.model.Address
 import org.kethereum.model.EthereumURI
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
 import org.kodein.di.generic.instance
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -32,11 +29,10 @@ fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentH
     data = Uri.parse(ethereumString)
 }
 
-class IntentHandlerActivity : AppCompatActivity(), KodeinAware {
+class IntentHandlerActivity : WallethActivity() {
 
     var textToSign: String? = null
 
-    override val kodein by closestKodein()
     private val currentAddressProvider: CurrentAddressProvider by instance()
     private val keyStore: WallethKeyStore by instance()
     val settings: Settings by instance()

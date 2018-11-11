@@ -40,11 +40,15 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
                 App.applyNightMode(settings)
                 activity?.recreateWhenPossible()
             }
+            if (key == getString(R.string.key_noscreenshots)) {
+                activity?.recreateWhenPossible()
+            }
             if (key == getString(R.string.key_prefs_start_light)) {
 
             }
             setUserNameSummary()
-        } catch (ignored: IllegalStateException) {}
+        } catch (ignored: IllegalStateException) {
+        }
     }
 
     private fun setUserNameSummary() {

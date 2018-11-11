@@ -1,11 +1,11 @@
 package org.walleth
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.view.View
 import org.ligi.kaxt.startActivityFromURL
+import org.walleth.activities.WallethActivity
 
-class CommonURIsActivity : AppCompatActivity() {
+class CommonURIsActivity : WallethActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
