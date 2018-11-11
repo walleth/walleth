@@ -94,5 +94,5 @@ WALLΞTH は可能な限り分散化しようとしています。 したがっ�
     <string name="nav_drawer_edit_account">アカウントを編集</string>
     <string name="nav_drawer_export_key">キーをエクスポート</string>
     <string name="nav_drawer_import_key">キーをインポート</string>
-    <string name="nav_drawer_settings">設定</string>
+    <string name="nav_drawer_preferences">設定</string>
 </resources>

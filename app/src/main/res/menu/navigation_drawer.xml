@@ -18,7 +18,7 @@
 
     <item
             android:id="@+id/menu_settings"
-            android:title="@string/nav_drawer_settings"
+            android:title="@string/nav_drawer_preferences"
             android:icon="@drawable/ic_action_settings"/>
 
     <item
