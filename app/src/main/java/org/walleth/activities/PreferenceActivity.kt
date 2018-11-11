@@ -15,6 +15,8 @@ class PreferenceActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_prefs)
         firstResume = true
+
+        supportActionBar?.subtitle = getString(R.string.preferences_activity_subtitle)
     }
 
     override fun onResume() {
