@@ -26,15 +26,10 @@ fun ERC681.getToAddress(): Address? {
 }
 
 fun ERC681.isTokenTransfer() = this.function == "transfer"
-fun ERC681.getValueForTokenTransfer(): BigInteger {
-    val value = functionParams.first { it.first == "uint256" }.second
-    if (value != null) {
-        try {
-            return BigInteger(value)
-        } catch (ignore: NumberFormatException) {
-            return BigInteger.ZERO
-        }
-    } else {
-        return BigInteger.ZERO
+fun ERC681.getValueForTokenTransfer() = functionParams.firstOrNull { it.first == "uint256" }?.second?.let {
+    try {
+        BigInteger(it)
+    } catch (ignore: NumberFormatException) {
+        null
     }
 }

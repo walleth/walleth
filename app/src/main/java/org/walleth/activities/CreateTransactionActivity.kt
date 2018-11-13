@@ -476,7 +476,9 @@ class CreateTransactionActivity : BaseSubActivity() {
                                                 onCurrentTokenChanged()
                                             }
 
-                                            amount_input.setText(BigDecimal(localERC681.getValueForTokenTransfer()).divide(token.decimalsAsMultiplicator()).toPlainString())
+                                            localERC681.getValueForTokenTransfer()?.let {
+                                                amount_input.setText(BigDecimal(it).divide(token.decimalsAsMultiplicator()).toPlainString())
+                                            }
                                         } else {
                                             alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
                                         }
