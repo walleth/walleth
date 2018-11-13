@@ -7,11 +7,24 @@
                   android:id="@+id/current_eth_container"
                   android:layout_gravity="center_horizontal"
                   android:orientation="horizontal">
+
         <TextView
+                android:id="@+id/current_value_rounding_indicator"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="16sp"
+                android:text="~"
+                android:lines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/current_eth"
                 android:fontFamily="sans-serif"
+                android:layout_marginBottom="-12dp"
+                android:textColor="@color/fgColor"
                 android:textSize="16sp"
                 android:lines="1"
+                android:inputType="numberDecimal"
                 tools:text="\?"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
@@ -29,13 +42,26 @@
                   android:layout_height="wrap_content"
                   android:layout_gravity="center_horizontal"
                   android:id="@+id/current_fiat_container"
+                  android:layout_marginTop="-12dp"
                   android:orientation="horizontal">
+
         <TextView
+                android:id="@+id/current_fiat_rounding_indicator"
+                android:text="~"
+                android:fontFamily="sans-serif-thin"
+                android:textSize="14sp"
+                android:lines="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/current_fiat"
                 android:fontFamily="sans-serif-condensed"
                 android:textSize="14sp"
+                android:textColor="@color/fgColor"
                 android:lines="1"
                 tools:text="\?"
+                android:inputType="numberDecimal"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
@@ -43,7 +69,6 @@
                 android:id="@+id/current_fiat_symbol"
                 android:fontFamily="sans-serif-thin"
                 android:textSize="14sp"
-                android:text="EUR"
                 android:lines="1"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

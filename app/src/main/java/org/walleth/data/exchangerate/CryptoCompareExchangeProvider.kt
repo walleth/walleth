@@ -9,8 +9,10 @@ import java.io.File
 import java.io.IOException
 import java.math.BigDecimal
 
-class CryptoCompareExchangeProvider(context: Context, val okHttpClient: OkHttpClient) : BaseExchangeProvider() {
-
+class CryptoCompareExchangeProvider(
+        context: Context,
+        private val okHttpClient: OkHttpClient
+) : BaseExchangeProvider() {
 
     override fun addFiat(name: String) {
         super.addFiat(name)
@@ -20,9 +22,7 @@ class CryptoCompareExchangeProvider(context: Context, val okHttpClient: OkHttpCl
     private val lastDataFile = File(context.cacheDir, "exchangerates.json")
 
     init {
-        if (lastDataFile.exists()) {
-            setFromFile()
-        } else {
+        if (!setFromFile()) {
             fiatInfoMap.putAll(mapOf(
                     "DAI" to FiatInfo("DAI"),
                     "EUR" to FiatInfo("EUR"),
@@ -34,14 +34,19 @@ class CryptoCompareExchangeProvider(context: Context, val okHttpClient: OkHttpCl
         refresh()
     }
 
-    private fun setFromFile() {
-        val json = JSONObject(Okio.buffer(Okio.source(lastDataFile)).use { it.readUtf8() })
-        json.keys().forEach {
-            fiatInfoMap.put(it, FiatInfo(it, "", LocalTime.now(), BigDecimal(json.getString(it))))
+    private fun setFromFile(): Boolean {
+        try {
+            val json = JSONObject(Okio.buffer(Okio.source(lastDataFile)).use { it.readUtf8() })
+            json.keys().forEach {
+                fiatInfoMap[it] = FiatInfo(it, "", LocalTime.now(), BigDecimal(json.getString(it)))
+            }
+            return true
+        } catch (e: Exception) {
         }
+        return false
     }
 
-    fun refresh() {
+    private fun refresh() {
         val names = fiatInfoMap.keys.joinToString(",")
         val request = Request.Builder().url("https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=$names").build()
         okHttpClient.newCall(request).enqueue(object : Callback {
@@ -57,10 +62,6 @@ class CryptoCompareExchangeProvider(context: Context, val okHttpClient: OkHttpCl
                     }
                 }
             }
-
         })
-
     }
-
-
 }

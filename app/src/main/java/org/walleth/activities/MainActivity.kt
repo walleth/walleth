@@ -46,6 +46,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
+import org.walleth.ui.ValueViewModel
 import org.walleth.util.copyToClipboard
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
@@ -73,6 +74,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
     private val onboardingController by lazy { OnboardingController(this, settings) }
 
     private var lastPastedData: String? = null
+
+    private val amountViewModel by lazy {
+        ValueViewModel(value_view, exchangeRateProvider, settings)
+    }
 
     override fun onResume() {
         super.onResume()
@@ -268,10 +273,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
     private val balanceObserver = Observer<Balance> {
         if (it != null) {
-            value_view.setValue(it.balance, currentTokenProvider.currentToken, exchangeRateProvider, settings)
+            amountViewModel.setValue(it.balance, currentTokenProvider.currentToken)
             supportActionBar?.subtitle = getString(R.string.main_activity_block, it.block)
         } else {
-            value_view.setValue(ZERO, currentTokenProvider.currentToken, exchangeRateProvider, settings)
+            amountViewModel.setValue(ZERO, currentTokenProvider.currentToken)
             supportActionBar?.subtitle = getString(R.string.main_activity_no_data)
         }
     }

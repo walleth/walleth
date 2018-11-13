@@ -6,4 +6,5 @@
 
     <color name="warning">#ffcc0000</color>
     <color name="textColor">?android:attr/textColorPrimary</color>
+    <color name="fgColor">@android:color/black</color>
 </resources>

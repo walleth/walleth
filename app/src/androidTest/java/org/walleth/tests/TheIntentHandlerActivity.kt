@@ -5,6 +5,7 @@ import android.support.test.espresso.Espresso
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import com.google.common.truth.Truth
+import org.hamcrest.Matchers.allOf
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskIntentRule
@@ -27,7 +28,8 @@ class TheIntentHandlerActivity {
 
     @Test
     fun handlesAddressesWithValue() {
-        rule.launchActivity(InstrumentationRegistry.getTargetContext().getEthereumViewIntent("ethereum:0xdeadbeef?value=1"))
-        Espresso.onView(withId(R.id.amount_input)).check(matches(withText("0.000000000000000001")))
+        rule.launchActivity(InstrumentationRegistry.getTargetContext().getEthereumViewIntent("ethereum:0xdeadbeef?value=100000000000000"))
+        Espresso.onView(allOf(withId(R.id.current_eth), isDescendantOfA(withId(R.id.amount_value))))
+                .check(matches(withText("0.0001")))
     }
 }

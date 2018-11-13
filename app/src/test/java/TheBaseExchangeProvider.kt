@@ -14,9 +14,9 @@ class TheBaseExchangeProvider {
             override fun getExChangeRate(name: String) = BigDecimal("0.100")
         }
 
-        assertThat(baseExchangeProvider.getConvertedValue(BigInteger("2").times(ETH_IN_WEI), "USD")?.toFiatValueString())
+        assertThat(baseExchangeProvider.convertToFiat(BigInteger("2").times(ETH_IN_WEI), "USD")?.toFiatValueString())
                 .isEqualTo( "0.20")
-        assertThat(baseExchangeProvider.getConvertedValue(BigInteger("2000").times(ETH_IN_WEI), "USD")?.toFiatValueString())
+        assertThat(baseExchangeProvider.convertToFiat(BigInteger("2000").times(ETH_IN_WEI), "USD")?.toFiatValueString())
                 .isEqualTo("200")
     }
 
@@ -26,7 +26,7 @@ class TheBaseExchangeProvider {
             override fun getExChangeRate(name: String) = BigDecimal("1")
         }
         val value = BigInteger("201").times(ETH_IN_WEI).divide(BigInteger("1000")) // 0.201 ETH
-        assertThat(baseExchangeProvider.getConvertedValue(value, "USD")?.toFiatValueString())
-                .isEqualTo("~0.20")
+        assertThat(baseExchangeProvider.convertToFiat(value, "USD")?.toFiatValueString())
+                .isEqualTo("0.20")
     }
 }

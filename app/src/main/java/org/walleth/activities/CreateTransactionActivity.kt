@@ -59,23 +59,18 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.*
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
-import org.walleth.functions.asBigDecimal
-import org.walleth.functions.decimalsAsMultiplicator
-import org.walleth.functions.decimalsInZeroes
-import org.walleth.functions.toFullValueString
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.khex.toNoPrefixHexString
+import org.walleth.ui.ValueViewModel
 import org.walleth.ui.asyncAwait
 import org.walleth.ui.chainIDAlert
 import org.walleth.util.hasText
 import org.walleth.util.question
-import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
-import java.text.ParseException
 import java.util.*
 
 const val TO_ADDRESS_REQUEST_CODE = 1
@@ -85,7 +80,6 @@ const val TOKEN_REQUEST_CODE = 3
 class CreateTransactionActivity : BaseSubActivity() {
 
     private var currentERC681: ERC681 = ERC681()
-    private var currentAmount: BigInteger? = null
     private var currentToAddress: Address? = null
 
     private val currentAddressProvider: CurrentAddressProvider by inject()
@@ -101,6 +95,14 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentBalanceLive: LiveData<Balance>? = null
     private var currentSignatureData: SignatureData? = null
     private var currentTxHash: String? = null
+
+    private val amountViewModel by lazy {
+        ValueViewModel(amount_value, exchangeRateProvider, settings)
+    }
+    private val feeValueViewModel by lazy {
+        ValueViewModel(fee_value_view, exchangeRateProvider, settings)
+    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         when (requestCode) {
@@ -120,7 +122,6 @@ class CreateTransactionActivity : BaseSubActivity() {
                 }
             }
             TOKEN_REQUEST_CODE -> {
-                setAmountFromETHString(amount_input.text.toString())
                 onCurrentTokenChanged()
             }
             else -> data?.let {
@@ -219,10 +220,10 @@ class CreateTransactionActivity : BaseSubActivity() {
                 if (amountAfterFee < ZERO) {
                     alert(R.string.no_funds_after_fee)
                 } else {
-                    amount_input.setText(amountAfterFee.toFullValueString(currentTokenProvider.currentToken))
+                    amountViewModel.setValue(amountAfterFee, currentTokenProvider.currentToken)
                 }
             } else {
-                amount_input.setText(balance.toFullValueString(currentTokenProvider.currentToken))
+                amountViewModel.setValue(balance, currentTokenProvider.currentToken)
             }
         }
 
@@ -279,11 +280,6 @@ class CreateTransactionActivity : BaseSubActivity() {
             startActivityForResult(intent, FROM_ADDRESS_REQUEST_CODE)
         }
 
-        amount_input.doAfterEdit {
-            setAmountFromETHString(it.toString())
-            amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken, exchangeRateProvider, settings)
-        }
-
         val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
         function_label.setVisibility(functionVisibility)
         function_text.setVisibility(functionVisibility)
@@ -302,7 +298,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             currentBalance = it
         })
 
-        amount_value.setValue(currentAmount ?: ZERO, currentToken, exchangeRateProvider, settings)
+        amountViewModel.setValue(amountViewModel.getValue(), currentToken)
 
         if (currentToken.isETH()) {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
@@ -314,16 +310,14 @@ class CreateTransactionActivity : BaseSubActivity() {
     private fun onFabClick(isTrezorTransaction: Boolean) {
         if (to_address.text.isEmpty() || currentToAddress == null) {
             alert(R.string.create_tx_error_address_must_be_specified)
-        } else if (currentAmount == null && currentERC681?.function == null) {
-            alert(R.string.create_tx_error_amount_must_be_specified)
-        } else if (currentTokenProvider.currentToken.isETH() && currentAmount ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
+        } else if (currentTokenProvider.currentToken.isETH() && amountViewModel.getValue() ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (!nonce_input.hasText()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
-            if (currentTokenProvider.currentToken.isETH() && currentERC681?.function == null && currentAmount == ZERO) {
+            if (currentTokenProvider.currentToken.isETH() && currentERC681?.function == null && amountViewModel.getValue() == ZERO) {
                 question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
-            } else if (!currentTokenProvider.currentToken.isETH() && currentAmount!! > currentBalanceSafely()) {
+            } else if (!currentTokenProvider.currentToken.isETH() && amountViewModel.getValue() > currentBalanceSafely()) {
                 question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
             } else {
                 startTransaction(isTrezorTransaction)
@@ -333,7 +327,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private fun startTransaction(isTrezorTransaction: Boolean) {
         val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                value = currentAmount ?: ZERO,
+                value = amountViewModel.getValue(),
                 to = currentToAddress!!,
                 from = currentAddressProvider.getCurrent()
         ) else createTransactionWithDefaults(
@@ -341,7 +335,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                 value = ZERO,
                 to = currentTokenProvider.currentToken.address,
                 from = currentAddressProvider.getCurrent(),
-                input = createTokenTransferTransactionInput(currentToAddress!!, currentAmount!!)
+                input = createTokenTransferTransactionInput(currentToAddress!!, amountViewModel.getValue())
         )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
 
         val localERC681 = currentERC681
@@ -414,15 +408,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
-        fee_value_view.setValue(fee, getEthTokenForChain(networkDefinitionProvider.getCurrent()), exchangeRateProvider, settings)
-    }
-
-    private fun setAmountFromETHString(amount: String) {
-        currentAmount = try {
-            (amount.asBigDecimal() * BigDecimal("1" + currentTokenProvider.currentToken.decimalsInZeroes())).toBigInteger()
-        } catch (e: ParseException) {
-            ZERO
-        }
+        feeValueViewModel.setValue(fee, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -477,7 +463,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                             }
 
                                             localERC681.getValueForTokenTransfer()?.let {
-                                                amount_input.setText(BigDecimal(it).divide(token.decimalsAsMultiplicator()).toPlainString())
+                                                amountViewModel.setValue(it ,token)
                                             }
                                         } else {
                                             alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
@@ -500,11 +486,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                         onCurrentTokenChanged()
                                     }
 
-                                    amount_input.setText(BigDecimal(it).divide(currentTokenProvider.currentToken.decimalsAsMultiplicator()).toPlainString())
-
-                                    // when called from onCreate() the afterEdit hook is not yet added
-                                    setAmountFromETHString(amount_input.text.toString())
-                                    amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken, exchangeRateProvider, settings)
+                                    amountViewModel.setValue(it, currentTokenProvider.currentToken)
                                 }
                             }
 

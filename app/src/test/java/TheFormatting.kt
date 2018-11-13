@@ -23,17 +23,17 @@ class TheFormatting {
     @Test
     fun testWeRoundLongStuff() {
         assertThat(BigDecimal("1.01").toValueString(testToken.copy(decimals = 0))).isEqualTo("1.01")
-        assertThat(BigDecimal("123.45678").toValueString(testToken.copy(decimals = 0))).isEqualTo("~123.4567")
-        assertThat(BigDecimal("1234567.8").toValueString(testToken.copy(decimals = 0))).isEqualTo("~1234567")
-        assertThat(BigDecimal("123456.78").toValueString(testToken.copy(decimals = 0))).isEqualTo("~123456.7")
-        assertThat(BigDecimal("1234567890.12").toValueString(testToken.copy(decimals = 0))).isEqualTo("~1234567890")
+        assertThat(BigDecimal("123.45678").toValueString(testToken.copy(decimals = 0))).isEqualTo("123.4567")
+        assertThat(BigDecimal("1234567.8").toValueString(testToken.copy(decimals = 0))).isEqualTo("1234567")
+        assertThat(BigDecimal("123456.78").toValueString(testToken.copy(decimals = 0))).isEqualTo("123456.7")
+        assertThat(BigDecimal("1234567890.12").toValueString(testToken.copy(decimals = 0))).isEqualTo("1234567890")
     }
 
 
     @Test
     fun testWeCanRound() {
         assertThat(BigDecimal("2").toValueString(testToken.copy(decimals = 6))).isEqualTo("0.000002")
-        assertThat(BigDecimal("2").toValueString(testToken.copy(decimals = 7))).isEqualTo("~0")
+        assertThat(BigDecimal("2").toValueString(testToken.copy(decimals = 7))).isEqualTo("0")
     }
 
 }

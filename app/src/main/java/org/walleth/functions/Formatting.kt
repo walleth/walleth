@@ -21,16 +21,11 @@ fun BigDecimal.toValueString(token: Token) = applyTokenDecimals(token).let { val
     } else {
         format
     }
-    cutFormat
-            .addPrefixOnCondition(prefix = "~", condition = valueInETH.scale() > 6 || cutFormat != format)
-            .stripTrailingZeros()
+    cutFormat.stripTrailingZeros()
 }
 
 fun BigDecimal.toFiatValueString() = twoDigitDecimalFormat.format(this)
-        .addPrefixOnCondition(prefix = "~", condition = scale() > 2)
         .stripTrailingZeros()
         .adjustToMonetary2DecimalsWhenNeeded()
 
 fun String.addPrefixOnCondition(prefix: String, condition: Boolean) = if (condition) prefix + this else this
-
-fun CharSequence.isValueImprecise() = length > 0 && this[0] == '~'

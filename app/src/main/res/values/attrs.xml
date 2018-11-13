@@ -2,5 +2,6 @@
 <resources>
     <declare-styleable name="ValueView">
         <attr name="showPrecise" format="boolean"/>
+        <attr name="allowEdit" format="boolean"/>
     </declare-styleable>
 </resources>

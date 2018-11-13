@@ -30,6 +30,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.functions.setQRCode
 import org.walleth.functions.toHexString
 import org.walleth.khex.toHexString
+import org.walleth.ui.ValueViewModel
 
 private const val HASH_KEY = "TXHASH"
 fun Context.getTransactionActivityIntentForHash(hex: String) = Intent(this, ViewTransactionActivity::class.java).apply {
@@ -47,6 +48,14 @@ class ViewTransactionActivity : BaseSubActivity() {
 
     private var txEntity: TransactionEntity? = null
     private val fourByteDirectory: FourByteDirectory by inject()
+
+    private val amountViewModel by lazy {
+        ValueViewModel(value_view, exchangeRateProvider, settings)
+    }
+
+    private val feeViewModel by lazy {
+        ValueViewModel(fee_value_view, exchangeRateProvider, settings)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,7 +90,7 @@ class ViewTransactionActivity : BaseSubActivity() {
 
                 }
 
-                fee_value_view.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getEthTokenForChain(networkDefinitionProvider.getCurrent()), exchangeRateProvider, settings)
+                feeViewModel.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
 
                 val relevantAddress = if (it.transaction.from == currentAddressProvider.getCurrent()) {
                     from_to_title.setText(R.string.transaction_to_label)
@@ -131,7 +140,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                     rlp_header.visibility = View.GONE
                 }
 
-                value_view.setValue(it.transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()), exchangeRateProvider, settings)
+                amountViewModel.setValue(it.transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
 
                 var message = "Hash:" + it.transaction.txHash
                 it.transactionState.error?.let { error ->

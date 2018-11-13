@@ -3,6 +3,7 @@ package org.walleth.functions
 import org.walleth.data.tokens.Token
 import org.walleth.khex.prepend0xPrefix
 import java.math.BigDecimal
+import java.math.BigDecimal.TEN
 import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
@@ -32,4 +33,15 @@ private fun getDecimalFormat(decimals: Int) = getDecimalFormatUS().apply {
     isGroupingUsed = false
 }
 
-fun String.asBigDecimal() = inputDecimalFormat.parseObject(this) as BigDecimal
+fun String.asBigDecimal() = try {
+    inputDecimalFormat.parseObject(this).let {
+
+        when (it) {
+            is Double -> BigDecimal(it)
+            else -> it as BigDecimal
+        }
+
+    }
+} catch (e: Exception) {
+    TEN
+}

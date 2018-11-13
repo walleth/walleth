@@ -6,26 +6,13 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.value.view.*
-import org.ligi.kaxt.setVisibility
-import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.config.Settings
-import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.tokens.Token
-import org.walleth.data.tokens.isETH
-import org.walleth.functions.*
-import java.math.BigDecimal
-import java.math.BigInteger
-import java.math.BigInteger.ZERO
 
 open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     open val layoutRes = R.layout.value
-    private val showsPrecise: Boolean
-
-    private var currentValue = ZERO
-    private var currentExchangeValue: BigDecimal? = null
-    private var currentToken: Token? = null
+    val showsPrecise: Boolean
+    val allowEdit: Boolean
 
     init {
         // extract the showPrecise value
@@ -33,6 +20,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
                 0, 0)
         try {
             showsPrecise = a.getBoolean(R.styleable.ValueView_showPrecise, true)
+            allowEdit = a.getBoolean(R.styleable.ValueView_allowEdit, false)
         } finally {
             a.recycle()
         }
@@ -43,53 +31,18 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
         orientation = VERTICAL
         LayoutInflater.from(context).inflate(layoutRes, this, true)
 
-        // only intercept touch through click listener if view can show precise
-        if (showsPrecise) {
-            current_eth.setOnClickListener {
-                currentToken?.let { tokenNotNull ->
-                    if (current_eth.text.isValueImprecise()) {
-                        showPreciseAmountAlert(currentValue.toFullValueString(tokenNotNull) + current_token_symbol.text)
-                    }
-                }
-            }
-
-            current_fiat.setOnClickListener {
-                currentExchangeValue?.let { currentExchangeValueNotNull ->
-                    if (current_fiat.text.isValueImprecise()) {
-                        showPreciseAmountAlert(String.format("%f", currentExchangeValueNotNull) + current_fiat_symbol.text)
-                    }
-                }
-            }
+        if (!allowEdit) {
+            current_eth.keyListener = null
+            current_fiat.keyListener = null
         }
-    }
+        current_eth.isCursorVisible = allowEdit
+        current_eth.isFocusableInTouchMode = allowEdit
+        current_eth.setBackgroundDrawable(null)
 
-    private fun showPreciseAmountAlert(fullAmountString: String) =
-            context.alert(fullAmountString, context.getString(R.string.precise_amount_alert_title))
+        current_fiat.isEnabled = allowEdit
+        current_fiat.isFocusableInTouchMode = allowEdit
+        current_fiat.setBackgroundDrawable(null)
 
-    fun setValue(value: BigInteger, token: Token, exchangeRateProvider: ExchangeRateProvider, settings: Settings) {
-
-        if (token.isETH()) {
-            val exChangeRate = exchangeRateProvider.getConvertedValue(value, settings.currentFiat)
-
-            current_fiat_symbol.text = settings.currentFiat
-            current_fiat.text = if (exChangeRate != null) {
-                twoDigitDecimalFormat.format(exChangeRate).addPrefixOnCondition(prefix = "~", condition = exChangeRate.scale() > 2)
-            } else {
-                "?"
-            }
-
-            currentExchangeValue = exChangeRate
-        }
-
-        currentValue = value
-        currentToken = token
-
-        current_token_symbol.text = token.symbol
-
-        current_fiat_symbol.setVisibility(token.isETH())
-        current_fiat.setVisibility(token.isETH())
-
-        current_eth.text = value.toValueString(token)
     }
 
 }

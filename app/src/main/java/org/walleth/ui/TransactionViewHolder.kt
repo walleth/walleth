@@ -29,6 +29,10 @@ class TransactionViewHolder(itemView: View,
                             val settings: Settings) : RecyclerView.ViewHolder(itemView) {
 
 
+    private val amountViewModel by lazy {
+        ValueViewModel(itemView.difference, exchangeRateProvider, settings)
+    }
+
     fun bind(transactionWithState: TransactionEntity, appDatabase: AppDatabase) {
 
         val transaction = transactionWithState.transaction
@@ -46,11 +50,11 @@ class TransactionViewHolder(itemView: View,
             val tokenAddress = transaction.to
             if (tokenAddress != null) {
                 { appDatabase.tokens.forAddress(tokenAddress) }.asyncAwaitNonNull { token ->
-                    itemView.difference.setValue(transaction.getTokenTransferValue(), token, exchangeRateProvider, settings)
+                    amountViewModel.setValue(transaction.getTokenTransferValue(), token)
                 }
             }
         } else {
-            itemView.difference.setValue(transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()), exchangeRateProvider, settings)
+            amountViewModel.setValue(transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
             relevantAddress?.let {
                 appDatabase.addressBook.resolveNameAsync(it) {
                     itemView.address.text = it

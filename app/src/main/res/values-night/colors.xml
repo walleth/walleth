@@ -5,4 +5,6 @@
     <color name="colorAccent">#69F0AE</color>
 
     <color name="warning">#ffff4444</color>
+    <color name="fgColor">@android:color/white</color>
+
 </resources>
