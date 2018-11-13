@@ -7,7 +7,7 @@ import kotlinx.android.synthetic.main.activity_account_edit.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
@@ -20,9 +20,9 @@ import org.walleth.util.copyToClipboard
 
 class EditAccountActivity : BaseSubActivity() {
 
-    private val appDatabase: AppDatabase by instance()
-    private val blockExplorerProvider: BlockExplorerProvider by instance()
-    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val appDatabase: AppDatabase by inject()
+    private val blockExplorerProvider: BlockExplorerProvider by inject()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
     private lateinit var currentAddressInfo: AddressBookEntry
 
     override fun onCreate(savedInstanceState: Bundle?) {

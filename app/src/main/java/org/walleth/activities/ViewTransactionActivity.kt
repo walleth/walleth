@@ -13,7 +13,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.*
 import org.kethereum.functions.encodeRLP
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
@@ -21,6 +21,8 @@ import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.blockexplorer.BlockExplorerProvider
+import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.getEthTokenForChain
@@ -36,12 +38,15 @@ fun Context.getTransactionActivityIntentForHash(hex: String) = Intent(this, View
 
 class ViewTransactionActivity : BaseSubActivity() {
 
-    private val appDatabase: AppDatabase by instance()
-    private val currentAddressProvider: CurrentAddressProvider by instance()
-    private val blockExplorerProvider: BlockExplorerProvider by instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val appDatabase: AppDatabase by inject()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
+    private val blockExplorerProvider: BlockExplorerProvider by inject()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val exchangeRateProvider: ExchangeRateProvider by inject()
+    private val settings: Settings by inject()
+
     private var txEntity: TransactionEntity? = null
-    private val fourByteDirectory: FourByteDirectory by instance()
+    private val fourByteDirectory: FourByteDirectory by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +69,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                 event_log_textview.text = it.transactionState.eventLog
 
                 fab.setVisibility(it.transactionState.needsSigningConfirmation)
-                fab.setOnClickListener {_->
+                fab.setOnClickListener { _ ->
                     GlobalScope.launch(Dispatchers.Main) {
                         launch(Dispatchers.Default) {
                             it.transactionState.needsSigningConfirmation = false
@@ -76,7 +81,7 @@ class ViewTransactionActivity : BaseSubActivity() {
 
                 }
 
-                fee_value_view.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+                fee_value_view.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getEthTokenForChain(networkDefinitionProvider.getCurrent()), exchangeRateProvider, settings)
 
                 val relevantAddress = if (it.transaction.from == currentAddressProvider.getCurrent()) {
                     from_to_title.setText(R.string.transaction_to_label)
@@ -126,7 +131,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                     rlp_header.visibility = View.GONE
                 }
 
-                value_view.setValue(it.transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+                value_view.setValue(it.transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()), exchangeRateProvider, settings)
 
                 var message = "Hash:" + it.transaction.txHash
                 it.transactionState.error?.let { error ->

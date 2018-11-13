@@ -5,7 +5,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_list.*
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.ALL_NETWORKS
@@ -15,7 +15,7 @@ import org.walleth.ui.NetworkAdapter
 
 open class SwitchNetworkActivity : BaseSubActivity() {
 
-    val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    val networkDefinitionProvider: NetworkDefinitionProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

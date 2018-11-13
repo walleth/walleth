@@ -18,7 +18,7 @@ import org.kethereum.erc681.parseERC681
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.functions.isValid
 import org.kethereum.model.Address
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -45,8 +45,8 @@ fun Context.startCreateAccountActivity(hex: String) {
 
 class CreateAccountActivity : BaseSubActivity() {
 
-    private val keyStore: WallethKeyStore by instance()
-    private val appDatabase: AppDatabase by instance()
+    private val keyStore: WallethKeyStore by inject()
+    private val appDatabase: AppDatabase by inject()
     private var lastCreatedAddress: ECKeyPair? = null
     private var trezorPath: String? = null
 

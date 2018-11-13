@@ -2,7 +2,7 @@ package org.walleth.activities
 
 import android.os.Bundle
 import android.support.v7.app.AlertDialog
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.keystore.WallethKeyStore
@@ -10,8 +10,8 @@ import org.walleth.data.networks.CurrentAddressProvider
 
 class KeysActivity : BaseSubActivity() {
 
-    val keyStore: WallethKeyStore by instance()
-    val currentAddressProvider: CurrentAddressProvider by instance()
+    val keyStore: WallethKeyStore by inject()
+    val currentAddressProvider: CurrentAddressProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

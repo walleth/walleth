@@ -16,11 +16,17 @@ import org.walleth.R
 import org.walleth.activities.getTransactionActivityIntentForHash
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameAsync
+import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.transactions.TransactionEntity
 
-class TransactionViewHolder(itemView: View, private val direction: TransactionAdapterDirection,val networkDefinitionProvider: NetworkDefinitionProvider) : RecyclerView.ViewHolder(itemView) {
+class TransactionViewHolder(itemView: View,
+                            private val direction: TransactionAdapterDirection,
+                            val networkDefinitionProvider: NetworkDefinitionProvider,
+                            private val exchangeRateProvider: ExchangeRateProvider,
+                            val settings: Settings) : RecyclerView.ViewHolder(itemView) {
 
 
     fun bind(transactionWithState: TransactionEntity, appDatabase: AppDatabase) {
@@ -40,11 +46,11 @@ class TransactionViewHolder(itemView: View, private val direction: TransactionAd
             val tokenAddress = transaction.to
             if (tokenAddress != null) {
                 { appDatabase.tokens.forAddress(tokenAddress) }.asyncAwaitNonNull { token ->
-                    itemView.difference.setValue(transaction.getTokenTransferValue(), token)
+                    itemView.difference.setValue(transaction.getTokenTransferValue(), token, exchangeRateProvider, settings)
                 }
             }
         } else {
-            itemView.difference.setValue(transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+            itemView.difference.setValue(transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()), exchangeRateProvider, settings)
             relevantAddress?.let {
                 appDatabase.addressBook.resolveNameAsync(it) {
                     itemView.address.text = it
@@ -85,7 +91,7 @@ class TransactionViewHolder(itemView: View, private val direction: TransactionAd
 }
 
 fun <T> (() -> T).asyncAwait(resultCall: (T) -> Unit) {
-    GlobalScope.launch (Dispatchers.Main) {
+    GlobalScope.launch(Dispatchers.Main) {
         resultCall(async(Dispatchers.Default) {
             invoke()
         }.await())
@@ -94,7 +100,7 @@ fun <T> (() -> T).asyncAwait(resultCall: (T) -> Unit) {
 
 
 fun <T> (() -> T?).asyncAwaitNonNull(resultCall: (T) -> Unit) {
-    GlobalScope.launch (Dispatchers.Main) {
+    GlobalScope.launch(Dispatchers.Main) {
         async(Dispatchers.Default) {
             invoke()
         }.await()?.let { resultCall(it) }

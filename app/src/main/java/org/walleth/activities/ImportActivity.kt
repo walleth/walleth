@@ -26,7 +26,7 @@ import org.kethereum.crypto.toECKeyPair
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.model.Address
 import org.kethereum.wallet.loadKeysFromWalletJsonString
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.threeten.bp.LocalDateTime
@@ -58,8 +58,8 @@ private const val READ_REQUEST_CODE = 42
 
 class ImportActivity : BaseSubActivity() {
 
-    private val keyStore: WallethKeyStore by instance()
-    private val appDatabase: AppDatabase by instance()
+    private val keyStore: WallethKeyStore by inject()
+    private val appDatabase: AppDatabase by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -7,7 +7,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.dialog_add_reference.view.*
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
@@ -15,8 +15,8 @@ import org.walleth.ui.FiatListAdapter
 
 class SelectReferenceActivity : BaseSubActivity() {
 
-    private val exchangeRateProvider: ExchangeRateProvider by instance()
-    private val settings: Settings by instance()
+    private val exchangeRateProvider: ExchangeRateProvider by inject()
+    private val settings: Settings by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

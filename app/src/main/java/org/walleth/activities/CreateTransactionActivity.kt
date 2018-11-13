@@ -34,7 +34,7 @@ import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
@@ -52,6 +52,7 @@ import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -87,12 +88,14 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentAmount: BigInteger? = null
     private var currentToAddress: Address? = null
 
-    private val currentAddressProvider: CurrentAddressProvider by instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
-    private val currentTokenProvider: CurrentTokenProvider by instance()
-    private val keyStore: WallethKeyStore by instance()
-    private val appDatabase: AppDatabase by instance()
-    private val settings: Settings by instance()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val currentTokenProvider: CurrentTokenProvider by inject()
+    private val keyStore: WallethKeyStore by inject()
+    private val appDatabase: AppDatabase by inject()
+    private val settings: Settings by inject()
+    private val exchangeRateProvider: ExchangeRateProvider by inject()
+
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
     private var currentBalanceLive: LiveData<Balance>? = null
@@ -278,7 +281,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         amount_input.doAfterEdit {
             setAmountFromETHString(it.toString())
-            amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
+            amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken, exchangeRateProvider, settings)
         }
 
         val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
@@ -299,7 +302,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             currentBalance = it
         })
 
-        amount_value.setValue(currentAmount ?: ZERO, currentToken)
+        amount_value.setValue(currentAmount ?: ZERO, currentToken, exchangeRateProvider, settings)
 
         if (currentToken.isETH()) {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
@@ -411,7 +414,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
-        fee_value_view.setValue(fee, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+        fee_value_view.setValue(fee, getEthTokenForChain(networkDefinitionProvider.getCurrent()), exchangeRateProvider, settings)
     }
 
     private fun setAmountFromETHString(amount: String) {
@@ -499,7 +502,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
                                     // when called from onCreate() the afterEdit hook is not yet added
                                     setAmountFromETHString(amount_input.text.toString())
-                                    amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken)
+                                    amount_value.setValue(currentAmount ?: ZERO, currentTokenProvider.currentToken, exchangeRateProvider, settings)
                                 }
                             }
 

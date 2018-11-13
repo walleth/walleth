@@ -14,9 +14,7 @@ import android.support.v4.app.NotificationCompat
 import kotlinx.coroutines.*
 import org.ethereum.geth.*
 import org.kethereum.functions.encodeRLP
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.MainActivity
@@ -37,9 +35,7 @@ import org.ethereum.geth.Context as EthereumContext
 private const val NOTIFICATION_ID = 101
 private const val NOTIFICATION_CHANNEL_ID = "geth"
 
-class GethLightEthereumService : LifecycleService(), KodeinAware {
-
-    override val kodein by closestKodein()
+class GethLightEthereumService : LifecycleService() {
 
     companion object {
         const val STOP_SERVICE_ACTION = "STOPSERVICE"
@@ -51,11 +47,11 @@ class GethLightEthereumService : LifecycleService(), KodeinAware {
         var isRunning = false
     }
 
-    private val syncProgress: SyncProgressProvider by instance()
-    private val appDatabase: AppDatabase by instance()
-    private val settings: Settings by instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
-    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val syncProgress: SyncProgressProvider by inject()
+    private val appDatabase: AppDatabase by inject()
+    private val settings: Settings by inject()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
     private val path by lazy { File(baseContext.cacheDir, "ethereumdata").absolutePath }
     private val notificationManager by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
 

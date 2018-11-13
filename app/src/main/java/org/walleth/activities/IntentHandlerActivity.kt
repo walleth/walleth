@@ -13,7 +13,7 @@ import org.kethereum.erc831.isERC831
 import org.kethereum.erc831.toERC831
 import org.kethereum.model.Address
 import org.kethereum.model.EthereumURI
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.config.Settings
@@ -33,9 +33,9 @@ class IntentHandlerActivity : WallethActivity() {
 
     var textToSign: String? = null
 
-    private val currentAddressProvider: CurrentAddressProvider by instance()
-    private val keyStore: WallethKeyStore by instance()
-    val settings: Settings by instance()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
+    private val keyStore: WallethKeyStore by inject()
+    val settings: Settings by inject()
     private var oldFilterAddressesKeyOnly = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

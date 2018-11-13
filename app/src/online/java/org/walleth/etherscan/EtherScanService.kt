@@ -12,9 +12,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.letIf
 import org.ligi.tracedroid.logging.Log
 import org.walleth.BuildConfig
@@ -34,14 +32,13 @@ import java.io.IOException
 import java.math.BigInteger
 import java.security.cert.CertPathValidatorException
 
-class EtherScanService : LifecycleService(), KodeinAware {
+class EtherScanService : LifecycleService() {
 
-    override val kodein by closestKodein()
-    private val okHttpClient: OkHttpClient by instance()
-    private val currentAddressProvider: CurrentAddressProvider by instance()
-    private val tokenProvider: CurrentTokenProvider by instance()
-    private val appDatabase: AppDatabase by instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val okHttpClient: OkHttpClient by inject()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
+    private val tokenProvider: CurrentTokenProvider by inject()
+    private val appDatabase: AppDatabase by inject()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
 
     companion object {
         private var timing = 7_000 // in MilliSeconds

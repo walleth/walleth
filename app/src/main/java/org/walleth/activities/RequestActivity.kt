@@ -8,7 +8,7 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_request.*
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
@@ -24,9 +24,9 @@ import org.walleth.util.copyToClipboard
 class RequestActivity : BaseSubActivity() {
 
     private lateinit var currentERC67String: String
-    private val currentAddressProvider: CurrentAddressProvider by instance()
-    private val currentTokenProvider: CurrentTokenProvider by instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
+    private val currentTokenProvider: CurrentTokenProvider by inject()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

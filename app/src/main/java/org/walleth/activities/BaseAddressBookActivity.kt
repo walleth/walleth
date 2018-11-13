@@ -16,7 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
@@ -28,10 +28,10 @@ import org.walleth.ui.AddressAdapter
 
 abstract class BaseAddressBookActivity : BaseSubActivity() {
 
-    val keyStore: WallethKeyStore by instance()
-    val appDatabase: AppDatabase by instance()
-    val settings: Settings by instance()
-    val currentAddressProvider: CurrentAddressProvider by instance()
+    val keyStore: WallethKeyStore by inject()
+    val appDatabase: AppDatabase by inject()
+    val settings: Settings by inject()
+    val currentAddressProvider: CurrentAddressProvider by inject()
 
     val adapter by lazy {
         AddressAdapter(keyStore, onClickAction = { onAddressClick(it) }, appDatabase = appDatabase).apply {

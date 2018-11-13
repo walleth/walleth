@@ -10,7 +10,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import org.kethereum.model.Address
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
@@ -22,8 +22,8 @@ import org.walleth.data.tokens.Token
 class CreateTokenDefinitionActivity : BaseSubActivity() {
 
 
-    val appDatabase: AppDatabase by instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    val appDatabase: AppDatabase by inject()
+    val networkDefinitionProvider: NetworkDefinitionProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

@@ -4,7 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.walleth.walletconnect.INTENT_KEY_WCSESSIONID
 import org.walleth.walletconnect.INTENT_KEY_WCTXID
 import org.walleth.walletconnect.WalletConnectDriver
@@ -14,7 +14,7 @@ private const val ACTIVITY_RESULT_TXHASH = 10589
 
 class WalletConnectSendTransactionActivity : WallethActivity() {
 
-    private val walletConnectDriver: WalletConnectDriver by instance()
+    private val walletConnectDriver: WalletConnectDriver by inject()
 
     private val transactionId by lazy { intent.getStringExtra(INTENT_KEY_WCTXID) }
     private val sessionId by lazy { intent.getStringExtra(INTENT_KEY_WCSESSIONID) }

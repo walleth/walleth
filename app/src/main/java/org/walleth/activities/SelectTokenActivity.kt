@@ -17,7 +17,7 @@ import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_list_stars.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
@@ -33,10 +33,10 @@ class TokenActivityViewModel : ViewModel() {
 
 class SelectTokenActivity : BaseSubActivity() {
 
-    private val currentTokenProvider: CurrentTokenProvider by instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
-    private val appDatabase: AppDatabase by instance()
-    private val settings: Settings by instance()
+    private val currentTokenProvider: CurrentTokenProvider by inject()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val appDatabase: AppDatabase by inject()
+    private val settings: Settings by inject()
 
     private var showDelete = false
 

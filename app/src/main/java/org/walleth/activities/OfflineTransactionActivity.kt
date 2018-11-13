@@ -23,7 +23,7 @@ import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.ChainDefinition
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -52,9 +52,9 @@ fun Context.getOfflineTransactionIntent(content: String) = Intent(this, OfflineT
 
 class OfflineTransactionActivity : BaseSubActivity() {
 
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
-    private val appDatabase: AppDatabase by instance()
-    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val appDatabase: AppDatabase by inject()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

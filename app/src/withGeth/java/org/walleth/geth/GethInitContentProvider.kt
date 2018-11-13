@@ -16,8 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.walleth.App
 import org.walleth.R
 import org.walleth.data.config.Settings
@@ -42,8 +41,8 @@ class GethInitContentProvider : ContentProvider() {
     }
 
     override fun onCreate(): Boolean {
-        val kodein by closestKodein(context)
-        val settings: Settings by kodein.instance()
+
+        val settings: Settings by inject()
 
         App.postInitCallbacks.add({
             ProcessLifecycleOwner.get().lifecycle.addObserver(GethInitAppLifecycleObserver(context, settings))

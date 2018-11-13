@@ -4,20 +4,17 @@ package org.walleth.ui
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.preference.PreferenceFragmentCompat
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.recreateWhenPossible
 import org.walleth.App
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.tokens.CurrentTokenProvider
 
-class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener, KodeinAware {
+class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    override val kodein by closestKodein()
-    private val settings: Settings by instance()
-    private val currentTokenProvider: CurrentTokenProvider by instance()
+    private val settings: Settings by inject()
+    private val currentTokenProvider: CurrentTokenProvider by inject()
 
     override fun onResume() {
         super.onResume()

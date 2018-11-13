@@ -15,9 +15,7 @@ import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.ligi.kroom.inTransaction
 import org.walleth.R
@@ -38,11 +36,10 @@ fun Activity.startTrezorActivity(transactionParcel: TransactionParcel) {
     startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
 }
 
-class TrezorSignTransactionActivity : BaseTrezorActivity(), KodeinAware {
+class TrezorSignTransactionActivity : BaseTrezorActivity(){
 
-    override val kodein by closestKodein()
     private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
-    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
 
     override fun handleAddress(address: Address) {
         if (address != transaction.transaction.from) {

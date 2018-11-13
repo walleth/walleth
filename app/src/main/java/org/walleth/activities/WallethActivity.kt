@@ -4,16 +4,13 @@ import android.annotation.SuppressLint
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager.LayoutParams.FLAG_SECURE
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.walleth.data.config.Settings
 
 @SuppressLint("Registered")
-open class WallethActivity : AppCompatActivity() , KodeinAware {
+open class WallethActivity : AppCompatActivity() {
 
-    override val kodein by closestKodein()
-    private val settings: Settings by instance()
+    private val settings: Settings by inject()
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         if (settings.isScreenshotsDisabled()) {

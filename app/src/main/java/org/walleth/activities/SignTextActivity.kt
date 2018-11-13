@@ -6,7 +6,7 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_sign_text.*
 import org.kethereum.crypto.signMessage
 import org.kethereum.extensions.toHexStringZeroPadded
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.keystore.WallethKeyStore
@@ -15,8 +15,8 @@ import org.walleth.khex.toHexString
 
 class SignTextActivity : BaseSubActivity() {
 
-    private val keyStore: WallethKeyStore by instance()
-    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val keyStore: WallethKeyStore by inject()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

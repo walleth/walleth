@@ -26,8 +26,7 @@ import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.toERC681
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.model.EthereumURI
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.recreateWhenPossible
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -37,6 +36,7 @@ import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -57,15 +57,16 @@ private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
 
 class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
 
-    override val kodein by closestKodein()
     private val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
-    private val syncProgressProvider: SyncProgressProvider by instance()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by instance()
-    private val appDatabase: AppDatabase by instance()
-    private val settings: Settings by instance()
-    private val currentTokenProvider: CurrentTokenProvider by instance()
-    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val syncProgressProvider: SyncProgressProvider by inject()
+    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val appDatabase: AppDatabase by inject()
+    private val settings: Settings by inject()
+    private val currentTokenProvider: CurrentTokenProvider by inject()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
+    private val exchangeRateProvider: ExchangeRateProvider by inject()
+
     private var lastNightMode: Int? = null
     private var balanceLiveData: LiveData<Balance>? = null
     private var etherLiveData: LiveData<Balance>? = null
@@ -210,7 +211,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         val incomingTransactionsObserver = Observer<List<TransactionEntity>> {
 
             if (it != null) {
-                transaction_recycler_in.adapter = TransactionRecyclerAdapter(it, appDatabase, INCOMING, networkDefinitionProvider)
+                transaction_recycler_in.adapter = TransactionRecyclerAdapter(it, appDatabase, INCOMING, networkDefinitionProvider, exchangeRateProvider, settings)
                 transaction_recycler_in.setVisibility(!it.isEmpty())
                 refresh()
             }
@@ -219,7 +220,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         val outgoingTransactionsObserver = Observer<List<TransactionEntity>> {
 
             if (it != null) {
-                transaction_recycler_out.adapter = TransactionRecyclerAdapter(it, appDatabase, OUTGOING, networkDefinitionProvider)
+                transaction_recycler_out.adapter = TransactionRecyclerAdapter(it, appDatabase, OUTGOING, networkDefinitionProvider, exchangeRateProvider, settings)
                 refresh()
             }
         }
@@ -267,10 +268,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
     private val balanceObserver = Observer<Balance> {
         if (it != null) {
-            value_view.setValue(it.balance, currentTokenProvider.currentToken)
+            value_view.setValue(it.balance, currentTokenProvider.currentToken, exchangeRateProvider, settings)
             supportActionBar?.subtitle = getString(R.string.main_activity_block, it.block)
         } else {
-            value_view.setValue(ZERO, currentTokenProvider.currentToken)
+            value_view.setValue(ZERO, currentTokenProvider.currentToken, exchangeRateProvider, settings)
             supportActionBar?.subtitle = getString(R.string.main_activity_no_data)
         }
     }

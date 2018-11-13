@@ -2,7 +2,7 @@ package org.walleth.activities
 
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_parity_signer_qr.*
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.functions.setQRCode
@@ -10,7 +10,7 @@ import org.walleth.functions.setQRCode
 
 class ParitySignerQRActivity : BaseSubActivity() {
 
-    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

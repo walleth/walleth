@@ -6,9 +6,6 @@ import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.widget.LinearLayout
 import kotlinx.android.synthetic.main.value.view.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -21,11 +18,7 @@ import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
 
-open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs), KodeinAware {
-
-    override val kodein by closestKodein()
-    private val exchangeRateProvider: ExchangeRateProvider by instance()
-    private val settings: Settings by instance()
+open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs) {
 
     open val layoutRes = R.layout.value
     private val showsPrecise: Boolean
@@ -36,7 +29,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
     init {
         // extract the showPrecise value
-        val a: TypedArray = context.theme.obtainStyledAttributes(attrs,R.styleable.ValueView,
+        val a: TypedArray = context.theme.obtainStyledAttributes(attrs, R.styleable.ValueView,
                 0, 0)
         try {
             showsPrecise = a.getBoolean(R.styleable.ValueView_showPrecise, true)
@@ -73,7 +66,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
     private fun showPreciseAmountAlert(fullAmountString: String) =
             context.alert(fullAmountString, context.getString(R.string.precise_amount_alert_title))
 
-    fun setValue(value: BigInteger, token: Token) {
+    fun setValue(value: BigInteger, token: Token, exchangeRateProvider: ExchangeRateProvider, settings: Settings) {
 
         if (token.isETH()) {
             val exChangeRate = exchangeRateProvider.getConvertedValue(value, settings.currentFiat)

@@ -19,7 +19,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
@@ -40,8 +40,8 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
     abstract fun getTaskSpecificMessage(): GeneratedMessageV3?
 
     protected var currentBIP44: BIP44? = null
-    protected val appDatabase: AppDatabase by instance()
-    protected val networkDefinitionProvider: NetworkDefinitionProvider by instance()
+    protected val appDatabase: AppDatabase by inject()
+    protected val networkDefinitionProvider: NetworkDefinitionProvider by inject()
 
     protected val handler = Handler()
     private val manager by lazy { TrezorManager(this) }

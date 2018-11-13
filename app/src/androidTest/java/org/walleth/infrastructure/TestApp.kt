@@ -3,9 +3,7 @@ package org.walleth.infrastructure
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
-import org.kodein.di.Kodein
-import org.kodein.di.generic.bind
-import org.kodein.di.generic.singleton
+import org.koin.dsl.module.module
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
@@ -35,20 +33,20 @@ private fun <T> uninitialized(): T = null as T
 
 class TestApp : App() {
 
-    override fun createKodein() = Kodein.Module {
-        bind<ExchangeRateProvider>() with singleton { fixedValueExchangeProvider }
-        bind<SyncProgressProvider>() with singleton {
+    override fun createKoin() = module {
+        single { fixedValueExchangeProvider  as ExchangeRateProvider }
+        single {
             SyncProgressProvider().apply {
                 value = WallethSyncProgress(true, 42000, 42042)
             }
         }
-        bind<WallethKeyStore>() with singleton { keyStore }
-        bind<Settings>() with singleton { mySettings }
-        bind<CurrentAddressProvider>() with singleton { currentAddressProvider }
-        bind<NetworkDefinitionProvider>() with singleton { networkDefinitionProvider }
-        bind<CurrentTokenProvider>() with singleton { currentTokenProvider }
-        bind<AppDatabase>() with singleton { testDatabase }
-        bind<FourByteDirectory>() with singleton { testFourByteDirectory }
+        single { keyStore as WallethKeyStore }
+        single { mySettings }
+        single { currentAddressProvider as CurrentAddressProvider }
+        single { networkDefinitionProvider }
+        single { currentTokenProvider}
+        single { testDatabase }
+        single { testFourByteDirectory }
     }
 
     override fun executeCodeWeWillIgnoreInTests() = Unit

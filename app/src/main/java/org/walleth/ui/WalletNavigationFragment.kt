@@ -8,9 +8,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.view.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
-import org.kodein.di.KodeinAware
-import org.kodein.di.android.closestKodein
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.activities.*
@@ -20,15 +18,13 @@ import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 
-class WalletNavigationFragment : Fragment(), KodeinAware {
+class WalletNavigationFragment : Fragment() {
 
-    override val kodein by closestKodein()
-
-    val keyStore: WallethKeyStore by instance()
-    val settings: Settings by instance()
-    val networkDefinitionProvider: NetworkDefinitionProvider by instance()
-    val currentAddressProvider: CurrentAddressProvider by instance()
-    val appDatabase: AppDatabase by instance()
+    val keyStore: WallethKeyStore by inject()
+    val settings: Settings by inject()
+    val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    val currentAddressProvider: CurrentAddressProvider by inject()
+    val appDatabase: AppDatabase by inject()
 
     private val navigationView by lazy {
         NavigationView(activity).apply {

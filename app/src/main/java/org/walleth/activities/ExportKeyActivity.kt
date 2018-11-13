@@ -23,7 +23,7 @@ import kotlinx.coroutines.*
 import net.glxn.qrgen.android.QRCode
 import org.kethereum.wallet.LIGHT_SCRYPT_CONFIG
 import org.kethereum.wallet.generateWalletJSON
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
@@ -35,9 +35,9 @@ import java.io.ByteArrayOutputStream
 
 class ExportKeyActivity : BaseSubActivity() {
 
-    val keyStore: WallethKeyStore by instance()
-    val moshi: Moshi by instance()
-    val currentAddressProvider: CurrentAddressProvider by instance()
+    val keyStore: WallethKeyStore by inject()
+    val moshi: Moshi by inject()
+    val currentAddressProvider: CurrentAddressProvider by inject()
 
     private var keyJSON: String? = null
     var mWebView: WebView? = null

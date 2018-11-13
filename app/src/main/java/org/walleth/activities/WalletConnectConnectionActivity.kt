@@ -16,7 +16,7 @@ import org.kethereum.erc1328.isERC1328
 import org.kethereum.erc1328.toERC1328
 import org.kethereum.model.Address
 import org.kethereum.model.EthereumURI
-import org.kodein.di.generic.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.CurrentAddressProvider
@@ -42,9 +42,9 @@ fun ERC1328.toSession() = Session(
 
 class WalletConnectConnectionActivity : BaseSubActivity() {
 
-    private val moshi: Moshi by instance()
-    private val walletConnectDriver: WalletConnectDriver by instance()
-    private val currentAddressProvider: CurrentAddressProvider by instance()
+    private val moshi: Moshi by inject()
+    private val walletConnectDriver: WalletConnectDriver by inject()
+    private val currentAddressProvider: CurrentAddressProvider by inject()
 
     private var currentTransaction: StatefulWalletConnectTransaction? = null
 
