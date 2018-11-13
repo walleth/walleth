@@ -213,7 +213,7 @@ dependencies {
 
     androidTestImplementation "org.mockito:mockito-core:$mockito_version"
 
-    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.16.0'
+    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.19.1'
 
     androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
     androidTestImplementation 'com.github.ligi:trulesk:0.26'
