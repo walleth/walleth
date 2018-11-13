@@ -46,10 +46,4 @@
             android:title="@string/preferences_no_screenshots_title"
             android:summary="@string/preferences_no_screenshots_summary"/>
 
-    <EditTextPreference
-            android:key="@string/key_prefs_stats_username"
-            app:iconSpaceReserved="false"
-            android:title="@string/settings_stats_name"/>
-
-
 </PreferenceScreen>

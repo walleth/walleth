@@ -21,8 +21,6 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         findPreference(getString(R.string.key_reference)).summary = getString(R.string.settings_currently, settings.currentFiat)
         findPreference(getString(R.string.key_token)).summary = getString(R.string.settings_currently, currentTokenProvider.currentToken.name)
-
-        setUserNameSummary()
     }
 
     override fun onPause() {
@@ -43,14 +41,10 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
             if (key == getString(R.string.key_prefs_start_light)) {
 
             }
-            setUserNameSummary()
         } catch (ignored: IllegalStateException) {
         }
     }
 
-    private fun setUserNameSummary() {
-        findPreference(getString(R.string.key_prefs_stats_username)).summary = settings.getStatsName() + " @ https://stats.rinkeby.io"
-    }
 
     override fun onCreatePreferences(bundle: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
