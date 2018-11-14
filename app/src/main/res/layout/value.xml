@@ -22,6 +22,7 @@
         <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/current_eth"
                 android:fontFamily="sans-serif"
+                android:imeOptions="flagNoExtractUi|flagNoFullscreen"
                 android:textColor="@color/fgColor"
                 android:textSize="32sp"
                 android:lines="1"
@@ -60,6 +61,7 @@
         <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/current_fiat"
                 android:fontFamily="sans-serif-condensed"
+                android:imeOptions="flagNoExtractUi|flagNoFullscreen"
                 android:textSize="24sp"
                 android:textColor="@color/fgColor"
                 android:lines="1"
