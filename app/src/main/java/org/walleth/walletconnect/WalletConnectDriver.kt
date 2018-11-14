@@ -26,7 +26,7 @@ import org.walleth.walletconnect.model.WrappedWalletConnectTransaction
 import java.io.File
 import java.security.SecureRandom
 
-class WalletConnectDriver(
+open class WalletConnectDriver(
         private val context: Context,
         private val pushServerURL: String,
         private val okHttpClient: OkHttpClient) {

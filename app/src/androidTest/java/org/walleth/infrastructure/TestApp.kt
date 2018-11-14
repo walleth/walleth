@@ -23,6 +23,7 @@ import org.walleth.kethereum.model.ContractFunction
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
+import org.walleth.walletconnect.WalletConnectDriver
 
 private fun <T> any(): T {
     Mockito.any<T>()
@@ -34,7 +35,7 @@ private fun <T> uninitialized(): T = null as T
 class TestApp : App() {
 
     override fun createKoin() = module {
-        single { fixedValueExchangeProvider  as ExchangeRateProvider }
+        single { fixedValueExchangeProvider as ExchangeRateProvider }
         single {
             SyncProgressProvider().apply {
                 value = WallethSyncProgress(true, 42000, 42042)
@@ -44,9 +45,10 @@ class TestApp : App() {
         single { mySettings }
         single { currentAddressProvider as CurrentAddressProvider }
         single { networkDefinitionProvider }
-        single { currentTokenProvider}
+        single { currentTokenProvider }
         single { testDatabase }
         single { testFourByteDirectory }
+        single { mock(WalletConnectDriver::class.java) }
     }
 
     override fun executeCodeWeWillIgnoreInTests() = Unit
