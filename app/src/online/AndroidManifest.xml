@@ -5,7 +5,7 @@
 
     <application>
         <provider
-                android:authorities="org.walleth.GethInitContentProvider"
+                android:authorities="org.walleth.OnlineInitContentProvider"
                 android:exported="false"
                 android:enabled="true"
                 android:name="org.walleth.OnlineInitContentProvider" />
