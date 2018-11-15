@@ -192,7 +192,7 @@ dependencies {
 
     implementation 'com.squareup.moshi:moshi:1.8.0'
 
-    implementation 'com.github.ligi:ExtraCompats:0.4'
+    implementation 'com.github.ligi:ExtraCompats:0.5'
     implementation 'com.github.ligi:KRoom:0.4'
 
     implementation 'com.github.ligi:rootbeer:remove_native_workaround'
