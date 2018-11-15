@@ -27,13 +27,6 @@
                     android:layout_height="wrap_content"/>
 
 
-            <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/from_address_list_button"
-                    app:srcCompat="@drawable/ic_list_black_24dp"
-                    android:layout_toLeftOf="@+id/scan_button"
-                    android:layout_below="@id/from_label"
-                    style="@style/button"/>
-
             <TextView
                     android:layout_below="@id/from_label"
                     android:layout_alignParentLeft="true"
@@ -46,6 +39,15 @@
                     android:fontFamily="sans-serif"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
+
+
+            <android.support.v7.widget.AppCompatImageView
+                    android:id="@+id/from_address_list_button"
+                    app:srcCompat="@drawable/ic_list_black_24dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/from_label"
+                    style="@style/button"/>
+
 
             <TextView
                     android:layout_below="@id/from_address"
@@ -61,7 +63,7 @@
             <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/scan_button"
                     app:srcCompat="@drawable/ic_image_camera_alt"
-                    android:layout_alignParentRight="true"
+                    android:layout_toLeftOf="@id/address_list_button"
                     android:layout_below="@id/to_label"
                     style="@style/button"/>
 
@@ -69,7 +71,7 @@
             <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/address_list_button"
                     app:srcCompat="@drawable/ic_list_black_24dp"
-                    android:layout_toLeftOf="@id/scan_button"
+                    android:layout_alignParentRight="true"
                     android:layout_below="@id/to_label"
                     style="@style/button"/>
 
@@ -114,33 +116,39 @@
                     style="@style/section_header"
                     android:id="@+id/amount_label"/>
 
-            <org.walleth.ui.ValueView
-                    android:layout_centerHorizontal="true"
-                    android:id="@+id/amount_value"
-                    app:allowEdit="true"
-                    android:paddingBottom="16dp"
+            <LinearLayout
+                    android:id="@+id/amount_container"
                     android:layout_below="@id/amount_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <org.walleth.ui.ValueView
+                        android:layout_gravity="center"
+                        android:id="@+id/amount_value"
+                        app:allowEdit="true"
+                        android:paddingBottom="16dp"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
 
+                <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/sweep_button"
 
-            <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/sweep_button"
-                    android:layout_below="@id/amount_label"
-                    app:srcCompat="@drawable/ic_all_inclusive_black_24dp"
-                    android:layout_toRightOf="@id/amount_value"
-                    style="@style/button"/>
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/ic_all_inclusive_black_24dp"
+                        style="@style/button"/>
+
+            </LinearLayout>
 
             <Button
                     android:layout_margin="16dp"
                     android:id="@+id/show_advanced_button"
-                    android:layout_below="@id/amount_value"
+                    android:layout_below="@id/amount_container"
                     android:text="@string/create_tx_show_advanced_options"
                     android:layout_width="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_height="wrap_content"/>
             <TextView
-                    android:layout_below="@id/amount_value"
+                    android:layout_below="@id/amount_container"
                     android:text="@string/create_tx_fee"
                     android:visibility="gone"
                     android:id="@+id/fee_label"
