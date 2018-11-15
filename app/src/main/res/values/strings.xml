@@ -17,9 +17,11 @@
 This is a native Android <a href="http://ethereum.org">Ethereum</a> wallet.
 <br/><br/>
 The project is libre (FOSS/free/open source) software.<br/>
-You can find the code and open issues on the <a href="https://github.com/walleth">WallΞTH GitHub Organisation</a><br/>
+You can find the code and open issues <a href="https://github.com/walleth">on GitHub.</a><br/>
 
-You can find some more information on <a href="https://walleth.org">WallETH.org. If you find issues please report <a href="https://github.com/walleth/walleth/issues">them here</a>. Or drop a mail to <a href="mailto:walleth@walleth.org">walleth@walleth.org</a>
+Find some more information on <a href="https://walleth.org">WallETH.org</a>. If you come across obstacles please report <a href="https://github.com/walleth/walleth/issues">them here</a>. Or drop a mail to <a href="mailto:walleth@walleth.org">walleth@walleth.org</a>
+<br/><br/>
+Follow this project <a href="https://peepeth.com/walleth">on PeepETH</a> or <a href="https://twitter.com/wallethapp">on Twitter.</a>
 <br/><br/>
 Please do not use keys with a lot of value directly. You can use them however via a <a href="https://trezor.io/?a=walleth.org">TREZOR</a> or as a watch-only account.
 <br/><br/>

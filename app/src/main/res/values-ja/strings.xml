@@ -13,32 +13,6 @@
     <string name="request_subtitle">リクエスト</string>
     <string name="drawer_open">開く</string>
     <string name="drawer_close">閉じる</string>
-    <string name="info_text"><![CDATA[
-これはネイティブの Android <a href="http://ethereum.org">Ethereum</a> 軽量クライアントウォレットです。
-<br/><br/>
-<a href="https://github.com/ethereum/go-ethereum">go-ethereum</a> プロジェクトから、Ethereum 軽量クライアントとしてインプロセスノードを使用します。
-<br/><br/>
-<a href="https://github.com/karalabe">karalabe</a>, <a href="https://github.com/fjl">fjl</a>, <a href="https://github.com/zsfelfoldi">zsfelfoldi</a> および <a href="https://github.com/obscuren">obscuren</a> の素晴らしい仕事に大変感謝します!
-<br/><br/>
-このアルファは <a href="http://www.rinkeby.io">rinkeby</a> testnet を使用します。
-<br/><br/>
-WALLΞTH は可能な限り分散化しようとしています。 したがって、集中型の事前構成済みのノードではなく、軽いクライアントを使用しています。 残念ながら、まだ完全に分散化することはできません。
-(フィアット) 参照の為替レートを取得するために、<a href="https://www.cryptocompare.com">cryptocompare</> に照会し、素晴らしい <a href="https://etherscan.io">etherscan.io</a> サービスを使用してトランダクションを取得します。 何かの理由でこれらのサービスがダウンしてもアプリは動作しますが、為替レートの更新などの一部の機能は使えません。 これらのものが分散化されて入手できるようになると、すぐにそれを使用しようとします。
-<br/><br/>
-素晴らしいアイコンは <a href="https://cookicons.co">Michael Cook</a> の作成です。
-<br/><br/>
-これはアルファ版であり、バグがあるかもしれないことにご注意ください。 <a href="https://github.com/ethereum/go-ethereum/issues/14367">これ</a>
- または <a href="https://github.com/ethereum/go-ethereum/issues/14340">これ</a> ような既知のバグがあるかもしれません。
-<br/><br/>
-プロジェクトは <a href="http://ligi.de">ligi</a> によって、ウォレットとしてのみの必要性からだけでなく <a href="http://espass.it">espass</a> プロジェクトのビルディングブロックとして始まりました
-<br/><br/>
-プロジェクトは無料のソフトウェアです (別名 FOSS/フリー/オープンソース) - <a href="https://github.com/walleth">WALLΞTH GitHub 組織</a> でコードを見たり、問題を報告することができます
-<br/><br/>
-このアプリですばらしい時間をお過ごしください。フィードバック、寄付、プルリクエストをお待ちしています ..-)
-<br/><br/>
-フィードバックの理想的な場所は、sub-reddit <a href="https://www.reddit.com/r/walleth">https://www.reddit.com/r/walleth</a> です
-ソースは <a href="https://github.com/walleth">github</a> で見つけることができます
-]]></string>
     <string name="qr_code">QR-コード</string>
     <string name="text_extract_funds">この QR-コードを使用して、トランザクションをリクエストすることができます:</string>
 
