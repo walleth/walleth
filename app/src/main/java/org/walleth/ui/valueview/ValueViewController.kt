@@ -1,6 +1,5 @@
-package org.walleth.ui
+package org.walleth.ui.valueview
 
-import android.widget.EditText
 import kotlinx.android.synthetic.main.value.view.*
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
@@ -14,39 +13,15 @@ import org.walleth.functions.*
 import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
-import kotlin.properties.ObservableProperty
-import kotlin.reflect.KProperty
 
-class ValueViewTexObserver(private val valueView: EditText,
-                           private val viewModel: ValueViewModel) : ObservableProperty<String?>(null) {
-    override fun beforeChange(property: KProperty<*>,
-                              oldValue: String?,
-                              newValue: String?) = (!newValue.isNullOrEmpty()).also {
-        if (!it && valueView.text.toString() != "0") {
-            valueView.setText("0")
-        }
-    }
+open class ValueViewController(private val valueView: ValueView,
+                               private val exchangeRateProvider: ExchangeRateProvider,
+                               private val settings: Settings) {
 
-
-    override fun afterChange(property: KProperty<*>, oldValue: String?, newValue: String?) {
-
-        if (oldValue != newValue) {
-            if (valueView.text.toString() != newValue) {
-                valueView.setText(newValue)
-                viewModel.refreshNonValues()
-            }
-        }
-    }
-}
-
-class ValueViewModel(private val valueView: ValueView,
-                     private val exchangeRateProvider: ExchangeRateProvider,
-                     private val settings: Settings) {
-
-    private var currentAmountString by ValueViewTexObserver(valueView.current_eth, this)
+    private var currentAmountString by ValueViewTextObserver(valueView.current_eth, this)
     private var currentAmount: BigInteger? = null
 
-    private var currentFiatString by ValueViewTexObserver(valueView.current_fiat, this)
+    private var currentFiatString by ValueViewTextObserver(valueView.current_fiat, this)
     private var currentFiatUncutString: String? = null
 
     var currentToken: Token? = null
@@ -86,16 +61,18 @@ class ValueViewModel(private val valueView: ValueView,
     }
 
 
-    fun refreshNonValues() {
+    open fun refreshNonValues() {
 
         valueView.current_value_rounding_indicator.setVisibility(currentAmount != getValueFromString())
 
-        valueView.current_fiat_rounding_indicator.setVisibility(currentFiatString?.toBigDecimalOrNull()?.let {
+        val shouldDisplayFiat = currentToken?.isETH() == true
+
+        valueView.current_fiat_rounding_indicator.setVisibility(shouldDisplayFiat && currentFiatString?.toBigDecimalOrNull()?.let {
             it.compareTo(currentFiatUncutString?.toBigDecimalOrNull() ?: it)
         } != 0)
 
-        valueView.current_fiat_symbol.setVisibility(currentToken?.isETH() == true)
-        valueView.current_fiat.setVisibility(currentToken?.isETH() == true)
+        valueView.current_fiat_symbol.setVisibility(shouldDisplayFiat)
+        valueView.current_fiat.setVisibility(shouldDisplayFiat)
 
         valueView.current_fiat_symbol.text = settings.currentFiat
         currentToken?.also { currentToken ->
@@ -137,4 +114,8 @@ class ValueViewModel(private val valueView: ValueView,
     }
 
     fun getValue(): BigInteger = currentAmount ?: ZERO
+    fun setEnabled(b: Boolean) {
+        valueView.current_fiat.isEnabled = b
+        valueView.current_eth.isEnabled = b
+    }
 }

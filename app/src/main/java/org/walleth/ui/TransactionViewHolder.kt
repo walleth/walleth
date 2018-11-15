@@ -21,6 +21,7 @@ import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.transactions.TransactionEntity
+import org.walleth.ui.valueview.ValueViewController
 
 class TransactionViewHolder(itemView: View,
                             private val direction: TransactionAdapterDirection,
@@ -30,7 +31,7 @@ class TransactionViewHolder(itemView: View,
 
 
     private val amountViewModel by lazy {
-        ValueViewModel(itemView.difference, exchangeRateProvider, settings)
+        ValueViewController(itemView.difference, exchangeRateProvider, settings)
     }
 
     fun bind(transactionWithState: TransactionEntity, appDatabase: AppDatabase) {

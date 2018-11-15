@@ -1,4 +1,4 @@
-package org.walleth.ui
+package org.walleth.ui.valueview
 
 import android.content.Context
 import android.util.AttributeSet

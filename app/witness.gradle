@@ -105,6 +105,7 @@ dependencyVerification {
         'com.android.tools:repository:26.2.1:repository-26.2.1.jar:fa74dae09103faef703df38550ad8fa244c5b6d1bf90d6198be932292b3d9cc1',
         'com.android.tools:sdk-common:26.2.1:sdk-common-26.2.1.jar:759d4b292ca69a35cf961fca377b54158fc6c88108978006999442e80a011cf4',
         'com.android.tools:sdklib:26.2.1:sdklib-26.2.1.jar:248df7ad5eac4aeb6f96c394c76760de4b7b89ac056e54d0c21a739368b91b45',
+        'com.androidadvance:topsnackbar:1.1.1:topsnackbar-1.1.1.aar:0f24751af562ac52170b5cb30e8a14f0ed0d8ebcd4242e8845ff948ff4318644',
         'com.beust:jcommander:1.71:jcommander-1.71.jar:b78ba8f80afc3defe5cbec954495d650273205b715edf4578212f78517d8b804',
         'com.chibatching.kotpref:kotpref:2.6.0:kotpref-2.6.0.aar:dd1a88c7830c1f68203a0bd0b50fb99319bc8e1ead466430297ba281ff00ee6e',
         'com.dmitrymalkovich.android:progress-fab:1.6:progress-fab-1.6.aar:bf43e560352f006e0255d5138cbe187fbf0a67784f7b62c6ea61b9fcd9d034cc',

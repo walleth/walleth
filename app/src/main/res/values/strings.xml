@@ -238,6 +238,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="customize_toolbar">Customize ToolBar</string>
     <string name="preferences_no_screenshots_summary">For privacy and security.</string>
     <string name="preferences_activity_subtitle">Preferences</string>
+    <string name="create_tx_err">You must specify a receiver.\nTry this list selection.</string>
     <string-array name="walletconnect_options">
         <item>Current Account</item>
         <item>Select Account</item>

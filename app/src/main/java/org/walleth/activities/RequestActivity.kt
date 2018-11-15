@@ -10,16 +10,18 @@ import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.koin.android.ext.android.inject
 import org.ligi.compat.HtmlCompat
-import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
+import org.walleth.data.config.Settings
+import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isETH
-import org.walleth.functions.extractValueForToken
 import org.walleth.functions.setQRCode
+import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.copyToClipboard
+import java.math.BigInteger
 
 class RequestActivity : BaseSubActivity() {
 
@@ -27,6 +29,10 @@ class RequestActivity : BaseSubActivity() {
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val currentTokenProvider: CurrentTokenProvider by inject()
     private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val exchangeRateProvider: ExchangeRateProvider by inject()
+    private val settings: Settings by inject()
+
+    private var valueInputController: ValueViewController? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,10 +43,18 @@ class RequestActivity : BaseSubActivity() {
 
         refreshQR()
 
+        valueInputController = object : ValueViewController(value_input, exchangeRateProvider, settings) {
+            override fun refreshNonValues() {
+                super.refreshNonValues()
+                refreshQR()
+            }
+        }.apply {
+            setValue(BigInteger.ZERO, currentTokenProvider.currentToken)
+        }
         val initText = if (networkDefinitionProvider.getCurrent().faucets.isNotEmpty()) {
             val faucetURL = networkDefinitionProvider.getCurrent()
                     .faucets.first()
-                    .replace("%address%",currentAddressProvider.getCurrent().hex)
+                    .replace("%address%", currentAddressProvider.getCurrent().hex)
             getString(R.string.request_faucet_message,
                     networkDefinitionProvider.getCurrent().getNetworkName(),
                     faucetURL)
@@ -51,11 +65,7 @@ class RequestActivity : BaseSubActivity() {
         request_hint.movementMethod = LinkMovementMethod()
 
         add_value_checkbox.setOnCheckedChangeListener { _, isChecked ->
-            value_input_layout.setVisibility(isChecked)
-            refreshQR()
-        }
-
-        value_input_edittext.doAfterEdit {
+            value_input.setVisibility(isChecked)
             refreshQR()
         }
 
@@ -69,14 +79,14 @@ class RequestActivity : BaseSubActivity() {
     private fun refreshQR() {
 
         val currentToken = currentTokenProvider.currentToken
-        if (currentToken.isETH()) {
+        if (!add_value_checkbox.isChecked || currentToken.isETH()) {
 
             val relevantAddress = currentAddressProvider.getCurrent()
             currentERC67String = ERC681(address = relevantAddress.hex).generateURL()
 
             if (add_value_checkbox.isChecked) {
                 try {
-                    currentERC67String = ERC681(address = relevantAddress.hex, value = value_input_edittext.text.toString().extractValueForToken(currentToken)).generateURL()
+                    currentERC67String = ERC681(address = relevantAddress.hex, value = valueInputController?.getValue()).generateURL()
                 } catch (e: NumberFormatException) {
                 }
             }
@@ -87,7 +97,7 @@ class RequestActivity : BaseSubActivity() {
             val functionParams = mutableListOf("address" to userAddress)
             if (add_value_checkbox.isChecked) {
                 try {
-                    functionParams.add("uint256" to value_input_edittext.text.toString().extractValueForToken(currentToken).toString())
+                    functionParams.add("uint256" to valueInputController?.getValue().toString())
                 } catch (e: NumberFormatException) {
                 }
             }

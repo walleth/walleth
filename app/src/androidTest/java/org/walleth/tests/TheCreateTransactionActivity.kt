@@ -65,7 +65,7 @@ class TheCreateTransactionActivity {
         rule.launchActivity()
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
 
-        Espresso.onView(ViewMatchers.withText(R.string.create_tx_error_address_must_be_specified)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(ViewMatchers.withText(R.string.create_tx_err)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         rule.screenShot("address_empty")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
@@ -261,7 +261,7 @@ class TheCreateTransactionActivity {
         val result = Instrumentation.ActivityResult(RESULT_OK, Intent().putExtra("SCAN_RESULT", DEFAULT_TEST_ADDRESS3.hex))
         intending(hasComponent(QRScanActivity::class.java.canonicalName)).respondWith(result)
 
-        Espresso.onView(ViewMatchers.withId(R.id.scan_button)).perform(click())
+        Espresso.onView(ViewMatchers.withId(R.id.menu_scan)).perform(click())
 
         Espresso.onView(ViewMatchers.withText(testToken.symbol)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 

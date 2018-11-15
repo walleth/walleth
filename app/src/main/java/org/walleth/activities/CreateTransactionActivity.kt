@@ -6,6 +6,7 @@ import android.arch.lifecycle.Observer
 import android.arch.lifecycle.Transformations
 import android.content.DialogInterface
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
@@ -13,6 +14,10 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import com.androidadvance.topsnackbar.TSnackbar
+import com.github.amlcurran.showcaseview.ShowcaseView
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener
+import com.github.amlcurran.showcaseview.targets.ViewTarget
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.Dispatchers
@@ -65,9 +70,10 @@ import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.khex.toNoPrefixHexString
-import org.walleth.ui.ValueViewModel
+
 import org.walleth.ui.asyncAwait
 import org.walleth.ui.chainIDAlert
+import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.hasText
 import org.walleth.util.question
 import java.math.BigInteger
@@ -98,11 +104,15 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentSignatureData: SignatureData? = null
     private var currentTxHash: String? = null
 
+    private var currentShowCase: ShowcaseView? = null
+    private var currentTopSnackBar: TSnackbar? = null
+
+
     private val amountViewModel by lazy {
-        ValueViewModel(amount_value, exchangeRateProvider, settings)
+        ValueViewController(amount_value, exchangeRateProvider, settings)
     }
     private val feeValueViewModel by lazy {
-        ValueViewModel(fee_value_view, exchangeRateProvider, settings)
+        ValueViewController(fee_value_view, exchangeRateProvider, settings)
     }
 
 
@@ -269,6 +279,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         setToFromURL(currentERC681.generateURL(), false)
 
         address_list_button.setOnClickListener {
+            currentShowCase?.hide()
             val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
             startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
         }
@@ -307,7 +318,35 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private fun onFabClick(isTrezorTransaction: Boolean) {
         if (to_address.text.isEmpty() || currentToAddress == null) {
-            alert(R.string.create_tx_error_address_must_be_specified)
+
+
+            currentShowCase = ShowcaseView.Builder(this)
+                    .setTarget(ViewTarget(R.id.address_list_button, this))
+                    .setShowcaseEventListener(object : SimpleShowcaseEventListener() {
+                        override fun onShowcaseViewHide(showcaseView: ShowcaseView?) {
+                            processShowCaseViewState(false)
+                            currentTopSnackBar?.dismiss()
+                        }
+                    })
+                    .build()
+
+            currentShowCase?.show()
+
+            processShowCaseViewState(true)
+
+            currentTopSnackBar = TSnackbar.make(fab, getString(R.string.create_tx_err), TSnackbar.LENGTH_INDEFINITE).apply {
+                setAction(android.R.string.ok) {
+                    currentTopSnackBar?.dismiss()
+                }
+                setIconPadding(18)
+                setIconLeft(R.drawable.ic_warning_orange_24dp, 24f)
+                also {
+                    val textView: TextView = it.view.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text)
+                    textView.setTextColor(Color.WHITE)
+                }
+                show()
+            }
+
         } else if (currentTokenProvider.currentToken.isETH() && amountViewModel.getValue() ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (!nonce_input.hasText()) {
@@ -321,6 +360,12 @@ class CreateTransactionActivity : BaseSubActivity() {
                 startTransaction(isTrezorTransaction)
             }
         }
+    }
+
+    private fun processShowCaseViewState(isShowcaseViewShown: Boolean) {
+        if (isShowcaseViewShown) fab.hide() else fab.show()
+        show_advanced_button.isEnabled = !isShowcaseViewShown
+        amountViewModel.setEnabled(!isShowcaseViewShown)
     }
 
     private fun startTransaction(isTrezorTransaction: Boolean) {
@@ -461,7 +506,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                             }
 
                                             localERC681.getValueForTokenTransfer()?.let {
-                                                amountViewModel.setValue(it ,token)
+                                                amountViewModel.setValue(it, token)
                                             }
                                         } else {
                                             alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))

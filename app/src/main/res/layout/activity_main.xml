@@ -32,7 +32,7 @@
                         app:srcCompat="@drawable/ic_rec"/>
             </FrameLayout>
 
-            <org.walleth.ui.ValueView
+            <org.walleth.ui.valueview.ValueView
                     android:id="@+id/value_view"
                     android:orientation="vertical"
                     android:layout_width="0dp"

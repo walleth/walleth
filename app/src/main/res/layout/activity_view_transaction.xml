@@ -18,7 +18,7 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-            <org.walleth.ui.ValueView
+            <org.walleth.ui.valueview.ValueView
                     android:id="@+id/value_view"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
@@ -100,7 +100,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-            <org.walleth.ui.ValueViewSmall
+            <org.walleth.ui.valueview.ValueViewSmall
                     android:id="@+id/fee_value_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

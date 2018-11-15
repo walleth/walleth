@@ -30,7 +30,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.functions.setQRCode
 import org.walleth.functions.toHexString
 import org.walleth.khex.toHexString
-import org.walleth.ui.ValueViewModel
+import org.walleth.ui.valueview.ValueViewController
 
 private const val HASH_KEY = "TXHASH"
 fun Context.getTransactionActivityIntentForHash(hex: String) = Intent(this, ViewTransactionActivity::class.java).apply {
@@ -50,11 +50,11 @@ class ViewTransactionActivity : BaseSubActivity() {
     private val fourByteDirectory: FourByteDirectory by inject()
 
     private val amountViewModel by lazy {
-        ValueViewModel(value_view, exchangeRateProvider, settings)
+        ValueViewController(value_view, exchangeRateProvider, settings)
     }
 
     private val feeViewModel by lazy {
-        ValueViewModel(fee_value_view, exchangeRateProvider, settings)
+        ValueViewController(fee_value_view, exchangeRateProvider, settings)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

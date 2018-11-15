@@ -46,7 +46,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
-import org.walleth.ui.ValueViewModel
+import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.copyToClipboard
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
@@ -76,7 +76,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
     private var lastPastedData: String? = null
 
     private val amountViewModel by lazy {
-        ValueViewModel(value_view, exchangeRateProvider, settings)
+        ValueViewController(value_view, exchangeRateProvider, settings)
     }
 
     override fun onResume() {

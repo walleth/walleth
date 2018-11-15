@@ -22,7 +22,7 @@ class TheRequestActivity {
     fun requestIsThereAndHasQRCodeAndNoValue() {
         onView(withId(R.id.receive_qrcode)).check(matches(isDisplayed()))
         onView(withId(R.id.add_value_checkbox)).check(matches(isNotChecked()))
-        onView(withId(R.id.value_input_layout)).check(matches(withEffectiveVisibility(GONE)))
+        onView(withId(R.id.value_input)).check(matches(withEffectiveVisibility(GONE)))
 
         rule.screenShot("transaction_no_value")
     }
@@ -33,9 +33,9 @@ class TheRequestActivity {
         onView(withId(R.id.add_value_checkbox)).perform(click())
         onView(withId(R.id.add_value_checkbox)).check(matches(isChecked()))
 
-        onView(withId(R.id.value_input_layout)).check(matches(isDisplayed()))
+        onView(withId(R.id.value_input)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.value_input_edittext)).perform(typeText("0.42"))
+        onView(withId(R.id.current_eth)).perform(typeText("0.42"))
 
         Espresso.closeSoftKeyboard()
 
