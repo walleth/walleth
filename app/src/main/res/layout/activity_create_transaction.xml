@@ -18,7 +18,7 @@
                 android:padding="16dp">
 
             <TextView
-                    android:text="@string/create_transaction_from_label"
+                    android:text="@string/create_transaction_sender_label"
                     android:padding="8dp"
                     android:id="@+id/from_label"
                     android:fontFamily="sans-serif"
@@ -51,7 +51,7 @@
 
             <TextView
                     android:layout_below="@id/from_address"
-                    android:text="@string/create_transaction_to_label"
+                    android:text="@string/create_transaction_receiver_label"
                     android:padding="8dp"
                     android:id="@+id/to_label"
                     android:fontFamily="sans-serif"
