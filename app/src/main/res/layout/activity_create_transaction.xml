@@ -61,14 +61,6 @@
 
 
             <android.support.v7.widget.AppCompatImageView
-                    android:id="@+id/scan_button"
-                    app:srcCompat="@drawable/ic_image_camera_alt"
-                    android:layout_toLeftOf="@id/address_list_button"
-                    android:layout_below="@id/to_label"
-                    style="@style/button"/>
-
-
-            <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/address_list_button"
                     app:srcCompat="@drawable/ic_list_black_24dp"
                     android:layout_alignParentRight="true"

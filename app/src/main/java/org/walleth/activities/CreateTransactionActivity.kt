@@ -9,6 +9,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
 import kotlinx.android.synthetic.main.activity_create_transaction.*
@@ -266,10 +268,6 @@ class CreateTransactionActivity : BaseSubActivity() {
         refreshFee()
         setToFromURL(currentERC681.generateURL(), false)
 
-        scan_button.setOnClickListener {
-            startScanActivityForResult(this)
-        }
-
         address_list_button.setOnClickListener {
             val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
             startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
@@ -511,6 +509,16 @@ class CreateTransactionActivity : BaseSubActivity() {
                 }
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_create_tx, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        R.id.menu_scan -> true.also { startScanActivityForResult(this) }
+        else -> super.onOptionsItemSelected(item)
     }
 
     private fun checkFunctionParameters(localERC681: ERC681) {
