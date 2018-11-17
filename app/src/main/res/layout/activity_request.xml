@@ -33,6 +33,7 @@
                 android:layout_below="@id/welcome_text"/>
 
         <CheckBox
+                android:layout_centerHorizontal="true"
                 android:text="@string/request_funds_add_value"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
