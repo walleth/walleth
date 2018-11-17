@@ -8,11 +8,12 @@ import org.walleth.functions.setQRCode
 
 const val KEY_ERC681 = "erc681"
 
-class FullscreenQRCodeActivity : WallethActivity() {
+class QRCodeActivity : BaseSubActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_fullscreen_qrcode)
+        supportActionBar?.subtitle = getString(R.string.actionbar_subtitle_qr_code)
     }
 
     override fun onResume() {

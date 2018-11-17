@@ -70,7 +70,7 @@ class RequestActivity : BaseSubActivity() {
         }
 
         receive_qrcode.setOnClickListener {
-            startActivity(Intent(this, FullscreenQRCodeActivity::class.java).apply {
+            startActivity(Intent(this, QRCodeActivity::class.java).apply {
                 putExtra(KEY_ERC681, currentERC67String)
             })
         }
