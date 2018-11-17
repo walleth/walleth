@@ -162,7 +162,8 @@ dependencies {
 
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
 
-    implementation 'com.github.ligi:tracedroid:1.4'
+    implementation 'com.github.ligi.tracedroid:supportemail:2.0'
+
     implementation 'com.github.ligi:KAXT:0.20'
     implementation 'com.github.ligi:KAXTUI:0.6'
     implementation 'com.github.ligi:thirdpartylicensedisplay:0.2'
