@@ -27,7 +27,7 @@ class TokenViewHolder(itemView: View, val activity: Activity, private val curren
         }
 
         itemView.setOnClickListener {
-            currentTokenProvider.currentToken = tokenDescriptor
+            currentTokenProvider.setCurrent(tokenDescriptor)
             activity.finish()
         }
 

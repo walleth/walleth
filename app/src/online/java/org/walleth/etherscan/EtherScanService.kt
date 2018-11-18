@@ -172,7 +172,7 @@ class EtherScanService : LifecycleService() {
     private fun queryEtherscanForBalance(addressHex: String) {
 
         networkDefinitionProvider.value?.let { currentNetwork ->
-            val currentToken = tokenProvider.currentToken
+            val currentToken = tokenProvider.getCurrent()
             val etherscanResult = getEtherscanResult("module=proxy&action=eth_blockNumber", currentNetwork)
 
             if (etherscanResult?.has("result") != true) {

@@ -42,6 +42,7 @@ import org.walleth.data.networks.InitializingCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.walletconnect.WalletConnectDriver
 import java.net.Socket
@@ -75,7 +76,6 @@ open class App : MultiDexApplication() {
         single { SyncProgressProvider() }
         single { keyStore as WallethKeyStore }
         single { KotprefSettings as Settings }
-
         single { CurrentTokenProvider(get()) }
         single { WalletConnectDriver(applicationContext, "https://us-central1-walleth-abbd0.cloudfunctions.net/push", get()) }
 
@@ -140,6 +140,11 @@ open class App : MultiDexApplication() {
             }
         }
         postInitCallbacks.forEach { it.invoke() }
+
+        val currentTokenProvider: CurrentTokenProvider by inject()
+        val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+
+        currentTokenProvider.setCurrent(getEthTokenForChain(networkDefinitionProvider.getCurrent()))
     }
 
     open fun executeCodeWeWillIgnoreInTests() {

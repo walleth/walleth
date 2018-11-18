@@ -32,6 +32,7 @@ import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.data.tokens.toERC681
 import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.infrastructure.TestApp
+import org.walleth.infrastructure.setCurrentToken
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
 import java.math.BigInteger
@@ -98,7 +99,6 @@ class TheCreateTransactionActivity {
     }
 
 
-
     @Test
     fun showsAlertWheInvalidParameterIsUsed() {
         rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/foo?yo=lo"))
@@ -133,7 +133,7 @@ class TheCreateTransactionActivity {
     fun showsWarningWhenParameterTypeIsUnsignedButValueIsSigned() {
         rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/otherFunction?uint8=-23"))
 
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_problem_with_parameter,0, "uint8", "-23")))
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_problem_with_parameter, 0, "uint8", "-23")))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
     }
@@ -156,7 +156,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun usesCorrectValuesForETHTransaction1() {
-        TestApp.currentTokenProvider.currentToken = eth
+        setCurrentToken(eth)
         TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
         rule.launchActivity(Intent.getIntentOld("ethereum:0x123456?value=1"))
@@ -172,7 +172,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun usesCorrectValuesForETHTransaction2() {
-        TestApp.currentTokenProvider.currentToken = testToken
+        setCurrentToken(testToken)
         TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
         rule.launchActivity(Intent.getIntentOld("ethereum:0x123456?value=1"))
 
@@ -188,7 +188,7 @@ class TheCreateTransactionActivity {
     @Test
     fun usesCorrectValuesForCurrentTokenTransfer() {
         TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
-        TestApp.currentTokenProvider.currentToken = testToken
+        setCurrentToken(testToken)
 
         val toAddress = DEFAULT_TEST_ADDRESS2
         val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()
@@ -212,7 +212,7 @@ class TheCreateTransactionActivity {
     @Test
     fun usesCorrectValuesForNewTokenTransfer() {
         val eth = getEthTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
-        TestApp.currentTokenProvider.currentToken = eth
+        setCurrentToken(eth)
         TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
         TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * eth.decimalsAsMultiplicator().toBigInteger()))
         TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), testToken.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * testToken.decimalsAsMultiplicator().toBigInteger()))
@@ -236,7 +236,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun doesNotAcceptUnknownTokenTransfer() {
-        TestApp.currentTokenProvider.currentToken = getEthTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
+        setCurrentToken(getEthTokenForChain(TestApp.networkDefinitionProvider.getCurrent()))
 
         val toAddress = DEFAULT_TEST_ADDRESS2
         val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()
@@ -249,9 +249,10 @@ class TheCreateTransactionActivity {
         Truth.assertThat(rule.activity.isFinishing).isFalse()
     }
 
+
     @Test
     fun doesNotChangeTokenOnToAddressScan() {
-        TestApp.currentTokenProvider.currentToken = testToken
+        setCurrentToken(testToken)
         TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
 
         val uri = TokenTransfer(DEFAULT_TEST_ADDRESS2, testToken, BigInteger.TEN).toERC681()

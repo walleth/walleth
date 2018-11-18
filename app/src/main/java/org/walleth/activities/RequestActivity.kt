@@ -21,7 +21,7 @@ import org.walleth.data.tokens.isETH
 import org.walleth.functions.setQRCode
 import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.copyToClipboard
-import java.math.BigInteger
+import java.math.BigInteger.ZERO
 
 class RequestActivity : BaseSubActivity() {
 
@@ -41,16 +41,13 @@ class RequestActivity : BaseSubActivity() {
 
         supportActionBar?.subtitle = getString(R.string.request_transaction_subtitle)
 
-        refreshQR()
-
         valueInputController = object : ValueViewController(value_input, exchangeRateProvider, settings) {
             override fun refreshNonValues() {
                 super.refreshNonValues()
                 refreshQR()
             }
-        }.apply {
-            setValue(BigInteger.ZERO, currentTokenProvider.currentToken)
         }
+
         val initText = if (networkDefinitionProvider.getCurrent().faucets.isNotEmpty()) {
             val faucetURL = networkDefinitionProvider.getCurrent()
                     .faucets.first()
@@ -76,9 +73,15 @@ class RequestActivity : BaseSubActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        refreshQR()
+        valueInputController?.setValue(valueInputController?.getValue()?: ZERO, currentTokenProvider.getCurrent())
+    }
+
     private fun refreshQR() {
 
-        val currentToken = currentTokenProvider.currentToken
+        val currentToken = currentTokenProvider.getCurrent()
         if (!add_value_checkbox.isChecked || currentToken.isETH()) {
 
             val relevantAddress = currentAddressProvider.getCurrent()

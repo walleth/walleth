@@ -20,7 +20,7 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         findPreference(getString(R.string.key_reference)).summary = getString(R.string.settings_currently, settings.currentFiat)
-        findPreference(getString(R.string.key_token)).summary = getString(R.string.settings_currently, currentTokenProvider.currentToken.name)
+        findPreference(getString(R.string.key_token)).summary = getString(R.string.settings_currently, currentTokenProvider.getCurrent().name)
     }
 
     override fun onPause() {

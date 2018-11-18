@@ -19,7 +19,6 @@ import android.view.View.INVISIBLE
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.toolbar.*
-import kotlinx.android.synthetic.main.value.*
 import org.json.JSONObject
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
@@ -194,15 +193,6 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
-        current_fiat_symbol.setOnClickListener {
-            startActivityFromClass(SelectReferenceActivity::class)
-        }
-
-        current_token_symbol.setOnClickListener {
-            startActivityFromClass(SelectTokenActivity::class)
-        }
-
-
         syncProgressProvider.observe(this, Observer {
             val progress = it!!
 
@@ -273,10 +263,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
     private val balanceObserver = Observer<Balance> {
         if (it != null) {
-            amountViewModel.setValue(it.balance, currentTokenProvider.currentToken)
+            amountViewModel.setValue(it.balance, currentTokenProvider.getCurrent())
             supportActionBar?.subtitle = getString(R.string.main_activity_block, it.block)
         } else {
-            amountViewModel.setValue(ZERO, currentTokenProvider.currentToken)
+            amountViewModel.setValue(ZERO, currentTokenProvider.getCurrent())
             supportActionBar?.subtitle = getString(R.string.main_activity_no_data)
         }
     }
@@ -293,7 +283,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         val currentAddress = currentAddressProvider.value
         if (currentAddress != null) {
             balanceLiveData?.removeObserver(balanceObserver)
-            balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.currentToken.address, networkDefinitionProvider.getCurrent().chain)
+            balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.getCurrent().address, networkDefinitionProvider.getCurrent().chain)
             balanceLiveData?.observe(this, balanceObserver)
             etherLiveData?.removeObserver(etherObserver)
             etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getEthTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain)

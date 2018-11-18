@@ -108,7 +108,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentTopSnackBar: TSnackbar? = null
 
 
-    private val amountViewModel by lazy {
+    private val amountController by lazy {
         ValueViewController(amount_value, exchangeRateProvider, settings)
     }
     private val feeValueViewModel by lazy {
@@ -171,7 +171,9 @@ class CreateTransactionActivity : BaseSubActivity() {
             supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, networkDefinitionProvider.getCurrent().getNetworkName())
         })
 
-        onCurrentTokenChanged()
+        currentTokenProvider.observe(this,Observer {
+            onCurrentTokenChanged()
+        })
 
         currentAddressProvider.observe(this, Observer { address ->
             address?.let {
@@ -227,15 +229,15 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         sweep_button.setOnClickListener {
             val balance = currentBalanceSafely()
-            if (currentTokenProvider.currentToken.isETH()) {
+            if (currentTokenProvider.getCurrent().isETH()) {
                 val amountAfterFee = balance - gas_price_input.asBigInit() * gas_limit_input.asBigInit()
                 if (amountAfterFee < ZERO) {
                     alert(R.string.no_funds_after_fee)
                 } else {
-                    amountViewModel.setValue(amountAfterFee, currentTokenProvider.currentToken)
+                    amountController.setValue(amountAfterFee, currentTokenProvider.getCurrent())
                 }
             } else {
-                amountViewModel.setValue(balance, currentTokenProvider.currentToken)
+                amountController.setValue(balance, currentTokenProvider.getCurrent())
             }
         }
 
@@ -299,7 +301,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun onCurrentTokenChanged() {
-        val currentToken = currentTokenProvider.currentToken
+        val currentToken = currentTokenProvider.getCurrent()
         currentBalanceLive = Transformations.switchMap(currentAddressProvider) { address ->
             appDatabase.balances.getBalanceLive(address, currentToken.address, networkDefinitionProvider.getCurrent().chain)
         }
@@ -307,7 +309,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             currentBalance = it
         })
 
-        amountViewModel.setValue(amountViewModel.getValue(), currentToken)
+        amountController.setValue(amountController.getValue(), currentToken)
 
         if (currentToken.isETH()) {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
@@ -347,14 +349,14 @@ class CreateTransactionActivity : BaseSubActivity() {
                 show()
             }
 
-        } else if (currentTokenProvider.currentToken.isETH() && amountViewModel.getValue() ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
+        } else if (currentTokenProvider.getCurrent().isETH() && amountController.getValue() ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (!nonce_input.hasText()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
-            if (currentTokenProvider.currentToken.isETH() && currentERC681?.function == null && amountViewModel.getValue() == ZERO) {
+            if (currentTokenProvider.getCurrent().isETH() && currentERC681?.function == null && amountController.getValue() == ZERO) {
                 question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
-            } else if (!currentTokenProvider.currentToken.isETH() && amountViewModel.getValue() > currentBalanceSafely()) {
+            } else if (!currentTokenProvider.getCurrent().isETH() && amountController.getValue() > currentBalanceSafely()) {
                 question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
             } else {
                 startTransaction(isTrezorTransaction)
@@ -365,25 +367,25 @@ class CreateTransactionActivity : BaseSubActivity() {
     private fun processShowCaseViewState(isShowcaseViewShown: Boolean) {
         if (isShowcaseViewShown) fab.hide() else fab.show()
         show_advanced_button.isEnabled = !isShowcaseViewShown
-        amountViewModel.setEnabled(!isShowcaseViewShown)
+        amountController.setEnabled(!isShowcaseViewShown)
     }
 
     private fun startTransaction(isTrezorTransaction: Boolean) {
-        val transaction = (if (currentTokenProvider.currentToken.isETH()) createTransactionWithDefaults(
-                value = amountViewModel.getValue(),
+        val transaction = (if (currentTokenProvider.getCurrent().isETH()) createTransactionWithDefaults(
+                value = amountController.getValue(),
                 to = currentToAddress!!,
                 from = currentAddressProvider.getCurrent()
         ) else createTransactionWithDefaults(
                 creationEpochSecond = System.currentTimeMillis() / 1000,
                 value = ZERO,
-                to = currentTokenProvider.currentToken.address,
+                to = currentTokenProvider.getCurrent().address,
                 from = currentAddressProvider.getCurrent(),
-                input = createTokenTransferTransactionInput(currentToAddress!!, amountViewModel.getValue())
+                input = createTokenTransferTransactionInput(currentToAddress!!, amountController.getValue())
         )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
 
         val localERC681 = currentERC681
 
-        if (currentTokenProvider.currentToken.isETH() && localERC681?.function != null) {
+        if (currentTokenProvider.getCurrent().isETH() && localERC681?.function != null) {
             val parameterSignature = localERC681.functionParams.joinToString(",") { it.first }
             val functionSignature = TextMethodSignature(localERC681.function + "($parameterSignature)")
 
@@ -499,14 +501,14 @@ class CreateTransactionActivity : BaseSubActivity() {
                                     { appDatabase.tokens.forAddress(Address(localERC681.address!!)) }.asyncAwait { token ->
                                         if (token != null) {
 
-                                            if (token != currentTokenProvider.currentToken) {
-                                                currentTokenProvider.currentToken = token
-                                                currentBalanceLive!!.removeObservers(this)
+                                            if (token != currentTokenProvider.getCurrent()) {
+                                                currentTokenProvider.setCurrent(token)
+                                                currentBalanceLive?.removeObservers(this)
                                                 onCurrentTokenChanged()
                                             }
 
                                             localERC681.getValueForTokenTransfer()?.let {
-                                                amountViewModel.setValue(it, token)
+                                                amountController.setValue(it, token)
                                             }
                                         } else {
                                             alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
@@ -523,13 +525,13 @@ class CreateTransactionActivity : BaseSubActivity() {
                                 }
                                 localERC681.value?.let {
 
-                                    if (!currentTokenProvider.currentToken.isETH()) {
-                                        currentTokenProvider.currentToken = getEthTokenForChain(networkDefinitionProvider.getCurrent())
-                                        currentBalanceLive!!.removeObservers(this)
+                                    if (!currentTokenProvider.getCurrent().isETH()) {
+                                        currentTokenProvider.setCurrent(getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+                                        currentBalanceLive?.removeObservers(this)
                                         onCurrentTokenChanged()
                                     }
 
-                                    amountViewModel.setValue(it, currentTokenProvider.currentToken)
+                                    amountController.setValue(it, currentTokenProvider.getCurrent())
                                 }
                             }
 
@@ -554,6 +556,11 @@ class CreateTransactionActivity : BaseSubActivity() {
                 }
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        amountController.refreshNonValues()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

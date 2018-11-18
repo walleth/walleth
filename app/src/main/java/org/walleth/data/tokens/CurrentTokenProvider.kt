@@ -1,7 +1,18 @@
 package org.walleth.data.tokens
 
+import android.arch.lifecycle.MutableLiveData
 import org.walleth.data.networks.NetworkDefinitionProvider
 
-class CurrentTokenProvider(networkDefinitionProvider: NetworkDefinitionProvider) {
-    var currentToken: Token = getEthTokenForChain(networkDefinitionProvider.getCurrent())
+open class CurrentTokenProvider(val networkDefinitionProvider: NetworkDefinitionProvider,
+                                initialValue: Token = getEthTokenForChain(networkDefinitionProvider.getCurrent())): MutableLiveData<Token>() {
+
+    init {
+        value = initialValue
+    }
+
+    fun setCurrent(value: Token) {
+        setValue(value)
+    }
+
+    fun getCurrent() = value!!
 }
