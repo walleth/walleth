@@ -189,7 +189,15 @@ class ImportActivity : BaseSubActivity() {
             }
             if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
 
-                key_content.setText(readTextFromUri(it.data))
+                it.data?.let { data ->
+                    readTextFromUri(data)?.run {
+                        if (length > 1_000) {
+                            alert("The selected content does not look like a key. If you think it should be - please contact walleth@walleth.org ")
+                        } else {
+                            key_content.setText(this)
+                        }
+                    }
+                }
             }
         }
     }
@@ -197,7 +205,7 @@ class ImportActivity : BaseSubActivity() {
     private fun readTextFromUri(uri: Uri) = try {
         contentResolver.openInputStream(uri).reader().readText()
     } catch (fileNotFoundException: FileNotFoundException) {
-        alert("Cannot read from $uri - if you think I should - please contact ligi@ligi.de with details of the device (Android version,Brand) and the beginning of the uri")
+        alert("Cannot read from $uri - if you think I should - please contact walleth@walleth.org with details of the device (Android version,Brand) and the beginning of the uri")
         null
     }
 
