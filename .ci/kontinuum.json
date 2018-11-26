@@ -1,4 +1,9 @@
 {
-"type":"android",
-"stages":["testNoGethNoFirebaseForFDroidOfflineDebugComposer","lint","test","assemble"]
+  "type": "android",
+  "stages": [
+    "testNoGethNoFirebaseForFDroidOfflineDebugComposer",
+    "lint",
+    "test",
+    "assemble"
+  ]
 }
