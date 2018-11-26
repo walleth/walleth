@@ -33,6 +33,8 @@ fun Context.getWalletConnectIntent(json: String) = Intent(this, WalletConnectCon
     putExtra(KEY_INTENT_JSON, json)
 }
 
+fun ERC1328.isValid() = sessionID != null && bridge != null && name != null && symKey != null
+
 fun ERC1328.toSession() = Session(
         sessionId = sessionID!!,
         domain = URLDecoder.decode(bridge!!, "utf-8"),
@@ -51,7 +53,15 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     private val currentSession by lazy {
         val erc831 = intent.data?.let { EthereumURI(it.toString()) }
         if (erc831?.isERC1328() == true) {
-            erc831.toERC1328().toSession()
+            val erc1328 = erc831.toERC1328()
+            if (erc1328.isValid()) {
+                erc1328.toSession()
+            } else {
+                alert("Illegal ERC1328 QR Code") {
+                    finish()
+                }
+                null
+            }
         } else intent.getStringExtra(KEY_INTENT_JSON)?.let {
             moshi.adapter(Session::class.java).fromJson(it)
         }
@@ -103,7 +113,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private fun start(address: Address) {
         currentSession?.let {
-            GlobalScope.async (Dispatchers.Main) {
+            GlobalScope.async(Dispatchers.Main) {
                 val result = try {
                     val response = withContext(Dispatchers.Default) {
                         walletConnectDriver.sendAddress(it, address)
