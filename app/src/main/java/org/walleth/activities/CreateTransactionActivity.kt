@@ -7,6 +7,7 @@ import android.arch.lifecycle.Transformations
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v7.app.AlertDialog
@@ -70,7 +71,6 @@ import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.khex.toNoPrefixHexString
-
 import org.walleth.ui.asyncAwait
 import org.walleth.ui.chainIDAlert
 import org.walleth.ui.valueview.ValueViewController
@@ -171,7 +171,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, networkDefinitionProvider.getCurrent().getNetworkName())
         })
 
-        currentTokenProvider.observe(this,Observer {
+        currentTokenProvider.observe(this, Observer {
             onCurrentTokenChanged()
         })
 
@@ -340,8 +340,10 @@ class CreateTransactionActivity : BaseSubActivity() {
                 setAction(android.R.string.ok) {
                     currentTopSnackBar?.dismiss()
                 }
-                setIconPadding(18)
-                setIconLeft(R.drawable.ic_warning_orange_24dp, 24f)
+                if (Build.VERSION.SDK_INT >= 21) {
+                    setIconPadding(18)
+                    setIconLeft(R.drawable.ic_warning_orange_24dp, 24f)
+                }
                 also {
                     val textView: TextView = it.view.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text)
                     textView.setTextColor(Color.WHITE)
