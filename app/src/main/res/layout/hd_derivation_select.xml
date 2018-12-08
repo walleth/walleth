@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:hint="@string/input_hint_derivation_path">
-        <android.support.design.widget.TextInputEditText
+        <android.support.v7.widget.AppCompatEditText
                 android:id="@+id/derivation_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
