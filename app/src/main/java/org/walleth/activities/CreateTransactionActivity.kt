@@ -230,7 +230,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         sweep_button.setOnClickListener {
             val balance = currentBalanceSafely()
             if (currentTokenProvider.getCurrent().isETH()) {
-                val amountAfterFee = balance - gas_price_input.asBigInit() * gas_limit_input.asBigInit()
+                val amountAfterFee = balance - calculateGasCost()
                 if (amountAfterFee < ZERO) {
                     alert(R.string.no_funds_after_fee)
                 } else {
@@ -351,7 +351,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                 show()
             }
 
-        } else if (currentTokenProvider.getCurrent().isETH() && amountController.getValue() ?: ZERO + gas_price_input.asBigInit() * gas_limit_input.asBigInit() > currentBalanceSafely()) {
+        } else if (currentTokenProvider.getCurrent().isETH() && hasEnoughETH()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (!nonce_input.hasText()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
@@ -365,6 +365,9 @@ class CreateTransactionActivity : BaseSubActivity() {
             }
         }
     }
+
+    private fun calculateGasCost() = gas_price_input.asBigInit() * gas_limit_input.asBigInit()
+    private fun hasEnoughETH() = amountController.getValue() + calculateGasCost() > currentBalanceSafely()
 
     private fun processShowCaseViewState(isShowcaseViewShown: Boolean) {
         if (isShowcaseViewShown) fab.hide() else fab.show()
