@@ -156,7 +156,7 @@ class IntentHandlerActivity : WallethActivity() {
 
     private fun startEthereumSignedMessage() {
         val intent = Intent(this, SignTextActivity::class.java)
-        intent.putExtra("TEXT", textToSign)
+        intent.putExtra(Intent.EXTRA_TEXT, textToSign)
         startActivityForResult(intent, SIGN_TX_REQUEST_CODE)
     }
 }
