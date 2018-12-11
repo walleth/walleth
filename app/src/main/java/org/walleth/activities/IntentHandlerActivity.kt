@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
@@ -144,12 +145,16 @@ class IntentHandlerActivity : WallethActivity() {
 
             TO_ADDRESS_REQUEST_CODE -> {
 
-                if (data?.hasExtra("HEX") == true) {
-                    currentAddressProvider.setCurrent(Address(data.getStringExtra("HEX")))
-                }
+                if (resultCode == Activity.RESULT_OK) {
+                    if (data?.hasExtra("HEX") == true) {
+                        currentAddressProvider.setCurrent(Address(data.getStringExtra("HEX")))
+                    }
 
-                settings.filterAddressesKeyOnly = oldFilterAddressesKeyOnly
-                startEthereumSignedMessage()
+                    settings.filterAddressesKeyOnly = oldFilterAddressesKeyOnly
+                    startEthereumSignedMessage()
+                } else {
+                    finish()
+                }
             }
         }
     }
