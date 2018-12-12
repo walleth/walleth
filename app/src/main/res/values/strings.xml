@@ -132,8 +132,8 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="create_tx_error_address_must_be_specified">address must be specified</string>
     <string name="create_tx_error_amount_must_be_specified">amount must be specified</string>
     <string name="create_tx_error_not_enough_funds">Not enough funds for this transaction with the given amount plus fee</string>
-    <string name="create_tx_error_invalid_erc67_msg">%s not valid ERC67</string>
-    <string name="create_tx_error_invalid_erc67_title">Invalid ERC67</string>
+    <string name="create_tx_error_invalid_url_msg">The URL %s was not understood. If you think it should be: please let us know!</string>
+    <string name="create_tx_error_invalid_url_title">Problem with URL</string>
     <string name="create_tx_error_invalid_address">%s is not a valid Ethereum-Address</string>
     <string name="default_account_name">Default Account</string>
     <string name="new_address_note">This Account was created for you when WallΞTH started for the first time</string>

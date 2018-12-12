@@ -22,7 +22,7 @@ class TheIntentHandlerActivity {
     @Test
     fun handlesInvalidScannedStrings() {
         rule.launchActivity(InstrumentationRegistry.getTargetContext().getEthereumViewIntent("Ðereum string"))
-        Espresso.onView(withText(R.string.create_tx_error_invalid_erc67_title)).check(matches(isDisplayed()))
+        Espresso.onView(withText(R.string.create_tx_error_invalid_url_title)).check(matches(isDisplayed()))
         Truth.assertThat(rule.activity.isFinishing).isFalse()
     }
 

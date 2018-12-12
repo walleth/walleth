@@ -553,7 +553,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                 if (fromUser || lastWarningURI != uri) {
                     lastWarningURI = uri
                     if (uri.isEthereumURLString()) {
-                        alert(getString(R.string.create_tx_error_invalid_erc67_msg, uri), getString(R.string.create_tx_error_invalid_erc67_title))
+                        alert(getString(R.string.create_tx_error_invalid_url_msg, uri), getString(R.string.create_tx_error_invalid_url_title))
                     } else {
                         alert(getString(R.string.create_tx_error_invalid_address, uri))
                     }

@@ -43,7 +43,8 @@ class IntentHandlerActivity : WallethActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        val parsed831 = EthereumURI(intent.data.toString()).toERC831()
+        val intentDataString = intent?.data.toString()
+        val parsed831 = EthereumURI(intentDataString).toERC831()
 
         if (parsed831.isERC831()) {
             if (parsed831.isERC681()) {
@@ -90,7 +91,7 @@ class IntentHandlerActivity : WallethActivity() {
             }
 
         } else {
-            alert(getString(R.string.create_tx_error_invalid_erc67_msg, intent.data.toString()), getString(R.string.create_tx_error_invalid_erc67_title)) {
+            alert(getString(R.string.create_tx_error_invalid_url_msg, intentDataString), getString(R.string.create_tx_error_invalid_url_title)) {
                 finish()
             }
         }
