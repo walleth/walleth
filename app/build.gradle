@@ -165,7 +165,7 @@ dependencies {
     implementation 'com.github.ligi.tracedroid:supportemail:2.0'
 
     implementation 'com.github.ligi:KAXT:0.20'
-    implementation 'com.github.ligi:KAXTUI:0.6'
+    implementation 'com.github.ligi:KAXTUI:0.7'
     implementation 'com.github.ligi:thirdpartylicensedisplay:0.2'
 
     implementation 'com.androidadvance:topsnackbar:1.1.1'
