@@ -13,10 +13,11 @@ Features
 ========
 
  - Networks main, ropsten, rinkeby, kovan
- - Tokens(ERC-20)
- - ERC-67 / ERC-681 URLS
+ - Tokens (ERC-20 compatible)
+ - Day/Night mode
+ - ERC-67 / ERC-681 URLs
  - ERC-55 Checksums
- - [WalletConnect](https://walletconnect.org) Support
+ - [WalletConnect](https://walletconnect.org) 0.7 Support
  - Offline signing (compatible to Parity signing flow)
  - JSON UTC key import/export
  - display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI 
