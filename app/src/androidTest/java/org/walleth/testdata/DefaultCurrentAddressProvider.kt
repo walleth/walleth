@@ -1,7 +1,6 @@
 package org.walleth.testdata
 
 import org.kethereum.crypto.createEthereumKeyPair
-import org.kethereum.crypto.initializeCrypto
 import org.kethereum.crypto.toAddress
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.config.Settings
@@ -18,7 +17,6 @@ val DEFAULT_TEST_ADDRESS3 = DEFAULT_TEST_KEY3.toAddress()
 class DefaultCurrentAddressProvider(settings: Settings, keyStore: TestKeyStore) : CurrentAddressProvider(settings) {
 
     init {
-        initializeCrypto()
         keyStore.importKey(DEFAULT_TEST_KEY, DEFAULT_PASSWORD)
         keyStore.importKey(DEFAULT_TEST_KEY2, DEFAULT_PASSWORD)
         keyStore.importKey(DEFAULT_TEST_KEY3, DEFAULT_PASSWORD)

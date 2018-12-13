@@ -18,7 +18,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import org.kethereum.crypto.initializeCrypto
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
 import org.koin.dsl.module.module
@@ -117,7 +116,6 @@ open class App : MultiDexApplication() {
 
         Kotpref.init(this)
         TraceDroid.init(this)
-        initializeCrypto()
         AndroidThreeTen.init(this)
         applyNightMode(settings)
         executeCodeWeWillIgnoreInTests()
