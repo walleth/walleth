@@ -13,15 +13,17 @@ Features
 ========
 
  - Networks main, ropsten, rinkeby, kovan
- - Tokens (ERC-20 compatible)
+ - Keys on your device under your control
+ - Tokens (your own ERC-20 compatible or predefined like DAI, Unicorn, OMG, SNT, ZRC, GNO, ..)
  - Day/Night mode
- - ERC-67 / ERC-681 URLs
+ - ERC-67 / ERC-681 URLs (e.g. scanned from QR-Code)
  - ERC-55 Checksums
  - [WalletConnect](https://walletconnect.org) 0.7 Support
  - Offline signing (compatible to Parity signing flow)
+ - Testnets with direct link to faucets (on ropsten even auto-fill of address)
  - JSON UTC key import/export
  - display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI 
- - display function 
+ - display function calls
  - [TREZOR](https://trezor.io/?a=walleth.org) Support via USB-OTG - model 1 and model T are supported
  - watch only accounts 
  - one flavor contains go-ethereum light client
