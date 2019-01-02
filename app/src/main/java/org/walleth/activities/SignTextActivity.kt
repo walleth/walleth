@@ -5,15 +5,14 @@ import android.arch.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_sign_text.*
-import org.kethereum.crypto.signMessage
-import org.kethereum.extensions.toHexStringZeroPadded
+import org.kethereum.crypto.toHex
+import org.kethereum.eip191.signWithEIP191PersonalSign
 import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.khex.toHexString
 
 class SignTextActivity : BaseSubActivity() {
 
@@ -36,17 +35,13 @@ class SignTextActivity : BaseSubActivity() {
         textToSign.text = text
 
         fab.setOnClickListener {
-            val byteArray = text.toByteArray()
-            val message = ("\u0019Ethereum Signed Message:\n" + byteArray.size).toByteArray() + byteArray
+            val key = keyStore.getKeyForAddress(currentAddress, DEFAULT_PASSWORD)
+            val signature = key?.signWithEIP191PersonalSign(text.toByteArray())
 
-            val signature = keyStore.getKeyForAddress(currentAddress, DEFAULT_PASSWORD)?.signMessage(message)
-
-            val rHEX = signature?.r?.toHexStringZeroPadded(64, false)
-            val sHEX = signature?.s?.toHexStringZeroPadded(64, false)
-            val v = signature?.v
-
-            val signatureHex = (rHEX + sHEX + v?.toHexString())
-            setResult(Activity.RESULT_OK, Intent().putExtra("SIGNATURE", signatureHex).putExtra("ADDRESS", currentAddress.cleanHex))
+            val putExtra = Intent()
+                    .putExtra("SIGNATURE", signature?.toHex())
+                    .putExtra("ADDRESS", currentAddress.cleanHex)
+            setResult(Activity.RESULT_OK, putExtra)
             finish()
         }
 
