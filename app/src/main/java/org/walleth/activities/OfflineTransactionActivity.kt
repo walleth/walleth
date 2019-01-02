@@ -131,7 +131,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
             val transaction = rlp.toTransaction()
 
-            val chainId = (rlp.element[6] as RLPElement).toBigIntegerFromRLP()
+            val chainId = (rlp.element[6] as RLPElement).toUnsignedBigIntegerFromRLP()
 
             chainIDAlert(networkDefinitionProvider, chainId.toLong()) {
 
