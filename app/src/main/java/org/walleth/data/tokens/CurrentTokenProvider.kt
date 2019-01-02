@@ -1,6 +1,6 @@
 package org.walleth.data.tokens
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import org.walleth.data.networks.NetworkDefinitionProvider
 
 open class CurrentTokenProvider(val networkDefinitionProvider: NetworkDefinitionProvider,

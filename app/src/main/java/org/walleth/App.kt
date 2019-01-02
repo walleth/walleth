@@ -1,15 +1,15 @@
 package org.walleth
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
 import android.content.Intent
 import android.net.TrafficStats
 import android.os.StrictMode
-import android.support.annotation.XmlRes
-import android.support.multidex.MultiDex
-import android.support.multidex.MultiDexApplication
-import android.support.v7.app.AppCompatDelegate
-import android.support.v7.preference.PreferenceScreen
+import androidx.annotation.XmlRes
+import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.preference.PreferenceScreen
 import com.chibatching.kotpref.Kotpref
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary

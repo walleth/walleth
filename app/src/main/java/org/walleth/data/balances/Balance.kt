@@ -1,6 +1,6 @@
 package org.walleth.data.balances
 
-import android.arch.persistence.room.Entity
+import androidx.room.Entity
 import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
 import java.math.BigInteger

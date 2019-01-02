@@ -9,26 +9,26 @@
         android:padding="16dp"
         tools:context="org.walleth.activities.MainActivity">
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:hint="@string/input_hint_account_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/nameInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:hint="@string/input_hint_notes"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/noteInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <CheckBox
             android:layout_width="wrap_content"

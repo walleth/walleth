@@ -1,12 +1,12 @@
 package org.walleth.activities
 
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
+import com.google.android.material.snackbar.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View

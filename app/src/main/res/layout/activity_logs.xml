@@ -11,13 +11,13 @@
         android:orientation="vertical"
         tools:context="org.walleth.activities.InfoActivity">
 
-    <android.support.v7.widget.SwitchCompat
+    <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/golog_switch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="filter GoLog"/>
 
-    <android.support.v7.widget.AppCompatSpinner
+    <androidx.appcompat.widget.AppCompatSpinner
             android:id="@+id/geth_verbosity_spinner"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

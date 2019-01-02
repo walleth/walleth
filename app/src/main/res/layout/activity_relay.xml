@@ -9,12 +9,12 @@
         android:animateLayoutChanges="true">
 
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/account_name_container"
             android:hint="@string/transaction_to_use_hint"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:id="@+id/transaction_to_relay_hex"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -22,7 +22,7 @@
                 android:fontFamily="sans-serif"
                 android:textSize="16sp"
                 android:padding="16dp"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <Button
             android:layout_below="@id/account_name_container"
@@ -31,7 +31,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/ic_action_done"

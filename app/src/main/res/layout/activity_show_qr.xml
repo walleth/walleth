@@ -19,30 +19,30 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
             style="@style/password_textinputlayout"
             android:hint="@string/input_hint_export_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:inputType="textPassword"
                 android:id="@+id/password_input"
                 android:importantForAccessibility="no"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-    </android.support.design.widget.TextInputLayout>
-    <android.support.design.widget.TextInputLayout
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
             android:hint="@string/input_hint_confirm_export_password"
             style="@style/password_textinputlayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatEditText
+        <androidx.appcompat.widget.AppCompatEditText
                 android:inputType="textPassword"
                 android:importantForAccessibility="no"
                 android:id="@+id/password_input_confirmation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
             android:id="@+id/confirmation_warning"
@@ -50,7 +50,7 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 app:srcCompat="@drawable/ic_warning_red_24dp"
                 android:padding="8dp"
                 android:layout_width="wrap_content"
@@ -61,14 +61,14 @@
                 android:textColor="@color/warning"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 app:srcCompat="@drawable/ic_warning_red_24dp"
                 android:padding="8dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
     </LinearLayout>
 
-    <android.support.v7.widget.SwitchCompat
+    <androidx.appcompat.widget.SwitchCompat
             android:text="@string/show_qr_code"
             android:id="@+id/show_qr_switch"
             android:layout_width="wrap_content"

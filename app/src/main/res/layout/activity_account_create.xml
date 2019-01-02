@@ -13,31 +13,31 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:padding="16dp"
                     android:id="@+id/name_input_container"
                     android:hint="@string/input_hint_account_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/nameInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:padding="16dp"
                     android:id="@+id/note_input_container"
                     android:hint="@string/input_hint_notes"
                     android:layout_below="@+id/name_input_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/noteInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
             android:layout_below="@+id/note_input_container"
@@ -45,28 +45,28 @@
             android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <android.support.design.widget.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/hex_input_container"
                 android:hint="@string/input_hint_address"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content">
-            <android.support.v7.widget.AppCompatEditText
+            <androidx.appcompat.widget.AppCompatEditText
                     android:id="@+id/hexInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
-        </android.support.design.widget.TextInputLayout>
-        <android.support.v7.widget.AppCompatImageView
+        </com.google.android.material.textfield.TextInputLayout>
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/camera_button"
                 app:srcCompat="@drawable/ic_image_camera_alt"
                 android:layout_gravity="center_vertical"
                 style="@style/button"/>
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/new_address_button"
                 app:srcCompat="@drawable/ic_key"
                 android:layout_gravity="center_vertical"
                 style="@style/button"/>
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/add_trezor"
                 app:srcCompat="@drawable/trezor_icon"
                 android:layout_gravity="center_vertical"
@@ -82,7 +82,7 @@
                     android:text="Notify on changes"/>
         </LinearLayout>
     </ScrollView>
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/ic_action_done"

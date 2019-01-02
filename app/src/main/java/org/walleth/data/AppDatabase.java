@@ -1,8 +1,8 @@
 package org.walleth.data;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import org.walleth.data.addressbook.AddressBookDAO;
 import org.walleth.data.addressbook.AddressBookEntry;
 import org.walleth.data.balances.Balance;

@@ -3,8 +3,8 @@ package org.walleth.data.config
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.preference.PreferenceManager
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatDelegate
 import com.chibatching.kotpref.KotprefModel
 import org.walleth.R
 import org.walleth.data.DEFAULT_GAS_PRICE

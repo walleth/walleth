@@ -1,16 +1,16 @@
 package org.walleth.activities
 
 import android.app.Activity
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.Transformations
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AlertDialog
+import com.google.android.material.snackbar.Snackbar
+import androidx.appcompat.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View

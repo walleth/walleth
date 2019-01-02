@@ -1,6 +1,6 @@
 package org.walleth.fcm
 
-import android.arch.lifecycle.LifecycleService
+import androidx.lifecycle.LifecycleService
 import okhttp3.OkHttpClient
 import org.koin.android.ext.android.inject
 import org.ligi.tracedroid.logging.Log
@@ -16,7 +16,7 @@ class FirebaseIntentService : LifecycleService() {
         val appDatabase: AppDatabase by inject()
         val okHttpClient: OkHttpClient by inject()
         val walletConnectInteractor: WalletConnectDriver by inject()
-        appDatabase.addressBook.allThatWantNotificationsLive().observe(this, android.arch.lifecycle.Observer { list: List<AddressBookEntry>? ->
+        appDatabase.addressBook.allThatWantNotificationsLive().observe(this, androidx.lifecycle.Observer { list: List<AddressBookEntry>? ->
             list?.let { registerPush(walletConnectInteractor, okHttpClient, it.map { it.address.hex }) }
         })
     }

@@ -1,6 +1,6 @@
 package org.walleth.data.networks
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import org.walleth.data.config.Settings
 
 fun getNetworkDefinitionByChainID(chainID: Long) = ALL_NETWORKS.firstOrNull { it.chain.id == chainID }

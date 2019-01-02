@@ -1,7 +1,5 @@
 package org.walleth.activities
 
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -9,13 +7,15 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.ActionBarDrawerToggle
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.INVISIBLE
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -326,9 +326,9 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState!!.putString(KEY_LAST_PASTED_DATA, lastPastedData)
+        outState.putString(KEY_LAST_PASTED_DATA, lastPastedData)
     }
 
     override fun onDestroy() {

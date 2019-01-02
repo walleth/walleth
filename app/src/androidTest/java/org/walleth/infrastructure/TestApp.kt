@@ -1,8 +1,8 @@
 package org.walleth.infrastructure
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
-import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import org.koin.dsl.module.module
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`

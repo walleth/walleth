@@ -3,7 +3,7 @@ package org.walleth.activities.walletconnect
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.util.Base64
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_wallet_connect.*

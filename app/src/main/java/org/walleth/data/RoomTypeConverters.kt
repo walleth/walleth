@@ -1,6 +1,6 @@
 package org.walleth.data
 
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
 import org.walleth.data.transactions.TransactionSource

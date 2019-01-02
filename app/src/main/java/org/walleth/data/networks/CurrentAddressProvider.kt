@@ -1,6 +1,6 @@
 package org.walleth.data.networks
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 import org.kethereum.model.Address
 import org.walleth.data.config.Settings
 

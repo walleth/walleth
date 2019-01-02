@@ -48,12 +48,12 @@
                         android:layout_height="wrap_content"/>
 
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/add_address"
                         style="@style/button"
                         app:srcCompat="@drawable/ic_playlist_add"/>
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/copy_address"
                         style="@style/button"
                         app:srcCompat="@drawable/ic_content_copy"/>
@@ -129,7 +129,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/rlp_image"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="@dimen/qrcode_size"
@@ -143,7 +143,7 @@
 
         </LinearLayout>
     </ScrollView>
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/ic_lock_outline_black_24dp"
