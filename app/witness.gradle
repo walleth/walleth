@@ -1,5 +1,3 @@
-ERROR: [TAG] Failed to resolve variable '${project.version}'
-ERROR: [TAG] Failed to resolve variable '${animal.sniffer.version}'
 dependencyVerification {
     verify = [
         'androidx.activity:activity:1.0.0-alpha02:activity-1.0.0-alpha02.aar:f4557ac651b76f573f56ce7cca90f2c92c4b90f0ab977fe8ac068dac4cf89630',
