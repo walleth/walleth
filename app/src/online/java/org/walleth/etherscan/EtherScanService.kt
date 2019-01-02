@@ -1,8 +1,6 @@
 package org.walleth.etherscan
 
-import android.app.Service.START_STICKY
 import android.content.Intent
-import android.text.TextUtils.replace
 import androidx.lifecycle.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -33,7 +31,6 @@ import org.walleth.khex.toHexString
 import java.io.IOException
 import java.math.BigInteger
 import java.security.cert.CertPathValidatorException
-import java.util.*
 
 class EtherScanService : LifecycleService() {
 
