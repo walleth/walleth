@@ -214,7 +214,7 @@ dependencyVerification {
         'com.squareup.leakcanary:leakcanary-watcher:1.6.2:leakcanary-watcher-1.6.2.jar:97a398f8ed6575e21d3afd5ad1bb02c1bb5ecd6d7208f6850e130bc351bb720a',
         'com.squareup.moshi:moshi-adapters:1.8.0:moshi-adapters-1.8.0.jar:b19e8cf6840dd6106044f89d0df1004fdcf7658695c8e56e7219c1d9d639be01',
         'com.squareup.moshi:moshi:1.8.0:moshi-1.8.0.jar:42fe746d2694ea11fe6a02becd9da2ca3dafe97c9efd50a0f9af5c4596e74a6a',
-        'com.squareup.okhttp3:okhttp:3.12.0:okhttp-3.12.0.jar:71787f2c599e0441c7a4413983bfdd93d40b56e1badc5e0413d6a4c485ba3f35',
+        'com.squareup.okhttp3:okhttp:3.12.1:okhttp-3.12.1.jar:07c3d82ca7eaf4722f00b2da807dc7860f6169ae60cfedcf5d40218f90880a46',
         'com.squareup.okio:okio:1.16.0:okio-1.16.0.jar:ec0484ff1903640e3845c2b10abb99eff2d32308ffe3459e5f92309a451b9c7e',
         'com.squareup:javapoet-1.8.0:1.8.0:javapoet-1.8.0.jar:8e108c92027bb428196f10fa11cffbe589f7648a6af2016d652279385fdfd789',
         'com.squareup:javawriter:2.1.1:javawriter-2.1.1.jar:f699823d0081f69cbb676c1845ea222e0ada79bc88a53e5d22d8bd02d328f57e',
