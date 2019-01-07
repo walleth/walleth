@@ -190,7 +190,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
                         else -> R.drawable.ic_action_done
                     })
-                    fab.setOnClickListener { _ ->
+                    fab.setOnClickListener {
                         onFabClick(isTrezorTransaction)
                     }
                 }
