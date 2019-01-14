@@ -91,7 +91,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         if (clipboard.hasPrimaryClip()) {
-            val item = clipboard.primaryClip.getItemAt(0).text?.toString()
+            val item = clipboard.primaryClip?.let {  it.getItemAt(0).text?.toString() }
             val erc681 = item?.let { EthereumURI(it).toERC681() }
             if (erc681?.valid == true && erc681.address != null && item != lastPastedData && item != currentAddressProvider.value?.hex.let { ERC681(address = it).generateURL() }) {
                 lastPastedData = item
