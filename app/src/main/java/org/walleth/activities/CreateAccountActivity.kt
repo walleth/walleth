@@ -55,7 +55,7 @@ class CreateAccountActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_account_create)
 
-        supportActionBar?.subtitle = getString(create_account_subtitle)
+        supportActionBar?.subtitle = getString(R.string.create_account_subtitle)
 
         intent.getStringExtra(HEX_INTENT_EXTRA_KEY)?.let {
             hexInput.setText(it)
