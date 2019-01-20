@@ -141,6 +141,8 @@ dependencies {
 
     withGethImplementation "org.ethereum:geth:1.8.8"
 
+    compile 'android.arch.paging:runtime:1.0.1'
+
     implementation "com.github.walleth.kethereum:functions:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip39:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip39_wordlist_en:$kethereum_version"
@@ -154,8 +156,8 @@ dependencies {
     implementation "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     implementation "com.github.walleth.kethereum:method_signatures:$kethereum_version"
     implementation "com.github.walleth.kethereum:networks:$kethereum_version"
-    implementation "com.github.walleth.kethereum:etherscan:$kethereum_version"
-    implementation "com.github.walleth.kethereum:rlp:$kethereum_version"
+        implementation "com.github.walleth.kethereum:etherscan:$kethereum_version"
+        implementation "com.github.walleth.kethereum:rlp:$kethereum_version"
     implementation "com.github.walleth.kethereum:wallet:$kethereum_version"
     implementation "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
 
@@ -165,7 +167,8 @@ dependencies {
 
     implementation 'com.github.ligi.tracedroid:supportemail:2.0'
 
-    implementation 'com.github.ligi:KAXT:0.20'
+    implementation 'com.github.ligi:KAXT:0.22'
+
     implementation 'com.github.ligi:KAXTUI:0.7'
     implementation 'com.github.ligi:thirdpartylicensedisplay:0.2'
 
@@ -184,6 +187,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
 
     implementation "org.koin:koin-android:1.0.2"
+    implementation "org.koin:koin-android-viewmodel:1.0.2"
 
     implementation "com.android.support:support-v4:$support_version"
     implementation "com.android.support:appcompat-v7:$support_version"

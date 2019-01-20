@@ -2,7 +2,6 @@ package org.walleth.activities
 
 
 import android.os.Bundle
-import org.ligi.kaxt.recreateWhenPossible
 import org.walleth.R
 
 
@@ -24,7 +23,7 @@ class PreferenceActivity : BaseSubActivity() {
 
         if (!firstResume) {
             // to apply the new toolbar configuration
-            recreateWhenPossible()
+            recreate()
         }
 
         firstResume = false

@@ -51,7 +51,7 @@ class RequestActivity : BaseSubActivity() {
         val initText = if (networkDefinitionProvider.getCurrent().faucets.isNotEmpty()) {
             val faucetURL = networkDefinitionProvider.getCurrent()
                     .faucets.first()
-                    .replace("%address%", currentAddressProvider.getCurrent().hex)
+                    .replace("%address%", currentAddressProvider.getCurrentNeverNull().hex)
             getString(R.string.request_faucet_message,
                     networkDefinitionProvider.getCurrent().getNetworkName(),
                     faucetURL)
@@ -85,7 +85,7 @@ class RequestActivity : BaseSubActivity() {
         if (!add_value_checkbox.isChecked || currentToken.isETH()) {
 
             val relevantAddress = currentAddressProvider.getCurrent()
-            currentERC67String = ERC681(address = relevantAddress.hex).generateURL()
+            currentERC67String = ERC681(address = relevantAddress!!.hex).generateURL()
 
             if (add_value_checkbox.isChecked) {
                 try {
@@ -96,7 +96,7 @@ class RequestActivity : BaseSubActivity() {
         } else {
             val relevantAddress = currentToken.address.hex
 
-            val userAddress = currentAddressProvider.getCurrent().hex
+            val userAddress = currentAddressProvider.getCurrentNeverNull().hex
             val functionParams = mutableListOf("address" to userAddress)
             if (add_value_checkbox.isChecked) {
                 try {

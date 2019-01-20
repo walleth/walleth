@@ -26,7 +26,9 @@ import org.kethereum.erc681.toERC681
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
-import org.ligi.kaxt.recreateWhenPossible
+import org.koin.android.viewmodel.ext.android.viewModel
+import org.ligi.kaxt.livedata.nonNull
+import org.ligi.kaxt.livedata.observe
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
@@ -42,7 +44,6 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getEthTokenForChain
-import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
@@ -51,6 +52,7 @@ import org.walleth.util.copyToClipboard
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
 import org.walleth.util.isUnsignedTransactionJSON
+import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.walletconnect.isWalletConnectJSON
 import java.math.BigInteger.ZERO
 
@@ -68,10 +70,12 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
 
+    private val transactionViewModel: TransactionListViewModel by viewModel()
+
     private var lastNightMode: Int? = null
     private var balanceLiveData: LiveData<Balance>? = null
     private var etherLiveData: LiveData<Balance>? = null
-    private val onboardingController by lazy { OnboardingController(this, settings) }
+    private val onboardingController by lazy { OnboardingController(this, transactionViewModel, settings) }
 
     private var lastPastedData: String? = null
 
@@ -83,7 +87,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         super.onResume()
 
         if (lastNightMode != null && lastNightMode != settings.getNightMode()) {
-            recreateWhenPossible()
+            recreate()
             return
         }
         lastNightMode = settings.getNightMode()
@@ -91,7 +95,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         if (clipboard.hasPrimaryClip()) {
-            val item = clipboard.primaryClip?.let {  it.getItemAt(0).text?.toString() }
+            val item = clipboard.primaryClip?.let { it.getItemAt(0).text?.toString() }
             val erc681 = item?.let { EthereumURI(it).toERC681() }
             if (erc681?.valid == true && erc681.address != null && item != lastPastedData && item != currentAddressProvider.value?.hex.let { ERC681(address = it).generateURL() }) {
                 lastPastedData = item
@@ -156,16 +160,6 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
-    fun refresh() {
-        val incomingSize = transaction_recycler_in.adapter?.itemCount ?: 0
-        val outgoingSize = transaction_recycler_out.adapter?.itemCount ?: 0
-
-        val hasTransactions = incomingSize + outgoingSize > 0
-        empty_view_container.setVisibility(!hasTransactions && !onboardingController.isShowing)
-        transaction_recycler_out.setVisibility(hasTransactions)
-        transaction_recycler_in.setVisibility(hasTransactions)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -194,61 +188,48 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
-        syncProgressProvider.observe(this, Observer {
-            val progress = it!!
-
+        syncProgressProvider.nonNull().observe(this) { progress ->
             if (progress.isSyncing) {
                 val percent = ((progress.currentBlock.toDouble() / progress.highestBlock) * 100).toInt()
                 supportActionBar?.subtitle = "Block ${progress.currentBlock}/${progress.highestBlock} ($percent%)"
             }
+        }
+
+
+        val incomingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, INCOMING, networkDefinitionProvider, exchangeRateProvider, settings)
+        transaction_recycler_in.adapter = incomingTransactionsAdapter
+
+        val outgoingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, OUTGOING, networkDefinitionProvider, exchangeRateProvider, settings)
+        transaction_recycler_out.adapter = outgoingTransactionsAdapter
+
+        transactionViewModel.isEmptyViewVisible.nonNull().observe(this) { isEmptyVisible ->
+            empty_view_container.setVisibility(isEmptyVisible)
+            transaction_recycler_out.setVisibility(!isEmptyVisible)
+            transaction_recycler_in.setVisibility(!isEmptyVisible)
+        }
+
+        transactionViewModel.incomingLiveData.nonNull().observe(this) { transactions ->
+            incomingTransactionsAdapter.submitList(transactions)
+            transactionViewModel.hasIncoming.value = !transactions.isNullOrEmpty()
+        }
+
+        transactionViewModel.isOnboardingVisible.observe(this, Observer {
+            fab.setVisibility(it != true)
         })
 
-
-        val incomingTransactionsObserver = Observer<List<TransactionEntity>> {
-
-            if (it != null) {
-                transaction_recycler_in.adapter = TransactionRecyclerAdapter(it, appDatabase, INCOMING, networkDefinitionProvider, exchangeRateProvider, settings)
-                transaction_recycler_in.setVisibility(!it.isEmpty())
-                refresh()
+        transactionViewModel.outgoingLiveData.observe(this, Observer { transactions ->
+            if (transactions != null) {
+                outgoingTransactionsAdapter.submitList(transactions)
+                transactionViewModel.hasOutgoing.value = !transactions.isNullOrEmpty()
             }
-        }
+        })
 
-        val outgoingTransactionsObserver = Observer<List<TransactionEntity>> {
-
-            if (it != null) {
-                transaction_recycler_out.adapter = TransactionRecyclerAdapter(it, appDatabase, OUTGOING, networkDefinitionProvider, exchangeRateProvider, settings)
-                refresh()
-            }
-        }
-
-        var incomingTransactionsForAddress: LiveData<List<TransactionEntity>>? = null
-        var outgoingTransactionsForAddress: LiveData<List<TransactionEntity>>? = null
-
-        fun installTransactionObservers() {
-
-            incomingTransactionsForAddress?.removeObserver(incomingTransactionsObserver)
-            outgoingTransactionsForAddress?.removeObserver(outgoingTransactionsObserver)
-
-            currentAddressProvider.value?.let { currentAddress ->
-                val currentChain = networkDefinitionProvider.getCurrent().chain
-                incomingTransactionsForAddress = appDatabase.transactions.getIncomingTransactionsForAddressOnChainOrdered(currentAddress, currentChain)
-                outgoingTransactionsForAddress = appDatabase.transactions.getOutgoingTransactionsForAddressOnChainOrdered(currentAddress, currentChain)
-
-                incomingTransactionsForAddress?.observe(this, incomingTransactionsObserver)
-                outgoingTransactionsForAddress?.observe(this, outgoingTransactionsObserver)
-            }
-        }
 
         networkDefinitionProvider.observe(this, Observer {
             setCurrentBalanceObservers()
-            installTransactionObservers()
         })
 
         currentAddressProvider.observe(this, Observer {
-            installTransactionObservers()
-        })
-
-        currentAddressProvider.observe(this, Observer { _ ->
             setCurrentBalanceObservers()
         })
 
@@ -309,7 +290,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_copy -> {
-            copyToClipboard(currentAddressProvider.getCurrent(), fab)
+            copyToClipboard(currentAddressProvider.getCurrentNeverNull(), fab)
             true
         }
         R.id.menu_info -> {

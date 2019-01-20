@@ -45,7 +45,7 @@ class TheNavigationDrawer {
 
         GlobalScope.async(Dispatchers.Main) {
             async(Dispatchers.Default) {
-                TestApp.testDatabase.addressBook.upsert(AddressBookEntry(name = "espresso ligi", address = TestApp.currentAddressProvider.getCurrent()))
+                TestApp.testDatabase.addressBook.upsert(AddressBookEntry(name = "espresso ligi", address = TestApp.currentAddressProvider.getCurrentNeverNull()))
             }.await()
         }
 

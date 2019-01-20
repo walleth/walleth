@@ -26,8 +26,8 @@ class SignTextActivity : BaseSubActivity() {
         setContentView(R.layout.activity_sign_text)
 
         val currentAddress = currentAddressProvider.getCurrent()
-        appDatabase.addressBook.byAddressLiveData(currentAddress).observe(this, Observer { entry ->
-            supportActionBar?.subtitle = "Signing as " + (entry?.name ?: currentAddress.hex)
+        appDatabase.addressBook.byAddressLiveData(currentAddress!!).observe(this, Observer { entry ->
+            supportActionBar?.subtitle = "Signing as " + (entry?.name ?: currentAddress!!.hex)
         })
 
         val text = intent.getStringExtra(Intent.EXTRA_TEXT)

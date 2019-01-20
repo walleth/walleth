@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.app.Activity
 import android.graphics.Paint
 import android.text.TextPaint
 import android.util.TypedValue
@@ -7,14 +8,16 @@ import android.view.MotionEvent
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener
 import com.github.amlcurran.showcaseview.ShowcaseView
 import com.github.amlcurran.showcaseview.targets.ViewTarget
-import kotlinx.android.synthetic.main.activity_main.*
 import org.ligi.kaxtui.alert
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.walleth.R
 import org.walleth.data.config.Settings
+import org.walleth.viewmodels.TransactionListViewModel
 
-class OnboardingController(val activity: MainActivity, val settings: Settings) {
+class OnboardingController(val activity: Activity,
+                           private val viewModel: TransactionListViewModel,
+                           val settings: Settings) {
 
     private val showcaseView by lazy {
         ShowcaseView.Builder(activity)
@@ -32,17 +35,14 @@ class OnboardingController(val activity: MainActivity, val settings: Settings) {
         color = primaryColor
         arr.recycle()
     }
-    var isShowing = false
 
     fun install() {
         if (!settings.startupWarningDone) {
             activity.alert(
                     title = R.string.onboarding_warning_title,
                     message = R.string.onboarding_warning_message) {
-                isShowing = true
-                activity.refresh()
 
-                activity.fab.hide()
+                viewModel.isOnboardingVisible.value = true
 
                 showcaseView.setOnShowcaseEventListener(object : OnShowcaseEventListener {
                     override fun onShowcaseViewShow(p0: ShowcaseView?) {}
@@ -67,11 +67,9 @@ class OnboardingController(val activity: MainActivity, val settings: Settings) {
     }
 
     fun dismiss() {
-        if (isShowing) {
-            isShowing = false
+        if (viewModel.isOnboardingVisible.value == true) {
+            viewModel.isOnboardingVisible.value = false
             showcaseView.hide()
-            activity.fab.show()
-            activity.refresh()
         }
     }
 }

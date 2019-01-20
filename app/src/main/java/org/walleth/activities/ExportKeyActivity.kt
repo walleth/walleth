@@ -76,7 +76,7 @@ class ExportKeyActivity : BaseSubActivity() {
         GlobalScope.launch(Dispatchers.Main) {
             val bmpScaled = withContext(Dispatchers.Default) {
 
-                val key = keyStore.getKeyForAddress(currentAddressProvider.getCurrent(), DEFAULT_PASSWORD)
+                val key = keyStore.getKeyForAddress(currentAddressProvider.getCurrentNeverNull(), DEFAULT_PASSWORD)
 
                 keyJSON = key?.generateWalletJSON(password_input.text.toString(), LIGHT_SCRYPT_CONFIG)
                         ?: throw (IllegalStateException("Could not create JSON from key"))

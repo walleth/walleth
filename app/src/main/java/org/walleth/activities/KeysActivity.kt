@@ -16,7 +16,7 @@ class KeysActivity : BaseSubActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if (!keyStore.hasKeyForForAddress(currentAddressProvider.getCurrent())) {
+        if (!keyStore.hasKeyForForAddress(currentAddressProvider.getCurrentNeverNull())) {
             startActivityFromClass(ImportActivity::class.java)
             finish()
         } else {

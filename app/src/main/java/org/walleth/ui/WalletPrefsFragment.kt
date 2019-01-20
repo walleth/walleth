@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.support.v7.preference.PreferenceFragmentCompat
 import org.koin.android.ext.android.inject
-import org.ligi.kaxt.recreateWhenPossible
 import org.walleth.App
 import org.walleth.R
 import org.walleth.data.config.Settings
@@ -33,10 +32,10 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
             if (key == getString(R.string.key_prefs_day_night)) {
 
                 App.applyNightMode(settings)
-                activity?.recreateWhenPossible()
+                activity?.recreate()
             }
             if (key == getString(R.string.key_noscreenshots)) {
-                activity?.recreateWhenPossible()
+                activity?.recreate()
             }
             if (key == getString(R.string.key_prefs_start_light)) {
 

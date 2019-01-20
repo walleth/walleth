@@ -185,7 +185,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                         isTrezorTransaction
                         -> R.drawable.trezor_icon_black
 
-                        (keyStore.hasKeyForForAddress(currentAddressProvider.getCurrent()))
+                        (keyStore.hasKeyForForAddress(currentAddressProvider.getCurrentNeverNull()))
                         -> R.drawable.ic_key_black
 
                         else -> R.drawable.ic_action_done
@@ -379,12 +379,12 @@ class CreateTransactionActivity : BaseSubActivity() {
         val transaction = (if (currentTokenProvider.getCurrent().isETH()) createTransactionWithDefaults(
                 value = amountController.getValue(),
                 to = currentToAddress!!,
-                from = currentAddressProvider.getCurrent()
+                from = currentAddressProvider.getCurrentNeverNull()
         ) else createTransactionWithDefaults(
                 creationEpochSecond = System.currentTimeMillis() / 1000,
                 value = ZERO,
                 to = currentTokenProvider.getCurrent().address,
-                from = currentAddressProvider.getCurrent(),
+                from = currentAddressProvider.getCurrentNeverNull(),
                 input = createTokenTransferTransactionInput(currentToAddress!!, amountController.getValue())
         )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
 
@@ -414,9 +414,9 @@ class CreateTransactionActivity : BaseSubActivity() {
                 fab_progress_bar.visibility = View.VISIBLE
                 fab.isEnabled = false
 
-                val error: String? = async(Dispatchers.Default) {
+                val error: String? = GlobalScope.async(Dispatchers.Default) {
                     try {
-                        val signatureData = keyStore.getKeyForAddress(currentAddressProvider.getCurrent(), DEFAULT_PASSWORD)?.let {
+                        val signatureData = keyStore.getKeyForAddress(currentAddressProvider.getCurrentNeverNull(), DEFAULT_PASSWORD)?.let {
                             Snackbar.make(fab, "Signing transaction", Snackbar.LENGTH_INDEFINITE).show()
                             transaction.signViaEIP155(it, networkDefinitionProvider.getCurrent().chain)
                         }

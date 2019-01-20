@@ -3,6 +3,7 @@ package org.walleth.infrastructure
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
+import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
@@ -23,6 +24,7 @@ import org.walleth.kethereum.model.ContractFunction
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
+import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.walletconnect.WalletConnectDriver
 
 private fun <T> any(): T {
@@ -49,6 +51,8 @@ class TestApp : App() {
         single { testDatabase }
         single { testFourByteDirectory }
         single { mock(WalletConnectDriver::class.java) }
+
+        viewModel { TransactionListViewModel(this@TestApp, get(),get(),get()) }
     }
 
     override fun executeCodeWeWillIgnoreInTests() = Unit

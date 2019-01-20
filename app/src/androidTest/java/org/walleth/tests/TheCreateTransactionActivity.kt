@@ -157,7 +157,7 @@ class TheCreateTransactionActivity {
     @Test
     fun usesCorrectValuesForETHTransaction1() {
         setCurrentToken(eth)
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
         rule.launchActivity(Intent.getIntentOld("ethereum:0x123456?value=1"))
 
@@ -173,7 +173,7 @@ class TheCreateTransactionActivity {
     @Test
     fun usesCorrectValuesForETHTransaction2() {
         setCurrentToken(testToken)
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
         rule.launchActivity(Intent.getIntentOld("ethereum:0x123456?value=1"))
 
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
@@ -193,8 +193,8 @@ class TheCreateTransactionActivity {
         val toAddress = DEFAULT_TEST_ADDRESS2
         val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()
 
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), testToken.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
         rule.launchActivity(Intent.getIntentOld(uri))
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
@@ -214,8 +214,8 @@ class TheCreateTransactionActivity {
         val eth = getEthTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
         setCurrentToken(eth)
         TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * eth.decimalsAsMultiplicator().toBigInteger()))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrent(), testToken.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * testToken.decimalsAsMultiplicator().toBigInteger()))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * eth.decimalsAsMultiplicator().toBigInteger()))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * testToken.decimalsAsMultiplicator().toBigInteger()))
 
         val toAddress = DEFAULT_TEST_ADDRESS2
         val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()

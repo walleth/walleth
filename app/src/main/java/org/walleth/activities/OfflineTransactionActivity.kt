@@ -182,7 +182,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                                           gasPrice: String,
                                           parityFlow: Boolean) {
 
-        val currentAccount = currentAddressProvider.getCurrent().hex
+        val currentAccount = currentAddressProvider.getCurrentNeverNull().hex
         if (from.clean0xPrefix().toLowerCase() != currentAccount.clean0xPrefix().toLowerCase()) {
             alert("The from field of the transaction ($from) does not match your current account ($currentAccount)")
             return

@@ -141,7 +141,7 @@ class GethLightEthereumService : LifecycleService() {
                 try {
                     ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
                         override fun onNewHead(p0: Header) {
-                            val address = currentAddressProvider.getCurrent()
+                            val address = currentAddressProvider.getCurrentNeverNull()
                             val gethAddress = address.toGethAddr()
                             val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, gethAddress, p0.number)
                             appDatabase.balances.upsert(Balance(

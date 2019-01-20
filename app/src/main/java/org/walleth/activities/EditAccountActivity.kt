@@ -32,7 +32,7 @@ class EditAccountActivity : BaseSubActivity() {
 
         supportActionBar?.subtitle = getString(R.string.edit_account_subtitle)
 
-        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
+        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrentNeverNull()) {
             currentAddressInfo = it!!
 
 
@@ -70,7 +70,7 @@ class EditAccountActivity : BaseSubActivity() {
             copyToClipboard(currentAddressInfo.address, activity_main)
         }
         R.id.menu_etherscan -> true.also {
-            startActivityFromURL(blockExplorerProvider.get().getAddressURL(currentAddressProvider.getCurrent()))
+            startActivityFromURL(blockExplorerProvider.get().getAddressURL(currentAddressProvider.getCurrentNeverNull()))
         }
         else -> super.onOptionsItemSelected(item)
     }

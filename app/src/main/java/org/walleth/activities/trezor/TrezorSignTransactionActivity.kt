@@ -92,7 +92,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
     override fun onResume() {
         super.onResume()
 
-        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrent()) {
+        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrentNeverNull()) {
             currentBIP44 = it?.trezorDerivationPath?.let { trezorDerivationPath ->
                 BIP44(trezorDerivationPath)
             } ?: throw IllegalArgumentException("Starting TREZOR Activity")

@@ -11,5 +11,6 @@ open class CurrentAddressProvider(val settings: Settings) : MutableLiveData<Addr
         setValue(value)
     }
 
-    fun getCurrent() = value!!
+    fun getCurrent() = value
+    fun getCurrentNeverNull() = value!!
 }

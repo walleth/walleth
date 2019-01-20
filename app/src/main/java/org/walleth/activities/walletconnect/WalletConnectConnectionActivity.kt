@@ -89,7 +89,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                     .setTitle(getString(R.string.walletconnect_do_you_want_to_use, currentSession?.dappName))
                     .setItems(R.array.walletconnect_options) { _, i ->
                         when (i) {
-                            0 -> start(currentAddressProvider.getCurrent())
+                            0 -> start(currentAddressProvider.getCurrentNeverNull())
 
                             1 -> {
                                 val intent = Intent(this, AddressBookActivity::class.java)

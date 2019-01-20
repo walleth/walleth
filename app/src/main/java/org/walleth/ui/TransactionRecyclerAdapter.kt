@@ -1,6 +1,7 @@
 package org.walleth.ui
 
-import android.support.v7.widget.RecyclerView
+import android.arch.paging.PagedListAdapter
+import android.support.v7.util.DiffUtil
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.walleth.R
@@ -14,17 +15,26 @@ enum class TransactionAdapterDirection {
     INCOMING, OUTGOING
 }
 
-class TransactionRecyclerAdapter(private val transactionList: List<TransactionEntity>,
-                                 val appDatabase: AppDatabase,
+class TransactionDiffCallback : DiffUtil.ItemCallback<TransactionEntity>() {
+
+    override fun areItemsTheSame(oldItem: TransactionEntity, newItem: TransactionEntity): Boolean {
+        return oldItem.hash == newItem.hash
+    }
+
+    override fun areContentsTheSame(oldItem: TransactionEntity, newItem: TransactionEntity): Boolean {
+        return oldItem == newItem
+    }
+}
+
+
+class TransactionRecyclerAdapter(val appDatabase: AppDatabase,
                                  private val direction: TransactionAdapterDirection,
                                  val networkDefinitionProvider: NetworkDefinitionProvider,
-                                 val exchangeRateProvider: ExchangeRateProvider,
+                                 private val exchangeRateProvider: ExchangeRateProvider,
                                  val settings: Settings
-) : RecyclerView.Adapter<TransactionViewHolder>() {
+) : PagedListAdapter<TransactionEntity, TransactionViewHolder>(TransactionDiffCallback()) {
 
-    override fun getItemCount() = transactionList.size
-
-    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(transactionList[position], appDatabase)
+    override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(getItem(position), appDatabase)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TransactionViewHolder {
         val itemView = LayoutInflater.from(parent.context).inflate(R.layout.transaction_item, parent, false)

@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
+import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import org.ligi.tracedroid.TraceDroid
 import org.walleth.contracts.FourByteDirectory
@@ -43,6 +44,7 @@ import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.util.DelegatingSocketFactory
+import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.walletconnect.WalletConnectDriver
 import java.net.Socket
 import javax.net.SocketFactory
@@ -86,6 +88,8 @@ open class App : MultiDexApplication() {
             InitializingCurrentAddressProvider(keyStore, get(), get(), applicationContext) as CurrentAddressProvider
         }
         single { FourByteDirectoryImpl(get(), applicationContext) as FourByteDirectory }
+
+        viewModel { TransactionListViewModel(this@App, get(),get(),get()) }
     }
 
     override fun attachBaseContext(base: Context) {

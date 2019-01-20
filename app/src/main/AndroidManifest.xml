@@ -65,13 +65,7 @@
             </intent-filter>
         </activity>
         <activity android:name="org.walleth.activities.MainActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
-            </intent-filter>
-            <meta-data android:name="android.app.shortcuts"
-                       android:resource="@xml/shortcuts"/>
         </activity>
 
         <activity
@@ -85,6 +79,15 @@
 
         <activity android:name="org.walleth.activities.OfflineTransactionActivity"
                   android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".activities.StartupActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                       android:resource="@xml/shortcuts"/>
+        </activity>
 
     </application>
 

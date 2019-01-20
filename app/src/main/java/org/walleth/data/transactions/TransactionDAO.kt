@@ -1,6 +1,7 @@
 package org.walleth.data.transactions
 
 import android.arch.lifecycle.LiveData
+import android.arch.paging.DataSource
 import android.arch.persistence.room.Dao
 import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
@@ -28,6 +29,12 @@ interface TransactionDAO {
 
     @Query("SELECT * FROM transactions WHERE \"to\" = :address COLLATE NOCASE AND chain=:chain ORDER BY creationEpochSecond DESC")
     fun getIncomingTransactionsForAddressOnChainOrdered(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
+
+    @Query("SELECT * FROM transactions WHERE \"to\" = :address COLLATE NOCASE AND chain=:chain ORDER BY creationEpochSecond DESC")
+    fun getIncomingPaged(address: Address, chain: ChainDefinition): DataSource.Factory<Int, TransactionEntity>
+
+    @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE AND chain=:chain ORDER BY creationEpochSecond DESC")
+    fun getOutgoingPaged(address: Address, chain: ChainDefinition): DataSource.Factory<Int, TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE  AND chain=:chain ORDER BY creationEpochSecond DESC")
     fun getOutgoingTransactionsForAddressOnChainOrdered(address: Address, chain: ChainDefinition): LiveData<List<TransactionEntity>>
