@@ -67,6 +67,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|right|end"
             android:layout_margin="16dp"
-            app:srcCompat="@drawable/ic_add_black_24dp"/>
+            app:srcCompat="@drawable/ic_add"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -23,6 +23,7 @@ import org.kethereum.bip39.validate
 import org.kethereum.bip39.wordlists.WORDLIST_ENGLISH
 import org.kethereum.crypto.model.PrivateKey
 import org.kethereum.crypto.toECKeyPair
+import org.kethereum.crypto.toHex
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.model.Address
 import org.kethereum.wallet.loadKeysFromWalletJsonString
@@ -129,8 +130,11 @@ class ImportActivity : BaseSubActivity() {
                 keyStore.importKey(key!!, DEFAULT_PASSWORD)
             }.await()
 
-
             if (importKey != null) {
+
+                val putExtra = Intent()
+                putExtra.putExtra("ADDRESS", importKey.cleanHex)
+                setResult(Activity.RESULT_OK, putExtra)
 
                 val address = Address(importKey.hex).withERC55Checksum()
                 alert.setMessage(getString(R.string.imported_key_alert_message, address))
@@ -145,7 +149,8 @@ class ImportActivity : BaseSubActivity() {
                 } else {
                     account_name.text
                 }
-                val note = oldEntry?.note ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
+                val note = oldEntry?.note
+                        ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
 
 
                 async(Dispatchers.Default) {
@@ -159,7 +164,9 @@ class ImportActivity : BaseSubActivity() {
                 }.await()
             }
 
-            alert.setPositiveButton(android.R.string.ok) { _, _ -> finish() }
+            alert.setPositiveButton(android.R.string.ok) { _, _ ->
+                finish()
+            }
 
         } catch (e: Exception) {
             alert.setMessage(e.message)

@@ -345,6 +345,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                     setIconLeft(R.drawable.ic_warning_orange_24dp, 24f)
                 }
                 also {
+
                     val textView: TextView = it.view.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text)
                     textView.setTextColor(Color.WHITE)
                 }

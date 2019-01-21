@@ -1,6 +1,7 @@
 package org.walleth.activities
 
 import android.os.Bundle
+import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.addressbook.AddressBookEntry
 
@@ -15,4 +16,6 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
         currentAddressProvider.setCurrent(addressEntry.address)
         finish()
     }
+
+
 }

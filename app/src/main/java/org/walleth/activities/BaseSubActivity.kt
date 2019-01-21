@@ -23,6 +23,7 @@ open class BaseSubActivity : WallethActivity()  {
     }
 
     override fun setContentView(layoutResID: Int) {
+        content_frame.removeAllViews()
         inflate(layoutResID, content_frame)
     }
 

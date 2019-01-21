@@ -231,6 +231,7 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
 
     if (includeFirebase) {
         withFirebaseImplementation "com.google.firebase:firebase-core:15.0.2"
@@ -249,7 +250,6 @@ if (isCI || isLightCI) {
     apply from: 'witness.gradle'
 }
 if (includeFirebase) {
-    apply plugin: 'com.google.gms.google-services'
 }
 
 apply plugin: 'com.github.ben-manes.versions'
