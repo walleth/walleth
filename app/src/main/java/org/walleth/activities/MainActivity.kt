@@ -188,13 +188,13 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
-        syncProgressProvider.nonNull().observe(this) { progress ->
-            if (progress.isSyncing) {
-                val percent = ((progress.currentBlock.toDouble() / progress.highestBlock) * 100).toInt()
-                supportActionBar?.subtitle = "Block ${progress.currentBlock}/${progress.highestBlock} ($percent%)"
-            }
-        }
+        currentAddressProvider.observe(this, Observer { address ->
+            refreshSubtitle()
+        })
 
+        networkDefinitionProvider.observe(this, Observer {
+            refreshSubtitle()
+        })
 
         val incomingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, INCOMING, networkDefinitionProvider, exchangeRateProvider, settings)
         transaction_recycler_in.adapter = incomingTransactionsAdapter
@@ -242,14 +242,21 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
+    private fun refreshSubtitle() {
+        appDatabase.addressBook.byAddressLiveData(currentAddressProvider.getCurrentNeverNull()).observe(this, Observer { currentAddress ->
+            currentAddress?.let { entry ->
+                val networkName = networkDefinitionProvider.value!!.getNetworkName()
+                supportActionBar?.subtitle = entry.name + "@" + networkName
+            }
+        })
+    }
+
 
     private val balanceObserver = Observer<Balance> {
         if (it != null) {
             amountViewModel.setValue(it.balance, currentTokenProvider.getCurrent())
-            supportActionBar?.subtitle = getString(R.string.main_activity_block, it.block)
         } else {
             amountViewModel.setValue(ZERO, currentTokenProvider.getCurrent())
-            supportActionBar?.subtitle = getString(R.string.main_activity_no_data)
         }
     }
 
