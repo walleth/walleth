@@ -24,7 +24,7 @@ class TheNavigationDrawer {
 
     @Test
     fun navigationDrawerIsUsuallyNotShown() {
-        `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
+        `when`(TestApp.mySettings.onboardingDone).thenReturn(true)
 
         rule.launchActivity()
         onView(withId(R.id.navigationView)).check(matches(not(isDisplayed())))
@@ -32,7 +32,7 @@ class TheNavigationDrawer {
 
     @Test
     fun navigationDrawerOpensWhenRequested() {
-        `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
+        `when`(TestApp.mySettings.onboardingDone).thenReturn(true)
 
         rule.launchActivity()
         onView(withId(R.id.drawer_layout)).perform(open())
@@ -41,7 +41,7 @@ class TheNavigationDrawer {
 
     @Test
     fun testNameIsDisplayedCorrectly() {
-        `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
+        `when`(TestApp.mySettings.onboardingDone).thenReturn(true)
 
         GlobalScope.async(Dispatchers.Main) {
             async(Dispatchers.Default) {

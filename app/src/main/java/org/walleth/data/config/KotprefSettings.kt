@@ -16,7 +16,7 @@ import java.security.SecureRandom
 object KotprefSettings : KotprefModel(), Settings {
 
     override var currentFiat by stringPref(default = "USD")
-    override var startupWarningDone by booleanPref(default = false)
+    override var onboardingDone by booleanPref(default = false)
     override var showOnlyStaredTokens by booleanPref(default = false)
 
     override var filterAddressesStared by booleanPref(default = false)

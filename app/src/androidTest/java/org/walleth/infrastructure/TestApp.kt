@@ -67,7 +67,7 @@ class TestApp : App() {
         val mySettings = mock(Settings::class.java).apply {
             `when`(currentFiat).thenReturn("EUR")
             `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
-            `when`(startupWarningDone).thenReturn(true)
+            `when`(onboardingDone).thenReturn(true)
             `when`(chain).thenReturn(4L)
             `when`(isLightClientWanted()).thenReturn(false)
             `when`(addressInitVersion).thenReturn(0)

@@ -8,7 +8,6 @@ import android.view.MotionEvent
 import com.github.amlcurran.showcaseview.OnShowcaseEventListener
 import com.github.amlcurran.showcaseview.ShowcaseView
 import com.github.amlcurran.showcaseview.targets.ViewTarget
-import org.ligi.kaxtui.alert
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.walleth.R
@@ -37,27 +36,22 @@ class OnboardingController(val activity: Activity,
     }
 
     fun install() {
-        if (!settings.startupWarningDone) {
-            activity.alert(
-                    title = R.string.onboarding_warning_title,
-                    message = R.string.onboarding_warning_message) {
+        if (!settings.onboardingDone) {
+            viewModel.isOnboardingVisible.value = true
 
-                viewModel.isOnboardingVisible.value = true
+            showcaseView.setOnShowcaseEventListener(object : OnShowcaseEventListener {
+                override fun onShowcaseViewShow(p0: ShowcaseView?) {}
+                override fun onShowcaseViewHide(p0: ShowcaseView?) {}
+                override fun onShowcaseViewDidHide(p0: ShowcaseView?) {
+                    dismiss()
+                }
 
-                showcaseView.setOnShowcaseEventListener(object : OnShowcaseEventListener {
-                    override fun onShowcaseViewShow(p0: ShowcaseView?) {}
-                    override fun onShowcaseViewHide(p0: ShowcaseView?) {}
-                    override fun onShowcaseViewDidHide(p0: ShowcaseView?) {
-                        dismiss()
-                    }
+                override fun onShowcaseViewTouchBlocked(p0: MotionEvent?) {}
+            })
 
-                    override fun onShowcaseViewTouchBlocked(p0: MotionEvent?) {}
-                })
+            showcaseView.show()
 
-                showcaseView.show()
-
-            }
-            settings.startupWarningDone = true
+            settings.onboardingDone = true
         } else {
             if (TraceDroid.getStackTraceFiles().isNotEmpty()) {
                 TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", activity)

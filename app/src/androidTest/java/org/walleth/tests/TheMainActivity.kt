@@ -1,7 +1,6 @@
 package org.walleth.tests
 
 import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.doesNotExist
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
@@ -43,16 +42,10 @@ class TheMainActivity {
             TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ZERO))
         }
 
-        `when`(TestApp.mySettings.startupWarningDone).thenReturn(false)
+        `when`(TestApp.mySettings.onboardingDone).thenReturn(false)
         AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         rule.launchActivity()
-
-        onView(withText(R.string.onboarding_warning_message)).check(matches(isDisplayed()))
-        onView(withClassName(containsString(ShowcaseView::class.java.name))).check(doesNotExist())
-        rule.screenShot("warning")
-
-        onView(withText(android.R.string.ok)).perform(click())
 
         onView(withClassName(containsString(ShowcaseView::class.java.name))).check(matches(isDisplayed()))
 
@@ -64,11 +57,12 @@ class TheMainActivity {
     @Test
     fun onBoardingIsNotShown() {
 
-        `when`(TestApp.mySettings.startupWarningDone).thenReturn(true)
+        `when`(TestApp.mySettings.onboardingDone).thenReturn(true)
 
         rule.launchActivity()
 
-        onView(withText(R.string.onboarding_warning_message)).check(doesNotExist())
+        onView(withClassName(containsString(ShowcaseView::class.java.name))).check(doesNotExist())
+
     }
 
     @Test

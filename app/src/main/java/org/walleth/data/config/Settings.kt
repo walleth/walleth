@@ -6,7 +6,7 @@ import java.math.BigInteger
 
 interface Settings {
     var currentFiat: String
-    var startupWarningDone: Boolean
+    var onboardingDone: Boolean
 
     var chain: Long
     var accountAddress: String?
