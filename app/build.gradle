@@ -1,6 +1,6 @@
 def isCI = hasProperty("isCI")
 def isLightCI = hasProperty("isLightCI")
-def includeFirebase = isCI || hasProperty("firebase") || true
+def includeFirebase = isCI || hasProperty("firebase")
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
