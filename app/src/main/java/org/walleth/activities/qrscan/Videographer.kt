@@ -102,6 +102,7 @@ class Videographer(val activity: Activity) {
                 setPreviewSize()
                 setCameraDisplayOrientation()
 
+                camera.reconnect()
                 camera.stopPreview()
                 camera.setPreviewTexture(surface)
                 camera.startPreview()
