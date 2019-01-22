@@ -1,6 +1,7 @@
 def isCI = hasProperty("isCI")
 def isLightCI = hasProperty("isLightCI")
 def includeFirebase = isCI || hasProperty("firebase")
+def includeOffline = hasProperty("isCI")
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -109,6 +110,7 @@ android {
         if ((project.hasProperty("singleFlavor") && (store != 'forFDroid'))
                 || ((store == 'forAmazon' || store == 'forPlay') && firebase == 'noFirebase')
                 || (store == 'forFDroid' && firebase != 'noFirebase')
+                || (connectivity == "offline" && !includeOffline)
                 || (connectivity == 'offline' && (firebase == 'withFirebase' || geth == 'withGeth'))) {
             variant.setIgnore(true)
         }
