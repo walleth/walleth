@@ -8,10 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import org.kethereum.crypto.toAddress
-import org.kethereum.functions.encodeRLP
-import org.kethereum.keccakshortcut.keccak
-import org.kodein.di.generic.instance
+import okhttp3.internal.Internal.instance
+import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.ligi.kroom.inTransaction
 import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
@@ -19,7 +17,6 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
-import org.walleth.khex.toHexString
 
 const val TREZOR_REQUEST_CODE = 7689
 
@@ -35,7 +32,7 @@ class NFCSignTransactionActivity : BaseNFCActivity() {
 
     private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
 
-    protected val appDatabase: AppDatabase by instance()
+    protected val appDatabase: AppDatabase by inject()
 
     var pin = "000000"
 
