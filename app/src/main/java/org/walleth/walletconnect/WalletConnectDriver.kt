@@ -129,50 +129,47 @@ open class WalletConnectDriver(
     class JSONRPCCall(val method: String, val paramsJSON: String, val id: String)
     class StatefulJSONRPCCall(val session: Session, val call: JSONRPCCall)
 
-    fun getCalls(sessionId: String): StatefulJSONRPCCall? {
-        sessionStore.get(sessionId)?.let { session ->
-            val url = "${session.domain}/session/${session.sessionId}/calls"
+    fun getCalls(sessionId: String) = sessionStore.get(sessionId)?.let { session ->
+        val url = "${session.domain}/session/${session.sessionId}/calls"
 
-            val sessionData = okHttpClient.newCall(Request.Builder()
-                    .url(url).build())
-                    .execute().use { it.body().use { it?.string() } }
-                    ?.let {
-                        JSONObject(it).getJSONObject("data").let { sessionData ->
-                            val callId = sessionData.keys().next()
-                            sessionData.getJSONObject(callId).getJSONObject("encryptionPayload").put("callId", callId)
-                        }
+        val sessionData = okHttpClient.newCall(Request.Builder()
+                .url(url).build())
+                .execute().use { it.body().use { it?.string() } }
+                ?.let {
+                    JSONObject(it).getJSONObject("data").let { sessionData ->
+                        val callId = sessionData.keys().next()
+                        sessionData.getJSONObject(callId).getJSONObject("encryptionPayload").put("callId", callId)
                     }
+                }
 
-            if (sessionData == null) {
-                Log.w("Could not get session data from $url")
-                return null
-            }
-
-            val data = sessionData.getString("data")!!.hexToByteArray()
-
-            val key = session.sharedKey.hexToByteArray()
-
-            val iv = sessionData.getString("iv")?.hexToByteArray()
-
-            val padding = PKCS7Padding()
-            val aes = PaddedBufferedBlockCipher(CBCBlockCipher(AESEngine()), padding)
-            val ivAndKey = ParametersWithIV(KeyParameter(key), iv)
-            aes.init(false, ivAndKey)
-
-            val minSize = aes.getOutputSize(data.size)
-            val outBuf = ByteArray(minSize)
-            val length1 = aes.processBytes(data, 0, data.size, outBuf, 0)
-            val length2 = aes.doFinal(outBuf, length1)
-
-            val jsonString = String(outBuf.copyOf(length1 + length2))
-            val rpcCall = JSONObject(jsonString).getJSONObject("data")
-
-            val method = rpcCall.getString("method")
-            val params = rpcCall.getString("params")
-            val id = sessionData.getString("callId")
-            return StatefulJSONRPCCall(session, JSONRPCCall(method = method, paramsJSON = params, id = id))
+        if (sessionData == null) {
+            Log.w("Could not get session data from $url")
+            return null
         }
 
+        val data = sessionData.getString("data")!!.hexToByteArray()
+
+        val key = session.sharedKey.hexToByteArray()
+
+        val iv = sessionData.getString("iv")?.hexToByteArray()
+
+        val padding = PKCS7Padding()
+        val aes = PaddedBufferedBlockCipher(CBCBlockCipher(AESEngine()), padding)
+        val ivAndKey = ParametersWithIV(KeyParameter(key), iv)
+        aes.init(false, ivAndKey)
+
+        val minSize = aes.getOutputSize(data.size)
+        val outBuf = ByteArray(minSize)
+        val length1 = aes.processBytes(data, 0, data.size, outBuf, 0)
+        val length2 = aes.doFinal(outBuf, length1)
+
+        val jsonString = String(outBuf.copyOf(length1 + length2))
+        val rpcCall = JSONObject(jsonString).getJSONObject("data")
+
+        val method = rpcCall.getString("method")
+        val params = rpcCall.getString("params")
+        val id = sessionData.getString("callId")
+        StatefulJSONRPCCall(session, JSONRPCCall(method = method, paramsJSON = params, id = id))
     }
 
 }
