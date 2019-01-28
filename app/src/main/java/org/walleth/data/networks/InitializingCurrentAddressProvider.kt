@@ -23,19 +23,6 @@ class InitializingCurrentAddressProvider(keyStore: WallethKeyStore, appDatabase:
             GlobalScope.async(Dispatchers.Default) {
                 if (!keyStore.getAddresses().isEmpty()) {
                     postValue(keyStore.getAddresses().first())
-                } else {
-                    val newAccountAddress = keyStore.importKey(createEthereumKeyPair(), DEFAULT_PASSWORD)
-                            ?: throw (IllegalArgumentException("Could not create key"))
-
-                    appDatabase.addressBook.upsert(AddressBookEntry(
-                            name = context.getString(org.walleth.R.string.default_account_name),
-                            address = newAccountAddress,
-                            note = context.getString(R.string.new_address_note),
-                            isNotificationWanted = true,
-                            trezorDerivationPath = null
-                    ))
-                    postValue(newAccountAddress)
-
                 }
             }
         }

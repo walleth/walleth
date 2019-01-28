@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/toolbar"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="vertical">
+
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/create_key_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="create key"
+            app:icon="@drawable/ic_add_black_24dp" />
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/import_key_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="import key"
+            app:icon="@drawable/ic_import" />
+
+        <android.support.design.button.MaterialButton
+            android:id="@+id/watch_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="watch"
+            app:icon="@drawable/ic_watch" />
+
+
+    </LinearLayout>
+</FrameLayout>
