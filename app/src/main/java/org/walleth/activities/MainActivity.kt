@@ -319,6 +319,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         outState!!.putString(KEY_LAST_PASTED_DATA, lastPastedData)
     }
 
+
     override fun onDestroy() {
         settings.unregisterListener(this)
         super.onDestroy()

@@ -9,7 +9,7 @@ import org.ligi.kaxt.inflate
 import org.walleth.R
 
 @SuppressLint("Registered")
-open class BaseSubActivity : WallethActivity()  {
+open class BaseSubActivity : WallethActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +23,7 @@ open class BaseSubActivity : WallethActivity()  {
     }
 
     override fun setContentView(layoutResID: Int) {
+        content_frame.removeAllViews()
         inflate(layoutResID, content_frame)
     }
 
