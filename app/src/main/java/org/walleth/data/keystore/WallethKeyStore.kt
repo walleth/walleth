@@ -1,7 +1,7 @@
 package org.walleth.data.keystore
 
-import org.kethereum.crypto.model.ECKeyPair
 import org.kethereum.model.Address
+import org.kethereum.model.ECKeyPair
 
 interface WallethKeyStore {
     fun importKey(key: ECKeyPair, password: String): Address?

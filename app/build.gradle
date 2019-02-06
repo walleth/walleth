@@ -158,11 +158,14 @@ dependencies {
     implementation "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     implementation "com.github.walleth.kethereum:method_signatures:$kethereum_version"
     implementation "com.github.walleth.kethereum:networks:$kethereum_version"
-        implementation "com.github.walleth.kethereum:etherscan:$kethereum_version"
-        implementation "com.github.walleth.kethereum:rlp:$kethereum_version"
+    implementation "com.github.walleth.kethereum:etherscan:$kethereum_version"
+    implementation "com.github.walleth.kethereum:rlp:$kethereum_version"
     implementation "com.github.walleth.kethereum:wallet:$kethereum_version"
     implementation "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
 
+    implementation "com.github.walleth.kethereum:crypto_impl_bouncycastle:$kethereum_version"
+
+    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.2"
     implementation 'com.dmitrymalkovich.android:progress-fab:1.6'
 
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'

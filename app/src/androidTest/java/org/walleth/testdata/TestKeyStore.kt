@@ -1,8 +1,8 @@
 package org.walleth.testdata
 
-import org.kethereum.crypto.model.ECKeyPair
 import org.kethereum.crypto.toAddress
 import org.kethereum.model.Address
+import org.kethereum.model.ECKeyPair
 import org.walleth.data.keystore.WallethKeyStore
 
 class TestKeyStore : WallethKeyStore {

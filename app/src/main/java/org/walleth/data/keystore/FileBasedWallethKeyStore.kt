@@ -1,8 +1,8 @@
 package org.walleth.data.keystore
 
 import android.content.Context
-import org.kethereum.crypto.model.ECKeyPair
 import org.kethereum.model.Address
+import org.kethereum.model.ECKeyPair
 import org.kethereum.wallet.LIGHT_SCRYPT_CONFIG
 import org.kethereum.wallet.generateWalletFile
 import org.kethereum.wallet.loadKeysFromWalletFile

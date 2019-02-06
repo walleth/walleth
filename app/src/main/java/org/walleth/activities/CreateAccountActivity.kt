@@ -11,13 +11,13 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.crypto.createEthereumKeyPair
-import org.kethereum.crypto.model.ECKeyPair
 import org.kethereum.crypto.toAddress
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.erc681.parseERC681
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.functions.isValid
 import org.kethereum.model.Address
+import org.kethereum.model.ECKeyPair
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
