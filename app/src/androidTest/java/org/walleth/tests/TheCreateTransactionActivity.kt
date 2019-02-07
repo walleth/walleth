@@ -73,8 +73,8 @@ class TheCreateTransactionActivity {
     }
 
     @Test
-    fun rejectsDifferentChainId() {
-        val chainIdForTransaction = TestApp.mySettings.chain + 1
+    fun rejectsUnknownChainId() {
+        val chainIdForTransaction = 0
         rule.launchActivity(Intent.getIntentOld("ethereum:0x12345@" + chainIdForTransaction))
 
         Espresso.onView(ViewMatchers.withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
