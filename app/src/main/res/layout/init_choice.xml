@@ -18,6 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="create key"
+            style="@style/MaterialButtonStyle"
             app:icon="@drawable/ic_add_black_24dp" />
 
         <android.support.design.button.MaterialButton
@@ -25,6 +26,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="import key"
+            style="@style/MaterialButtonStyle"
             app:icon="@drawable/ic_import" />
 
         <android.support.design.button.MaterialButton
@@ -32,6 +34,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="watch"
+            style="@style/MaterialButtonStyle"
             app:icon="@drawable/ic_watch" />
 
 

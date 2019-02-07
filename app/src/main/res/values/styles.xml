@@ -12,7 +12,6 @@
         <!-- your light/dark theme independent attributes -->
     </style>
 
-
     <style name="AppTheme" parent="Theme.WallETH.DayNight">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -21,6 +20,11 @@
         <item name="actionBarTheme">@style/wallethActionBarThemeOverlay</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+
+    <style name="MaterialButtonStyle" parent="Widget.MaterialComponents.Button">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="iconTint">@android:color/black</item>
     </style>
 
     <style name="wallethActionBar" parent="Widget.AppCompat.ActionBar.Solid">
