@@ -22,7 +22,7 @@ object KotprefSettings : KotprefModel(), Settings {
     override var filterAddressesStared by booleanPref(default = false)
     override var filterAddressesKeyOnly by booleanPref(default = false)
 
-    override var chain by longPref(4L)
+    override var chain by longPref(5L)
     override var accountAddress by nullableStringPref(null)
 
     override var addressInitVersion by intPref(0)
