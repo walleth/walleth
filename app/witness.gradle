@@ -124,7 +124,7 @@ dependencyVerification {
         'com.github.ligi.tracedroid:supportemail:2.0:supportemail-2.0.aar:14702477bb86bbd90075700cfad5f3b662eda029eee7999d7809f434c59454f5',
         'com.github.ligi:ExtraCompats:0.5:ExtraCompats-0.5.aar:c1951c9e36fc6a373d43d06dfa28625c05c0e29294e12fba7caf903e5646bbbb',
         'com.github.ligi:KAXT:0.22:KAXT-0.22.jar:1a54b1de439bf894bb2488d7b4450d05cd639a5217602a89d1286665ea377587',
-        'com.github.ligi:KAXTUI:0.7:KAXTUI-0.7.aar:9a0622ab36c43b48c2e79563be7f1bc66ca1c07fbdabfe5a7379167f1a9eb393',
+        'com.github.ligi:KAXTUI:0.8:KAXTUI-0.8.aar:fb0bb1e9826cd96ba5a15c8b2f0a77a0adf063c5895295c6b40f402d578d779e',
         'com.github.ligi:KRoom:0.4:KRoom-0.4.aar:44a3d2279de2385892f9fc1335a73e740c7942bc445ae34436e265b1abbb225b',
         'com.github.ligi:rootbeer:remove_native_workaround:rootbeer-remove_native_workaround.aar:17ac9185a100b30a271cdc02375ba0024072643f02aa4be1b91cbfc3c3c1c9b1',
         'com.github.ligi:thirdpartylicensedisplay:0.2:thirdpartylicensedisplay-0.2.aar:2ab2a6ea5134328401a25fc26cdf7754c92aaff5166262ef30407f34c45ac682',
