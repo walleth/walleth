@@ -1,6 +1,7 @@
 package org.walleth.activities
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -17,7 +18,6 @@ import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_show_qr.*
 import kotlinx.coroutines.*
 import net.glxn.qrgen.android.QRCode
@@ -31,12 +31,13 @@ import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import java.io.ByteArrayOutputStream
+import java.io.FileOutputStream
 
+const val REQUEST_CODE_SELECT_TOKEN = 4205
 
 class ExportKeyActivity : BaseSubActivity() {
 
     val keyStore: WallethKeyStore by inject()
-    val moshi: Moshi by inject()
     val currentAddressProvider: CurrentAddressProvider by inject()
 
     private var keyJSON: String? = null
@@ -112,6 +113,18 @@ class ExportKeyActivity : BaseSubActivity() {
             }
         }
 
+        R.id.menu_save -> true.also {
+            startAfterKeyIsReady {
+                val sendIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
+
+                    putExtra(Intent.EXTRA_TITLE, currentAddressProvider.getCurrent().toString() + ".key")
+                    type = "application/json"
+                }
+                startActivityForResult(sendIntent, REQUEST_CODE_SELECT_TOKEN)
+            }
+        }
+
+
         R.id.menu_print -> true.also {
             doWebViewPrint()
         }
@@ -129,6 +142,24 @@ class ExportKeyActivity : BaseSubActivity() {
 
         key_progress.visibility = View.GONE
         action.invoke()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode != Activity.RESULT_OK) {
+            return
+        }
+
+        data?.data?.let { uri ->
+            contentResolver.openFileDescriptor(uri, "w")
+        }?.use { fileDescriptor ->
+            FileOutputStream(fileDescriptor.fileDescriptor).use {
+                it.writer().use { writer ->
+                    writer.write(keyJSON)
+                }
+            }
+        }
     }
 
     private fun doWebViewPrint() = startAfterKeyIsReady {
