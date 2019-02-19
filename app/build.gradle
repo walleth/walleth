@@ -170,7 +170,7 @@ dependencies {
 
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
 
-    implementation 'com.github.ligi.tracedroid:supportemail:2.0'
+    implementation 'com.github.ligi.tracedroid:supportemail:2.1'
 
     implementation 'com.github.ligi:KAXT:0.22'
 
