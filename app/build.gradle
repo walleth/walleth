@@ -175,7 +175,7 @@ dependencies {
     implementation 'com.github.ligi:KAXT:0.22'
 
     implementation 'com.github.ligi:KAXTUI:0.8'
-    implementation 'com.github.ligi:thirdpartylicensedisplay:0.2'
+    implementation 'com.github.ligi:thirdpartylicensedisplay:0.4'
 
     implementation 'com.androidadvance:topsnackbar:1.1.1'
 
