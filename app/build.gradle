@@ -258,3 +258,10 @@ if (includeFirebase) {
 }
 
 apply plugin: 'com.github.ben-manes.versions'
+
+licenseReport {
+    generateHtmlReport = false
+    generateJsonReport = true
+
+    copyJsonReportToAssets = true
+}
