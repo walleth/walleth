@@ -1,0 +1,1283 @@
+[
+    {
+        "project": "Android AppCompat Library v7",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Arch-Common",
+        "description": "Android Arch-Common",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Arch-Runtime",
+        "description": "Android Arch-Runtime",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android DB",
+        "description": "Android DB",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Lifecycle Extensions",
+        "description": "Android Lifecycle Extensions",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Lifecycle LiveData",
+        "description": "Android Lifecycle LiveData",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Lifecycle LiveData Core",
+        "description": "Android Lifecycle LiveData Core",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Lifecycle Runtime",
+        "description": "Android Lifecycle Runtime",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Lifecycle ViewModel",
+        "description": "Android Lifecycle ViewModel",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Lifecycle-Common",
+        "description": "Android Lifecycle-Common",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Paging-Common",
+        "description": "Android Paging-Common",
+        "version": "1.0.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Paging-Runtime",
+        "description": "Android Paging-Runtime",
+        "version": "1.0.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Room-Common",
+        "description": "Android Room-Common",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Room-Runtime",
+        "description": "Android Room-Runtime",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support AnimatedVectorDrawable",
+        "description": "Android Support AnimatedVectorDrawable",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2015",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support CardView v7",
+        "description": "Android Support CardView v7",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Annotations",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2013",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Async Layout Inflater",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Coordinator Layout",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Cursor Adapter",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Custom View",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Custom View",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Document File",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Drawer Layout",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Interpolators",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Local Broadcast Manager",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Print",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library Sliding Pane Layout",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library View Pager",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library collections",
+        "description": "Standalone efficient collections.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library compat",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2015",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library core UI",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library core utils",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library fragment",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library loader",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library media compat",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Library v4",
+        "description": "The Support Library is a static library that you can add to your Android application in order to use APIs that are either not available for older platform versions or utility APIs that aren't a part of the framework APIs. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2011",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Preference v14",
+        "description": "Android Support Preference v14",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2015",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support Preference v7",
+        "description": "Android Support Preference v7",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2015",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support RecyclerView v7",
+        "description": "Android Support RecyclerView v7",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2014",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support SQLite - Framework Implementation",
+        "description": "The implementation of Support SQLite library using the framework code.",
+        "version": "1.1.1",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "https://developer.android.com/topic/libraries/architecture/index.html",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Support VectorDrawable",
+        "description": "Android Support VectorDrawable",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2015",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Android Transition Support Library",
+        "description": "Android Transition Support Library",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2016",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Apache Log4j",
+        "description": "Apache Log4j 1.2",
+        "version": "1.2.17",
+        "developers": [
+            
+        ],
+        "url": "http://logging.apache.org/log4j/1.2/",
+        "year": "1999",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Bouncy Castle Provider",
+        "description": "The Bouncy Castle Crypto package is a Java implementation of cryptographic algorithms. This jar contains JCE provider and lightweight API for the Bouncy Castle Cryptography APIs for JDK 1.5 to JDK 1.8.",
+        "version": "1.60",
+        "developers": [
+            "The Legion of the Bouncy Castle Inc."
+        ],
+        "url": "http://www.bouncycastle.org/java.html",
+        "year": null,
+        "licenses": [
+            {
+                "license": "Bouncy Castle Licence",
+                "license_url": "http://www.bouncycastle.org/licence.html"
+            }
+        ]
+    },
+    {
+        "project": "Com.github.madrapps:pikolo",
+        "description": "An android color picker library",
+        "version": "1.1.8",
+        "developers": [
+            "Madrapps"
+        ],
+        "url": "https://github.com/Madrapps/Pikolo",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "IntelliJ IDEA Annotations",
+        "description": "A set of annotations used for code inspection support and code documentation.",
+        "version": "13.0",
+        "developers": [
+            "JetBrains Team"
+        ],
+        "url": "http://www.jetbrains.org",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "JZlib",
+        "description": "JZlib is a re-implementation of zlib in pure Java",
+        "version": "1.1.3",
+        "developers": [
+            "Atsuhiko Yamanaka"
+        ],
+        "url": "http://www.jcraft.com/jzlib/",
+        "year": null,
+        "licenses": [
+            {
+                "license": "BSD",
+                "license_url": "http://www.jcraft.com/jzlib/LICENSE.txt"
+            }
+        ]
+    },
+    {
+        "project": "Kotlinx-coroutines-android",
+        "description": "Coroutines support libraries for Kotlin",
+        "version": "1.1.1",
+        "developers": [
+            "JetBrains Team"
+        ],
+        "url": "https://github.com/Kotlin/kotlinx.coroutines",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Kotlinx-coroutines-core",
+        "description": "Coroutines support libraries for Kotlin",
+        "version": "1.1.1",
+        "developers": [
+            "JetBrains Team"
+        ],
+        "url": "https://github.com/Kotlin/kotlinx.coroutines",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Kotlinx-coroutines-core-common",
+        "description": "Coroutines support libraries for Kotlin",
+        "version": "1.1.1",
+        "developers": [
+            "JetBrains Team"
+        ],
+        "url": "https://github.com/Kotlin/kotlinx.coroutines",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Kotpref",
+        "description": null,
+        "version": "2.6.0",
+        "developers": [
+            "Takao Chiba"
+        ],
+        "url": "https://github.com/chibatching/kotpref",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Ligi/KAXTUI",
+        "description": null,
+        "version": "0.8",
+        "developers": [
+            "ligi"
+        ],
+        "url": "https://github.com/ligi/KAXTUI",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "MIT License",
+                "license_url": "https://api.github.com/licenses/mit"
+            }
+        ]
+    },
+    {
+        "project": "Ligi/ThirdPartyLicenseDisplay",
+        "description": "Displays third party license information",
+        "version": "0.4",
+        "developers": [
+            "ligi"
+        ],
+        "url": "https://github.com/ligi/ThirdPartyLicenseDisplay",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "MIT License",
+                "license_url": "https://api.github.com/licenses/mit"
+            }
+        ]
+    },
+    {
+        "project": "Material Components for Android",
+        "description": "Material Components for Android is a static library that you can add to your Android application in order to use APIs that provide implementations of the Material Design specification. Compatible on devices running API 14 or later.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2015",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Moshi",
+        "description": null,
+        "version": null,
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "Apache 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Moshi-adapters",
+        "description": null,
+        "version": null,
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "Apache 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "No op LeakCanary for Android",
+        "description": "Leak Canary",
+        "version": "1.6.3",
+        "developers": [
+            "Square, Inc."
+        ],
+        "url": "http://github.com/square/leakcanary/",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "OkHttp",
+        "description": null,
+        "version": null,
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "Apache 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Okio",
+        "description": null,
+        "version": null,
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "Apache 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Org.jetbrains.kotlin:kotlin-stdlib",
+        "description": "Kotlin Standard Library for JVM",
+        "version": "1.3.21",
+        "developers": [
+            "Kotlin Team"
+        ],
+        "url": "https://kotlinlang.org/",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Org.jetbrains.kotlin:kotlin-stdlib-common",
+        "description": "Kotlin Common Standard Library",
+        "version": "1.3.21",
+        "developers": [
+            "Kotlin Team"
+        ],
+        "url": "https://kotlinlang.org/",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Org.jetbrains.kotlin:kotlin-stdlib-jdk7",
+        "description": "Kotlin Standard Library JDK 7 extension",
+        "version": "1.3.21",
+        "developers": [
+            "Kotlin Team"
+        ],
+        "url": "https://kotlinlang.org/",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Process Phoenix",
+        "description": "A special activity which facilitates restarting your application process.",
+        "version": "2.0.0",
+        "developers": [
+            "Jake Wharton"
+        ],
+        "url": "https://github.com/JakeWharton/ProcessPhoenix/",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Progress-fab",
+        "description": "Add a circular progress bar to any existing fab. Idea was to not create custom floating action button, but help to integrate existing circular progress with existing floating action button like described in material design guideline.",
+        "version": "1.6",
+        "developers": [
+            "Dmitry Malkovich"
+        ],
+        "url": "https://github.com/DmitryMalkovich/circular-with-floating-action-button",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Protocol Buffers [Core]",
+        "description": "Core Protocol Buffers library. Protocol Buffers are a way of encoding structured data in an\n    efficient yet extensible format.",
+        "version": null,
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "3-Clause BSD License",
+                "license_url": "https://opensource.org/licenses/BSD-3-Clause"
+            }
+        ]
+    },
+    {
+        "project": "QRGen-android",
+        "description": null,
+        "version": "2.5.0",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "Apache License v2",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            }
+        ]
+    },
+    {
+        "project": "QRGen-core",
+        "description": "a simple QRCode generation api for java built on top ZXING",
+        "version": "2.5.0",
+        "developers": [
+            "Ken Gullaksen"
+        ],
+        "url": "http://kenglxn.github.io/QRGen/",
+        "year": null,
+        "licenses": [
+            {
+                "license": "Apache License v2",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+            }
+        ]
+    },
+    {
+        "project": "Rootbeer",
+        "description": "A tasty root checker library and sample app. We've scoured the internets for different methods of answering that age old question... Has this device got root?",
+        "version": "remove_native_workaround",
+        "developers": [
+            "Scott Alexander-Bown"
+        ],
+        "url": "https://github.com/scottyab/rootbeer.git",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "SLF4J API Module",
+        "description": "The slf4j API",
+        "version": null,
+        "developers": [
+            
+        ],
+        "url": "http://www.slf4j.org",
+        "year": null,
+        "licenses": [
+            {
+                "license": "MIT License",
+                "license_url": "http://www.opensource.org/licenses/mit-license.php"
+            }
+        ]
+    },
+    {
+        "project": "SLF4J LOG4J-12 Binding",
+        "description": "SLF4J LOG4J-12 Binding",
+        "version": null,
+        "developers": [
+            
+        ],
+        "url": "http://www.slf4j.org",
+        "year": null,
+        "licenses": [
+            {
+                "license": "MIT License",
+                "license_url": "http://www.opensource.org/licenses/mit-license.php"
+            }
+        ]
+    },
+    {
+        "project": "ShowcaseView library",
+        "description": "Highlight the best bits of your app to users quickly, simply, and cool...ly",
+        "version": "5.4.3",
+        "developers": [
+            "Alex Curran"
+        ],
+        "url": "https://github.com/amlcurran/ShowcaseView",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "ThreeTen backport",
+        "description": "Backport of JSR-310 from JDK 8 to JDK 7 and JDK 6. NOT an implementation of the JSR.",
+        "version": "1.3.7",
+        "developers": [
+            "Stephen Colebourne"
+        ],
+        "url": "https://www.threeten.org/threetenbp",
+        "year": "2007",
+        "licenses": [
+            {
+                "license": "BSD 3-clause",
+                "license_url": "https://raw.githubusercontent.com/ThreeTen/threetenbp/master/LICENSE.txt"
+            }
+        ]
+    },
+    {
+        "project": "ThreeTenAbp",
+        "description": "An adaptation of the JSR-310 backport for Android.",
+        "version": "1.1.1",
+        "developers": [
+            "Jake Wharton"
+        ],
+        "url": "https://github.com/JakeWharton/ThreeTenABP/",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Timber",
+        "description": "No-nonsense injectable logging.",
+        "version": "4.5.1",
+        "developers": [
+            "Jake Wharton"
+        ],
+        "url": "https://github.com/JakeWharton/timber",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "Topsnackbar",
+        "description": "A Snackbar showing on top (Android).",
+        "version": "1.1.1",
+        "developers": [
+            "Andrei Dan"
+        ],
+        "url": "https://github.com/AndreiD/TSnackBar",
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "VersionedParcelable and friends",
+        "description": "Provides a stable but relatively compact binary serialization format that can be passed across processes or persisted safely.",
+        "version": "28.0.0",
+        "developers": [
+            "The Android Open Source Project"
+        ],
+        "url": "http://developer.android.com/tools/extras/support-library.html",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "The Apache Software License",
+                "license_url": "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    },
+    {
+        "project": "WalletConnect/kotlin-walletconnect-lib",
+        "description": "library to use WalletConnect with Kotlin or Java",
+        "version": "0.2",
+        "developers": [
+            "WalletConnect"
+        ],
+        "url": "https://github.com/WalletConnect/kotlin-walletconnect-lib",
+        "year": "2018",
+        "licenses": [
+            {
+                "license": "MIT License",
+                "license_url": "https://api.github.com/licenses/mit"
+            }
+        ]
+    },
+    {
+        "project": "Walleth/khex",
+        "description": "Kotlin library to handle hexadecimal value representations",
+        "version": "0.6",
+        "developers": [
+            "WALL\u039eTH"
+        ],
+        "url": "https://github.com/walleth/khex",
+        "year": "2017",
+        "licenses": [
+            {
+                "license": "MIT License",
+                "license_url": "https://api.github.com/licenses/mit"
+            }
+        ]
+    },
+    {
+        "project": "ZXing Core",
+        "description": "Core barcode encoding/decoding library",
+        "version": "3.3.3",
+        "developers": [
+            
+        ],
+        "url": null,
+        "year": null,
+        "licenses": [
+            {
+                "license": "The Apache Software License, Version 2.0",
+                "license_url": "https://www.apache.org/licenses/LICENSE-2.0.txt"
+            }
+        ]
+    }
+]
+
