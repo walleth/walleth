@@ -82,10 +82,10 @@ open class ValueViewController(private val valueView: ValueView,
     }
 
 
-    fun setValue(value: BigInteger, token: Token) {
+    fun setValue(value: BigInteger?, token: Token) {
         valueView.current_fiat.clearFocus()
         currentToken = token
-        currentAmountString = value.toValueString(token)
+        currentAmountString = value?.toValueString(token)?:"?"
         currentAmount = value
         adaptFiat()
     }
@@ -107,10 +107,10 @@ open class ValueViewController(private val valueView: ValueView,
         refreshNonValues()
     }
 
-    private fun getValueFromString(): BigInteger = try {
+    private fun getValueFromString(): BigInteger? = try {
         ((currentAmountString ?: "").asBigDecimal() * BigDecimal("1" + currentToken!!.decimalsInZeroes())).toBigInteger()
     } catch (e: java.lang.Exception) {
-        ZERO
+        null
     }
 
     fun getValue(): BigInteger = currentAmount ?: ZERO

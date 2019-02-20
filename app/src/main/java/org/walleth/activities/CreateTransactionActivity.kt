@@ -38,10 +38,7 @@ import org.kethereum.functions.*
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.methodsignatures.toHexSignature
-import org.kethereum.model.Address
-import org.kethereum.model.SignatureData
-import org.kethereum.model.Transaction
-import org.kethereum.model.createTransactionWithDefaults
+import org.kethereum.model.*
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
@@ -484,7 +481,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             if (currentERC681.valid) {
 
                 chainIDAlert(networkDefinitionProvider,
-                        localERC681.chainId,
+                        localERC681.chainId?.let { ChainId(it) },
                         continuationWithWrongChainId = {
                             finish()
                         },

@@ -2,6 +2,7 @@ package org.walleth.ui
 
 import android.app.AlertDialog
 import android.content.Context
+import org.kethereum.model.ChainId
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -11,7 +12,7 @@ import org.walleth.data.networks.getNetworkDefinitionByChainID
 // TODO - handle cancellation of dialog
 
 fun Context.chainIDAlert(networkDefinitionProvider: NetworkDefinitionProvider,
-                         chainId: Long?,
+                         chainId: ChainId?,
                          continuationWithWrongChainId: () -> Unit = {},
                          continuationWithCorrectOrNullChainId: () -> Unit) {
 
@@ -22,7 +23,7 @@ fun Context.chainIDAlert(networkDefinitionProvider: NetworkDefinitionProvider,
 
         if (networkToSwitchTo == null) {
             alert(
-                    message = getString(R.string.alert_network_unsupported_message, chainId),
+                    message = getString(R.string.alert_network_unsupported_message, chainId.value),
                     title = getString(R.string.alert_network_unsupported_title),
                     onOK = {
                         continuationWithWrongChainId()

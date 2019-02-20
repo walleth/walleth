@@ -253,10 +253,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
 
     private val balanceObserver = Observer<Balance> {
-        if (it != null) {
+        if (it != null && it.chain == networkDefinitionProvider.getCurrent().chain) {
             amountViewModel.setValue(it.balance, currentTokenProvider.getCurrent())
         } else {
-            amountViewModel.setValue(ZERO, currentTokenProvider.getCurrent())
+            amountViewModel.setValue(null, currentTokenProvider.getCurrent())
         }
     }
 

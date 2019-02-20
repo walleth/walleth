@@ -3,6 +3,7 @@ package org.walleth.data
 import android.arch.persistence.room.TypeConverter
 import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
+import org.kethereum.model.ChainId
 import org.walleth.data.transactions.TransactionSource
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
@@ -22,11 +23,13 @@ class RoomTypeConverters {
     /** NetworkDefinition  */
 
     @TypeConverter
-    fun fromNetworkDefinition(value: String)
-            = ChainDefinition(java.lang.Long.parseLong(value.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]), "ETH")
+    fun fromNetworkDefinition(value: String): ChainDefinition {
+        val split = value.split(":")
+        return ChainDefinition(ChainId(split.last().toLong()), split.first())
+    }
 
     @TypeConverter
-    fun toNetworkDefintion(chain: ChainDefinition?) = if (chain == null) null else "ETH:" + chain.id
+    fun toNetworkDefinition(chain: ChainDefinition?) = chain?.toString()
 
     /** Date  */
 

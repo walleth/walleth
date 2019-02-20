@@ -112,9 +112,9 @@ class GethLightEthereumService : LifecycleService() {
                 subPath.mkdirs()
                 val nodeConfig = NodeConfig().apply {
 
-                    ethereumNetworkID = network.chain.id
+                    ethereumNetworkID = network.chain.id.value
 
-                    ethereumGenesis = when (network.chain.id) {
+                    ethereumGenesis = when (network.chain.id.value) {
                         1L -> Geth.mainnetGenesis()
                         3L -> Geth.testnetGenesis()
                         4L -> Geth.rinkebyGenesis()

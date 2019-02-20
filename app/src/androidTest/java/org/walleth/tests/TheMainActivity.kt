@@ -68,11 +68,12 @@ class TheMainActivity {
     @Test
     fun behavesCorrectlyNoTransactions() {
 
+        val balance = Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ZERO)
 
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getEthTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ZERO))
+            TestApp.testDatabase.balances.upsert(balance)
         }
 
         rule.launchActivity()

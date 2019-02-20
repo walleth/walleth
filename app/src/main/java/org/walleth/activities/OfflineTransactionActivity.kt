@@ -21,6 +21,7 @@ import org.kethereum.functions.toTransaction
 import org.kethereum.functions.toTransactionSignatureData
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.ChainDefinition
+import org.kethereum.model.ChainId
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
 import org.koin.android.ext.android.inject
@@ -38,13 +39,13 @@ import org.walleth.khex.clean0xPrefix
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.ui.chainIDAlert
+import org.walleth.util.findChainDefinition
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
 import org.walleth.util.isUnsignedTransactionJSON
 import java.math.BigInteger
 
 private const val KEY_CONTENT = "KEY_OFFLINE_TX_CONTENT"
-
 
 fun Context.getOfflineTransactionIntent(content: String) = Intent(this, OfflineTransactionActivity::class.java).apply {
     putExtra(KEY_CONTENT, content)
@@ -103,7 +104,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
                     val chainID = (signatureData.extractChainID()
                             ?: throw IllegalArgumentException("Cannot extract chainID from RLP"))
-                    transaction.chain = ChainDefinition(chainID.toLong())
+                    transaction.chain = ChainDefinition(ChainId(chainID.toLong()), "?")
 
                     transaction.from = transaction.extractFrom(signatureData, chainID)
                     transaction.txHash = txRLP.encode().keccak().toHexString()
@@ -133,7 +134,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
             val chainId = (rlp.element[6] as RLPElement).toUnsignedBigIntegerFromRLP()
 
-            chainIDAlert(networkDefinitionProvider, chainId.toLong()) {
+            chainIDAlert(networkDefinitionProvider, ChainId(chainId.toLong())) {
 
                 if (transaction == null) {
                     alert("could not decode transaction")
@@ -161,7 +162,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
         val json = JSONObject(content)
         handleUnsignedTransaction(
                 from = json.getString("from"),
-                chainId = json.getLong("chainId"),
+                chainId = ChainId(json.getLong("chainId")),
                 to = json.getString("to"),
                 gasLimit = json.getString("gasLimit"),
                 value = json.getString("value"),
@@ -173,7 +174,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
     }
 
     private fun handleUnsignedTransaction(from: String,
-                                          chainId: Long,
+                                          chainId: ChainId,
                                           to: String,
                                           value: String,
                                           gasLimit: String,
@@ -197,7 +198,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                 address = to,
                 value = BigInteger(value.clean0xPrefix(), 16),
                 gas = BigInteger(gasLimit.clean0xPrefix(), 16),
-                chainId = chainId
+                chainId = chainId.value
         ).generateURL()
 
         startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
@@ -232,9 +233,9 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
 
                 val extractChainID = signatureData.extractChainID()
-                val chainId = extractChainID?.toLong() ?: networkDefinitionProvider.getCurrent().chain.id
+                val chainId = extractChainID?.toLong()?.let { ChainId(it) } ?: networkDefinitionProvider.getCurrent().chain.id
 
-                transaction?.chain = ChainDefinition(chainId)
+                transaction?.chain = chainId.findChainDefinition()
                 transaction?.let {
                     createTransaction(it, signatureData)
                 }

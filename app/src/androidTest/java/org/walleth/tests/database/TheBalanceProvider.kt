@@ -3,19 +3,20 @@ package org.walleth.tests.database
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.kethereum.model.Address
-import org.kethereum.model.ChainDefinition
+import org.kethereum.model.ChainId
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
+import org.walleth.util.findChainDefinition
 import java.math.BigInteger
 
 class TheBalanceProvider : AbstractDatabaseTest() {
 
     val SOME_TOKEN_ADDRESS = Address("0x124")
-    val TEST_CHAIN = ChainDefinition(4L)
+    val TEST_CHAIN = ChainId(4L).findChainDefinition()
 
     @Test
     fun unknownAddressHasNullBalance() {
-        assertThat(database.balances.getBalance(Address("0x123"), null, ChainDefinition(0))).isNull()
+        assertThat(database.balances.getBalance(Address("0x123"), null, ChainId(0).findChainDefinition())).isNull()
     }
 
     @Test

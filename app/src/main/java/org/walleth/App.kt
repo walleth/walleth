@@ -1,6 +1,8 @@
 package org.walleth
 
+import android.arch.persistence.db.SupportSQLiteDatabase
 import android.arch.persistence.room.Room
+import android.arch.persistence.room.migration.Migration
 import android.content.Context
 import android.content.Intent
 import android.net.TrafficStats
@@ -80,7 +82,16 @@ open class App : MultiDexApplication() {
         single { CurrentTokenProvider(get()) }
         single { WalletConnectDriver(applicationContext, "https://us-central1-walleth-abbd0.cloudfunctions.net/push", get()) }
 
-        single { Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb").build() }
+        single {
+            Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
+                    .addMigrations(object : Migration(1, 2) {
+                        override fun migrate(database: SupportSQLiteDatabase) {
+                            // we need to delete all transactions as the chainIDs have been changed
+                            database.execSQL("DELETE FROM `transactions`")
+                        }
+                    })
+                    .build()
+        }
 
         single { NetworkDefinitionProvider(get()) }
         single { BlockExplorerProvider(get()) }
@@ -89,7 +100,7 @@ open class App : MultiDexApplication() {
         }
         single { FourByteDirectoryImpl(get(), applicationContext) as FourByteDirectory }
 
-        viewModel { TransactionListViewModel(this@App, get(),get(),get()) }
+        viewModel { TransactionListViewModel(this@App, get(), get(), get()) }
     }
 
     override fun attachBaseContext(base: Context) {

@@ -2,6 +2,7 @@ package data
 
 import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
+import org.kethereum.model.ChainId
 import org.walleth.data.tokens.Token
 
 val testToken = Token(
@@ -9,7 +10,7 @@ val testToken = Token(
         symbol = "TST",
         address = Address("0x0"),
         decimals = 18,
-        chain = ChainDefinition(1L, "TST"),
+        chain = ChainDefinition(ChainId(1L), "TST"),
         showInList = true,
         starred = true,
         fromUser = true,

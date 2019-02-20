@@ -4,10 +4,11 @@ import android.os.Parcel
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 import org.kethereum.model.Address
-import org.kethereum.model.ChainDefinition
+import org.kethereum.model.ChainId
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
 import org.walleth.kethereum.android.TransactionParcel
+import org.walleth.util.findChainDefinition
 import java.math.BigInteger
 
 class TheTransactionParcel {
@@ -17,7 +18,7 @@ class TheTransactionParcel {
             from = Address("0xab"),
             to = Address("0xcd"),
             value = BigInteger("10"),
-            chain = ChainDefinition(4L)
+            chain = ChainId(4L).findChainDefinition()
     )
 
     @Test

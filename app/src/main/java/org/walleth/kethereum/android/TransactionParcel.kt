@@ -3,15 +3,16 @@ package org.walleth.kethereum.android
 import android.os.Parcel
 import android.os.Parcelable
 import org.kethereum.model.Address
-import org.kethereum.model.ChainDefinition
+import org.kethereum.model.ChainId
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
+import org.walleth.util.findChainDefinition
 import java.math.BigInteger
 
 class TransactionParcel(val transaction: Transaction) : Parcelable {
 
     constructor(parcel: Parcel) : this(createTransactionWithDefaults(
-            chain = ChainDefinition(parcel.readLong()),
+            chain = ChainId(parcel.readLong()).findChainDefinition(),
             value = BigInteger(parcel.readString()),
             from = Address(parcel.readString()),
             txHash = parcel.readValue(null) as String?,
@@ -23,7 +24,7 @@ class TransactionParcel(val transaction: Transaction) : Parcelable {
             input = parcel.createByteArray().toList()))
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeLong(transaction.chain!!.id)
+        dest.writeLong(transaction.chain!!.id.value)
         dest.writeString(transaction.value.toString())
         dest.writeString(transaction.from?.hex)
         dest.writeValue(transaction.txHash)
