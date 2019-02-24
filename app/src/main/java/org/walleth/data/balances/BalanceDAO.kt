@@ -24,6 +24,9 @@ interface BalanceDAO {
     @Query("SELECT * FROM balances WHERE address = :address AND tokenAddress = :tokenAddress AND chain = :chain")
     fun getBalanceLive(address: Address, tokenAddress: Address?, chain: ChainDefinition): LiveData<Balance>
 
+    @Query("SELECT * FROM balances")
+    fun getAllBalances(): List<Balance>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(entry: Balance)
 
