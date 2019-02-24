@@ -5,7 +5,7 @@ import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
 import java.math.BigInteger
 
-@Entity(tableName = "balances", primaryKeys = arrayOf("address", "chain", "tokenAddress"))
+@Entity(tableName = "balances", primaryKeys = ["address", "chain", "tokenAddress"])
 data class Balance(
         val address: Address,
         val tokenAddress: Address,
