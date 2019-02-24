@@ -54,7 +54,7 @@ class OnboardingController(val activity: Activity,
             settings.onboardingDone = true
         } else {
             if (TraceDroid.getStackTraceFiles().isNotEmpty()) {
-                TraceDroidEmailSender.sendStackTraces("ligi@ligi.de", activity)
+                TraceDroidEmailSender.sendStackTraces("walleth@walleth.org", activity)
             }
         }
 

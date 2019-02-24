@@ -68,7 +68,7 @@ class IntentHandlerActivity : WallethActivity() {
             if (parsed831.prefix == "esm") {
                 val split = parsed831.payload?.split("/")
                 if (split?.size != 2) {
-                    alert("Invalid request. " + intent.data.toString() + " If you think this should be valid - please drop ligi a mail (ligi@ligi.de).")
+                    alert("Invalid request. " + intent.data.toString() + " If you think this should be valid - please drop ligi a mail (walleth@walleth.org).")
                     return
                 }
 
