@@ -143,7 +143,7 @@ dependencies {
 
     withGethImplementation "org.ethereum:geth:1.8.8"
 
-    compile 'android.arch.paging:runtime:1.0.1'
+    implementation 'android.arch.paging:runtime:1.0.1'
 
     implementation "com.github.walleth.kethereum:functions:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip39:$kethereum_version"
