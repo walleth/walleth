@@ -9,6 +9,7 @@
             android:shortcutDisabledMessage="@string/transact_disabled"
             tools:targetApi="n_mr1">
         <intent
+                android:action="android.intent.action.MAIN"
                 android:targetPackage="org.walleth"
                 android:targetClass="org.walleth.activities.CreateTransactionActivity" />
 
