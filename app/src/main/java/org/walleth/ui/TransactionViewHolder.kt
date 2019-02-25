@@ -19,7 +19,7 @@ import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.tokens.getEthTokenForChain
+import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.valueview.ValueViewController
 
@@ -56,7 +56,7 @@ class TransactionViewHolder(itemView: View,
                     }
                 }
             } else {
-                amountViewModel.setValue(transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+                amountViewModel.setValue(transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
                 relevantAddress?.let {
                     appDatabase.addressBook.resolveNameAsync(it) {
                         itemView.address.text = it

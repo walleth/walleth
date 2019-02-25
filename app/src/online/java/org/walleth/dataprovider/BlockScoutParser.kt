@@ -1,4 +1,4 @@
-package org.walleth.etherscan
+package org.walleth.dataprovider
 
 import org.json.JSONArray
 import org.kethereum.model.Address
@@ -12,7 +12,7 @@ import java.math.BigInteger
 
 class ParseResult(val list: List<TransactionEntity>, val highestBlock: Long)
 
-fun parseEtherScanTransactions(jsonArray: JSONArray, chain: ChainDefinition): ParseResult {
+fun parseBlockScoutTransactionList(jsonArray: JSONArray, chain: ChainDefinition): ParseResult {
     var lastBlockNumber = 0L
     val list = (0 until jsonArray.length()).map {
         val transactionJson = jsonArray.getJSONObject(it)
@@ -22,6 +22,7 @@ fun parseEtherScanTransactions(jsonArray: JSONArray, chain: ChainDefinition): Pa
         lastBlockNumber = Math.max(blockNumber, lastBlockNumber)
         TransactionEntity(
                 transactionJson.getString("hash"),
+                null,
                 createTransactionWithDefaults(
                         chain = chain,
                         value = value,

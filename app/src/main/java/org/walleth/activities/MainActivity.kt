@@ -43,7 +43,7 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.tokens.getEthTokenForChain
+import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
@@ -196,6 +196,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
             refreshSubtitle()
         })
 
+        currentTokenProvider.observe(this, Observer {
+            setCurrentBalanceObservers()
+        })
+
         val incomingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, INCOMING, networkDefinitionProvider, exchangeRateProvider, settings)
         transaction_recycler_in.adapter = incomingTransactionsAdapter
 
@@ -275,7 +279,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
             balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.getCurrent().address, networkDefinitionProvider.getCurrent().chain)
             balanceLiveData?.observe(this, balanceObserver)
             etherLiveData?.removeObserver(etherObserver)
-            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getEthTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain)
+            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getRootTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain)
             etherLiveData?.observe(this, etherObserver)
         }
     }

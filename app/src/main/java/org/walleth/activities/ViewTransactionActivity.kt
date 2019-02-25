@@ -25,7 +25,7 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.tokens.getEthTokenForChain
+import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.functions.setQRCode
 import org.walleth.functions.toHexString
@@ -90,7 +90,7 @@ class ViewTransactionActivity : BaseSubActivity() {
 
                 }
 
-                feeViewModel.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+                feeViewModel.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
 
                 val relevantAddress = if (it.transaction.from == currentAddressProvider.getCurrent()) {
                     from_to_title.setText(R.string.transaction_to_label)
@@ -120,7 +120,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                 }
 
 
-                if (it.transactionState.isPending && !it.transactionState.needsSigningConfirmation && (!it.transactionState.relayedEtherscan && !it.transactionState.relayedLightClient)) {
+                if (it.transactionState.isPending && !it.transactionState.needsSigningConfirmation && (!it.transactionState.relayed.isNotEmpty())) {
                     if (it.signatureData != null) {
                         rlp_header.setText(R.string.signed_rlp_header_text)
                         rlp_image.setQRCode("""{
@@ -140,7 +140,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                     rlp_header.visibility = View.GONE
                 }
 
-                amountViewModel.setValue(it.transaction.value, getEthTokenForChain(networkDefinitionProvider.getCurrent()))
+                amountViewModel.setValue(it.transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
 
                 var message = "Hash:" + it.transaction.txHash
                 it.transactionState.error?.let { error ->

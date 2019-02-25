@@ -9,5 +9,5 @@
 
     <item
         android:id="@+id/menu_etherscan"
-        android:title="@string/open_in_etherscan"/>
+        android:title="@string/open_in_blockexplorer"/>
 </menu>

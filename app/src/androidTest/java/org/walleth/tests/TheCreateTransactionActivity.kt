@@ -28,7 +28,7 @@ import org.walleth.activities.qrscan.QRScanActivity
 import org.walleth.data.balances.Balance
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.TokenTransfer
-import org.walleth.data.tokens.getEthTokenForChain
+import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.data.tokens.toERC681
 import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.infrastructure.TestApp
@@ -38,7 +38,7 @@ import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
 import java.math.BigInteger
 
 val testToken = Token("Test", "TEST", Address("0x01"), 15, TestApp.networkDefinitionProvider.getCurrent().chain, true, false, false, 1)
-val eth = getEthTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
+val eth = getRootTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
 
 class TheCreateTransactionActivity {
 
@@ -211,7 +211,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun usesCorrectValuesForNewTokenTransfer() {
-        val eth = getEthTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
+        val eth = getRootTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
         setCurrentToken(eth)
         TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
         TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain, 1L, BigInteger.TEN * eth.decimalsAsMultiplicator().toBigInteger()))
@@ -236,7 +236,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun doesNotAcceptUnknownTokenTransfer() {
-        setCurrentToken(getEthTokenForChain(TestApp.networkDefinitionProvider.getCurrent()))
+        setCurrentToken(getRootTokenForChain(TestApp.networkDefinitionProvider.getCurrent()))
 
         val toAddress = DEFAULT_TEST_ADDRESS2
         val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()

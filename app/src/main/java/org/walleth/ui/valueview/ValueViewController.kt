@@ -7,8 +7,9 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.networks.all.NetworkDefinition1
 import org.walleth.data.tokens.Token
-import org.walleth.data.tokens.isETH
+import org.walleth.data.tokens.isRootToken
 import org.walleth.functions.*
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -65,11 +66,9 @@ open class ValueViewController(private val valueView: ValueView,
 
         valueView.current_value_rounding_indicator.setVisibility(currentAmount != getValueFromString())
 
-        val shouldDisplayFiat = currentToken?.isETH() == true
+        val shouldDisplayFiat =  currentToken?.chain == NetworkDefinition1().chain && currentToken?.isRootToken() == true
 
-        valueView.current_fiat_rounding_indicator.setVisibility(shouldDisplayFiat && currentFiatString?.toBigDecimalOrNull()?.let {
-            it.compareTo(currentFiatUncutString?.toBigDecimalOrNull() ?: it)
-        } != 0)
+        valueView.current_fiat_rounding_indicator.setVisibility(shouldDisplayFiat && isFiatRounded())
 
         valueView.current_fiat_symbol.setVisibility(shouldDisplayFiat)
         valueView.current_fiat.setVisibility(shouldDisplayFiat)
@@ -81,18 +80,21 @@ open class ValueViewController(private val valueView: ValueView,
 
     }
 
+    private fun isFiatRounded() = currentFiatString != "?" && currentFiatString?.toBigDecimalOrNull()?.let {
+        it.compareTo(currentFiatUncutString?.toBigDecimalOrNull() ?: it)
+    } != 0
 
     fun setValue(value: BigInteger?, token: Token) {
         valueView.current_fiat.clearFocus()
         currentToken = token
-        currentAmountString = value?.toValueString(token)?:"?"
+        currentAmountString = value?.toValueString(token) ?: "?"
         currentAmount = value
         adaptFiat()
     }
 
     private fun adaptFiat() {
-        if (currentToken?.isETH() == true) {
-            val inFiat = exchangeRateProvider.convertToFiat(getValue(), settings.currentFiat)
+        if (currentToken?.isRootToken() == true) {
+            val inFiat = exchangeRateProvider.convertToFiat(currentAmount, settings.currentFiat)
             currentFiatString = inFiat?.toFiatValueString() ?: "?"
             currentFiatUncutString = (inFiat?.toString() ?: "?")
         }
@@ -100,7 +102,7 @@ open class ValueViewController(private val valueView: ValueView,
     }
 
     private fun adaptValueFromFiat() {
-        if (currentToken?.isETH() == true) {
+        if (currentToken?.isRootToken() == true) {
             currentAmount = exchangeRateProvider.convertFromFiat(currentFiatString?.toBigDecimal(), settings.currentFiat)
             currentAmountString = currentAmount?.toValueString(currentToken!!)
         }
@@ -113,7 +115,8 @@ open class ValueViewController(private val valueView: ValueView,
         null
     }
 
-    fun getValue(): BigInteger = currentAmount ?: ZERO
+    fun getValueOrZero(): BigInteger = currentAmount ?: ZERO
+
     fun setEnabled(b: Boolean) {
         valueView.current_fiat.isEnabled = b
         valueView.current_eth.isEnabled = b

@@ -40,7 +40,7 @@
     <string name="select_fiat_reference">(フィアット) 参照を選択</string>
     <string name="select_token">トークンを選択</string>
     <string name="create_account_subtitle">アカウントを作成</string>
-    <string name="open_in_etherscan">EtherScan で開く</string>
+    <string name="open_in_blockexplorer">EtherScan で開く</string>
     <string name="empty_view">このアカウントは作成したばかりで、トランザクション/値はまだありません。緑色のボタンを押してこのアカウントに値を送るか、既存のアカウントをインポートしてください。左のドロワーにこれらの機能があります</string>
     <string name="transaction_to_label">宛先:</string>
     <string name="transaction_from_label">送信元:</string>

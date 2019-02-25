@@ -1,17 +1,24 @@
 package org.walleth.data.tokens
 
-import android.arch.lifecycle.MutableLiveData
+import android.arch.lifecycle.MediatorLiveData
 import org.walleth.data.networks.NetworkDefinitionProvider
 
 open class CurrentTokenProvider(val networkDefinitionProvider: NetworkDefinitionProvider,
-                                initialValue: Token = getEthTokenForChain(networkDefinitionProvider.getCurrent())): MutableLiveData<Token>() {
+                                initialValue: Token = getRootTokenForChain(networkDefinitionProvider.getCurrent())) : MediatorLiveData<Token>() {
 
     init {
         value = initialValue
+        addSource(networkDefinitionProvider) {
+            it?.let { networkDefinition ->
+                if (networkDefinition.chain.id != getCurrent().chain.id) {
+                    value = getRootTokenForChain(networkDefinition)
+                }
+            }
+        }
     }
 
-    fun setCurrent(value: Token) {
-        setValue(value)
+    fun setCurrent(newValue: Token) {
+        value = newValue
     }
 
     fun getCurrent() = value!!

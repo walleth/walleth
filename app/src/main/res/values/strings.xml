@@ -70,7 +70,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="preferences_no_screenshots_title">Prevent ScreenShots</string>
     <string name="select_token">Select Token</string>
     <string name="create_account_subtitle">Create Account</string>
-    <string name="open_in_etherscan">Open in EtherScan</string>
+    <string name="open_in_blockexplorer">Open in BlockExplorer</string>
     <string name="empty_view">This account was just created for you Hence it has no transactions/value yet You could now press the green button to send value to this account Or import an existing account You can find functions like these in the drawer to your left</string>
     <string name="transaction_to_label">Receiver:</string>
     <string name="transaction_from_label">Sender:</string>

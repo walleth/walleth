@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "9a02d04176ab3beddd5be164b0b49380",
+    "identityHash": "64ca2dcc44a95e44a9d431f7adc9d6ac",
     "entities": [
       {
         "tableName": "addressbook",
@@ -189,13 +189,19 @@
       },
       {
         "tableName": "transactions",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `chain` TEXT, `creationEpochSecond` INTEGER, `from` TEXT, `gasLimit` TEXT NOT NULL, `gasPrice` TEXT NOT NULL, `input` TEXT NOT NULL, `nonce` TEXT, `to` TEXT, `txHash` TEXT, `value` TEXT NOT NULL, `r` TEXT, `s` TEXT, `v` INTEGER, `needsSigningConfirmation` INTEGER NOT NULL, `source` TEXT NOT NULL, `relayedLightClient` INTEGER NOT NULL, `relayedEtherscan` INTEGER NOT NULL, `eventLog` TEXT, `isPending` INTEGER NOT NULL, `gethSignProcessed` INTEGER NOT NULL, `error` TEXT, PRIMARY KEY(`hash`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `extraIncomingAffectedAddress` TEXT, `chain` TEXT, `creationEpochSecond` INTEGER, `from` TEXT, `gasLimit` TEXT NOT NULL, `gasPrice` TEXT NOT NULL, `input` TEXT NOT NULL, `nonce` TEXT, `to` TEXT, `txHash` TEXT, `value` TEXT NOT NULL, `r` TEXT, `s` TEXT, `v` INTEGER, `needsSigningConfirmation` INTEGER NOT NULL, `source` TEXT NOT NULL, `relayed` TEXT NOT NULL, `eventLog` TEXT, `isPending` INTEGER NOT NULL, `error` TEXT, PRIMARY KEY(`hash`))",
         "fields": [
           {
             "fieldPath": "hash",
             "columnName": "hash",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "extraIncomingAffectedAddress",
+            "columnName": "extraIncomingAffectedAddress",
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "transaction.chain",
@@ -288,15 +294,9 @@
             "notNull": true
           },
           {
-            "fieldPath": "transactionState.relayedLightClient",
-            "columnName": "relayedLightClient",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "transactionState.relayedEtherscan",
-            "columnName": "relayedEtherscan",
-            "affinity": "INTEGER",
+            "fieldPath": "transactionState.relayed",
+            "columnName": "relayed",
+            "affinity": "TEXT",
             "notNull": true
           },
           {
@@ -308,12 +308,6 @@
           {
             "fieldPath": "transactionState.isPending",
             "columnName": "isPending",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "transactionState.gethSignProcessed",
-            "columnName": "gethSignProcessed",
             "affinity": "INTEGER",
             "notNull": true
           },
@@ -336,7 +330,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9a02d04176ab3beddd5be164b0b49380\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"64ca2dcc44a95e44a9d431f7adc9d6ac\")"
     ]
   }
 }

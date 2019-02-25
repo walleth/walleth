@@ -8,7 +8,7 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
-import org.walleth.etherscan.EtherScanService
+import org.walleth.dataprovider.DataProvidingService
 
 class OnlineInitContentProvider : ContentProvider(), LifecycleObserver {
 
@@ -19,7 +19,7 @@ class OnlineInitContentProvider : ContentProvider(), LifecycleObserver {
 
     private fun tryStartService() {
         try {
-            context.startService(Intent(context, EtherScanService::class.java))
+            context.startService(Intent(context, DataProvidingService::class.java))
             ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
         } catch (ise: IllegalStateException) {
             // happens on android 8+ when app is not in foreground

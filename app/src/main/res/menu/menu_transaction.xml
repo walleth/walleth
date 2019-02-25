@@ -3,9 +3,9 @@
     <item
             android:icon="@drawable/ic_delete_black_24dp"
             app:showAsAction="ifRoom"
-            android:title="@string/open_in_etherscan"
+            android:title="@string/open_in_blockexplorer"
             android:id="@+id/menu_delete"/>
     <item
-            android:title="@string/open_in_etherscan"
+            android:title="@string/open_in_blockexplorer"
             android:id="@+id/menu_etherscan"/>
 </menu>

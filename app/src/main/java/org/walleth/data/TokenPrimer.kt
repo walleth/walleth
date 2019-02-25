@@ -11,9 +11,9 @@ import org.ligi.tracedroid.logging.Log
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.ALL_NETWORKS
 import org.walleth.data.tokens.Token
-import org.walleth.data.tokens.getEthTokenForChain
+import org.walleth.data.tokens.getRootTokenForChain
 
-private const val TOKEN_INIT_VERSION = 20
+private const val TOKEN_INIT_VERSION = 26
 // yes this is opinionated - but it also cuts to the chase
 // so much garbage in this token-list ..
 
@@ -30,13 +30,12 @@ fun mapToOrder(input: String) = when (input.toLowerCase()) {
 
 fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabase) {
     if (settings.tokensInitVersion < TOKEN_INIT_VERSION) {
-        settings.tokensInitVersion = TOKEN_INIT_VERSION
 
         GlobalScope.launch(Dispatchers.Default) {
             ALL_NETWORKS.forEach {
                 try {
                     val chain = it.chain
-                    val open = assets.open("token_init/${chain.id}.json")
+                    val open = assets.open("token_init/${chain.id.value}.json")
                     val jsonArray = JSONArray(open.use { it.reader().readText() })
 
                     val newTokens = (0 until jsonArray.length()).map { jsonArray.get(it) as JSONObject }.map {
@@ -56,7 +55,7 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
 
                     }
                     appDatabase.tokens.upsert(newTokens)
-                    appDatabase.tokens.upsert(getEthTokenForChain(it).copy(order = 8888))
+                    appDatabase.tokens.upsert(getRootTokenForChain(it).copy(order = 8888))
                 } catch (exception: Exception) {
                     Log.e("Could not load Token $exception")
                 }
@@ -64,5 +63,6 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
             }
 
         }
+        settings.tokensInitVersion = TOKEN_INIT_VERSION
     }
 }

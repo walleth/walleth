@@ -9,7 +9,7 @@
                 android:enabled="true"
                 android:name="org.walleth.fcm.FirebaseInitContentProvider" />
 
-        <service android:name="org.walleth.etherscan.EtherScanService"/>
+        <service android:name="org.walleth.dataprovider.DataProvidingService"/>
 
         <service
                 android:name="org.walleth.fcm.FirebaseIntentService">

@@ -44,7 +44,6 @@ import org.walleth.data.networks.InitializingCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.tokens.getEthTokenForChain
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.walletconnect.WalletConnectDriver
@@ -87,7 +86,12 @@ open class App : MultiDexApplication() {
                     .addMigrations(object : Migration(1, 2) {
                         override fun migrate(database: SupportSQLiteDatabase) {
                             // we need to delete all transactions as the chainIDs have been changed
-                            database.execSQL("DELETE FROM `transactions`")
+                            database.execSQL("DROP table `transactions`")
+
+                            database.execSQL("CREATE TABLE IF NOT EXISTS `transactions` (`hash` TEXT NOT NULL, `extraIncomingAffectedAddress` TEXT, `chain` TEXT, `creationEpochSecond` INTEGER, `from` TEXT, `gasLimit` TEXT NOT NULL, `gasPrice` TEXT NOT NULL, `input` TEXT NOT NULL, `nonce` TEXT, `to` TEXT, `txHash` TEXT, `value` TEXT NOT NULL, `r` TEXT, `s` TEXT, `v` INTEGER, `needsSigningConfirmation` INTEGER NOT NULL, `source` TEXT NOT NULL, `relayed` TEXT NOT NULL, `eventLog` TEXT, `isPending` INTEGER NOT NULL, `error` TEXT, PRIMARY KEY(`hash`))")
+
+                            // we need to delete all tokens as the root token name might have changed (before always ETH)
+                            database.execSQL("DELETE FROM `tokens`")
                         }
                     })
                     .build()
@@ -154,10 +158,6 @@ open class App : MultiDexApplication() {
         }
         postInitCallbacks.forEach { it.invoke() }
 
-        val currentTokenProvider: CurrentTokenProvider by inject()
-        val networkDefinitionProvider: NetworkDefinitionProvider by inject()
-
-        currentTokenProvider.setCurrent(getEthTokenForChain(networkDefinitionProvider.getCurrent()))
     }
 
     open fun executeCodeWeWillIgnoreInTests() {

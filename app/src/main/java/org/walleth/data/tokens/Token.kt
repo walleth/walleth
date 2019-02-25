@@ -5,10 +5,10 @@ import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
 import org.walleth.data.networks.NetworkDefinition
 
-fun Token.isETH() = address.hex == "0x0"
+fun Token.isRootToken() = address.hex == "0x0"
 
-fun getEthTokenForChain(networkDefinition: NetworkDefinition) = Token(
-        symbol = "ETH",
+fun getRootTokenForChain(networkDefinition: NetworkDefinition) = Token(
+        symbol = networkDefinition.tokenShortName,
         name = "Ether",
         decimals = 18,
         address = Address("0x0"),

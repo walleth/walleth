@@ -27,8 +27,6 @@ android {
         testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true
 
-        buildConfigField "String", "ETHERSCAN_APIKEY", '"' + file('../.ci/etherscan.apikey').text + '"'
-
         multiDexEnabled true
 
         javaCompileOptions {
@@ -149,6 +147,7 @@ dependencies {
     implementation "com.github.walleth.kethereum:bip39:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip39_wordlist_en:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip44:$kethereum_version"
+    implementation "com.github.walleth.kethereum:blockscout:$kethereum_version"
     implementation "com.github.walleth.kethereum:erc55:$kethereum_version"
     implementation "com.github.walleth.kethereum:eip155:$kethereum_version"
     implementation "com.github.walleth.kethereum:eip191:$kethereum_version"
@@ -160,6 +159,7 @@ dependencies {
     implementation "com.github.walleth.kethereum:networks:$kethereum_version"
     implementation "com.github.walleth.kethereum:etherscan:$kethereum_version"
     implementation "com.github.walleth.kethereum:rlp:$kethereum_version"
+    implementation "com.github.walleth.kethereum:rpc:$kethereum_version"
     implementation "com.github.walleth.kethereum:wallet:$kethereum_version"
     implementation "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
 

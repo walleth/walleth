@@ -10,7 +10,7 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
-import org.walleth.data.tokens.isETH
+import org.walleth.data.tokens.isRootToken
 
 class TokenViewHolder(itemView: View, val activity: Activity, private val currentTokenProvider: CurrentTokenProvider,
                       val appDatabase: AppDatabase) : RecyclerView.ViewHolder(itemView) {
@@ -19,7 +19,7 @@ class TokenViewHolder(itemView: View, val activity: Activity, private val curren
         itemView.token_name.text = tokenDescriptor.name
         itemView.token_decimals.text = activity.getString(R.string.decimals_in_list, tokenDescriptor.decimals.toString())
         itemView.token_starred.isChecked = tokenDescriptor.starred
-        if (!tokenDescriptor.isETH()) {
+        if (!tokenDescriptor.isRootToken()) {
             itemView.token_address.text = tokenDescriptor.address.hex
             itemView.token_address.visibility = View.VISIBLE
         } else {

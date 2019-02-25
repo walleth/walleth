@@ -10,8 +10,6 @@ import org.kethereum.model.Address
 import org.kethereum.model.ChainDefinition
 import java.math.BigInteger
 
-fun TransactionDAO.getTransactionToSignWithGethLive() = getBySourceFlagLive(TransactionSource.WALLETH, false)
-
 @Dao
 interface TransactionDAO {
 
@@ -20,9 +18,6 @@ interface TransactionDAO {
 
     @Query("SELECT * FROM transactions")
     fun getTransactionsLive(): LiveData<List<TransactionEntity>>
-
-    @Query("SELECT * FROM transactions WHERE source = :source AND gethSignProcessed = :gethProcessed")
-    fun getBySourceFlagLive(source: TransactionSource, gethProcessed: Boolean): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions WHERE source = :source")
     fun getAllForSource(source: TransactionSource): LiveData<List<TransactionEntity>>

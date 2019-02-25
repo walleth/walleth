@@ -31,7 +31,7 @@ class StartupActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(init_choice)
+        setContentView(R.layout.init_choice)
         setSupportActionBar(toolbar)
         create_key_button.setOnClickListener {
             setContentView(creating_key_busy_indicator)

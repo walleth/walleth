@@ -17,11 +17,10 @@ import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.tokens.isETH
+import org.walleth.data.tokens.isRootToken
 import org.walleth.functions.setQRCode
 import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.copyToClipboard
-import java.math.BigInteger.ZERO
 
 class RequestActivity : BaseSubActivity() {
 
@@ -76,20 +75,20 @@ class RequestActivity : BaseSubActivity() {
     override fun onResume() {
         super.onResume()
         refreshQR()
-        valueInputController?.setValue(valueInputController?.getValue()?: ZERO, currentTokenProvider.getCurrent())
+        valueInputController?.setValue(valueInputController?.getValueOrZero(), currentTokenProvider.getCurrent())
     }
 
     private fun refreshQR() {
 
         val currentToken = currentTokenProvider.getCurrent()
-        if (!add_value_checkbox.isChecked || currentToken.isETH()) {
+        if (!add_value_checkbox.isChecked || currentToken.isRootToken()) {
 
             val relevantAddress = currentAddressProvider.getCurrent()
             currentERC67String = ERC681(address = relevantAddress!!.hex).generateURL()
 
             if (add_value_checkbox.isChecked) {
                 try {
-                    currentERC67String = ERC681(address = relevantAddress.hex, value = valueInputController?.getValue()).generateURL()
+                    currentERC67String = ERC681(address = relevantAddress.hex, value = valueInputController?.getValueOrZero()).generateURL()
                 } catch (e: NumberFormatException) {
                 }
             }
@@ -100,7 +99,7 @@ class RequestActivity : BaseSubActivity() {
             val functionParams = mutableListOf("address" to userAddress)
             if (add_value_checkbox.isChecked) {
                 try {
-                    functionParams.add("uint256" to valueInputController?.getValue().toString())
+                    functionParams.add("uint256" to valueInputController?.getValueOrZero().toString())
                 } catch (e: NumberFormatException) {
                 }
             }

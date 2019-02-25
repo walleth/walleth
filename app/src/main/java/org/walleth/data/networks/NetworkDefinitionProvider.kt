@@ -6,10 +6,12 @@ import org.walleth.data.config.Settings
 
 fun getNetworkDefinitionByChainID(chainID: ChainId) = ALL_NETWORKS.firstOrNull { it.chain.id == chainID }
 
+fun ChainId.findNetworkDefinition() = ALL_NETWORKS.firstOrNull { it.chain.id == this }
+
 class NetworkDefinitionProvider(var settings: Settings) : MutableLiveData<NetworkDefinition>() {
 
     init {
-        value = ALL_NETWORKS.firstOrNull { it.chain.id.value == settings.chain } ?: ALL_NETWORKS.first()
+        value = ChainId(settings.chain).findNetworkDefinition() ?: ALL_NETWORKS.first()
     }
 
     fun setCurrent(value: NetworkDefinition) {

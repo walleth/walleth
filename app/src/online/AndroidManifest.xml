@@ -10,7 +10,7 @@
                 android:enabled="true"
                 android:name="org.walleth.OnlineInitContentProvider" />
 
-        <service android:name="org.walleth.etherscan.EtherScanService"/>
+        <service android:name="org.walleth.dataprovider.DataProvidingService"/>
     </application>
 
 </manifest>

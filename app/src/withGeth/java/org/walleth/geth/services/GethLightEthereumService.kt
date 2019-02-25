@@ -25,7 +25,7 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
-import org.walleth.data.tokens.getEthTokenForChain
+import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.geth.toGethAddr
 import java.io.File
@@ -146,7 +146,7 @@ class GethLightEthereumService : LifecycleService() {
                             val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, gethAddress, p0.number)
                             appDatabase.balances.upsert(Balance(
                                     address = address,
-                                    tokenAddress = getEthTokenForChain(network).address,
+                                    tokenAddress = getRootTokenForChain(network).address,
                                     chain = network.chain,
                                     balance = BigInteger(balance.string()),
                                     block = p0.number))
@@ -222,7 +222,7 @@ class GethLightEthereumService : LifecycleService() {
             val rlp = transaction.encodeRLP()
             val transactionWithSignature = Geth.newTransactionFromRLP(rlp)
             client.sendTransaction(ethereumContext, transactionWithSignature)
-            transactionState.relayedLightClient = true
+            transactionState.relayed = "GethLight"
         } catch (e: Exception) {
             transactionState.error = e.message
         }
