@@ -132,28 +132,28 @@
 
             </LinearLayout>
 
+
+            <org.walleth.ui.valueview.ValueViewSmall
+                    android:layout_centerHorizontal="true"
+                    android:id="@+id/fee_value_view"
+                    android:layout_below="@id/amount_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
             <Button
                     android:layout_margin="16dp"
                     android:id="@+id/show_advanced_button"
-                    android:layout_below="@id/amount_container"
+                    android:layout_below="@id/fee_value_view"
                     android:text="@string/create_tx_show_advanced_options"
+                    style="@style/MaterialButtonStyle"
                     android:layout_width="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_height="wrap_content"/>
             <TextView
                     android:layout_below="@id/amount_container"
                     android:text="@string/create_tx_fee"
-                    android:visibility="gone"
                     android:id="@+id/fee_label"
                     style="@style/section_header"/>
-
-            <org.walleth.ui.valueview.ValueViewSmall
-                    android:layout_centerHorizontal="true"
-                    android:id="@+id/fee_value_view"
-                    android:visibility="gone"
-                    android:layout_below="@id/fee_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
 
             <LinearLayout android:layout_width="wrap_content"
                           android:layout_height="match_parent"
