@@ -21,6 +21,7 @@ import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.activity_show_qr.*
 import kotlinx.coroutines.*
 import net.glxn.qrgen.android.QRCode
+import org.kethereum.keystore.api.KeyStore
 import org.kethereum.wallet.LIGHT_SCRYPT_CONFIG
 import org.kethereum.wallet.generateWalletJSON
 import org.koin.android.ext.android.inject
@@ -28,7 +29,6 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.DEFAULT_PASSWORD
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
@@ -37,7 +37,7 @@ const val REQUEST_CODE_SELECT_TOKEN = 4205
 
 class ExportKeyActivity : BaseSubActivity() {
 
-    val keyStore: WallethKeyStore by inject()
+    val keyStore: KeyStore by inject()
     val currentAddressProvider: CurrentAddressProvider by inject()
 
     private var keyJSON: String? = null

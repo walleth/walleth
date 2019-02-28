@@ -16,19 +16,19 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.config.Settings
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
 
 abstract class BaseAddressBookActivity : BaseSubActivity() {
 
-    val keyStore: WallethKeyStore by inject()
+    val keyStore: KeyStore by inject()
     val appDatabase: AppDatabase by inject()
     val settings: Settings by inject()
     val currentAddressProvider: CurrentAddressProvider by inject()

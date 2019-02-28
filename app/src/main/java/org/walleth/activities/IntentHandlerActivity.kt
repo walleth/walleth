@@ -12,6 +12,7 @@ import org.kethereum.erc681.isERC681
 import org.kethereum.erc681.toERC681
 import org.kethereum.erc831.isERC831
 import org.kethereum.erc831.toERC831
+import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
 import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
@@ -19,7 +20,6 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.walletconnect.WalletConnectConnectionActivity
 import org.walleth.data.config.Settings
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.isTokenTransfer
 import java.math.BigInteger.ZERO
@@ -36,7 +36,7 @@ class IntentHandlerActivity : WallethActivity() {
     var textToSign: String? = null
 
     private val currentAddressProvider: CurrentAddressProvider by inject()
-    private val keyStore: WallethKeyStore by inject()
+    private val keyStore: KeyStore by inject()
     val settings: Settings by inject()
     private var oldFilterAddressesKeyOnly = false
 

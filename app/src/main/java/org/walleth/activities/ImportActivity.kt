@@ -22,8 +22,8 @@ import org.kethereum.bip39.toKey
 import org.kethereum.bip39.validate
 import org.kethereum.bip39.wordlists.WORDLIST_ENGLISH
 import org.kethereum.crypto.toECKeyPair
-import org.kethereum.crypto.toHex
 import org.kethereum.erc55.withERC55Checksum
+import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
 import org.kethereum.model.PrivateKey
 import org.kethereum.wallet.loadKeysFromWalletJsonString
@@ -37,7 +37,6 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_ETHEREUM_BIP44_PATH
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.khex.hexToByteArray
 import org.walleth.util.hasText
 import java.io.FileNotFoundException
@@ -59,7 +58,7 @@ private const val READ_REQUEST_CODE = 42
 
 class ImportActivity : BaseSubActivity() {
 
-    private val keyStore: WallethKeyStore by inject()
+    private val keyStore: KeyStore by inject()
     private val appDatabase: AppDatabase by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -127,7 +126,7 @@ class ImportActivity : BaseSubActivity() {
                     else -> PrivateKey(content.hexToByteArray()).toECKeyPair()
                 }
 
-                keyStore.importKey(key!!, DEFAULT_PASSWORD)
+                keyStore.addKey(key!!, DEFAULT_PASSWORD)
             }.await()
 
             if (importKey != null) {

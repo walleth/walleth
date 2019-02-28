@@ -20,6 +20,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import org.kethereum.keystore.api.InitializingKeyStore
+import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
 import org.koin.android.viewmodel.ext.koin.viewModel
@@ -37,8 +39,6 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.initTokens
-import org.walleth.data.keystore.FileBasedWallethKeyStore
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.InitializingCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -47,6 +47,7 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.walletconnect.WalletConnectDriver
+import java.io.File
 import java.net.Socket
 import javax.net.SocketFactory
 
@@ -68,7 +69,7 @@ open class App : MultiDexApplication() {
         }
     }
 
-    private val keyStore by lazy { FileBasedWallethKeyStore(this) }
+    private val keyStore by lazy { InitializingKeyStore(File(filesDir, "keystore")) }
     val appDatabase: AppDatabase by inject()
     val settings: Settings by inject()
 
@@ -76,7 +77,7 @@ open class App : MultiDexApplication() {
 
         single { CryptoCompareExchangeProvider(this@App, get()) as ExchangeRateProvider }
         single { SyncProgressProvider() }
-        single { keyStore as WallethKeyStore }
+        single { keyStore as KeyStore }
         single { KotprefSettings as Settings }
         single { CurrentTokenProvider(get()) }
         single { WalletConnectDriver(applicationContext, "https://us-central1-walleth-abbd0.cloudfunctions.net/push", get()) }

@@ -7,14 +7,14 @@ import android.view.View.VISIBLE
 import kotlinx.android.synthetic.main.item_address_book.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.kethereum.keystore.api.KeyStore
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.keystore.WallethKeyStore
 
 class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
-    fun bind(addressBookEntry: AddressBookEntry, keyStore: WallethKeyStore,
+    fun bind(addressBookEntry: AddressBookEntry, keyStore: KeyStore,
              onClickAction: (entry: AddressBookEntry) -> Unit,
              appDatabase: AppDatabase) {
 

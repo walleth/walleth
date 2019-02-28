@@ -150,6 +150,7 @@ dependencyVerification {
         'com.github.walleth.kethereum:functions:0.73.0:functions-0.73.0.jar:070dc05247ce3bf2b023f0d2b513cdb57ec9bac56dd25a9b9789d0704415dc4d',
         'com.github.walleth.kethereum:hashes:0.73.0:hashes-0.73.0.jar:a8fd52ec7058ffd94e5259a1ec829486614bcd83c138bd4f70f1d4b82c3e2a52',
         'com.github.walleth.kethereum:keccak_shortcut:0.73.0:keccak_shortcut-0.73.0.jar:e97b2262657792c557a99e8a3e6846cf5e44c351c7ee0e0ffd247a2693acc3a4',
+        'com.github.walleth.kethereum:keystore:0.73.0:keystore-0.73.0.jar:db6109763f6a608c8796ecb5049713909664981b797baf27c30bfeef5e2da1f6',
         'com.github.walleth.kethereum:method_signatures:0.73.0:method_signatures-0.73.0.jar:dc7256c90dda0ede285e7b7e79f1fdbccf475495384d2c521df10f13a105220c',
         'com.github.walleth.kethereum:model:0.73.0:model-0.73.0.jar:61c9e3805a41c869289cceb27d654599e1d8626e61c5a2e8e6541895231b4ec6',
         'com.github.walleth.kethereum:networks:0.73.0:networks-0.73.0.jar:ea638bb275ed0b9534afd7ac7331e03830232926d7e64d54876af2b550cdbb3d',

@@ -14,13 +14,13 @@ import org.walleth.R
 import org.walleth.activities.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import java.security.KeyStore
 
 class WalletNavigationFragment : Fragment() {
 
-    val keyStore: WallethKeyStore by inject()
+    val keyStore: KeyStore by inject()
     val settings: Settings by inject()
     val networkDefinitionProvider: NetworkDefinitionProvider by inject()
     val currentAddressProvider: CurrentAddressProvider by inject()

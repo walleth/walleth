@@ -4,13 +4,13 @@ import android.support.v7.util.DiffUtil
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import org.kethereum.keystore.api.KeyStore
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.faucet
-import org.walleth.data.keystore.WallethKeyStore
 
-class AddressAdapter(val keyStore: WallethKeyStore,
+class AddressAdapter(val keyStore: KeyStore,
                      val onClickAction: (entry: AddressBookEntry) -> Unit,
                      val appDatabase: AppDatabase) : RecyclerView.Adapter<AddressViewHolder>() {
 

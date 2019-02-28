@@ -1,15 +1,16 @@
 package org.walleth.testdata
 
 import org.kethereum.crypto.toAddress
+import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
 import org.kethereum.model.ECKeyPair
-import org.walleth.data.keystore.WallethKeyStore
 
-class TestKeyStore : WallethKeyStore {
+class TestKeyStore : KeyStore {
 
     val addresses = mutableMapOf<Address, ECKeyPair>()
 
-    override fun importKey(key: ECKeyPair, password: String): Address? {
+    override fun addKey(key: ECKeyPair, password: String, light: Boolean): Address? {
+
         if (password == "bad password") {
             throw(IllegalArgumentException("Bad Password"))
         }
@@ -23,7 +24,7 @@ class TestKeyStore : WallethKeyStore {
         return true
     }
 
-    override fun getKeyForAddress(address: Address, password: String) =  addresses[address]
+    override fun getKeyForAddress(address: Address, password: String) = addresses[address]
 
     override fun getAddresses() = addresses.keys
 

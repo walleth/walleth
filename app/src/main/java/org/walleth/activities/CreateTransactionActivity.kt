@@ -36,6 +36,7 @@ import org.kethereum.extensions.maybeHexToBigInteger
 import org.kethereum.extensions.toHexStringZeroPadded
 import org.kethereum.functions.*
 import org.kethereum.keccakshortcut.keccak
+import org.kethereum.keystore.api.KeyStore
 import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.methodsignatures.toHexSignature
 import org.kethereum.model.*
@@ -58,7 +59,6 @@ import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.*
@@ -90,7 +90,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
     private val currentTokenProvider: CurrentTokenProvider by inject()
-    private val keyStore: WallethKeyStore by inject()
+    private val keyStore: KeyStore by inject()
     private val appDatabase: AppDatabase by inject()
     private val settings: Settings by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()

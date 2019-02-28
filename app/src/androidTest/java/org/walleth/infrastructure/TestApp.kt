@@ -3,6 +3,7 @@ package org.walleth.infrastructure
 import android.arch.persistence.room.Room
 import android.content.Context
 import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
+import org.kethereum.keystore.api.KeyStore
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import org.mockito.Mockito
@@ -14,7 +15,6 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -43,7 +43,7 @@ class TestApp : App() {
                 value = WallethSyncProgress(true, 42000, 42042)
             }
         }
-        single { keyStore as WallethKeyStore }
+        single { keyStore as KeyStore }
         single { mySettings }
         single { currentAddressProvider as CurrentAddressProvider }
         single { networkDefinitionProvider }

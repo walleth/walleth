@@ -16,6 +16,7 @@ import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.erc681.parseERC681
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.functions.isValid
+import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
 import org.kethereum.model.ECKeyPair
 import org.koin.android.ext.android.inject
@@ -31,7 +32,6 @@ import org.walleth.activities.trezor.hasAddressResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.keystore.WallethKeyStore
 import org.walleth.util.hasText
 
 private const val HEX_INTENT_EXTRA_KEY = "HEX"
@@ -45,7 +45,7 @@ fun Context.startCreateAccountActivity(hex: String) {
 
 class CreateAccountActivity : BaseSubActivity() {
 
-    private val keyStore: WallethKeyStore by inject()
+    private val keyStore: KeyStore by inject()
     private val appDatabase: AppDatabase by inject()
     private var lastCreatedAddress: ECKeyPair? = null
     private var trezorPath: String? = null
@@ -70,7 +70,7 @@ class CreateAccountActivity : BaseSubActivity() {
                 alert(title = alert_problem_title, message = please_enter_name)
             } else {
                 lastCreatedAddress?.let {
-                    keyStore.importKey(it, DEFAULT_PASSWORD)
+                    keyStore.addKey(it, DEFAULT_PASSWORD)
                 }
 
                 GlobalScope.launch(Dispatchers.Main) {
