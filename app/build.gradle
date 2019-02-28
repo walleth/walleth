@@ -20,8 +20,8 @@ android {
         minSdkVersion 15
         targetSdkVersion 28
 
-        versionCode 434
-        versionName "0.43.4"
+        versionCode 440
+        versionName "0.44.0"
         archivesBaseName = "WALLETH-$versionName"
 
         testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
