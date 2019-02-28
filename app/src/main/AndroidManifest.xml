@@ -79,6 +79,8 @@
 
         <activity android:name="org.walleth.activities.OfflineTransactionActivity"
                   android:windowSoftInputMode="adjustResize"/>
+
+        <activity android:name=".activities.CreateKeyActivity"/>
         <activity android:name=".activities.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
