@@ -30,11 +30,13 @@ class AddressAdapter(val keyStore: KeyStore,
 
     fun filter(starredOnly: Boolean, writableOnly: Boolean) {
         val newDisplayList = list
+                .asSequence()
                 .filter { !starredOnly || it.starred  }
                 .filter { !writableOnly || keyStore.hasKeyForForAddress(it.address) }
                 .filter { !it.deleted }
                 .filter { it != faucet }
                 .sortedBy { it.name }
+                .toList()
 
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = displayList.size
