@@ -53,23 +53,27 @@
 
         <LinearLayout android:layout_width="match_parent"
                       android:layout_height="wrap_content"
-
                       android:orientation="horizontal">
 
-            <ScrollView android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:id="@+id/empty_view_container"
-                        android:layout_height="match_parent">
+            <RelativeLayout android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/empty_view_container">
+                <android.support.v7.widget.AppCompatImageView
+                        android:id="@+id/dashboard_image"
+                        android:layout_width="256dp"
+                        android:layout_height="256dp"
+                        android:scaleType="fitCenter"
+                        android:layout_centerInParent="true"
+                        app:srcCompat="@drawable/ic_dashboard_256dp"
+                />
+
                 <TextView
-                        android:id="@+id/empty_view"
-                        android:padding="16dp"
-                        android:layout_width="match_parent"
-                        android:gravity="center"
-                        android:fontFamily="sans-serif"
-                        android:textSize="18sp"
-                        android:text="@string/empty_view"
+                        android:text="No Transactions known yet"
+                        android:layout_centerHorizontal="true"
+                        android:layout_below="@id/dashboard_image"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-            </ScrollView>
+            </RelativeLayout>
             <android.support.v7.widget.RecyclerView
                     android:id="@+id/transaction_recycler_in"
                     android:visibility="gone"

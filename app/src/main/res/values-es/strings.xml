@@ -38,7 +38,6 @@
     <string name="select_token">Seleccionar Token</string>
     <string name="create_account_subtitle">Crear cuenta</string>
     <string name="open_in_blockexplorer">Abrir en EtherScan</string>
-    <string name="empty_view">"Esta cuenta fue creada para usted, entonces no tiene transacciones/valor aún. Usted ahora podría presionar el botón verde para enviar valor a esta cuenta o importar una cuenta existente. Usted puede encontrar las funciones para eso en el desplegable de la izquierda "</string>
     <string name="transaction_to_label">Para:</string>
     <string name="transaction_from_label">De:</string>
     <string name="alert_problem_title">Problema</string>

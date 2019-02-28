@@ -82,7 +82,7 @@ class TheMainActivity {
                 .check(matches(withText("0")))
 
         onView(withId(R.id.send_button)).check(matches(withEffectiveVisibility(INVISIBLE)))
-        onView(withId(R.id.empty_view)).check(matches(withEffectiveVisibility(VISIBLE)))
+        onView(withId(R.id.empty_view_container)).check(matches(withEffectiveVisibility(VISIBLE)))
 
         onView(withId(R.id.transaction_recycler_in)).check(matches(withEffectiveVisibility(GONE)))
         onView(withId(R.id.transaction_recycler_out)).check(matches(withEffectiveVisibility(GONE)))
@@ -105,7 +105,7 @@ class TheMainActivity {
                 .check(matches(withText("1")))
 
         onView(withId(R.id.send_button)).check(matches(withEffectiveVisibility(VISIBLE)))
-        onView(withId(R.id.empty_view)).check(matches(withEffectiveVisibility(GONE)))
+        onView(withId(R.id.empty_view_container)).check(matches(withEffectiveVisibility(GONE)))
 
         onView(withId(R.id.transaction_recycler_in)).check(matches(withEffectiveVisibility(VISIBLE)))
         onView(withId(R.id.transaction_recycler_out)).check(matches(withEffectiveVisibility(VISIBLE)))

@@ -71,7 +71,6 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="select_token">Select Token</string>
     <string name="create_account_subtitle">Create Account</string>
     <string name="open_in_blockexplorer">Open in BlockExplorer</string>
-    <string name="empty_view">This account was just created for you Hence it has no transactions/value yet You could now press the green button to send value to this account Or import an existing account You can find functions like these in the drawer to your left</string>
     <string name="transaction_to_label">Receiver:</string>
     <string name="transaction_from_label">Sender:</string>
     <string name="alert_problem_title">Problem</string>
@@ -114,7 +113,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="snackbar_after_address_copy">Address copied to clipboard</string>
     <string name="ethereum_address">Ethereum Address</string>
     <string name="onboarding_warning_title">Special Awareness</string>
-    <string name="onboard_showcase_message">Please click the arrow to fund this account</string>
+    <string name="onboard_showcase_message">Please click the arrow if you want to transfer to this account</string>
     <string name="deleted_account_snack">Deleted Account</string>
     <string name="deleted_token_snack">Deleted Token %s</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>
