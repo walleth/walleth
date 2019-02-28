@@ -30,7 +30,7 @@ class CreateKeyActivity : AppCompatActivity() {
         setContentView(R.layout.creating_key_busy_indicator)
         setSupportActionBar(toolbar)
         GlobalScope.launch {
-            val newAccountAddress = keyStore.addKey(createEthereumKeyPair(), DEFAULT_PASSWORD)
+            val newAccountAddress = keyStore.addKey(createEthereumKeyPair(), DEFAULT_PASSWORD, true)
                     ?: throw (IllegalArgumentException("Could not create key"))
 
 

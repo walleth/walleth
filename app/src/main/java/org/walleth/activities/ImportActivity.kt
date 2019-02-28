@@ -126,7 +126,7 @@ class ImportActivity : BaseSubActivity() {
                     else -> PrivateKey(content.hexToByteArray()).toECKeyPair()
                 }
 
-                keyStore.addKey(key!!, DEFAULT_PASSWORD)
+                keyStore.addKey(key!!, DEFAULT_PASSWORD, true)
             }.await()
 
             if (importKey != null) {

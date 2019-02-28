@@ -17,9 +17,9 @@ val DEFAULT_TEST_ADDRESS3 = DEFAULT_TEST_KEY3.toAddress()
 class DefaultCurrentAddressProvider(settings: Settings, keyStore: TestKeyStore) : CurrentAddressProvider(settings) {
 
     init {
-        keyStore.addKey(DEFAULT_TEST_KEY, DEFAULT_PASSWORD)
-        keyStore.addKey(DEFAULT_TEST_KEY2, DEFAULT_PASSWORD)
-        keyStore.addKey(DEFAULT_TEST_KEY3, DEFAULT_PASSWORD)
+        keyStore.addKey(DEFAULT_TEST_KEY, DEFAULT_PASSWORD, true)
+        keyStore.addKey(DEFAULT_TEST_KEY2, DEFAULT_PASSWORD, true)
+        keyStore.addKey(DEFAULT_TEST_KEY3, DEFAULT_PASSWORD, true)
         setCurrent(DEFAULT_TEST_ADDRESS)
 
     }

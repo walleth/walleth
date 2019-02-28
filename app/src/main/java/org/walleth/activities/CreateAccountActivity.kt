@@ -70,7 +70,7 @@ class CreateAccountActivity : BaseSubActivity() {
                 alert(title = alert_problem_title, message = please_enter_name)
             } else {
                 lastCreatedAddress?.let {
-                    keyStore.addKey(it, DEFAULT_PASSWORD)
+                    keyStore.addKey(it, DEFAULT_PASSWORD, true)
                 }
 
                 GlobalScope.launch(Dispatchers.Main) {
