@@ -12,7 +12,7 @@ Native Android Ethereum wallet.
 Features
 ========
 
- - Networks main, görli, rinkeby, ropsten, kovan
+ - Networks main, görli, rinkeby, ropsten, kovan, POA, sokol, ETC, xDAI
  - Keys on your device under your control
  - Tokens (your own ERC-20 compatible or predefined like DAI, Unicorn, OMG, SNT, ZRC, GNO, ..)
  - Day/Night mode
