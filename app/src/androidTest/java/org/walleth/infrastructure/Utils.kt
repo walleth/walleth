@@ -8,7 +8,9 @@ import org.walleth.data.tokens.Token
 fun setCurrentToken(token: Token) {
     loadKoinModules(
             listOf(module(override = true) {
-                single { CurrentTokenProvider(get(), token) }
+                single { CurrentTokenProvider(get()).apply {
+                    setCurrent(token)
+                } }
             })
     )
 }
