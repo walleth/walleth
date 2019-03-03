@@ -166,7 +166,7 @@ dependencies {
 
     implementation "com.github.walleth.kethereum:crypto_impl_bouncycastle:$kethereum_version"
 
-    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.2"
+    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.3"
     implementation 'com.dmitrymalkovich.android:progress-fab:1.6'
 
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'

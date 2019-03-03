@@ -127,7 +127,7 @@ dependencyVerification {
         'com.github.ligi:trulesk:0.26:trulesk-0.26.aar:6eaf602f1a7b92b46e8ee39627dac6e894ca801927d2dcb747c6e3296ba48a5e',
         'com.github.madrapps:pikolo:1.1.8:pikolo-1.1.8.aar:a590fc01798b2d532e218f817809c40f2b6a04b21f09890a93f5d47375e08825',
         'com.github.trezor.trezor-android:trezor-lib:v2.0.1:trezor-lib-v2.0.1.aar:58f71f9b8c8611bfe44eeed3e6cdd74b0aeb2bcbec9cd90bfbaf2b4273816c72',
-        'com.github.walletconnect:kotlin-walletconnect-lib:0.2:kotlin-walletconnect-lib-0.2.jar:f2117b90e25e5e8556f3cc3ac1aa64c65c3bfd3f3c7071623a2b0fef5f4d063b',
+        'com.github.walletconnect:kotlin-walletconnect-lib:0.3:kotlin-walletconnect-lib-0.3.jar:1fe12c0a899948ec9cfc52f6c5d9d6ccae9418d8f7201a65f683cf076659c653',
         'com.github.walleth.kethereum:base58:0.73.0:base58-0.73.0.jar:e4e1f8e4d15b91ab9a83055d6afb62fcc92d9a82621ca164d67e062001dca1a1',
         'com.github.walleth.kethereum:bip32:0.73.0:bip32-0.73.0.jar:c862245ce018681d34052d9b076a85d5df933d7e80530353f37d41e1afbbda05',
         'com.github.walleth.kethereum:bip39:0.73.0:bip39-0.73.0.jar:8e07bfb57f0daa2ee9704a2d74349ad67c3e32775fda27ac4d962f3ad9ed0480',

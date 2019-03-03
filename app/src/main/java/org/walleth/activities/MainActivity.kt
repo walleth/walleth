@@ -53,7 +53,6 @@ import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
 import org.walleth.util.isUnsignedTransactionJSON
 import org.walleth.viewmodels.TransactionListViewModel
-import org.walleth.walletconnect.isWalletConnectJSON
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -126,6 +125,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
             val scanResult = data.getStringExtra("SCAN_RESULT")
 
             when {
+                scanResult.startsWith("wc:") -> {
+                    startActivity(getWalletConnectIntent(Uri.parse(scanResult)))
+                }
+
                 scanResult.isEthereumURLString() -> {
                     startActivity(getEthereumViewIntent(scanResult))
                 }
@@ -136,10 +139,6 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
                 scanResult.isJSONKey() -> {
                     startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
-                }
-
-                scanResult.isWalletConnectJSON() -> {
-                    startActivity(getWalletConnectIntent(scanResult))
                 }
 
                 scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() || scanResult.isParityUnsignedTransactionJSON() -> {

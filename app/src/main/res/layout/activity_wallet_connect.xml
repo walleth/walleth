@@ -22,4 +22,21 @@
               android:textAppearance="?android:attr/textAppearanceLarge"
               android:id="@+id/status_text"/>
 
+    <Button android:layout_width="wrap_content"
+            android:id="@+id/wc_change_account"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            style="@style/MaterialButtonStyle"
+            android:text="Change Account"/>
+
+
+    <Button android:layout_width="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:id="@+id/wc_change_network"
+            style="@style/MaterialButtonStyle"
+            android:text="Change Network"/>
+
 </LinearLayout>

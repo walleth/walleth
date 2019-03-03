@@ -27,6 +27,8 @@ import org.koin.android.ext.android.startKoin
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import org.ligi.tracedroid.TraceDroid
+import org.walletconnect.impls.FileWCSessionStore
+import org.walletconnect.impls.WCSessionStore
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.contracts.FourByteDirectoryImpl
 import org.walleth.core.TransactionNotificationService
@@ -47,7 +49,7 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.viewmodels.TransactionListViewModel
-import org.walleth.walletconnect.WalletConnectDriver
+import org.walleth.viewmodels.WalletConnectViewModel
 import java.io.File
 import java.net.Socket
 import javax.net.SocketFactory
@@ -81,7 +83,6 @@ open class App : MultiDexApplication() {
         single { keyStore as KeyStore }
         single { KotprefSettings as Settings }
         single { CurrentTokenProvider(get()) }
-        single { WalletConnectDriver(applicationContext, "https://us-central1-walleth-abbd0.cloudfunctions.net/push", get()) }
 
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
@@ -106,7 +107,14 @@ open class App : MultiDexApplication() {
         }
         single { FourByteDirectoryImpl(get(), applicationContext) as FourByteDirectory }
 
+        single {
+            FileWCSessionStore(File(this@App.filesDir, "walletConnectSessions.json").apply {
+                createNewFile()
+            }, get()) as WCSessionStore
+        }
+
         viewModel { TransactionListViewModel(this@App, get(), get(), get()) }
+        viewModel { WalletConnectViewModel(this@App, get(), get())  }
     }
 
     override fun attachBaseContext(base: Context) {

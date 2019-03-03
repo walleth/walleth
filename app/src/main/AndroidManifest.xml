@@ -31,8 +31,6 @@
         <activity android:name="org.walleth.activities.ImportActivity"/>
 
         <activity android:name="org.walleth.activities.walletconnect.WalletConnectConnectionActivity"/>
-        <activity android:name="org.walleth.activities.walletconnect.WalletConnectSignTextActivity"/>
-        <activity android:name="org.walleth.activities.walletconnect.WalletConnectSendTransactionActivity"/>
         <activity android:name="org.walleth.activities.walletconnect.WalletConnectErrorActivity"/>
 
         <activity android:name="org.walleth.activities.ExportKeyActivity"/>

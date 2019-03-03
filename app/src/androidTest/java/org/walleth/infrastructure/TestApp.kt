@@ -25,7 +25,6 @@ import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
 import org.walleth.viewmodels.TransactionListViewModel
-import org.walleth.walletconnect.WalletConnectDriver
 
 private fun <T> any(): T {
     Mockito.any<T>()
@@ -50,7 +49,6 @@ class TestApp : App() {
         single { currentTokenProvider }
         single { testDatabase }
         single { testFourByteDirectory }
-        single { mock(WalletConnectDriver::class.java) }
 
         viewModel { TransactionListViewModel(this@TestApp, get(),get(),get()) }
     }
