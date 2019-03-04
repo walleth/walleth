@@ -26,6 +26,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.setHash
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
 import org.walleth.khex.toHexString
+import java.io.IOException
 import java.math.BigInteger
 
 class DataProvidingService : LifecycleService() {
@@ -79,11 +80,16 @@ class DataProvidingService : LifecycleService() {
 
                 val currentChainId = networkDefinitionProvider.getCurrent().chain.id.value
                 currentAddressProvider.value?.let { address ->
-                    if (ALL_BLOCKSCOUT_SUPPORTED_NETWORKS.contains(currentChainId)) {
-                        tryFetchFromBlockscout(address)
-                    }
 
-                    queryRPCForBalance(address)
+                    try {
+                        if (ALL_BLOCKSCOUT_SUPPORTED_NETWORKS.contains(currentChainId)) {
+                            tryFetchFromBlockscout(address)
+                        }
+
+                        queryRPCForBalance(address)
+                    } catch (ioe: IOException) {
+                        Log.i("problem fetching data - are we online? ", ioe)
+                    }
                 }
 
                 while ((last_run + timing) > System.currentTimeMillis() && !shortcut) {
