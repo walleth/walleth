@@ -20,7 +20,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import org.kethereum.keystore.api.InitializingKeyStore
+import org.kethereum.keystore.api.InitializingFileKeyStore
 import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
@@ -72,7 +72,7 @@ open class App : MultiDexApplication() {
         }
     }
 
-    private val keyStore by lazy { InitializingKeyStore(File(filesDir, "keystore")) }
+    private val keyStore by lazy { InitializingFileKeyStore(File(filesDir, "keystore")) }
     val appDatabase: AppDatabase by inject()
     val settings: Settings by inject()
 
