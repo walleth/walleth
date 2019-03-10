@@ -24,7 +24,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:3.3.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'de.mobilej.unmock:UnMockPlugin:0.7.0'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.20.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.21.0'
         classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.9.0'
         classpath files('app/libs/gradle-witness.jar')
         classpath 'com.google.gms:google-services:4.2.0'
