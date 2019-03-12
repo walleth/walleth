@@ -66,38 +66,37 @@ class ViewTransactionActivity : BaseSubActivity() {
     override fun onResume() {
         super.onResume()
 
-        appDatabase.transactions.getByHashLive(intent.getStringExtra(HASH_KEY)).observe(this, Observer<TransactionEntity> {
-            if (it != null) {
-                txEntity = it
+        appDatabase.transactions.getByHashLive(intent.getStringExtra(HASH_KEY)).observe(this, Observer<TransactionEntity> { txEntry ->
+            if (txEntry != null) {
+                txEntity = txEntry
                 invalidateOptionsMenu()
-                val transaction = it.transaction
+                val transaction = txEntry.transaction
 
                 supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
 
                 nonce.text = transaction.nonce.toString()
-                event_log_textview.text = it.transactionState.eventLog
+                event_log_textview.text = txEntry.transactionState.eventLog
 
-                fab.setVisibility(it.transactionState.needsSigningConfirmation)
-                fab.setOnClickListener { _ ->
+                fab.setVisibility(txEntry.transactionState.needsSigningConfirmation)
+                fab.setOnClickListener {
                     GlobalScope.launch(Dispatchers.Main) {
                         launch(Dispatchers.Default) {
-                            it.transactionState.needsSigningConfirmation = false
-                            appDatabase.transactions.upsert(it)
+                            txEntry.transactionState.needsSigningConfirmation = false
+                            appDatabase.transactions.upsert(txEntry)
                         }
 
                         finish()
                     }
-
                 }
 
-                feeViewModel.setValue(it.transaction.gasLimit * it.transaction.gasPrice, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+                feeViewModel.setValue(txEntry.transaction.gasLimit * txEntry.transaction.gasPrice, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
 
-                val relevantAddress = if (it.transaction.from == currentAddressProvider.getCurrent()) {
+                val relevantAddress = if (txEntry.transaction.from == currentAddressProvider.getCurrent()) {
                     from_to_title.setText(R.string.transaction_to_label)
-                    it.transaction.to
+                    txEntry.transaction.to
                 } else {
                     from_to_title.setText(R.string.transaction_from_label)
-                    it.transaction.from
+                    txEntry.transaction.from
                 }
 
                 relevantAddress?.let { ensured_relevant_address ->
@@ -120,18 +119,18 @@ class ViewTransactionActivity : BaseSubActivity() {
                 }
 
 
-                if (it.transactionState.isPending && !it.transactionState.needsSigningConfirmation && (!it.transactionState.relayed.isNotEmpty())) {
-                    if (it.signatureData != null) {
+                if (txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && (!txEntry.transactionState.relayed.isNotEmpty())) {
+                    if (txEntry.signatureData != null) {
                         rlp_header.setText(R.string.signed_rlp_header_text)
                         rlp_image.setQRCode("""{
-                            "signedTransactionRLP":"${it.transaction.encodeRLP(it.signatureData).toHexString()}",
-                            "chainId":${it.transaction.chain?.id}
+                            "signedTransactionRLP":"${txEntry.transaction.encodeRLP(txEntry.signatureData).toHexString()}",
+                            "chainId":${txEntry.transaction.chain?.id}
                             }""")
                     } else {
                         rlp_header.setText(R.string.unsigned_rlp_header_text)
 
                         rlp_image.setQRCode("""{
-"nonce":"${it.transaction.nonce?.toHexString()}","gasPrice":"${it.transaction.gasPrice.toHexString()}","gasLimit":"${it.transaction.gasLimit.toHexString()}","to":"${it.transaction.to}","from":"${it.transaction.from}","value":"${it.transaction.value.toHexString()}","data":"${it.transaction.input.toHexString("0x")}","chainId":${it.transaction.chain?.id}
+"nonce":"${txEntry.transaction.nonce?.toHexString()}","gasPrice":"${txEntry.transaction.gasPrice.toHexString()}","gasLimit":"${txEntry.transaction.gasLimit.toHexString()}","to":"${txEntry.transaction.to}","from":"${txEntry.transaction.from}","value":"${txEntry.transaction.value.toHexString()}","data":"${txEntry.transaction.input.toHexString("0x")}","chainId":${txEntry.transaction.chain?.id}
                             }
                             """)
                     }
@@ -140,10 +139,10 @@ class ViewTransactionActivity : BaseSubActivity() {
                     rlp_header.visibility = View.GONE
                 }
 
-                amountViewModel.setValue(it.transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+                amountViewModel.setValue(txEntry.transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
 
-                var message = "Hash:" + it.transaction.txHash
-                it.transactionState.error?.let { error ->
+                var message = "Hash:" + txEntry.transaction.txHash
+                txEntry.transactionState.error?.let { error ->
                     message += "\nError:$error"
                 }
                 details.text = message
