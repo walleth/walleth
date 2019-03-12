@@ -43,6 +43,8 @@ class WalletNavigationFragment : Fragment() {
             setBackgroundColor(settings.toolbarBackgroundColor)
             colorize(settings.toolbarForegroundColor)
         }
+
+        navigationView.menu.findItem(R.id.menu_debug).isVisible = settings.showDebug
     }
 
 

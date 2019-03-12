@@ -37,7 +37,14 @@ class SelectReferenceActivity : BaseSubActivity() {
                     .setView(layout)
 
                     .setPositiveButton(android.R.string.ok) { _, _ ->
-                        exchangeRateProvider.addFiat(layout.reference_text.text.toString().toUpperCase())
+
+                        val fiatName = layout.reference_text.text.toString().toUpperCase()
+
+                        if (fiatName == "DEBUG") {
+                            settings.showDebug = true
+                        }
+
+                        exchangeRateProvider.addFiat(fiatName)
                         Handler().postDelayed({
                             recycler_view.adapter = FiatListAdapter(exchangeRateProvider, this, settings)
                         }, 1000)

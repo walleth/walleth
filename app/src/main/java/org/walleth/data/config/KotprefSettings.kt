@@ -33,6 +33,8 @@ object KotprefSettings : KotprefModel(), Settings {
     override var toolbarBackgroundColor by intPref(ContextCompat.getColor(context, R.color.colorPrimary))
     override var toolbarForegroundColor by intPref(Color.BLACK)
 
+    override var showDebug by booleanPref(default = false)
+
     private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
 
     private fun createRandomUsername() = context.getString(R.string.default_stats_username) + " " + BigInteger(130, SecureRandom()).toString(32).substring(0, 5)
