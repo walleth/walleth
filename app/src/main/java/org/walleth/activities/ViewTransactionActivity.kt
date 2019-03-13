@@ -125,8 +125,14 @@ class ViewTransactionActivity : BaseSubActivity() {
                     }
                 }
 
+                advanced_button.setOnClickListener {
+                    advanced_container.visibility = View.VISIBLE
+                    advanced_button.visibility = View.GONE
+                }
+
 
                 if (txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && (!txEntry.transactionState.relayed.isNotEmpty())) {
+                    rlp_header.visibility = View.VISIBLE
                     if (txEntry.signatureData != null) {
                         rlp_header.setText(R.string.signed_rlp_header_text)
                         rlp_image.setQRCode("""{

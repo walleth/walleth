@@ -18,12 +18,6 @@
                 android:orientation="vertical"
                 android:padding="16dp">
 
-            <org.walleth.ui.valueview.ValueView
-                    android:id="@+id/value_view"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
             <TextView
                     android:id="@+id/from_to_title"
                     android:fontFamily="sans-serif"
@@ -59,38 +53,13 @@
                         app:srcCompat="@drawable/ic_content_copy"/>
 
             </LinearLayout>
-            <TextView
-                android:id="@+id/function_call_label"
-                android:text="@string/function_call"
-                android:visibility="gone"
-                android:fontFamily="sans-serif"
-                android:textSize="18dp"
-                android:paddingBottom="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
 
-            <TextView
-                android:id="@+id/function_call"
-                android:visibility="gone"
-                android:paddingLeft="8dp"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
 
-            <TextView
-                    android:text="Nonce:"
-                    android:fontFamily="sans-serif"
-                    android:textSize="18dp"
-                    android:paddingBottom="8dp"
+            <org.walleth.ui.valueview.ValueView
+                    android:id="@+id/value_view"
+                    android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
-
-
-            <TextView
-                    android:id="@+id/nonce"
-                    android:paddingLeft="8dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
 
             <TextView
                     android:text="Fee:"
@@ -106,17 +75,20 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"/>
 
+
             <TextView
-                    android:text="Log:"
+                    android:id="@+id/function_call_label"
+                    android:text="@string/function_call"
+                    android:visibility="gone"
                     android:fontFamily="sans-serif"
                     android:textSize="18dp"
                     android:paddingBottom="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
-
             <TextView
-                    android:id="@+id/event_log_textview"
+                    android:id="@+id/function_call"
+                    android:visibility="gone"
                     android:paddingLeft="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
@@ -125,22 +97,75 @@
                     android:id="@+id/rlp_header"
                     android:fontFamily="sans-serif"
                     android:textSize="18dp"
+                    android:visibility="gone"
                     android:paddingBottom="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"/>
 
             <android.support.v7.widget.AppCompatImageView
                     android:id="@+id/rlp_image"
+
+                    android:visibility="gone"
                     android:layout_gravity="center_horizontal"
                     android:layout_width="@dimen/qrcode_size"
                     android:layout_height="@dimen/qrcode_size"/>
 
-            <TextView
+            <android.support.design.button.MaterialButton
+                    android:text="advanced"
+                    android:id="@+id/advanced_button"
+                    android:layout_margin="8dp"
+                    style="@style/MaterialButtonStyle"
+                    android:layout_gravity="center_horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/details"
-            />
+                    android:layout_height="wrap_content"/>
 
+            <LinearLayout
+                    android:orientation="vertical"
+                    android:id="@+id/advanced_container"
+                    android:visibility="gone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/details"
+                />
+
+                <TextView
+                        android:text="Nonce:"
+                        android:fontFamily="sans-serif"
+                        android:textSize="18dp"
+                        android:paddingBottom="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+                <TextView
+                        android:id="@+id/nonce"
+                        android:paddingLeft="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+                <TextView
+                        android:text="Log:"
+                        android:fontFamily="sans-serif"
+                        android:textSize="18dp"
+                        android:paddingBottom="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+                <TextView
+                        android:id="@+id/event_log_textview"
+                        android:paddingLeft="8dp"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+
+
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
     <android.support.design.widget.FloatingActionButton
