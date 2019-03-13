@@ -66,7 +66,7 @@ open class ValueViewController(private val valueView: ValueView,
 
         valueView.current_value_rounding_indicator.setVisibility(currentAmount != getValueFromString())
 
-        val shouldDisplayFiat =  currentToken?.chain == NetworkDefinition1().chain && currentToken?.isRootToken() == true
+        val shouldDisplayFiat = currentToken?.chain == NetworkDefinition1().chain && currentToken?.isRootToken() == true
 
         valueView.current_fiat_rounding_indicator.setVisibility(shouldDisplayFiat && isFiatRounded())
 
@@ -84,7 +84,7 @@ open class ValueViewController(private val valueView: ValueView,
         it.compareTo(currentFiatUncutString?.toBigDecimalOrNull() ?: it)
     } != 0
 
-    fun setValue(value: BigInteger?, token: Token) {
+    fun setValue(value: BigInteger?, token: Token?) {
         valueView.current_fiat.clearFocus()
         currentToken = token
         currentAmountString = value?.toValueString(token) ?: "?"

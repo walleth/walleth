@@ -13,6 +13,8 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.*
 import org.kethereum.functions.encodeRLP
+import org.kethereum.functions.getTokenTransferValue
+import org.kethereum.functions.isTokenTransfer
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
@@ -139,9 +141,22 @@ class ViewTransactionActivity : BaseSubActivity() {
                     rlp_header.visibility = View.GONE
                 }
 
-                amountViewModel.setValue(txEntry.transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+                if (transaction.isTokenTransfer()) {
 
-                var message = "Hash:" + txEntry.transaction.txHash
+                    GlobalScope.launch(Dispatchers.Main) {
+                        val token = withContext(Dispatchers.Default) {
+                            transaction.to?.let { appDatabase.tokens.forAddress(it) }
+                        }
+                        if (token != null) {
+                            amountViewModel.setValue(transaction.getTokenTransferValue(), token)
+                        } else {
+                            amountViewModel.setValue(null, null)
+                        }
+                    }
+                } else {
+                    amountViewModel.setValue(transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+                }
+                var message = "Hash:" + transaction.txHash
                 txEntry.transactionState.error?.let { error ->
                     message += "\nError:$error"
                 }
@@ -187,9 +202,9 @@ class ViewTransactionActivity : BaseSubActivity() {
         R.id.menu_delete -> true.also {
             txEntity?.hash?.let {
                 GlobalScope.async(Dispatchers.Main) {
-                    async(Dispatchers.Default) {
+                    withContext(Dispatchers.Default) {
                         appDatabase.transactions.deleteByHash(it)
-                    }.await()
+                    }
                     finish()
                 }
             }
