@@ -6,8 +6,8 @@ import android.view.View
 import kotlinx.android.synthetic.main.transaction_item.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kethereum.functions.getTokenTransferTo
 import org.kethereum.functions.getTokenTransferValue
 import org.kethereum.functions.isTokenTransfer
@@ -99,17 +99,17 @@ class TransactionViewHolder(itemView: View,
 
 fun <T> (() -> T).asyncAwait(resultCall: (T) -> Unit) {
     GlobalScope.launch(Dispatchers.Main) {
-        resultCall(async(Dispatchers.Default) {
+        resultCall(withContext(Dispatchers.Default) {
             invoke()
-        }.await())
+        })
     }
 }
 
 
 fun <T> (() -> T?).asyncAwaitNonNull(resultCall: (T) -> Unit) {
     GlobalScope.launch(Dispatchers.Main) {
-        async(Dispatchers.Default) {
+        withContext(Dispatchers.Default) {
             invoke()
-        }.await()?.let { resultCall(it) }
+        }?.let { resultCall(it) }
     }
 }
