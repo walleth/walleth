@@ -29,14 +29,17 @@ class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         itemView.address_name.text = addressBookEntry.name
 
+        val hasKeyForForAddress = keyStore.hasKeyForForAddress(addressBookEntry.address)
         when {
-            keyStore.hasKeyForForAddress(addressBookEntry.address) -> R.drawable.ic_key
+            hasKeyForForAddress -> R.drawable.ic_key
             addressBookEntry.trezorDerivationPath != null -> R.drawable.trezor_icon
             else -> R.drawable.ic_watch_only
         }.let { itemView.key_indicator.setImageResource(it) }
 
-        itemView.key_indicator.setOnClickListener {
-            context.startAddressReceivingActivity(addressBookEntry.address, ExportKeyActivity::class.java)
+        if (hasKeyForForAddress) {
+            itemView.key_indicator.setOnClickListener {
+                context.startAddressReceivingActivity(addressBookEntry.address, ExportKeyActivity::class.java)
+            }
         }
 
         if (addressBookEntry.note == null || addressBookEntry.note!!.isBlank()) {
