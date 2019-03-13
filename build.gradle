@@ -29,7 +29,7 @@ buildscript {
         classpath files('app/libs/gradle-witness.jar')
         classpath 'com.google.gms:google-services:4.2.0'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.2'
-        classpath "com.jaredsburrows:gradle-license-plugin:0.8.41"c
+        classpath "com.jaredsburrows:gradle-license-plugin:0.8.41"
     }
 }
 task clean(type: Delete) {
