@@ -67,10 +67,10 @@ class EditAccountActivity : AddressReceivingActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_copy -> true.also {
-            copyToClipboard(currentAddressInfo.address, activity_main)
+            copyToClipboard(relevantAddress, activity_main)
         }
         R.id.menu_etherscan -> true.also {
-            startActivityFromURL(blockExplorerProvider.get().getAddressURL(currentAddressProvider.getCurrentNeverNull()))
+            startActivityFromURL(blockExplorerProvider.get().getAddressURL(relevantAddress))
         }
         else -> super.onOptionsItemSelected(item)
     }
