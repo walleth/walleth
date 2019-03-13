@@ -13,6 +13,7 @@ import android.view.View
 import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.*
 import org.kethereum.functions.encodeRLP
+import org.kethereum.functions.getTokenTransferTo
 import org.kethereum.functions.getTokenTransferValue
 import org.kethereum.functions.isTokenTransfer
 import org.koin.android.ext.android.inject
@@ -93,9 +94,13 @@ class ViewTransactionActivity : BaseSubActivity() {
 
                 feeViewModel.setValue(txEntry.transaction.gasLimit * txEntry.transaction.gasPrice, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
 
-                val relevantAddress = if (txEntry.transaction.from == currentAddressProvider.getCurrent()) {
+                val relevantAddress = if (transaction.from == currentAddressProvider.getCurrent()) {
                     from_to_title.setText(R.string.transaction_to_label)
-                    txEntry.transaction.to
+                    if (transaction.isTokenTransfer()) {
+                        transaction.getTokenTransferTo()
+                    } else {
+                        transaction.to
+                    }
                 } else {
                     from_to_title.setText(R.string.transaction_from_label)
                     txEntry.transaction.from
