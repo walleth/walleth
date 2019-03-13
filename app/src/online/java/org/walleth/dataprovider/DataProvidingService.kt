@@ -2,12 +2,13 @@ package org.walleth.dataprovider
 
 import android.arch.lifecycle.*
 import android.content.Intent
-import kotlinx.coroutines.Dispatchers
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.workDataOf
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
-import org.kethereum.functions.encodeRLP
 import org.kethereum.model.Address
 import org.kethereum.rpc.EthereumRPC
 import org.koin.android.ext.android.inject
@@ -15,17 +16,16 @@ import org.ligi.kaxt.livedata.nonNull
 import org.ligi.kaxt.livedata.observe
 import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
+import org.walleth.data.KEY_TX_HASH
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.networks.findNetworkDefinition
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
-import org.walleth.data.transactions.setHash
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
-import org.walleth.khex.toHexString
+import org.walleth.workers.RelayTransactionWorker
 import java.io.IOException
 import java.math.BigInteger
 
@@ -111,38 +111,12 @@ class DataProvidingService : LifecycleService() {
     }
 
     private fun sendTransaction(transaction: TransactionEntity) {
-        val chain = transaction.transaction.chain
-        val baseURL = chain?.id?.findNetworkDefinition()?.rpcEndpoints?.firstOrNull()
 
-        if (baseURL == null) {
-            transaction.transactionState.error = "RPC url not found for chain $chain"
-        } else {
-            val rpc = EthereumRPC(baseURL, okHttpClient)
+        val uploadWorkRequest = OneTimeWorkRequestBuilder<RelayTransactionWorker>()
+                .setInputData(workDataOf(KEY_TX_HASH to transaction.hash))
+                .build()
 
-            GlobalScope.launch(Dispatchers.IO) {
-                val result = rpc.sendRawTransaction(transaction.transaction.encodeRLP(transaction.signatureData).toHexString())
-
-                if (result != null) {
-                    if (result.error?.message != null) {
-                        if (result.error?.message != "Transaction with the same hash was already imported.") {
-                            // this error should not be surfaced to user
-                            transaction.transactionState.error = result.toString()
-                        }
-                    } else {
-                        val newHash = result.result
-                        val oldHash = transaction.hash
-                        transaction.setHash(if (!newHash.startsWith("0x")) "0x$newHash" else newHash)
-
-                        transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "relayed via ${rpc.baseURL}"
-                        transaction.transactionState.relayed = rpc.baseURL
-
-                        appDatabase.transactions.deleteByHash(oldHash)
-                        appDatabase.transactions.upsert(transaction)
-                    }
-                }
-
-            }
-        }
+        WorkManager.getInstance().enqueue(uploadWorkRequest)
     }
 
     private fun tryFetchFromBlockscout(address: Address) {
