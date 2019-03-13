@@ -29,9 +29,11 @@ interface AddressBookDAO {
     @Query("SELECT * FROM addressbook ORDER BY name COLLATE NOCASE")
     fun all(): List<AddressBookEntry>
 
+    @Query("SELECT * FROM addressbook WHERE deleted = 1")
+    fun allDeleted(): List<AddressBookEntry>
+
     @Query("UPDATE addressbook SET deleted=0")
     fun undeleteAll()
-
 
     @Query("SELECT * FROM addressbook WHERE is_notification_wanted")
     fun allThatWantNotifications(): List<AddressBookEntry>
@@ -47,6 +49,9 @@ interface AddressBookDAO {
 
     @Query("DELETE FROM addressbook")
     fun deleteAll()
+
+    @Query("DELETE FROM addressbook where deleted = 1")
+    fun deleteAllSoftDeleted()
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(entry: AddressBookEntry)

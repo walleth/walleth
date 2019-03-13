@@ -3,6 +3,7 @@ package org.walleth.activities
 import android.arch.lifecycle.Observer
 import android.os.Bundle
 import android.support.design.widget.Snackbar
+import android.support.v7.app.AlertDialog
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
@@ -111,7 +112,9 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.menu_undelete).isVisible = adapter.list.any { it.deleted }
+        val anySoftDeletedExists = adapter.list.any { it.deleted }
+        menu.findItem(R.id.menu_undelete).isVisible = anySoftDeletedExists
+        menu.findItem(R.id.menu_delete_forever).isVisible = anySoftDeletedExists
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -123,6 +126,26 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
                 }
                 refresh()
             }
+        }
+
+        R.id.menu_delete_forever -> true.also {
+            AlertDialog.Builder(this@BaseAddressBookActivity)
+                    .setIcon(R.drawable.ic_warning_orange_24dp)
+                    .setTitle(R.string.are_you_sure)
+                    .setMessage(R.string.permanent_accounts_delete_confirmation)
+                    .setPositiveButton(R.string.delete) { _, _ ->
+                        GlobalScope.launch(Dispatchers.Default) {
+                            appDatabase.addressBook.run {
+                                allDeleted().forEach {
+                                    keyStore.deleteKey(it.address)
+                                }
+                                deleteAllSoftDeleted()
+                            }
+                        }
+
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
         }
         else -> super.onOptionsItemSelected(item)
     }
