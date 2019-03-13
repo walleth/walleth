@@ -149,8 +149,8 @@ open class App : MultiDexApplication() {
         applyNightMode(settings)
         executeCodeWeWillIgnoreInTests()
         initTokens(settings, assets, appDatabase)
-        if (settings.addressInitVersion < 1) {
-            settings.addressInitVersion = 1
+        if (settings.addressInitVersion < 2) {
+            settings.addressInitVersion = 2
 
             GlobalScope.launch(Dispatchers.Default) {
                 keyStore.getAddresses().forEachIndexed { index, address ->
