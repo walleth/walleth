@@ -6,7 +6,7 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_account_edit.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
@@ -15,14 +15,15 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.blockexplorer.BlockExplorerProvider
-import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.util.copyToClipboard
 
-class EditAccountActivity : BaseSubActivity() {
+const val INTENT_KEY_ADDRESS = "ADDRESS"
+
+class EditAccountActivity : AddressReceivingActivity() {
 
     private val appDatabase: AppDatabase by inject()
+
     private val blockExplorerProvider: BlockExplorerProvider by inject()
-    private val currentAddressProvider: CurrentAddressProvider by inject()
     private lateinit var currentAddressInfo: AddressBookEntry
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,9 +33,8 @@ class EditAccountActivity : BaseSubActivity() {
 
         supportActionBar?.subtitle = getString(R.string.edit_account_subtitle)
 
-        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrentNeverNull()) {
+        appDatabase.addressBook.getByAddressAsync(relevantAddress) {
             currentAddressInfo = it!!
-
 
             nameInput.setText(currentAddressInfo.name)
             noteInput.setText(currentAddressInfo.note)
@@ -57,7 +57,7 @@ class EditAccountActivity : BaseSubActivity() {
 
     override fun onPause() {
         super.onPause()
-        GlobalScope.async(Dispatchers.Main) {
+        GlobalScope.launch(Dispatchers.Default) {
             appDatabase.addressBook.upsert(currentAddressInfo)
         }
     }

@@ -29,16 +29,14 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.DEFAULT_PASSWORD
-import org.walleth.data.networks.CurrentAddressProvider
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
 
 const val REQUEST_CODE_SELECT_TOKEN = 4205
 
-class ExportKeyActivity : BaseSubActivity() {
+class ExportKeyActivity : AddressReceivingActivity() {
 
     val keyStore: KeyStore by inject()
-    val currentAddressProvider: CurrentAddressProvider by inject()
 
     private var keyJSON: String? = null
     var mWebView: WebView? = null
@@ -77,7 +75,7 @@ class ExportKeyActivity : BaseSubActivity() {
         GlobalScope.launch(Dispatchers.Main) {
             val bmpScaled = withContext(Dispatchers.Default) {
 
-                val key = keyStore.getKeyForAddress(currentAddressProvider.getCurrentNeverNull(), DEFAULT_PASSWORD)
+                val key = keyStore.getKeyForAddress(relevantAddress, DEFAULT_PASSWORD)
 
                 keyJSON = key?.generateWalletJSON(password_input.text.toString(), LIGHT_SCRYPT_CONFIG)
                         ?: throw (IllegalStateException("Could not create JSON from key"))
@@ -117,7 +115,7 @@ class ExportKeyActivity : BaseSubActivity() {
             startAfterKeyIsReady {
                 val sendIntent = Intent(Intent.ACTION_CREATE_DOCUMENT).apply {
 
-                    putExtra(Intent.EXTRA_TITLE, currentAddressProvider.getCurrent().toString() + ".key")
+                    putExtra(Intent.EXTRA_TITLE, relevantAddress.hex + ".key")
                     type = "application/json"
                 }
                 startActivityForResult(sendIntent, REQUEST_CODE_SELECT_TOKEN)

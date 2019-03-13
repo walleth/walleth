@@ -61,10 +61,18 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
             refresh()
         }
 
+        starred_only_button.setOnClickListener {
+            starred_only.toggle()
+        }
+
         key_only.isChecked = settings.filterAddressesKeyOnly
         key_only.setOnCheckedChangeListener { _: CompoundButton, isOn: Boolean ->
             settings.filterAddressesKeyOnly = isOn
             refresh()
+        }
+
+        key_only_icon.setOnClickListener {
+            key_only.toggle()
         }
 
         appDatabase.addressBook.allLiveData().observe(this, Observer { items ->

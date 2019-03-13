@@ -23,8 +23,8 @@
 
             <android.support.v7.widget.AppCompatImageView
                     app:srcCompat="@drawable/ic_key"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"/>
+                    android:id="@+id/key_only_icon"
+                    style="@style/button_small"/>
 
             <android.support.v7.widget.SwitchCompat
                     android:id="@+id/key_only"
@@ -36,10 +36,10 @@
                     android:switchPadding="@dimen/switch_padding"/>
 
             <android.support.v7.widget.AppCompatImageView
-                    app:srcCompat="@android:drawable/btn_star"
+                    android:id="@+id/starred_only_button"
+                    app:srcCompat="@drawable/ic_star_24dp"
                     android:layout_marginLeft="24dp"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"/>
+                    style="@style/button_small"/>
 
             <android.support.v7.widget.SwitchCompat
                     android:id="@+id/starred_only"
