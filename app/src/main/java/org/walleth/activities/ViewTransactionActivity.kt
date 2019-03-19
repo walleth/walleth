@@ -133,6 +133,8 @@ class ViewTransactionActivity : BaseSubActivity() {
 
                 if (txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && (!txEntry.transactionState.relayed.isNotEmpty())) {
                     rlp_header.visibility = View.VISIBLE
+                    rlp_image.visibility = View.VISIBLE
+
                     if (txEntry.signatureData != null) {
                         rlp_header.setText(R.string.signed_rlp_header_text)
                         rlp_image.setQRCode("""{
