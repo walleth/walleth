@@ -47,8 +47,12 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
                 if (result.error?.message != null) {
                     if (result.error?.message != "Transaction with the same hash was already imported.") {
                         // this error should not be surfaced to user
-                        transaction.transactionState.error = result.toString()
-                        return Result.retry()
+                        transaction.transactionState.error = result.error?.message;
+                        transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "ERROR: ${result.error?.message}\n"
+
+                        appDatabase.transactions.upsert(transaction);
+
+                        return Result.failure();
                     }
                 } else {
                     val newHash = result.result

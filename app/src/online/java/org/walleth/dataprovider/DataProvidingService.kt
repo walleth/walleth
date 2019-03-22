@@ -106,7 +106,7 @@ class DataProvidingService : LifecycleService() {
 
     private fun relayTransactionsIfNeeded() {
         appDatabase.transactions.getAllToRelayLive().nonNull().observe(this) { transactionList ->
-            transactionList.filter { it.signatureData != null && it.transactionState.relayed.isEmpty() }.forEach { sendTransaction(it) }
+            transactionList.forEach { sendTransaction(it) }
         }
     }
 

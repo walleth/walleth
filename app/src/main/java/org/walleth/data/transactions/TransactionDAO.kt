@@ -52,7 +52,7 @@ interface TransactionDAO {
     @Query("SELECT nonce from transactions WHERE \"from\" = :address COLLATE NOCASE AND chain=:chain")
     fun getNonceForAddress(address: Address, chain: ChainDefinition): List<BigInteger>
 
-    @Query("SELECT * from transactions")
+    @Query("SELECT * from transactions WHERE r IS NOT NULL AND relayed=\"\" AND error IS NULL")
     fun getAllToRelayLive(): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * from transactions WHERE hash = :hash COLLATE NOCASE")
