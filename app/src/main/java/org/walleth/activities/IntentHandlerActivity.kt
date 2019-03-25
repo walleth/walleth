@@ -100,10 +100,9 @@ class IntentHandlerActivity : WallethActivity() {
 
     private fun process681(erC681: ERC681) {
         if (erC681.address == null || erC681.isTokenTransfer() || erC681.value != null && erC681.value != ZERO) {
-            startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
+            startActivityForResult(Intent(this, CreateTransactionActivity::class.java).apply {
                 data = intent.data
-            })
-            finish()
+            }, CREATE_TX_REQUEST_CODE)
         } else {
             AlertDialog.Builder(this)
                     .setTitle(R.string.select_action_messagebox_title)
