@@ -5,6 +5,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import okhttp3.OkHttpClient
 import org.kethereum.functions.encodeRLP
+import org.kethereum.model.ChainId
 import org.kethereum.rpc.EthereumRPC
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
@@ -32,8 +33,8 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
             return Result.failure()
         }
 
-        val chain = transaction.transaction.chain
-        val baseURL = chain?.id?.findNetworkDefinition()?.rpcEndpoints?.firstOrNull()
+        val chain = transaction.transaction.chain?.let { ChainId(it) }
+        val baseURL = chain?.findNetworkDefinition()?.rpcEndpoints?.firstOrNull()
 
         if (baseURL == null) {
             transaction.transactionState.error = "RPC url not found for chain $chain"
@@ -52,7 +53,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
 
                         appDatabase.transactions.upsert(transaction);
 
-                        return Result.failure();
+                        return Result.failure()
                     }
                 } else {
                     val newHash = result.result

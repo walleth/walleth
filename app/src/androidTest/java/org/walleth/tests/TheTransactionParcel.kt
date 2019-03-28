@@ -8,7 +8,6 @@ import org.kethereum.model.ChainId
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
 import org.walleth.kethereum.android.TransactionParcel
-import org.walleth.util.findChainDefinition
 import java.math.BigInteger
 
 class TheTransactionParcel {
@@ -18,7 +17,7 @@ class TheTransactionParcel {
             from = Address("0xab"),
             to = Address("0xcd"),
             value = BigInteger("10"),
-            chain = ChainId(4L).findChainDefinition()
+            chain = ChainId(4L)
     )
 
     @Test

@@ -12,7 +12,7 @@ import org.walleth.data.tokens.TokenDAO;
 import org.walleth.data.transactions.TransactionDAO;
 import org.walleth.data.transactions.TransactionEntity;
 
-@Database(entities = {AddressBookEntry.class, Token.class, Balance.class, TransactionEntity.class}, version = 2)
+@Database(entities = {AddressBookEntry.class, Token.class, Balance.class, TransactionEntity.class}, version = 3)
 @TypeConverters({RoomTypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
 

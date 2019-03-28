@@ -8,7 +8,7 @@ open class CurrentTokenProvider(val networkDefinitionProvider: NetworkDefinition
     init {
         addSource(networkDefinitionProvider) {
             it?.let { networkDefinition ->
-                if (networkDefinition.chain.id != value?.chain?.id) {
+                if (networkDefinition.chain.id.value != value?.chain) {
                     value = getRootTokenForChain(networkDefinition)
                 }
             }

@@ -8,9 +8,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.kethereum.functions.getTokenTransferTo
-import org.kethereum.functions.getTokenTransferValue
-import org.kethereum.functions.isTokenTransfer
+import org.kethereum.functions.getTokenRelevantTo
+import org.kethereum.functions.getTokenRelevantValue
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.activities.getTransactionActivityIntentForHash
@@ -42,25 +41,24 @@ class TransactionViewHolder(itemView: View,
             val relevantAddress = if (direction == TransactionAdapterDirection.INCOMING) {
                 transaction.from
             } else {
-                transaction.to
+                transaction.getTokenRelevantTo() ?: transaction.to
             }
 
-            if (transaction.isTokenTransfer()) {
-                appDatabase.addressBook.resolveNameAsync(transaction.getTokenTransferTo()) {
-                    itemView.address.text = it
-                }
+            val tokenValue = transaction.getTokenRelevantValue()
+            if (tokenValue != null) {
                 val tokenAddress = transaction.to
                 if (tokenAddress != null) {
                     { appDatabase.tokens.forAddress(tokenAddress) }.asyncAwaitNonNull { token ->
-                        amountViewModel.setValue(transaction.getTokenTransferValue(), token)
+                        amountViewModel.setValue(tokenValue, token)
                     }
                 }
             } else {
                 amountViewModel.setValue(transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
-                relevantAddress?.let {
-                    appDatabase.addressBook.resolveNameAsync(it) {
-                        itemView.address.text = it
-                    }
+            }
+
+            relevantAddress?.let {
+                appDatabase.addressBook.resolveNameAsync(it) { name ->
+                    itemView.address.text = name
                 }
             }
 

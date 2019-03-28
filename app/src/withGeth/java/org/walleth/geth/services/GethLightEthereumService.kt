@@ -147,7 +147,7 @@ class GethLightEthereumService : LifecycleService() {
                             appDatabase.balances.upsert(Balance(
                                     address = address,
                                     tokenAddress = getRootTokenForChain(network).address,
-                                    chain = network.chain,
+                                    chain = network.chain.id.value,
                                     balance = BigInteger(balance.string()),
                                     block = p0.number))
                         }

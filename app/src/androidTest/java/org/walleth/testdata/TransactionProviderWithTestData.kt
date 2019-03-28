@@ -1,7 +1,7 @@
 package org.walleth.testdata
 
 import org.kethereum.model.Address
-import org.kethereum.model.ChainDefinition
+import org.kethereum.model.ChainId
 import org.kethereum.model.createTransactionWithDefaults
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneId
@@ -12,7 +12,7 @@ import org.walleth.data.transactions.toEntity
 import java.math.BigInteger
 
 
-fun TransactionDAO.loadTestData(toChain: ChainDefinition) {
+fun TransactionDAO.loadTestData(toChain: ChainId) {
     deleteAll()
     upsert(kotlin.collections.listOf(
             create(value = BigInteger("420000000000000000"), from = DEFAULT_TEST_ADDRESS, to = Room77, creationEpochSecond = LocalDateTime.now().minusHours(3).toEpochSecond(), txHash = "0x0000001", chain = toChain),
@@ -33,7 +33,7 @@ fun TransactionDAO.loadTestData(toChain: ChainDefinition) {
     ))
 }
 
-private fun create(value: BigInteger, from: Address, to: Address, creationEpochSecond: Long, txHash: String, chain: ChainDefinition): TransactionEntity
+private fun create(value: BigInteger, from: Address, to: Address, creationEpochSecond: Long, txHash: String, chain: ChainId): TransactionEntity
         = createTransactionWithDefaults(value = value, from = from, to = to, creationEpochSecond = creationEpochSecond, txHash = txHash, chain = chain).toEntity(null, TransactionState())
 
 private fun LocalDateTime.toEpochSecond() = atZone(ZoneId.systemDefault()).toEpochSecond()

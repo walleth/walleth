@@ -70,7 +70,7 @@ class SelectTokenActivity : BaseSubActivity() {
             settings.showOnlyStaredTokens = isOn
         }
 
-        appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain).observe(this, Observer { allTokens ->
+        appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain.id.value).observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
                 tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, viewModel.searchTerm, starred_only.isChecked)

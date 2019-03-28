@@ -2,7 +2,6 @@ package org.walleth.data.tokens
 
 import android.arch.persistence.room.Entity
 import org.kethereum.model.Address
-import org.kethereum.model.ChainDefinition
 import org.walleth.data.networks.NetworkDefinition
 
 fun Token.isRootToken() = address.hex == "0x0"
@@ -12,7 +11,7 @@ fun getRootTokenForChain(networkDefinition: NetworkDefinition) = Token(
         name = "Ether",
         decimals = 18,
         address = Address("0x0"),
-        chain = networkDefinition.chain,
+        chain = networkDefinition.chain.id.value,
         showInList = true,
         starred = false,
         fromUser = false,
@@ -25,7 +24,7 @@ data class Token(
         val symbol: String,
         val address: Address,
         val decimals: Int,
-        val chain: ChainDefinition,
+        val chain: Long,
         val showInList: Boolean,
         val starred: Boolean,
         val fromUser: Boolean,

@@ -10,6 +10,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.kethereum.model.Address
+import org.kethereum.model.Transaction
 import org.kethereum.rpc.EthereumRPC
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.livedata.nonNull
@@ -25,6 +26,7 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
+import org.walleth.khex.hexToByteArray
 import org.walleth.workers.RelayTransactionWorker
 import java.io.IOException
 import java.math.BigInteger
@@ -37,7 +39,7 @@ class DataProvidingService : LifecycleService() {
     private val appDatabase: AppDatabase by inject()
     private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
 
-    private val blockScoutApi = BlockScoutAPI(networkDefinitionProvider, appDatabase, okHttpClient)
+    private val blockScoutApi = BlockScoutAPI(appDatabase, okHttpClient)
 
     companion object {
         private var timing = 7_000 // in MilliSeconds
@@ -120,7 +122,7 @@ class DataProvidingService : LifecycleService() {
     }
 
     private fun tryFetchFromBlockscout(address: Address) {
-        blockScoutApi.queryTransactions(address.hex)
+        blockScoutApi.queryTransactions(address.hex, networkDefinitionProvider.getCurrent())
     }
 
     private fun queryRPCForBalance(address: Address) {
@@ -140,8 +142,9 @@ class DataProvidingService : LifecycleService() {
                     val balance = if (currentToken.isRootToken()) {
                         rpc.getBalance(address, blockNumberString)
                     } else {
-                        val json = "{\"to\":\"" + currentToken.address.hex + "\",\"data\":\"0x70a08231" + ("0".repeat(24)) + "${address.cleanHex}\"}"
-                        rpc.call(json, blockNumberString)
+                        val input = ("0x70a08231" + "0".repeat(24) + address.cleanHex).hexToByteArray().toList()
+                        val tx = Transaction().copy(to = currentToken.address, input = input, gasLimit = null, gasPrice = null)
+                        rpc.call(tx, blockNumberString)
                     }
 
                     if (balance?.error == null && balance?.result != null) {
@@ -151,7 +154,7 @@ class DataProvidingService : LifecycleService() {
                                             block = blockNumber,
                                             balance = BigInteger(balance.result.replace("0x", ""), 16),
                                             tokenAddress = currentToken.address,
-                                            chain = currentNetwork.chain
+                                            chain = currentNetwork.chain.id.value
                                     )
                             )
                         } catch (e: NumberFormatException) {

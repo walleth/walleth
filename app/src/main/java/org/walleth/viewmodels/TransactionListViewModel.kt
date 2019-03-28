@@ -34,12 +34,12 @@ class TransactionListViewModel(app: Application,
     }
 
     val incomingLiveData: LiveData<PagedList<TransactionEntity>> = Transformations.switchMap(addressOnChainMediator) { addressOnChain ->
-        val incomingDataSource = appDatabase.transactions.getIncomingPaged(addressOnChain.address, addressOnChain.chain)
+        val incomingDataSource = appDatabase.transactions.getIncomingPaged(addressOnChain.address, addressOnChain.chain.id.value)
         LivePagedListBuilder<Int, TransactionEntity>(incomingDataSource, 50).build()
     }
 
     val outgoingLiveData: LiveData<PagedList<TransactionEntity>> = Transformations.switchMap(addressOnChainMediator) { addressOnChain ->
-        val outgoingDataSourceDataSource = appDatabase.transactions.getOutgoingPaged(addressOnChain.address, addressOnChain.chain)
+        val outgoingDataSourceDataSource = appDatabase.transactions.getOutgoingPaged(addressOnChain.address, addressOnChain.chain.id.value)
         LivePagedListBuilder<Int, TransactionEntity>(outgoingDataSourceDataSource, 50).build()
     }
 

@@ -261,7 +261,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
 
         Transformations.switchMap(currentAddressProvider) { address ->
-            appDatabase.transactions.getNonceForAddressLive(address, networkDefinitionProvider.getCurrent().chain)
+            appDatabase.transactions.getNonceForAddressLive(address, networkDefinitionProvider.getCurrent().chain.id.value)
         }.observe(this, Observer {
 
             if (intent.getStringExtra("nonce") == null) {
@@ -300,7 +300,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private fun onCurrentTokenChanged() {
         val currentToken = currentTokenProvider.getCurrent()
         currentBalanceLive = Transformations.switchMap(currentAddressProvider) { address ->
-            appDatabase.balances.getBalanceLive(address, currentToken.address, networkDefinitionProvider.getCurrent().chain)
+            appDatabase.balances.getBalanceLive(address, currentToken.address, networkDefinitionProvider.getCurrent().chain.id.value)
         }
         currentBalanceLive!!.observe(this, Observer {
             currentBalance = it
@@ -373,35 +373,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun startTransaction(isTrezorTransaction: Boolean) {
-        val transaction = (if (currentTokenProvider.getCurrent().isRootToken()) createTransactionWithDefaults(
-                value = amountController.getValueOrZero(),
-                to = currentToAddress!!,
-                from = currentAddressProvider.getCurrentNeverNull()
-        ) else createTransactionWithDefaults(
-                creationEpochSecond = System.currentTimeMillis() / 1000,
-                value = ZERO,
-                to = currentTokenProvider.getCurrent().address,
-                from = currentAddressProvider.getCurrentNeverNull(),
-                input = createTokenTransferTransactionInput(currentToAddress!!, amountController.getValueOrZero())
-        )).copy(chain = networkDefinitionProvider.getCurrent().chain, creationEpochSecond = System.currentTimeMillis() / 1000)
-
-        val localERC681 = currentERC681
-
-        if (currentTokenProvider.getCurrent().isRootToken() && localERC681?.function != null) {
-            val parameterSignature = localERC681.functionParams.joinToString(",") { it.first }
-            val functionSignature = TextMethodSignature(localERC681.function + "($parameterSignature)")
-
-            val parameterContent = localERC681.functionParams.joinToString("") {
-                convertStringToABIType(it.first).apply {
-                    parseValueFromString(it.second)
-                }.toBytes().toNoPrefixHexString()
-            }
-            transaction.input = (functionSignature.toHexSignature().hex + parameterContent).hexToByteArray().toList()
-        }
-
-        transaction.nonce = nonce_input.asBigInit()
-        transaction.gasPrice = gas_price_input.asBigInit()
-        transaction.gasLimit = gas_limit_input.asBigInit()
+        val transaction = createTransaction()
 
         when {
 
@@ -443,6 +415,42 @@ class CreateTransactionActivity : BaseSubActivity() {
             }
 
         }
+    }
+
+    private fun createTransaction(): Transaction {
+
+        val localERC681 = currentERC681
+
+        val transaction = (if (currentTokenProvider.getCurrent().isRootToken()) createTransactionWithDefaults(
+                value = amountController.getValueOrZero(),
+                to = currentToAddress!!,
+                from = currentAddressProvider.getCurrentNeverNull()
+        ) else createTransactionWithDefaults(
+                creationEpochSecond = System.currentTimeMillis() / 1000,
+                value = ZERO,
+                to = currentTokenProvider.getCurrent().address,
+                from = currentAddressProvider.getCurrentNeverNull(),
+                input = createTokenTransferTransactionInput(currentToAddress!!, amountController.getValueOrZero())
+        )).copy(chain = networkDefinitionProvider.getCurrent().chain.id.value, creationEpochSecond = System.currentTimeMillis() / 1000)
+
+
+        if (currentTokenProvider.getCurrent().isRootToken() && localERC681.function != null) {
+            val parameterSignature = localERC681.functionParams.joinToString(",") { it.first }
+            val functionSignature = TextMethodSignature(localERC681.function + "($parameterSignature)")
+
+            val parameterContent = localERC681.functionParams.joinToString("") {
+                convertStringToABIType(it.first).apply {
+                    parseValueFromString(it.second)
+                }.toBytes().toNoPrefixHexString()
+            }
+            transaction.input = (functionSignature.toHexSignature().hex + parameterContent).hexToByteArray().toList()
+        }
+
+        transaction.nonce = nonce_input.asBigInit()
+        transaction.gasPrice = gas_price_input.asBigInit()
+        transaction.gasLimit = gas_limit_input.asBigInit()
+
+        return transaction
     }
 
     private fun currentBalanceSafely() = currentBalance?.balance ?: ZERO

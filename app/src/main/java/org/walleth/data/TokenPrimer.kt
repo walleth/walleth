@@ -48,7 +48,7 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
                                 starred = false,
                                 showInList = true,
                                 fromUser = false,
-                                chain = chain,
+                                chain = chain.id.value,
                                 order = mapToOrder(address)
                         )
 
