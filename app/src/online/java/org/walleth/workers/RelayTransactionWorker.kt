@@ -11,10 +11,17 @@ import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
+import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.findNetworkDefinition
 import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
 import timber.log.Timber
+
+fun ChainId.getRPCEndpoint() =
+        findNetworkDefinition()?.getRPCEndpoint()
+
+fun NetworkDefinition.getRPCEndpoint() =
+        rpcEndpoints.firstOrNull()?.replace("\${INFURA_API_KEY}", "b032785efb6947ceb18b9e0177053a17")
 
 class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters)
     : Worker(appContext, workerParams), KoinComponent {
@@ -34,7 +41,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
         }
 
         val chain = transaction.transaction.chain?.let { ChainId(it) }
-        val baseURL = chain?.findNetworkDefinition()?.rpcEndpoints?.firstOrNull()
+        val baseURL = chain?.getRPCEndpoint()
 
         if (baseURL == null) {
             transaction.transactionState.error = "RPC url not found for chain $chain"

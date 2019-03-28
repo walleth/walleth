@@ -15,6 +15,7 @@ import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.TransactionState
 import org.walleth.kethereum.blockscout.getBlockscoutBaseURL
+import org.walleth.workers.getRPCEndpoint
 import java.io.IOException
 import java.security.cert.CertPathValidatorException
 
@@ -24,12 +25,13 @@ class BlockScoutAPI(private val appDatabase: AppDatabase,
     private var lastSeenTransactionsBlock = 0L
 
     fun queryTransactions(addressHex: String, networkDefinition: NetworkDefinition) {
-        val rpc = EthereumRPC(networkDefinition.rpcEndpoints.first(), okHttpClient)
+        networkDefinition.getRPCEndpoint()?.let { rpcEndpoint ->
+            val rpc = EthereumRPC(rpcEndpoint, okHttpClient)
 
-        val startBlock = lastSeenTransactionsBlock
-        requestList(addressHex, networkDefinition, "txlist", rpc, startBlock)
-        requestList(addressHex, networkDefinition, "tokentx", rpc, startBlock)
-
+            val startBlock = lastSeenTransactionsBlock
+            requestList(addressHex, networkDefinition, "txlist", rpc, startBlock)
+            requestList(addressHex, networkDefinition, "tokentx", rpc, startBlock)
+        }
     }
 
     private fun requestList(addressHex: String, currentNetwork: NetworkDefinition, action: String, rpc: EthereumRPC, startBlock: Long) {

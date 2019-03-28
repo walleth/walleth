@@ -28,6 +28,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
 import org.walleth.khex.hexToByteArray
 import org.walleth.workers.RelayTransactionWorker
+import org.walleth.workers.getRPCEndpoint
 import java.io.IOException
 import java.math.BigInteger
 
@@ -128,7 +129,7 @@ class DataProvidingService : LifecycleService() {
     private fun queryRPCForBalance(address: Address) {
 
         networkDefinitionProvider.value?.let { currentNetwork ->
-            val baseURL = networkDefinitionProvider.getCurrent().rpcEndpoints.firstOrNull()
+            val baseURL = networkDefinitionProvider.getCurrent().getRPCEndpoint()
             val currentToken = tokenProvider.getCurrent()
 
             if (baseURL == null) {
