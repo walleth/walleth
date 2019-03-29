@@ -19,8 +19,14 @@
         <item name="actionBarStyle">@style/wallethActionBar</item>
         <item name="actionBarTheme">@style/wallethActionBarThemeOverlay</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+        <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
     </style>
+
+    <style name="PopupStyle" parent="AppTheme">
+        <item name="android:textColorPrimary">@color/fgColor</item>
+        <item name="actionMenuTextColor">@color/fgColor</item>
+        <item name="android:textColorSecondary">@color/fgColor</item>
+</style>
 
     <style name="MaterialButtonStyle" parent="Widget.MaterialComponents.Button">
         <item name="android:textColor">@android:color/black</item>

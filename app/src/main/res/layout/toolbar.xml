@@ -7,4 +7,4 @@
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
         app:theme="@style/wallethActionBarThemeOverlay"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+        app:popupTheme="@style/PopupStyle"/>
