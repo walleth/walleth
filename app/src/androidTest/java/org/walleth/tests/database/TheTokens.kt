@@ -22,7 +22,7 @@ class TheTokens : AbstractDatabaseTest() {
 
     @Test
     fun isEmptyInitially() {
-        Truth.assertThat(database.tokens.allForChain(CHAIN1).size).isEqualTo(0)
+        Truth.assertThat(database.tokens.all().size).isEqualTo(0)
     }
 
     @Test
@@ -30,7 +30,7 @@ class TheTokens : AbstractDatabaseTest() {
         database.tokens.upsert(DEFAULT_TOKEN.copy(name = "foo", address = DEFAULT_TEST_ADDRESS, chain = CHAIN1))
         database.tokens.upsert(DEFAULT_TOKEN.copy(name = "foo", address = DEFAULT_TEST_ADDRESS2, chain = CHAIN1))
 
-        Truth.assertThat(database.tokens.allForChain(CHAIN1).size).isEqualTo(2)
+        Truth.assertThat(database.tokens.all().size).isEqualTo(2)
     }
 
 

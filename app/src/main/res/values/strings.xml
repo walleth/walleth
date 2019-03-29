@@ -242,6 +242,9 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="permanent_accounts_delete_confirmation">Do you really want to permanently delete the soft deleted accounts? There is no way back!</string>
     <string name="delete">delete</string>
     <string name="are_you_sure">Are you sure?</string>
+    <string name="menu_filter">Filter</string>
+    <string name="menu_has_star">has star</string>
+    <string name="menu_current_chain">current chain</string>
     <string-array name="walletconnect_options">
         <item>Current Account</item>
         <item>Select Account</item>

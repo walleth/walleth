@@ -13,7 +13,6 @@ import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_list_stars.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -23,7 +22,6 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 import org.walleth.ui.TokenListAdapter
 
@@ -33,7 +31,6 @@ class TokenActivityViewModel : ViewModel() {
 
 class SelectTokenActivity : BaseSubActivity() {
 
-    private val currentTokenProvider: CurrentTokenProvider by inject()
     private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
     private val appDatabase: AppDatabase by inject()
     private val settings: Settings by inject()
@@ -45,7 +42,7 @@ class SelectTokenActivity : BaseSubActivity() {
     }
 
     private val tokenListAdapter by lazy {
-        TokenListAdapter(currentTokenProvider, this, appDatabase).apply {
+        TokenListAdapter(this).apply {
             recycler_view.adapter = this
         }
     }
@@ -55,8 +52,6 @@ class SelectTokenActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_list_stars)
 
-        starred_only.isChecked = settings.showOnlyStaredTokens
-
         supportActionBar?.subtitle = getString(R.string.select_token_activity_select_token)
 
         recycler_view.layoutManager = LinearLayoutManager(this)
@@ -65,15 +60,11 @@ class SelectTokenActivity : BaseSubActivity() {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
 
-        starred_only.setOnCheckedChangeListener { compoundButton: CompoundButton, isOn: Boolean ->
-            tokenListAdapter.filter(viewModel.searchTerm, isOn)
-            settings.showOnlyStaredTokens = isOn
-        }
-
-        appDatabase.tokens.allForChainLive(networkDefinitionProvider.value!!.chain.id.value).observe(this, Observer { allTokens ->
+        appDatabase.tokens.allLive().observe(this, Observer { allTokens ->
 
             if (allTokens != null) {
-                tokenListAdapter.updateTokenList(allTokens.filter { it.showInList }, viewModel.searchTerm, starred_only.isChecked)
+                updateFilter()
+                tokenListAdapter.updateTokenList(allTokens)
                 showDelete = allTokens.any { !it.showInList }
             }
             invalidateOptionsMenu()
@@ -93,7 +84,7 @@ class SelectTokenActivity : BaseSubActivity() {
                 changeDeleteState(false)
                 val snackMessage = getString(R.string.deleted_token_snack, currentToken.symbol)
                 Snackbar.make(coordinator, snackMessage, Snackbar.LENGTH_INDEFINITE)
-                        .setAction(getString(R.string.undo), { changeDeleteState(true) })
+                        .setAction(getString(R.string.undo)) { changeDeleteState(true) }
                         .show()
             }
         }
@@ -128,10 +119,11 @@ class SelectTokenActivity : BaseSubActivity() {
         })
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(searchTerm: String) = true.also {
-                tokenListAdapter.filter(searchTerm, starred_only.isChecked)
+
                 if (!searchTerm.isBlank()) {
                     viewModel.searchTerm = searchTerm
                 }
+                updateFilter()
             }
 
             override fun onQueryTextSubmit(query: String?) = false
@@ -141,10 +133,20 @@ class SelectTokenActivity : BaseSubActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
+    fun updateFilter() {
+        tokenListAdapter.filter(viewModel.searchTerm, settings.showOnlyStaredTokens,
+                if (settings.showOnlyTokensOnCurrentNetwork) {
+                    networkDefinitionProvider.getCurrent().chain.id.value
+                } else {
+                    null
+                })
+    }
+
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         menu.findItem(R.id.menu_undelete).isVisible = showDelete
-
+        menu.findItem(R.id.menu_stared_only).isChecked = settings.showOnlyStaredTokens
+        menu.findItem(R.id.menu_current_network_only).isChecked = settings.showOnlyTokensOnCurrentNetwork
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -154,7 +156,19 @@ class SelectTokenActivity : BaseSubActivity() {
                 appDatabase.tokens.showAll()
             }
         }
+        R.id.menu_stared_only -> item.filterToggle {
+            settings.showOnlyStaredTokens = it
+        }
+
+        R.id.menu_current_network_only -> item.filterToggle {
+            settings.showOnlyTokensOnCurrentNetwork = it
+        }
         else -> super.onOptionsItemSelected(item)
     }
 
+    private fun MenuItem.filterToggle(updater: (value: Boolean) -> Unit) = true.also {
+        isChecked = !isChecked
+        updater(isChecked)
+        updateFilter()
+    }
 }

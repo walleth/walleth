@@ -13,11 +13,8 @@ interface TokenDAO {
     @Query("SELECT * FROM tokens")
     fun all(): List<Token>
 
-    @Query("SELECT * FROM tokens WHERE chain = :chain ORDER BY \"order\" DESC,\"symbol\"")
-    fun allForChain(chain: Long): List<Token>
-
-    @Query("SELECT * FROM tokens WHERE chain = :chain  ORDER BY \"order\" DESC,\"symbol\"")
-    fun allForChainLive(chain: Long): LiveData<List<Token>>
+    @Query("SELECT * FROM tokens ORDER BY \"order\" DESC ,\"chain\",\"symbol\"")
+    fun allLive(): LiveData<List<Token>>
 
     @Query("UPDATE tokens SET showInList=1")
     fun showAll()

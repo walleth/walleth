@@ -4,7 +4,7 @@
     <item
             android:id="@+id/menu_switch_network"
             android:title="@string/nav_drawer_switch_network"
-            android:icon="@drawable/ic_assistant_photo"/>
+            android:icon="@drawable/ic_flag_network"/>
 
     <item
             android:id="@+id/menu_accounts"

@@ -17,6 +17,7 @@ interface Settings {
     var currentGoVerbosity: Int
 
     var showOnlyStaredTokens: Boolean
+    var showOnlyTokensOnCurrentNetwork: Boolean
 
 
     var filterAddressesStared: Boolean

@@ -16,6 +16,7 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.getFaucetURL
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.functions.setQRCode
@@ -48,9 +49,7 @@ class RequestActivity : BaseSubActivity() {
         }
 
         val initText = if (networkDefinitionProvider.getCurrent().faucets.isNotEmpty()) {
-            val faucetURL = networkDefinitionProvider.getCurrent()
-                    .faucets.first()
-                    .replace("%address%", currentAddressProvider.getCurrentNeverNull().hex)
+            val faucetURL = networkDefinitionProvider.getCurrent().chain.id.getFaucetURL(currentAddressProvider.getCurrentNeverNull())
             getString(R.string.request_faucet_message,
                     networkDefinitionProvider.getCurrent().getNetworkName(),
                     faucetURL)

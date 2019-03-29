@@ -6,15 +6,10 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import org.walleth.R
-import org.walleth.data.AppDatabase
-
-import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 
 
-class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
-                       private val activity: Activity,
-                       private val database: AppDatabase) : RecyclerView.Adapter<TokenViewHolder>() {
+class TokenListAdapter(private val activity: Activity) : RecyclerView.Adapter<TokenViewHolder>() {
 
     private var tokenList = listOf<Token>()
 
@@ -22,23 +17,23 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
 
     override fun getItemCount() = sortedList.size
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int)
-            = TokenViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.token_list_item, parent, false), activity, tokenProvider, database)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = TokenViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.token_list_item, parent, false), activity)
 
     override fun onBindViewHolder(holder: TokenViewHolder, position: Int) {
         holder.bind(sortedList[position])
     }
 
-    fun updateTokenList(newTokenList: List<Token>, query: CharSequence, starredOny: Boolean) {
+    fun updateTokenList(newTokenList: List<Token>) {
         tokenList = newTokenList
-        filter(query, starredOny)
     }
 
-    fun filter(search: CharSequence, starredOny: Boolean) {
+    fun filter(search: CharSequence, starredOny: Boolean, withChain: Long?) {
         val newSortedList = tokenList.filter {
             !starredOny || it.starred
         }.filter {
             it.symbol.contains(search, true) || it.name.contains(search, true)
+        }.filter {
+            (withChain == null) || it.chain == withChain
         }.sortedByDescending { it.order }
 
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
@@ -46,11 +41,9 @@ class TokenListAdapter(private val tokenProvider: CurrentTokenProvider,
 
             override fun getNewListSize() = newSortedList.size
 
-            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int)
-                    = sortedList[oldItemPosition] == newSortedList[newItemPosition]
+            override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) = sortedList[oldItemPosition] == newSortedList[newItemPosition]
 
-            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int)
-                    = sortedList[oldItemPosition].address == newSortedList[newItemPosition].address
+            override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int) = sortedList[oldItemPosition].address == newSortedList[newItemPosition].address
 
         })
 

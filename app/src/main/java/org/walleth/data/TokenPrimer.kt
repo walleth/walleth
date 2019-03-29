@@ -13,7 +13,7 @@ import org.walleth.data.networks.ALL_NETWORKS
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.getRootTokenForChain
 
-private const val TOKEN_INIT_VERSION = 29
+private const val TOKEN_INIT_VERSION = 30
 // yes this is opinionated - but it also cuts to the chase
 // so much garbage in this token-list ..
 
@@ -34,10 +34,11 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
         GlobalScope.launch(Dispatchers.Default) {
             ALL_NETWORKS.forEach {
                 try {
+                    appDatabase.tokens.upsert(getRootTokenForChain(it).copy(order = 8888))
+
                     val chain = it.chain
                     val open = assets.open("token_init/${chain.id.value}.json")
                     val jsonArray = JSONArray(open.use { it.reader().readText() })
-
                     val newTokens = (0 until jsonArray.length()).map { jsonArray.get(it) as JSONObject }.map {
                         val address = it.getString("address")
                         Token(
@@ -55,7 +56,6 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
 
                     }
                     appDatabase.tokens.upsert(newTokens)
-                    appDatabase.tokens.upsert(getRootTokenForChain(it).copy(order = 8888))
                 } catch (exception: Exception) {
                     Log.e("Could not load Token $exception")
                 }

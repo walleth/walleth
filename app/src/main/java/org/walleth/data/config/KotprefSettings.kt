@@ -18,6 +18,7 @@ object KotprefSettings : KotprefModel(), Settings {
     override var currentFiat by stringPref(default = "USD")
     override var onboardingDone by booleanPref(default = false)
     override var showOnlyStaredTokens by booleanPref(default = false)
+    override var showOnlyTokensOnCurrentNetwork by booleanPref(default = false)
 
     override var filterAddressesStared by booleanPref(default = false)
     override var filterAddressesKeyOnly by booleanPref(default = false)

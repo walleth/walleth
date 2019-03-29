@@ -1,12 +1,20 @@
 package org.walleth.data.networks
 
 import android.arch.lifecycle.MutableLiveData
+import org.kethereum.model.Address
 import org.kethereum.model.ChainId
 import org.walleth.data.config.Settings
 
 fun getNetworkDefinitionByChainID(chainID: ChainId) = ALL_NETWORKS.firstOrNull { it.chain.id == chainID }
 
 fun ChainId.findNetworkDefinition() = ALL_NETWORKS.firstOrNull { it.chain.id == this }
+
+const val FAUCET_ADDRESS_TOKEN = "%address%"
+fun ChainId.getFaucetURL(address: Address): String? {
+    return findNetworkDefinition()
+            ?.faucets?.first()
+            ?.replace(FAUCET_ADDRESS_TOKEN, address.hex)
+}
 
 class NetworkDefinitionProvider(var settings: Settings) : MutableLiveData<NetworkDefinition>() {
 
@@ -20,4 +28,5 @@ class NetworkDefinitionProvider(var settings: Settings) : MutableLiveData<Networ
     }
 
     fun getCurrent() = value!!
+
 }
