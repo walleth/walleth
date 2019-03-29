@@ -92,7 +92,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                     }
                 }
 
-                feeViewModel.setValue(txEntry.transaction.gasLimit * txEntry.transaction.gasPrice, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+                feeViewModel.setValue(txEntry.transaction.gasLimit!! * txEntry.transaction.gasPrice!!, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
 
                 val relevantAddress = if (transaction.from == currentAddressProvider.getCurrent()) {
                     from_to_title.setText(R.string.transaction_to_label)
@@ -133,17 +133,19 @@ class ViewTransactionActivity : BaseSubActivity() {
 
                 if (txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && (!txEntry.transactionState.relayed.isNotEmpty())) {
                     rlp_header.visibility = View.VISIBLE
+                    rlp_image.visibility = View.VISIBLE
+
                     if (txEntry.signatureData != null) {
                         rlp_header.setText(R.string.signed_rlp_header_text)
                         rlp_image.setQRCode("""{
                             "signedTransactionRLP":"${txEntry.transaction.encodeRLP(txEntry.signatureData).toHexString()}",
-                            "chainId":${txEntry.transaction.chain?.id}
+                            "chainId":${txEntry.transaction.chain}
                             }""")
                     } else {
                         rlp_header.setText(R.string.unsigned_rlp_header_text)
 
                         rlp_image.setQRCode("""{
-"nonce":"${txEntry.transaction.nonce?.toHexString()}","gasPrice":"${txEntry.transaction.gasPrice.toHexString()}","gasLimit":"${txEntry.transaction.gasLimit.toHexString()}","to":"${txEntry.transaction.to}","from":"${txEntry.transaction.from}","value":"${txEntry.transaction.value.toHexString()}","data":"${txEntry.transaction.input.toHexString("0x")}","chainId":${txEntry.transaction.chain?.id}
+"nonce":"${txEntry.transaction.nonce?.toHexString()}","gasPrice":"${txEntry.transaction.gasPrice!!.toHexString()}","gasLimit":"${txEntry.transaction.gasLimit!!.toHexString()}","to":"${txEntry.transaction.to}","from":"${txEntry.transaction.from}","value":"${txEntry.transaction.value!!.toHexString()}","data":"${txEntry.transaction.input.toHexString("0x")}","chainId":${txEntry.transaction.chain}
                             }
                             """)
                     }

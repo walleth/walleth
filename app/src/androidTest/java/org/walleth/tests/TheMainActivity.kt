@@ -39,7 +39,7 @@ class TheMainActivity {
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ZERO))
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain.id.value, 42, ZERO))
         }
 
         `when`(TestApp.mySettings.onboardingDone).thenReturn(false)
@@ -68,7 +68,7 @@ class TheMainActivity {
     @Test
     fun behavesCorrectlyNoTransactions() {
 
-        val balance = Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ZERO)
+        val balance = Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain.id.value, 42, ZERO)
 
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
@@ -96,8 +96,8 @@ class TheMainActivity {
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.transactions.loadTestData(currentNetwork.chain)
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ETH_IN_WEI))
+            TestApp.testDatabase.transactions.loadTestData(currentNetwork.chain.id)
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain.id.value, 42, ETH_IN_WEI))
         }
         rule.launchActivity()
 
@@ -119,9 +119,9 @@ class TheMainActivity {
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.transactions.loadTestData(currentNetwork.chain)
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain, 42, ETH_IN_WEI))
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, currentNetwork.chain, 42, ZERO))
+            TestApp.testDatabase.transactions.loadTestData(currentNetwork.chain.id)
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain.id.value, 42, ETH_IN_WEI))
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, currentNetwork.chain.id.value, 42, ZERO))
         }
 
         rule.launchActivity()

@@ -41,7 +41,6 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
@@ -61,7 +60,6 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
     private val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
-    private val syncProgressProvider: SyncProgressProvider by inject()
     private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
     private val appDatabase: AppDatabase by inject()
     private val settings: Settings by inject()
@@ -256,7 +254,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
 
     private val balanceObserver = Observer<Balance> {
-        if (it != null && it.chain == networkDefinitionProvider.getCurrent().chain) {
+        if (it != null && it.chain == networkDefinitionProvider.getCurrent().chain.id.value) {
             amountViewModel.setValue(it.balance, currentTokenProvider.getCurrent())
         } else {
             amountViewModel.setValue(null, currentTokenProvider.getCurrent())
@@ -275,10 +273,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         val currentAddress = currentAddressProvider.value
         if (currentAddress != null) {
             balanceLiveData?.removeObserver(balanceObserver)
-            balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.getCurrent().address, networkDefinitionProvider.getCurrent().chain)
+            balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.getCurrent().address, networkDefinitionProvider.getCurrent().chain.id.value)
             balanceLiveData?.observe(this, balanceObserver)
             etherLiveData?.removeObserver(etherObserver)
-            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getRootTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain)
+            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getRootTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain.id.value)
             etherLiveData?.observe(this, etherObserver)
         }
     }

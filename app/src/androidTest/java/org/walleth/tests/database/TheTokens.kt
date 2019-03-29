@@ -2,16 +2,14 @@ package org.walleth.tests.database
 
 import com.google.common.truth.Truth
 import org.junit.Test
-import org.kethereum.model.ChainId
 import org.walleth.data.tokens.Token
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
-import org.walleth.util.findChainDefinition
 
 class TheTokens : AbstractDatabaseTest() {
 
-    val CHAIN1 = ChainId(1L).findChainDefinition()
-    val CHAIN2 = ChainId(2L).findChainDefinition()
+    val CHAIN1 = 1L
+    val CHAIN2 = 2L
     val DEFAULT_TOKEN = Token(name = "foo",
             symbol = "foo",
             decimals = 1,

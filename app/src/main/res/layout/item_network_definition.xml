@@ -15,6 +15,15 @@
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
+
+        <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/info_indicator"
+                style="@style/button"
+                android:layout_width="@android:dimen/app_icon_size"
+                android:layout_height="@android:dimen/app_icon_size"
+                android:contentDescription="@string/network_details"
+                app:srcCompat="@drawable/ic_action_info_outline"/>
+
         <TextView
             android:id="@+id/network_title"
             android:layout_width="wrap_content"
@@ -29,13 +38,6 @@
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_weight="1"/>
-
-        <android.support.v7.widget.AppCompatImageButton
-            android:id="@+id/info_indicator"
-            android:layout_width="@android:dimen/app_icon_size"
-            android:layout_height="@android:dimen/app_icon_size"
-            android:contentDescription="@string/network_details"
-            app:srcCompat="@drawable/ic_action_info_outline"/>
 
     </LinearLayout>
 

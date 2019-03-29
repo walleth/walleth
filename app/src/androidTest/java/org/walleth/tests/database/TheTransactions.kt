@@ -8,12 +8,11 @@ import org.kethereum.model.createTransactionWithDefaults
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.testdata.*
-import org.walleth.util.findChainDefinition
 import java.math.BigInteger
 
 class TheTransactions : AbstractDatabaseTest() {
 
-    val chain = ChainId(42).findChainDefinition()
+    val chain = ChainId(42)
 
     @Test
     fun weCanInsertOne() {

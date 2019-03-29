@@ -6,7 +6,6 @@ import android.arch.persistence.room.Insert
 import android.arch.persistence.room.OnConflictStrategy
 import android.arch.persistence.room.Query
 import org.kethereum.model.Address
-import org.kethereum.model.ChainDefinition
 
 fun BalanceDAO.upsertIfNewerBlock(entry: Balance) {
     val oldBalance = getBalance(entry.address, entry.tokenAddress, entry.chain)
@@ -19,10 +18,10 @@ fun BalanceDAO.upsertIfNewerBlock(entry: Balance) {
 interface BalanceDAO {
 
     @Query("SELECT * FROM balances WHERE address = :address AND tokenAddress = :tokenAddress AND chain = :chain")
-    fun getBalance(address: Address, tokenAddress: Address?, chain: ChainDefinition): Balance?
+    fun getBalance(address: Address, tokenAddress: Address?, chain: Long): Balance?
 
     @Query("SELECT * FROM balances WHERE address = :address AND tokenAddress = :tokenAddress AND chain = :chain")
-    fun getBalanceLive(address: Address, tokenAddress: Address?, chain: ChainDefinition): LiveData<Balance>
+    fun getBalanceLive(address: Address, tokenAddress: Address?, chain: Long): LiveData<Balance>
 
     @Query("SELECT * FROM balances")
     fun getAllBalances(): List<Balance>

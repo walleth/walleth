@@ -33,7 +33,7 @@ val goerli_simple_faucet = AddressBookEntry(
 
 
 val goerli_social_faucet = AddressBookEntry(
-        name = "Goerli simple faucet",
+        name = "Goerli social faucet",
         address = Address("0x8c1e1e5b47980d214965f3bd8ea34c413e120ae4")
 )
 

@@ -66,7 +66,7 @@ open class ValueViewController(private val valueView: ValueView,
 
         valueView.current_value_rounding_indicator.setVisibility(currentAmount != getValueFromString())
 
-        val shouldDisplayFiat = currentToken?.chain == NetworkDefinition1().chain && currentToken?.isRootToken() == true
+        val shouldDisplayFiat = currentToken?.chain == NetworkDefinition1().chain.id.value && currentToken?.isRootToken() == true
 
         valueView.current_fiat_rounding_indicator.setVisibility(shouldDisplayFiat && isFiatRounded())
 

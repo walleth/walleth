@@ -5,15 +5,23 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import okhttp3.OkHttpClient
 import org.kethereum.functions.encodeRLP
+import org.kethereum.model.ChainId
 import org.kethereum.rpc.EthereumRPC
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
+import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.findNetworkDefinition
 import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
 import timber.log.Timber
+
+fun ChainId.getRPCEndpoint() =
+        findNetworkDefinition()?.getRPCEndpoint()
+
+fun NetworkDefinition.getRPCEndpoint() =
+        rpcEndpoints.firstOrNull()?.replace("\${INFURA_API_KEY}", "b032785efb6947ceb18b9e0177053a17")
 
 class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters)
     : Worker(appContext, workerParams), KoinComponent {
@@ -32,8 +40,8 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
             return Result.failure()
         }
 
-        val chain = transaction.transaction.chain
-        val baseURL = chain?.id?.findNetworkDefinition()?.rpcEndpoints?.firstOrNull()
+        val chain = transaction.transaction.chain?.let { ChainId(it) }
+        val baseURL = chain?.getRPCEndpoint()
 
         if (baseURL == null) {
             transaction.transactionState.error = "RPC url not found for chain $chain"
@@ -52,7 +60,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
 
                         appDatabase.transactions.upsert(transaction);
 
-                        return Result.failure();
+                        return Result.failure()
                     }
                 } else {
                     val newHash = result.result

@@ -24,7 +24,6 @@ import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 import org.walleth.testdata.Room77
 import org.walleth.testdata.ShapeShift
 import org.walleth.testdata.addTestAddresses
-import org.walleth.util.findChainDefinition
 import java.math.BigInteger
 
 class TheTransactionActivity {
@@ -34,7 +33,7 @@ class TheTransactionActivity {
     var rule = TruleskActivityRule(ViewTransactionActivity::class.java, false)
 
     private val DEFAULT_NONCE = BigInteger("11")
-    private val DEFAULT_CHAIN = ChainId(4L).findChainDefinition()
+    private val DEFAULT_CHAIN = ChainId(4L)
     private val DEFAULT_TX = createTransactionWithDefaults(value = ETH_IN_WEI,
             from = DEFAULT_TEST_ADDRESS,
             to = DEFAULT_TEST_ADDRESS,

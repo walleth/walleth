@@ -20,7 +20,6 @@ import org.kethereum.functions.rlp.*
 import org.kethereum.functions.toTransaction
 import org.kethereum.functions.toTransactionSignatureData
 import org.kethereum.keccakshortcut.keccak
-import org.kethereum.model.ChainDefinition
 import org.kethereum.model.ChainId
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
@@ -39,7 +38,6 @@ import org.walleth.khex.clean0xPrefix
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.ui.chainIDAlert
-import org.walleth.util.findChainDefinition
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
 import org.walleth.util.isUnsignedTransactionJSON
@@ -104,7 +102,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
                     val chainID = (signatureData.extractChainID()
                             ?: throw IllegalArgumentException("Cannot extract chainID from RLP"))
-                    transaction.chain = ChainDefinition(ChainId(chainID.toLong()), "?")
+                    transaction.chain = chainID.toLong()
 
                     transaction.from = transaction.extractFrom(signatureData, chainID)
                     transaction.txHash = txRLP.encode().keccak().toHexString()
@@ -143,10 +141,10 @@ class OfflineTransactionActivity : BaseSubActivity() {
                             from = "0x" + dataJSON.getString("account").clean0xPrefix(),
                             to = transaction.to!!.hex,
                             data = transaction.input.toHexString(),
-                            value = transaction.value.toHexString(),
+                            value = transaction.value!!.toHexString(),
                             nonce = transaction.nonce!!.toHexString(),
-                            gasPrice = transaction.gasPrice.toHexString(),
-                            gasLimit = transaction.gasLimit.toHexString(),
+                            gasPrice = transaction.gasPrice!!.toHexString(),
+                            gasLimit = transaction.gasLimit!!.toHexString(),
                             chainId = networkDefinitionProvider.getCurrent().chain.id,
                             parityFlow = true
                     )
@@ -235,7 +233,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                 val extractChainID = signatureData.extractChainID()
                 val chainId = extractChainID?.toLong()?.let { ChainId(it) } ?: networkDefinitionProvider.getCurrent().chain.id
 
-                transaction?.chain = chainId.findChainDefinition()
+                transaction?.chain = chainId.value
                 transaction?.let {
                     createTransaction(it, signatureData)
                 }

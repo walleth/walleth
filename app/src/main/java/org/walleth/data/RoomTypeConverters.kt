@@ -2,9 +2,6 @@ package org.walleth.data
 
 import android.arch.persistence.room.TypeConverter
 import org.kethereum.model.Address
-import org.kethereum.model.ChainDefinition
-import org.kethereum.model.ChainId
-import org.walleth.data.transactions.TransactionSource
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import java.math.BigInteger
@@ -19,17 +16,6 @@ class RoomTypeConverters {
 
     @TypeConverter
     fun dateToTimestamp(address: Address?) = address?.hex
-
-    /** NetworkDefinition  */
-
-    @TypeConverter
-    fun fromNetworkDefinition(value: String): ChainDefinition {
-        val split = value.split(":")
-        return ChainDefinition(ChainId(split.last().toLong()), split.first())
-    }
-
-    @TypeConverter
-    fun toNetworkDefinition(chain: ChainDefinition?) = chain?.toString()
 
     /** Date  */
 
@@ -47,16 +33,6 @@ class RoomTypeConverters {
 
     @TypeConverter
     fun bigIntegerToString(bigInteger: BigInteger?) = bigInteger?.toString()
-
-
-    /** TransactionSource */
-
-    @TypeConverter
-    fun fromTransactionSourceString(value: String) = TransactionSource.valueOf(value)
-
-    @TypeConverter
-    fun toTransactionSourceString(value: TransactionSource) = value.toString()
-
 
     /** List<Byte> **/
 

@@ -54,7 +54,7 @@ class CreateTokenDefinitionActivity : BaseSubActivity() {
                                     symbol = newTokenName,
                                     address = Address(newTokenAddress),
                                     decimals = newDecimals,
-                                    chain = networkDefinition.chain,
+                                    chain = networkDefinition.chain.id.value,
                                     showInList = true,
                                     starred = true,
                                     fromUser = true,
