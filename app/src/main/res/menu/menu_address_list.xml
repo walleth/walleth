@@ -5,6 +5,25 @@
             android:id="@+id/menu_undelete"
             app:showAsAction="never" />
 
+    <item android:icon="@drawable/ic_filter_list_black_24dp"
+          android:title="@string/menu_filter"
+          app:showAsAction="ifRoom|withText">
+        <menu>
+            <item android:id="@+id/menu_stared_only"
+                  android:icon="@drawable/ic_star_24dp"
+                  app:iconTint="@color/fgColor"
+                  android:title="@string/menu_has_star"
+                  android:checkable="true"
+            />
+            <item android:id="@+id/menu_only_with_key"
+                  android:icon="@drawable/ic_key_black"
+                  app:iconTint="@color/fgColor"
+                  android:title="@string/with_key"
+                  android:checkable="true"/>
+        </menu>
+    </item>
+
+
     <item
             android:title="@string/delete_forever"
             android:id="@+id/menu_delete_forever"

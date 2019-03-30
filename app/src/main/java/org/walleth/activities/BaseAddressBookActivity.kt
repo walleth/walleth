@@ -11,7 +11,6 @@ import android.support.v7.widget.helper.ItemTouchHelper.LEFT
 import android.support.v7.widget.helper.ItemTouchHelper.RIGHT
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.CompoundButton
 import kotlinx.android.synthetic.main.activity_list_addresses.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -53,26 +52,6 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
 
         fab.setOnClickListener {
             startActivityFromClass(CreateAccountActivity::class.java)
-        }
-
-        starred_only.isChecked = settings.filterAddressesStared
-        starred_only.setOnCheckedChangeListener { _: CompoundButton, isOn: Boolean ->
-            settings.filterAddressesStared = isOn
-            refresh()
-        }
-
-        starred_only_button.setOnClickListener {
-            starred_only.toggle()
-        }
-
-        key_only.isChecked = settings.filterAddressesKeyOnly
-        key_only.setOnCheckedChangeListener { _: CompoundButton, isOn: Boolean ->
-            settings.filterAddressesKeyOnly = isOn
-            refresh()
-        }
-
-        key_only_icon.setOnClickListener {
-            key_only.toggle()
         }
 
         appDatabase.addressBook.allLiveData().observe(this, Observer { items ->
@@ -123,6 +102,9 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
         val anySoftDeletedExists = adapter.list.any { it.deleted }
         menu.findItem(R.id.menu_undelete).isVisible = anySoftDeletedExists
         menu.findItem(R.id.menu_delete_forever).isVisible = anySoftDeletedExists
+
+        menu.findItem(R.id.menu_stared_only).isChecked = settings.filterAddressesStared
+        menu.findItem(R.id.menu_only_with_key).isChecked = settings.filterAddressesKeyOnly
         return super.onPrepareOptionsMenu(menu)
     }
 
@@ -134,6 +116,12 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
                 }
                 refresh()
             }
+        }
+        R.id.menu_stared_only -> item.filterToggle {
+            settings.filterAddressesStared = it
+        }
+        R.id.menu_only_with_key -> item.filterToggle {
+            settings.filterAddressesKeyOnly = it
         }
 
         R.id.menu_delete_forever -> true.also {
@@ -156,5 +144,12 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
                     .show()
         }
         else -> super.onOptionsItemSelected(item)
+    }
+
+
+    private fun MenuItem.filterToggle(updater: (value: Boolean) -> Unit) = true.also {
+        isChecked = !isChecked
+        updater(isChecked)
+        refresh()
     }
 }

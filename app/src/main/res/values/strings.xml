@@ -245,6 +245,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="menu_filter">Filter</string>
     <string name="menu_has_star">has star</string>
     <string name="menu_current_chain">current chain</string>
+    <string name="with_key">with key</string>
     <string-array name="walletconnect_options">
         <item>Current Account</item>
         <item>Select Account</item>
