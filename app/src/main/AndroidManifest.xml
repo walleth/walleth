@@ -61,6 +61,15 @@
                 <data
                         android:scheme="ethereum"/>
             </intent-filter>
+
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+
+                <category android:name="android.intent.category.DEFAULT"/>
+
+                <data
+                        android:scheme="wc"/>
+            </intent-filter>
         </activity>
         <activity android:name="org.walleth.activities.MainActivity">
 
