@@ -13,6 +13,7 @@ interface Settings {
 
     var addressInitVersion: Int
     var tokensInitVersion: Int
+    var dataVersion: Int
 
     var currentGoVerbosity: Int
 

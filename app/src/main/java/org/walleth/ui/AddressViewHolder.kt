@@ -1,5 +1,8 @@
 package org.walleth.ui
 
+import android.content.res.ColorStateList
+import android.support.v4.content.ContextCompat
+import android.support.v4.widget.ImageViewCompat
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.View.GONE
@@ -8,12 +11,15 @@ import kotlinx.android.synthetic.main.item_address_book.view.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.kethereum.keystore.api.KeyStore
+import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.activities.EditAccountActivity
 import org.walleth.activities.ExportKeyActivity
 import org.walleth.activities.startAddressReceivingActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addressbook.getSpec
+import org.walleth.model.ACCOUNT_TYPE_MAP
 
 class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
@@ -30,16 +36,19 @@ class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.address_name.text = addressBookEntry.name
 
         val hasKeyForForAddress = keyStore.hasKeyForForAddress(addressBookEntry.address)
-        when {
-            hasKeyForForAddress -> R.drawable.ic_key
-            addressBookEntry.trezorDerivationPath != null -> R.drawable.trezor_icon
-            else -> R.drawable.ic_watch_only
-        }.let { itemView.key_indicator.setImageResource(it) }
+        val spec = addressBookEntry.getSpec()
+        ACCOUNT_TYPE_MAP[spec?.type]?.drawable.let {
+            itemView.key_indicator.setImageResource(it ?: R.drawable.ic_watch)
+        }
 
+        itemView.key_indicator_source.setVisibility(spec?.source?.isNotBlank() == true)
         if (hasKeyForForAddress) {
             itemView.key_indicator.setOnClickListener {
                 context.startAddressReceivingActivity(addressBookEntry.address, ExportKeyActivity::class.java)
             }
+            ImageViewCompat.setImageTintList(itemView.key_indicator, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.colorAccent)))
+        } else {
+            ImageViewCompat.setImageTintList(itemView.key_indicator, ColorStateList.valueOf(ContextCompat.getColor(context, R.color.fgColor)))
         }
 
         if (addressBookEntry.note == null || addressBookEntry.note!!.isBlank()) {

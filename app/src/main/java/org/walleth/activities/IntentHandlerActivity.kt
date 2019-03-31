@@ -76,7 +76,7 @@ class IntentHandlerActivity : WallethActivity() {
                 if (split.first().isEmpty()) {
                     oldFilterAddressesKeyOnly = settings.filterAddressesKeyOnly
                     settings.filterAddressesKeyOnly = true
-                    val intent = Intent(this, AddressBookActivity::class.java)
+                    val intent = Intent(this, AccountPickActivity::class.java)
                     startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
                 } else {
                     val wantedAddress = Address(split.first())

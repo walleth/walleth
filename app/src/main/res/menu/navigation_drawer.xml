@@ -12,11 +12,6 @@
             android:icon="@drawable/ic_group_black_24dp"/>
 
     <item
-            android:id="@+id/menu_keys"
-            android:title="@string/nav_drawer_keys"
-            android:icon="@drawable/ic_key_black"/>
-
-    <item
             android:id="@+id/menu_settings"
             android:title="@string/nav_drawer_preferences"
             android:icon="@drawable/ic_action_settings"/>

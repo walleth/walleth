@@ -23,8 +23,8 @@ import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kethereum.contract.abi.types.convertStringToABIType
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
@@ -47,14 +47,14 @@ import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
+import org.walleth.activities.nfc.startNFCSigningActivity
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
 import org.walleth.activities.trezor.startTrezorActivity
-import org.walleth.data.AppDatabase
-import org.walleth.data.DEFAULT_GAS_LIMIT_ERC_20_TX
-import org.walleth.data.DEFAULT_GAS_LIMIT_ETH_TX
-import org.walleth.data.DEFAULT_PASSWORD
+import org.walleth.data.*
+import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getByAddressAsync
+import org.walleth.data.addressbook.getSpec
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
@@ -68,11 +68,13 @@ import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.khex.toNoPrefixHexString
+import org.walleth.model.ACCOUNT_TYPE_MAP
 import org.walleth.ui.asyncAwait
 import org.walleth.ui.chainIDAlert
 import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.hasText
 import org.walleth.util.question
+import org.walleth.util.security.getPasswordForAccountType
 import java.math.BigInteger
 import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
@@ -104,6 +106,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentShowCase: ShowcaseView? = null
     private var currentTopSnackBar: TSnackbar? = null
 
+    private var currentAccount: AddressBookEntry? = null
 
     private val amountController by lazy {
         ValueViewController(amount_value, exchangeRateProvider, settings)
@@ -114,6 +117,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
@@ -123,19 +127,18 @@ class CreateTransactionActivity : BaseSubActivity() {
                     storeDefaultGasPriceAndFinish()
                 }
             }
-            FROM_ADDRESS_REQUEST_CODE -> {
-                data?.let {
-                    if (data.hasExtra("HEX")) {
-                        setFromAddress(Address(data.getStringExtra("HEX")))
-                    }
+
+            REQUEST_CODE_ENTER_PASSWORD -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    startTransaction(data?.getStringExtra(EXTRA_KEY_PWD), createTransaction())
                 }
             }
             TOKEN_REQUEST_CODE -> {
                 onCurrentTokenChanged()
             }
             else -> data?.let {
-                if (data.hasExtra("HEX")) {
-                    setToFromURL(data.getStringExtra("HEX"), fromUser = true)
+                if (data.hasExtra(EXTRA_KEY_ADDRESS)) {
+                    setToFromURL(data.getStringExtra(EXTRA_KEY_ADDRESS), fromUser = true)
                 } else if (data.hasExtra("SCAN_RESULT")) {
                     setToFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
                 }
@@ -175,20 +178,13 @@ class CreateTransactionActivity : BaseSubActivity() {
         currentAddressProvider.observe(this, Observer { address ->
             address?.let {
                 appDatabase.addressBook.getByAddressAsync(address) { entry ->
+                    currentAccount = entry
                     from_address.text = entry?.name
-                    val isTrezorTransaction = entry?.trezorDerivationPath != null
+                    val drawable = ACCOUNT_TYPE_MAP[entry.getSpec()?.type]?.actionDrawable
 
-                    fab.setImageResource(when {
-                        isTrezorTransaction
-                        -> R.drawable.trezor_icon_black
-
-                        (keyStore.hasKeyForForAddress(currentAddressProvider.getCurrentNeverNull()))
-                        -> R.drawable.ic_key_black
-
-                        else -> R.drawable.ic_action_done
-                    })
+                    fab.setImageResource(drawable ?: R.drawable.ic_action_done)
                     fab.setOnClickListener {
-                        onFabClick(isTrezorTransaction)
+                        onFabClick()
                     }
                 }
             }
@@ -279,12 +275,12 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         address_list_button.setOnClickListener {
             currentShowCase?.hide()
-            val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
+            val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
             startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
         }
 
         from_address_list_button.setOnClickListener {
-            val intent = Intent(this@CreateTransactionActivity, AddressBookActivity::class.java)
+            val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
             startActivityForResult(intent, FROM_ADDRESS_REQUEST_CODE)
         }
 
@@ -315,9 +311,8 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
     }
 
-    private fun onFabClick(isTrezorTransaction: Boolean) {
+    private fun onFabClick() {
         if (to_address.text.isEmpty() || currentToAddress == null) {
-
 
             currentShowCase = ShowcaseView.Builder(this)
                     .setTarget(ViewTarget(R.id.address_list_button, this))
@@ -353,12 +348,12 @@ class CreateTransactionActivity : BaseSubActivity() {
         } else if (!nonce_input.hasText()) {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
-            if (currentTokenProvider.getCurrent().isRootToken() && currentERC681?.function == null && amountController.getValueOrZero() == ZERO) {
-                question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
-            } else if (!currentTokenProvider.getCurrent().isRootToken() && amountController.getValueOrZero()?:ZERO > currentBalanceSafely()) {
-                question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> startTransaction(isTrezorTransaction) })
+            if (currentTokenProvider.getCurrent().isRootToken() && currentERC681.function == null && amountController.getValueOrZero() == ZERO) {
+                question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> prepareTransaction() })
+            } else if (!currentTokenProvider.getCurrent().isRootToken() && amountController.getValueOrZero() > currentBalanceSafely()) {
+                question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> prepareTransaction() })
             } else {
-                startTransaction(isTrezorTransaction)
+                prepareTransaction()
             }
         }
     }
@@ -372,48 +367,54 @@ class CreateTransactionActivity : BaseSubActivity() {
         amountController.setEnabled(!isShowcaseViewShown)
     }
 
-    private fun startTransaction(isTrezorTransaction: Boolean) {
-        val transaction = createTransaction()
+    private fun prepareTransaction() {
+        when (val type = currentAccount.getSpec()?.type) {
+            ACCOUNT_TYPE_PIN_PROTECTED, ACCOUNT_TYPE_BURNER, ACCOUNT_TYPE_PASSWORD_PROTECTED -> getPasswordForAccountType(type) { pwd ->
+                if (pwd != null) {
+                    startTransaction(pwd, createTransaction())
+                }
+            }
+            ACCOUNT_TYPE_NFC -> startNFCSigningActivity(TransactionParcel(createTransaction()))
+            ACCOUNT_TYPE_TREZOR -> startTrezorActivity(TransactionParcel(createTransaction()))
+        }
+    }
 
-        when {
+    private fun startTransaction(password: String?, transaction: Transaction) {
+        GlobalScope.launch(Dispatchers.Main) {
 
-            isTrezorTransaction -> startTrezorActivity(TransactionParcel(transaction))
-            else -> GlobalScope.launch(Dispatchers.Main) {
+            fab_progress_bar.visibility = View.VISIBLE
+            fab.isEnabled = false
 
-                fab_progress_bar.visibility = View.VISIBLE
-                fab.isEnabled = false
-
-                val error: String? = GlobalScope.async(Dispatchers.Default) {
-                    try {
-                        val signatureData = keyStore.getKeyForAddress(currentAddressProvider.getCurrentNeverNull(), DEFAULT_PASSWORD)?.let {
-                            Snackbar.make(fab, "Signing transaction", Snackbar.LENGTH_INDEFINITE).show()
-                            transaction.signViaEIP155(it, networkDefinitionProvider.getCurrent().chain)
-                        }
-
-                        currentSignatureData = signatureData
-
-                        currentTxHash = transaction.encodeRLP(signatureData).keccak().toHexString()
-                        transaction.txHash = currentTxHash
-
-
-                        val entity = transaction.toEntity(signatureData = signatureData, transactionState = TransactionState())
-                        appDatabase.transactions.upsert(entity)
-                        null
-                    } catch (e: Exception) {
-                        e.message
+            val error: String? = withContext(Dispatchers.Default) {
+                try {
+                    val currentAddress = currentAddressProvider.getCurrentNeverNull()
+                    val signatureData = keyStore.getKeyForAddress(currentAddress, password ?: DEFAULT_PASSWORD)?.let {
+                        Snackbar.make(fab, "Signing transaction", Snackbar.LENGTH_INDEFINITE).show()
+                        transaction.signViaEIP155(it, networkDefinitionProvider.getCurrent().chain)
                     }
-                }.await()
 
-                fab_progress_bar.visibility = View.INVISIBLE
-                fab.isEnabled = true
+                    currentSignatureData = signatureData
 
-                if (error != null) {
-                    alert("Could not sign transaction: $error")
-                } else {
-                    storeDefaultGasPriceAndFinish()
+                    currentTxHash = transaction.encodeRLP(signatureData).keccak().toHexString()
+                    transaction.txHash = currentTxHash
+
+
+                    val entity = transaction.toEntity(signatureData = signatureData, transactionState = TransactionState())
+                    appDatabase.transactions.upsert(entity)
+                    null
+                } catch (e: Exception) {
+                    e.message
                 }
             }
 
+            fab_progress_bar.visibility = View.INVISIBLE
+            fab.isEnabled = true
+
+            if (error != null) {
+                alert("Could not sign transaction: $error")
+            } else {
+                storeDefaultGasPriceAndFinish()
+            }
         }
     }
 
@@ -467,17 +468,9 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putString("ERC67", currentERC681?.generateURL())
+        outState.putString("ERC67", currentERC681.generateURL())
         outState.putString("lastERC67", lastWarningURI)
         super.onSaveInstanceState(outState)
-    }
-
-    private fun setFromAddress(address: Address) {
-        if (currentAddressProvider.value != address) {
-            currentBalance = null
-            from_address.text = address.hex
-            currentAddressProvider.setCurrent(address)
-        }
     }
 
     private fun setToFromURL(uri: String?, fromUser: Boolean) {

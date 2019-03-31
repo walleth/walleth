@@ -23,7 +23,7 @@ fun ChainId.getRPCEndpoint() =
         findNetworkDefinition()?.getRPCEndpoint()
 
 fun NetworkDefinition.getRPCEndpoint() =
-        rpcEndpoints[Random.nextInt(rpcEndpoints.size)].replace("\${INFURA_API_KEY}", "b032785efb6947ceb18b9e0177053a17")
+        rpcEndpoints.random().replace("\${INFURA_API_KEY}", "b032785efb6947ceb18b9e0177053a17")
 
 class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters)
     : Worker(appContext, workerParams), KoinComponent {

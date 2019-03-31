@@ -12,6 +12,7 @@ import android.view.MenuItem
 import android.view.View
 import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.*
+import org.kethereum.extensions.toHexString
 import org.kethereum.functions.encodeRLP
 import org.kethereum.functions.getTokenTransferTo
 import org.kethereum.functions.getTokenTransferValue
@@ -31,7 +32,6 @@ import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.functions.setQRCode
-import org.walleth.functions.toHexString
 import org.walleth.khex.toHexString
 import org.walleth.ui.valueview.ValueViewController
 

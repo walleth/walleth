@@ -2,6 +2,7 @@ package org.walleth.ui
 
 import android.app.Activity
 import android.support.design.button.MaterialButton
+import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.widget.GridLayout
 import kotlinx.android.synthetic.main.pinput.view.*
@@ -18,13 +19,14 @@ fun Activity.showPINDialog(
         onCancel: () -> Unit,
         labelButtons: Boolean = false,
         pinPadMapping: List<Int?> = KEY_MAP_TOUCH,
-        maxLength: Int = 10
+        maxLength: Int = 10,
+        title: Int = R.string.please_enter_your_pin
 ) {
     val view = inflate(R.layout.pinput)
     var dialogPin = ""
     val displayPin = {
         view.pin_textview.text = "*".repeat(dialogPin.length)
-        view.pin_back.setVisibility(!dialogPin.isEmpty())
+        view.pin_back.setVisibility(dialogPin.isNotEmpty())
     }
     displayPin.invoke()
     pinPadMapping.forEach { number ->
@@ -36,6 +38,7 @@ fun Activity.showPINDialog(
                 displayPin.invoke()
             }
 
+            setTextColor(ContextCompat.getColor(this@showPINDialog, R.color.onAccent))
 
             layoutParams = GridLayout.LayoutParams().apply {
                 setMargins(5, 5, 5, 5)
@@ -52,11 +55,14 @@ fun Activity.showPINDialog(
     if (!isFinishing) {
         AlertDialog.Builder(this)
                 .setView(view)
-                .setTitle(R.string.trezor_please_enter_your_pin)
+                .setTitle(title)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
                     onPIN.invoke(dialogPin)
                 }
                 .setNegativeButton(android.R.string.cancel) { _, _ ->
+                    onCancel.invoke()
+                }
+                .setOnCancelListener {
                     onCancel.invoke()
                 }
                 .show()

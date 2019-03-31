@@ -9,10 +9,18 @@
         android:layout_margin="4dp"
         app:cardMaxElevation="8dp">
 
-    <android.support.v7.widget.AppCompatImageView
-            android:id="@+id/key_indicator"
-            style="@style/indicator_icon"/>
+    <LinearLayout android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  style="@style/topright_indicator">
+        <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/key_indicator_source"
+                app:srcCompat="@drawable/ic_import"
+                style="@style/topright_indicator_icon"/>
+        <android.support.v7.widget.AppCompatImageView
+                android:id="@+id/key_indicator"
+                style="@style/topright_indicator_icon"/>
 
+    </LinearLayout>
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

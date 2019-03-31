@@ -1,6 +1,5 @@
 package org.walleth.data
 
-import okhttp3.MediaType
 import java.math.BigInteger
 
 val ETH_IN_WEI = BigInteger("1000000000000000000")
@@ -11,8 +10,38 @@ var DEFAULT_GAS_LIMIT_ERC_20_TX = BigInteger("73000")
 
 const val DEFAULT_PASSWORD = "default"
 
-val JSON_MEDIA_TYPE = MediaType.parse("application/json")
-
 const val DEFAULT_ETHEREUM_BIP44_PATH = "m/44'/60'/0'/0/0"
 
 const val KEY_TX_HASH = "TXHASH"
+
+
+const val REQUEST_CODE_CREATE_ACCOUNT = 420
+const val REQUEST_CODE_PICK_ACCOUNT_TYPE = REQUEST_CODE_CREATE_ACCOUNT + 1
+const val REQUEST_CODE_SELECT_TOKEN = REQUEST_CODE_PICK_ACCOUNT_TYPE + 1
+const val REQUEST_CODE_ENTER_NFC_CREDENTIALS = REQUEST_CODE_SELECT_TOKEN + 1
+
+const val REQUEST_CODE_PICK_WATCH_ONLY = REQUEST_CODE_ENTER_NFC_CREDENTIALS + 1
+const val REQUEST_CODE_PICK_NFC = REQUEST_CODE_PICK_WATCH_ONLY + 1
+const val REQUEST_CODE_IMPORT = REQUEST_CODE_PICK_NFC +1
+const val REQUEST_CODE_ENTER_PIN = REQUEST_CODE_IMPORT +1
+const val REQUEST_CODE_ENTER_PASSWORD = REQUEST_CODE_ENTER_PIN +1
+const val REQUEST_CODE_IMPORT_AS = REQUEST_CODE_ENTER_PASSWORD +1
+
+const val KEY_INTENT_EXTRA_TYPE = "TYPE"
+const val KEY_INTENT_EXTRA_KEYCONTENT = "KEY"
+
+
+const val EXTRA_KEY_ADDRESS = "address"
+const val EXTRA_KEY_NFC_CREDENTIALS = "nfc_credentials"
+const val EXTRA_KEY_ACCOUNTSPEC = "accountspec"
+const val EXTRA_KEY_PIN = "pin"
+const val EXTRA_KEY_PWD = "pwd"
+
+const val ACCOUNT_TYPE_NONE = "none"
+const val ACCOUNT_TYPE_BURNER = "burner"
+const val ACCOUNT_TYPE_PIN_PROTECTED ="pinprotected"
+const val ACCOUNT_TYPE_PASSWORD_PROTECTED ="pwdprotected"
+const val ACCOUNT_TYPE_TREZOR = "trezor"
+const val ACCOUNT_TYPE_IMPORT = "import"
+const val ACCOUNT_TYPE_NFC = "nfc"
+const val ACCOUNT_TYPE_WATCH_ONLY = "watchonly"

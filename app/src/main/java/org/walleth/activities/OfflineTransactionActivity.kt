@@ -16,6 +16,7 @@ import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.extractFrom
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
+import org.kethereum.extensions.toHexString
 import org.kethereum.functions.rlp.*
 import org.kethereum.functions.toTransaction
 import org.kethereum.functions.toTransactionSignatureData
@@ -33,7 +34,6 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
-import org.walleth.functions.toHexString
 import org.walleth.khex.clean0xPrefix
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString

@@ -14,14 +14,15 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.data.ACCOUNT_TYPE_TREZOR
 import org.walleth.data.DEFAULT_ETHEREUM_BIP44_PATH
+import org.walleth.data.EXTRA_KEY_ACCOUNTSPEC
+import org.walleth.data.EXTRA_KEY_ADDRESS
+import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.kethereum.android.TransactionParcel
 
-private const val ADDRESS_HEX_KEY = "address_hex"
-private const val ADDRESS_PATH = "address_path"
-fun Intent.hasAddressResult() = hasExtra(ADDRESS_HEX_KEY)
-fun Intent.getAddressResult() = getStringExtra(ADDRESS_HEX_KEY)
-fun Intent.getPATHResult() = getStringExtra(ADDRESS_PATH)
+fun Intent?.hasAddressResult() = this?.hasExtra(EXTRA_KEY_ADDRESS) == true
+fun Intent?.getAddressResult() = this?.getStringExtra(EXTRA_KEY_ADDRESS)
 
 class TrezorGetAddressActivity : BaseTrezorActivity() {
 
@@ -106,8 +107,8 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
                         alert(R.string.trezor_no_valid_input)
                     } else {
                         val resultIntent = Intent()
-                        resultIntent.putExtra(ADDRESS_HEX_KEY, currentAddress!!.hex)
-                        resultIntent.putExtra(ADDRESS_PATH, currentBIP44.toString())
+                        resultIntent.putExtra(EXTRA_KEY_ADDRESS, currentAddress!!.hex)
+                        resultIntent.putExtra(EXTRA_KEY_ACCOUNTSPEC, AccountKeySpec(ACCOUNT_TYPE_TREZOR, derivationPath = currentBIP44.toString()))
                         setResult(Activity.RESULT_OK, resultIntent)
                         finish()
                     }

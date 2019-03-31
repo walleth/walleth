@@ -2,7 +2,9 @@ package org.walleth.data.exchangerate
 
 import android.content.Context
 import okhttp3.*
-import okio.Okio
+import okio.buffer
+import okio.sink
+import okio.source
 import org.json.JSONObject
 import org.threeten.bp.LocalTime
 import java.io.File
@@ -36,7 +38,7 @@ class CryptoCompareExchangeProvider(
 
     private fun setFromFile(): Boolean {
         try {
-            val json = JSONObject(Okio.buffer(Okio.source(lastDataFile)).use { it.readUtf8() })
+            val json = JSONObject(lastDataFile.source().buffer().use { it.readUtf8() })
             json.keys().forEach {
                 fiatInfoMap[it] = FiatInfo(it, "", LocalTime.now(), BigDecimal(json.getString(it)))
             }
@@ -55,7 +57,7 @@ class CryptoCompareExchangeProvider(
             override fun onResponse(call: Call?, response: Response) {
                 if (response.code() == 200) {
                     response.body()?.use {
-                        val bufferedSink = Okio.buffer(Okio.sink(lastDataFile))
+                        val bufferedSink = lastDataFile.sink().buffer()
                         bufferedSink.writeAll(it.source())
                         bufferedSink.close()
                         setFromFile()

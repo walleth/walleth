@@ -8,12 +8,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
-import org.walleth.activities.AddressBookActivity
+import org.walleth.activities.AccountPickActivity
 
-class TheAddressBookActivity {
+class TheAccountPickActivity {
 
     @get:Rule
-    var rule = TruleskActivityRule(AddressBookActivity::class.java)
+    var rule = TruleskActivityRule(AccountPickActivity::class.java)
 
     @Test
     fun listShows() {

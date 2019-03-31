@@ -18,6 +18,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.kethereum.keystore.api.InitializingFileKeyStore
 import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
@@ -27,18 +28,19 @@ import org.koin.dsl.module.module
 import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
+import org.walleth.activities.nfc.NFCCredentialStore
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.contracts.FourByteDirectoryImpl
 import org.walleth.core.TransactionNotificationService
-import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.*
+import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.allPrePopulationAddresses
+import org.walleth.data.addressbook.toJSON
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.initTokens
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.InitializingCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
@@ -51,6 +53,7 @@ import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.viewmodels.WalletConnectViewModel
 import java.io.File
 import java.net.Socket
+import java.security.Security
 import javax.net.SocketFactory
 
 open class App : MultiDexApplication() {
@@ -92,7 +95,7 @@ open class App : MultiDexApplication() {
         single { NetworkDefinitionProvider(get()) }
         single { BlockExplorerProvider(get()) }
         single {
-            InitializingCurrentAddressProvider(keyStore, get(), get(), applicationContext) as CurrentAddressProvider
+            InitializingCurrentAddressProvider(settings = get()) as CurrentAddressProvider
         }
         single { FourByteDirectoryImpl(get(), applicationContext) as FourByteDirectory }
 
@@ -102,6 +105,9 @@ open class App : MultiDexApplication() {
             }, get()) as WCSessionStore
         }
 
+        single {
+            NFCCredentialStore(this@App)
+        }
         viewModel { TransactionListViewModel(this@App, get(), get(), get()) }
         viewModel { WalletConnectViewModel(this@App, get(), get()) }
     }
@@ -123,6 +129,9 @@ open class App : MultiDexApplication() {
         LeakCanary.install(this)
         // Normal app init code...
 
+        Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
+        Security.addProvider(BouncyCastleProvider())
+
         startKoin(this, listOf(koinModule, createKoin()))
 
         if (BuildConfig.DEBUG) {
@@ -142,16 +151,6 @@ open class App : MultiDexApplication() {
             settings.addressInitVersion = 2
 
             GlobalScope.launch(Dispatchers.Default) {
-                keyStore.getAddresses().forEachIndexed { index, address ->
-
-                    appDatabase.addressBook.upsert(AddressBookEntry(
-                            name = "Default" + if (keyStore.getAddresses().size > 1) index else "",
-                            address = address,
-                            note = "default account with key",
-                            isNotificationWanted = false,
-                            trezorDerivationPath = null
-                    ))
-                }
                 appDatabase.addressBook.upsert(allPrePopulationAddresses)
             }
         }
@@ -161,6 +160,22 @@ open class App : MultiDexApplication() {
         val networkDefinitionProvider: NetworkDefinitionProvider by inject()
 
         currentTokenProvider.setCurrent(getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+
+        if (settings.dataVersion < 1) {
+            settings.dataVersion = 1
+            GlobalScope.launch(Dispatchers.Default) {
+                appDatabase.addressBook.all().forEach {
+                    if (it.keySpec == null || it.keySpec?.isBlank() == true) {
+                        val type = if (keyStore.hasKeyForForAddress(it.address)) ACCOUNT_TYPE_BURNER else ACCOUNT_TYPE_WATCH_ONLY
+                        it.keySpec = AccountKeySpec(type).toJSON()
+                        appDatabase.addressBook.upsert(it)
+                    } else if (it.keySpec?.startsWith("m") == true) {
+                        it.keySpec = AccountKeySpec(ACCOUNT_TYPE_TREZOR, derivationPath = it.keySpec).toJSON()
+                        appDatabase.addressBook.upsert(it)
+                    }
+                }
+            }
+        }
     }
 
     open fun executeCodeWeWillIgnoreInTests() {

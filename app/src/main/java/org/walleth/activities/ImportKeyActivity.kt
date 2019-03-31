@@ -12,59 +12,46 @@ import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import kotlinx.android.synthetic.main.activity_import_json.*
+import kotlinx.android.synthetic.main.activity_import_key.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kethereum.bip39.dirtyPhraseToMnemonicWords
 import org.kethereum.bip39.toKey
 import org.kethereum.bip39.validate
 import org.kethereum.bip39.wordlists.WORDLIST_ENGLISH
 import org.kethereum.crypto.toECKeyPair
-import org.kethereum.erc55.withERC55Checksum
-import org.kethereum.keystore.api.KeyStore
-import org.kethereum.model.Address
+import org.kethereum.extensions.toHexString
 import org.kethereum.model.PrivateKey
 import org.kethereum.wallet.loadKeysFromWalletJsonString
-import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
-import org.threeten.bp.LocalDateTime
 import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
-import org.walleth.data.AppDatabase
-import org.walleth.data.DEFAULT_ETHEREUM_BIP44_PATH
-import org.walleth.data.DEFAULT_PASSWORD
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.*
+import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.khex.hexToByteArray
-import org.walleth.util.hasText
 import java.io.FileNotFoundException
 
 enum class KeyType {
     ECDSA, JSON, WORDLIST
 }
 
-
-private const val KEY_INTENT_EXTRA_TYPE = "TYPE"
-private const val KEY_INTENT_EXTRA_KEYCONTENT = "KEY"
-
-fun Context.getKeyImportIntent(key: String, type: KeyType) = Intent(this, ImportActivity::class.java).apply {
+fun Context.getKeyImportIntent(key: String, type: KeyType) = Intent(this, ImportKeyActivity::class.java).apply {
     putExtra(KEY_INTENT_EXTRA_TYPE, type.toString())
     putExtra(KEY_INTENT_EXTRA_KEYCONTENT, key)
 }
 
 private const val READ_REQUEST_CODE = 42
 
-class ImportActivity : BaseSubActivity() {
+open class ImportKeyActivity : BaseSubActivity() {
 
-    private val keyStore: KeyStore by inject()
-    private val appDatabase: AppDatabase by inject()
-
+    private var importing = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_import_json)
+        setContentView(R.layout.activity_import_key)
 
         intent.getStringExtra(KEY_INTENT_EXTRA_KEYCONTENT)?.let {
             key_content.setText(it)
@@ -98,21 +85,18 @@ class ImportActivity : BaseSubActivity() {
         })
     }
 
-    var importing = false
     private fun doImport() = GlobalScope.launch(Dispatchers.Main) {
         if (importing) {
             return@launch
         }
         importing = true
 
-        val alert = AlertDialog.Builder(this@ImportActivity)
         fab_progress_bar.visibility = View.VISIBLE
         try {
 
-            val content = key_content.text.toString()
-
-            val importKey = GlobalScope.async {
-                val key = when {
+            val importKey = withContext(Dispatchers.Default) {
+                val content = key_content.text.toString()
+                when {
                     type_json_select.isChecked ->
                         content.loadKeysFromWalletJsonString(password.text.toString())
                     type_wordlist_select.isChecked -> {
@@ -126,54 +110,26 @@ class ImportActivity : BaseSubActivity() {
                     else -> PrivateKey(content.hexToByteArray()).toECKeyPair()
                 }
 
-                keyStore.addKey(key!!, DEFAULT_PASSWORD, true)
-            }.await()
-
-            if (importKey != null) {
-
-                val putExtra = Intent()
-                putExtra.putExtra("ADDRESS", importKey.cleanHex)
-                setResult(Activity.RESULT_OK, putExtra)
-
-                val address = Address(importKey.hex).withERC55Checksum()
-                alert.setMessage(getString(R.string.imported_key_alert_message, address))
-                        .setTitle(getString(R.string.dialog_title_success))
-
-                val oldEntry = async(Dispatchers.Default) {
-                    appDatabase.addressBook.byAddress(importKey)
-                }.await()
-
-                val accountName = if (!account_name.hasText()) {
-                    oldEntry?.name ?: getString(R.string.imported_key_default_entry_name)
-                } else {
-                    account_name.text
-                }
-                val note = oldEntry?.note
-                        ?: getString(R.string.imported_key_entry_note, LocalDateTime.now())
-
-
-                async(Dispatchers.Default) {
-                    val newEntry = AddressBookEntry(
-                            name = accountName.toString(),
-                            address = importKey,
-                            note = note, isNotificationWanted = false,
-                            trezorDerivationPath = null
-                    )
-                    appDatabase.addressBook.upsert(newEntry)
-                }.await()
             }
 
-            alert.setPositiveButton(android.R.string.ok) { _, _ ->
-                finish()
+            if (importKey != null) {
+                val initPayload = importKey.privateKey.key.toHexString() + "/" + importKey.publicKey.key.toHexString()
+                val spec = AccountKeySpec(ACCOUNT_TYPE_IMPORT, initPayload = initPayload)
+                //setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_KEY_ACCOUNTSPEC, spec))
+                //finish()
+
+                val intent = Intent(this@ImportKeyActivity, ImportAsActivity::class.java).putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
+                startActivityForResult(intent, REQUEST_CODE_IMPORT_AS)
+            } else {
+                AlertDialog.Builder(this@ImportKeyActivity).setMessage("Could not import key")
+                        .setTitle(getString(R.string.dialog_title_error)).show()
             }
 
         } catch (e: Exception) {
-            alert.setMessage(e.message)
-                    .setTitle(getString(R.string.dialog_title_error))
-                    .setPositiveButton(android.R.string.ok, null)
+            AlertDialog.Builder(this@ImportKeyActivity).setMessage(e.message)
+                    .setTitle(getString(R.string.dialog_title_error)).show()
         }
 
-        alert.show()
         fab_progress_bar.visibility = View.INVISIBLE
         importing = false
     }
@@ -204,6 +160,11 @@ class ImportActivity : BaseSubActivity() {
                         }
                     }
                 }
+            }
+
+            if (requestCode == REQUEST_CODE_IMPORT_AS && resultCode == Activity.RESULT_OK) {
+                setResult(resultCode, resultData)
+                finish()
             }
         }
     }

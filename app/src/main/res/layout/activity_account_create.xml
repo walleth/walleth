@@ -13,8 +13,46 @@
                 android:orientation="vertical"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
+
+            <TextView
+                    android:text="Type:"
+                    android:id="@+id/type_label_label"
+                    style="@style/section_header"/>
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                <android.support.v7.widget.AppCompatImageView
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
+                        android:padding="8dp"
+                        android:layout_gravity="center_vertical"
+                        app:tint="@color/fgColor"
+                        android:id="@+id/type_image"
+                        tools:src="@drawable/ic_whatshot_black_24dp"/>
+                <TextView
+                        tools:text="Burner"
+                        android:textAppearance="?android:textAppearanceLarge"
+                        android:layout_gravity="center_vertical"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+                <android.support.design.button.MaterialButton
+                        android:id="@+id/type_select_button"
+                        android:layout_margin="8dp"
+                        tools:text="select"
+                        style="@style/MaterialButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+
+            <TextView
+                    android:text="Metadata:"
+                    style="@style/section_header"/>
+
             <android.support.design.widget.TextInputLayout
-                    android:padding="16dp"
+                    android:padding="8dp"
                     android:id="@+id/name_input_container"
                     android:hint="@string/input_hint_account_name"
                     android:layout_width="match_parent"
@@ -27,10 +65,9 @@
 
 
             <android.support.design.widget.TextInputLayout
-                    android:padding="16dp"
+                    android:padding="8dp"
                     android:id="@+id/note_input_container"
                     android:hint="@string/input_hint_notes"
-                    android:layout_below="@+id/name_input_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                 <android.support.v7.widget.AppCompatEditText
@@ -39,47 +76,19 @@
                         android:layout_height="wrap_content"/>
             </android.support.design.widget.TextInputLayout>
 
-    <LinearLayout
-            android:layout_below="@+id/note_input_container"
-            android:id="@+id/address_container"
-            android:padding="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <android.support.design.widget.TextInputLayout
-                android:id="@+id/hex_input_container"
-                android:hint="@string/input_hint_address"
-                android:layout_width="0dp"
-                android:layout_weight="1"
-                android:layout_height="wrap_content">
-            <android.support.v7.widget.AppCompatEditText
-                    android:id="@+id/hexInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
-        </android.support.design.widget.TextInputLayout>
-        <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/camera_button"
-                app:srcCompat="@drawable/ic_image_camera_alt"
-                android:layout_gravity="center_vertical"
-                style="@style/button"/>
-        <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/new_address_button"
-                app:srcCompat="@drawable/ic_key"
-                android:layout_gravity="center_vertical"
-                style="@style/button"/>
-        <android.support.v7.widget.AppCompatImageView
-                android:id="@+id/add_trezor"
-                app:srcCompat="@drawable/trezor_icon"
-                android:layout_gravity="center_vertical"
-                style="@style/button"/>
-    </LinearLayout>
+            <TextView
+                    android:text="Settings:"
+                    android:id="@+id/function_label"
+                    style="@style/section_header"/>
+
 
             <CheckBox
-                    android:layout_margin="16dp"
-                    android:layout_below="@id/address_container"
+                    android:layout_margin="8dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/notify_checkbox"
                     android:text="Notify on changes"/>
+
         </LinearLayout>
     </ScrollView>
     <android.support.design.widget.FloatingActionButton
