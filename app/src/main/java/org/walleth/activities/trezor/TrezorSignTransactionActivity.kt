@@ -21,6 +21,7 @@ import org.ligi.kroom.inTransaction
 import org.walleth.R
 import org.walleth.R.string
 import org.walleth.data.addressbook.getByAddressAsync
+import org.walleth.data.addressbook.getTrezorDerivationPath
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
@@ -93,9 +94,9 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
         super.onResume()
 
         appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrentNeverNull()) {
-            currentBIP44 = it?.trezorDerivationPath?.let { trezorDerivationPath ->
+            currentBIP44 = it?.getTrezorDerivationPath()?.let { trezorDerivationPath ->
                 BIP44(trezorDerivationPath)
-            } ?: throw IllegalArgumentException("Starting TREZOR Activity")
+            } ?: throw IllegalArgumentException("Starting TREZOR Activity without derivation path")
             handler.post(mainRunnable)
         }
 

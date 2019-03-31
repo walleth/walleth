@@ -171,7 +171,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     }
 
     private fun selectAccount() {
-        val intent = Intent(this@WalletConnectConnectionActivity, AddressBookActivity::class.java)
+        val intent = Intent(this@WalletConnectConnectionActivity, AccountPickActivity::class.java)
         startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
     }
 

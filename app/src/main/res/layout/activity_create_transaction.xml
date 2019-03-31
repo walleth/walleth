@@ -20,12 +20,8 @@
 
             <TextView
                     android:text="@string/create_transaction_sender_label"
-                    android:padding="8dp"
                     android:id="@+id/from_label"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/section_header"/>
 
 
             <TextView
@@ -53,12 +49,8 @@
             <TextView
                     android:layout_below="@id/from_address"
                     android:text="@string/create_transaction_receiver_label"
-                    android:padding="8dp"
                     android:id="@+id/to_label"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/section_header"/>
 
 
             <android.support.v7.widget.AppCompatImageView
@@ -83,13 +75,9 @@
 
             <TextView
                     android:text="@string/create_transaction_function_label"
-                    android:padding="8dp"
                     android:id="@+id/function_label"
                     android:layout_below="@id/to_address"
-                    android:fontFamily="sans-serif"
-                    android:textStyle="bold"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    style="@style/section_header"/>
 
             <TextView
                     android:layout_below="@id/function_label"
@@ -233,6 +221,7 @@
         <android.support.design.widget.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                style="@style/FABStyle"
                 android:id="@+id/fab"/>
 
         <ProgressBar

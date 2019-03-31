@@ -182,7 +182,8 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="warning_problem_with_parameter">Problem with parameter (parameter %1$s - %2$s = %3$s)</string>
     <string name="warning_invalid_param">Invalid parameter detected (parameter %1$s - %2$s)</string>
     <string name="info_activity_subtitle">Version %s</string>
-    <string name="trezor_please_enter_your_pin">Please enter your PIN</string>
+    <string name="please_enter_your_pin">Please enter your PIN</string>
+    <string name="please_confirm_your_pin">Please confirm your PIN</string>
     <string name="warning_not_a_valid_address">not a valid address: %s</string>
     <string name="title_invalid_address_alert">invalid_address</string>
     <string name="please_connect_your_trezor">Please connect your TREZOR</string>
@@ -251,4 +252,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
         <item>Select Account</item>
         <item>Abort</item>
     </string-array>
+    <string name="invalid_pin">Invalid PIN</string>
+    <string name="invalid_password">Invalid password</string>
+
 </resources>

@@ -1,8 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" xmlns:tools="http://schemas.android.com/tools"
           package="org.walleth">
 
+    <uses-sdk tools:overrideLibrary="org.walleth.khartwarewallet.lib,im.status.hardwallet_lite_android"/>
+
     <uses-permission android:name="android.permission.CAMERA"/>
+
+    <uses-permission android:name="android.permission.NFC"/>
 
     <uses-feature android:name="android.hardware.camera"
                   android:required="false"/>
@@ -14,6 +18,7 @@
             android:icon="@mipmap/ic_launcher"
             android:label="@string/app_name"
             android:name=".App"
+
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
@@ -26,15 +31,18 @@
         <activity android:name=".activities.QRCodeActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>
         <activity android:name="org.walleth.activities.DebugWallethActivity"/>
+
         <activity android:name="org.walleth.activities.trezor.TrezorSignTransactionActivity"/>
         <activity android:name="org.walleth.activities.trezor.TrezorGetAddressActivity"/>
-        <activity android:name="org.walleth.activities.ImportActivity"/>
+
+        <activity android:name="org.walleth.activities.nfc.NFCGetAddressActivity"/>
+        <activity android:name="org.walleth.activities.nfc.NFCSignTransactionActivity"/>
+        <activity android:name="org.walleth.activities.ImportKeyActivity"/>
 
         <activity android:name="org.walleth.activities.walletconnect.WalletConnectConnectionActivity"/>
         <activity android:name="org.walleth.activities.walletconnect.WalletConnectErrorActivity"/>
 
         <activity android:name="org.walleth.activities.ExportKeyActivity"/>
-        <activity android:name="org.walleth.activities.KeysActivity"/>
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
         <activity android:name="org.walleth.activities.CreateAccountActivity"/>
         <activity android:name="org.walleth.activities.SelectReferenceActivity"/>
@@ -44,7 +52,7 @@
         <activity android:name="org.walleth.activities.CreateTokenDefinitionActivity"/>
         <activity android:name="org.walleth.activities.SecurityInfoActivity"/>
 
-        <activity android:name="org.walleth.activities.AddressBookActivity"/>
+        <activity android:name="org.walleth.activities.AccountPickActivity"/>
         <activity android:name="org.walleth.activities.SwitchAccountActivity"/>
         <activity android:name="org.walleth.activities.PreferenceActivity"/>
         <activity android:name="org.walleth.activities.ViewTransactionActivity"/>
@@ -87,7 +95,7 @@
         <activity android:name="org.walleth.activities.OfflineTransactionActivity"
                   android:windowSoftInputMode="adjustResize"/>
 
-        <activity android:name=".activities.CreateKeyActivity"/>
+        <activity android:name=".activities.NewAccountTypeSelectActivity"/>
         <activity android:name=".activities.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -97,6 +105,20 @@
             <meta-data android:name="android.app.shortcuts"
                        android:resource="@xml/shortcuts"/>
         </activity>
+        <activity android:name=".activities.nfc.NFCEnterCredentialsActivity"/>
+
+        <activity android:name=".activities.nfc.NDEFTagHandlingActivity">
+            <intent-filter>
+                <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="vnd.android.nfc" android:host="ext"
+                      android:pathPrefix="/android.com:pkg"/>
+            </intent-filter>
+        </activity>
+        <activity android:name=".activities.RequestPINActivity"/>
+        <activity android:name=".activities.RequestPasswordActivity"
+                  android:windowSoftInputMode="adjustResize"/>
+        <activity android:name=".activities.ImportAsActivity"/>
 
     </application>
 

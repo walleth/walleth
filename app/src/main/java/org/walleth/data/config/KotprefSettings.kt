@@ -28,6 +28,7 @@ object KotprefSettings : KotprefModel(), Settings {
 
     override var addressInitVersion by intPref(0)
     override var tokensInitVersion by intPref(0)
+    override var dataVersion by intPref(0)
 
     override var currentGoVerbosity by intPref(3)
 

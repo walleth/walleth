@@ -24,46 +24,68 @@ import net.glxn.qrgen.android.QRCode
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.wallet.LIGHT_SCRYPT_CONFIG
 import org.kethereum.wallet.generateWalletJSON
+import org.kethereum.wallet.model.InvalidPasswordException
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
+import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.DEFAULT_PASSWORD
+import org.walleth.data.ACCOUNT_TYPE_BURNER
+import org.walleth.data.AppDatabase
+import org.walleth.data.REQUEST_CODE_SELECT_TOKEN
+import org.walleth.data.addressbook.getByAddressAsync
+import org.walleth.data.addressbook.getSpec
+import org.walleth.util.security.getInvalidStringResForAccountType
+import org.walleth.util.security.getPasswordForAccountType
 import java.io.ByteArrayOutputStream
 import java.io.FileOutputStream
-
-const val REQUEST_CODE_SELECT_TOKEN = 4205
 
 class ExportKeyActivity : AddressReceivingActivity() {
 
     val keyStore: KeyStore by inject()
+    private val appDatabase: AppDatabase by inject()
 
     private var keyJSON: String? = null
     var mWebView: WebView? = null
+    private var currentPassword: String? = null
+    private var currentAccountType: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_show_qr)
+        appDatabase.addressBook.getByAddressAsync(relevantAddress) {
+            currentAccountType = it?.getSpec()?.type
+            getPasswordForAccountType(currentAccountType?: ACCOUNT_TYPE_BURNER) { password ->
+                if (password == null) {
+                    finish()
+                } else {
+                    currentPassword = password
 
-        supportActionBar?.subtitle = getString(R.string.export_account_subtitle)
+                    setContentView(R.layout.activity_show_qr)
 
-        qrcode_image.setVisibility(false)
-        show_qr_switch.setOnCheckedChangeListener { _, isChecked ->
-            qrcode_image.setVisibility(isChecked)
+                    supportActionBar?.subtitle = getString(R.string.export_account_subtitle)
+
+                    qrcode_image.setVisibility(false)
+                    show_qr_switch.setOnCheckedChangeListener { _, isChecked ->
+                        qrcode_image.setVisibility(isChecked)
+                    }
+
+                    password_input.doAfterEdit {
+                        reGenerate()
+                        checkConfirmation()
+                    }
+
+                    password_input_confirmation.doAfterEdit {
+                        checkConfirmation()
+                    }
+
+                    checkConfirmation()
+
+                    reGenerate()
+                }
+            }
         }
 
-        password_input.doAfterEdit {
-            reGenerate()
-            checkConfirmation()
-        }
-
-        password_input_confirmation.doAfterEdit {
-            checkConfirmation()
-        }
-
-        checkConfirmation()
-        reGenerate()
     }
 
     private fun checkConfirmation() {
@@ -73,20 +95,29 @@ class ExportKeyActivity : AddressReceivingActivity() {
     private fun reGenerate() {
         keyJSON = null
         GlobalScope.launch(Dispatchers.Main) {
-            val bmpScaled = withContext(Dispatchers.Default) {
+            try {
+                val bmpScaled = withContext(Dispatchers.Default) {
 
-                val key = keyStore.getKeyForAddress(relevantAddress, DEFAULT_PASSWORD)
 
-                keyJSON = key?.generateWalletJSON(password_input.text.toString(), LIGHT_SCRYPT_CONFIG)
-                        ?: throw (IllegalStateException("Could not create JSON from key"))
+                    val key = keyStore.getKeyForAddress(relevantAddress, currentPassword!!)
 
-                val point = Point()
-                windowManager.defaultDisplay.getSize(point)
-                Bitmap.createScaledBitmap(QRCode.from(keyJSON).bitmap(), point.x, point.x, false)
+                    keyJSON = key?.generateWalletJSON(password_input.text.toString(), LIGHT_SCRYPT_CONFIG)
+                            ?: throw (IllegalStateException("Could not create JSON from key"))
+
+                    val point = Point()
+                    windowManager.defaultDisplay.getSize(point)
+                    Bitmap.createScaledBitmap(QRCode.from(keyJSON).bitmap(), point.x, point.x, false)
+
+
+                }
+                val bitmapDrawable = BitmapDrawable(resources, bmpScaled)
+                bitmapDrawable.setAntiAlias(false)
+                qrcode_image.setImageDrawable(bitmapDrawable)
+            } catch (e: InvalidPasswordException) {
+                alert(getInvalidStringResForAccountType(currentAccountType!!)) {
+                    finish()
+                }
             }
-            val bitmapDrawable = BitmapDrawable(resources, bmpScaled)
-            bitmapDrawable.setAntiAlias(false)
-            qrcode_image.setImageDrawable(bitmapDrawable)
 
         }
     }

@@ -1,16 +1,9 @@
 package org.walleth.functions
 
-import org.walleth.data.tokens.Token
-import org.walleth.khex.prepend0xPrefix
 import java.math.BigDecimal
-import java.math.BigInteger
 import java.text.DecimalFormat
 import java.text.NumberFormat
 import java.util.*
-
-fun BigInteger.toHexString() = this.toString(16).prepend0xPrefix()
-
-fun String.extractValueForToken(token: Token) = BigDecimal(this).multiply(token.decimalsAsMultiplicator()).toBigInteger()
 
 // ENGLISH is used until Android O becomes the minSDK or the support-lib fixes this problem:
 // https://stackoverflow.com/questions/3821539/decimal-separator-comma-with-numberdecimal-inputtype-in-edittext

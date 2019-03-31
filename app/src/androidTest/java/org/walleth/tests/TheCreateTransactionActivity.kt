@@ -25,6 +25,10 @@ import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
 import org.walleth.activities.CreateTransactionActivity
 import org.walleth.activities.qrscan.QRScanActivity
+import org.walleth.data.ACCOUNT_TYPE_BURNER
+import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addressbook.toJSON
 import org.walleth.data.balances.Balance
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.TokenTransfer
@@ -48,6 +52,8 @@ class TheCreateTransactionActivity {
     @Before
     fun setup() {
         TestApp.testDatabase.transactions.deleteAll()
+        val addressBookEntry = AddressBookEntry(TestApp.currentAddressProvider.getCurrent()!!, keySpec = AccountKeySpec(ACCOUNT_TYPE_BURNER).toJSON(), name = "testing")
+        TestApp.testDatabase.addressBook.upsert(addressBookEntry)
     }
 
     @Test

@@ -168,9 +168,11 @@ dependencies {
     implementation "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
     implementation "com.github.walleth.kethereum:keystore:$kethereum_version"
 
+    implementation "com.github.walleth:KHardWareWallet:0.8"
     implementation "com.github.walleth.kethereum:crypto_impl_bouncycastle:$kethereum_version"
 
     implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.3"
+
     implementation 'com.dmitrymalkovich.android:progress-fab:1.6'
 
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
@@ -270,4 +272,8 @@ licenseReport {
     generateJsonReport = true
 
     copyJsonReportToAssets = true
+}
+
+androidExtensions {
+    experimental = true
 }
