@@ -18,7 +18,7 @@ Features
  - Day/Night mode
  - ERC-67 / ERC-681 URLs (e.g. scanned from QR-Code)
  - ERC-55 Checksums
- - WalletConnect (https://walletconnect.org) 0.7 Support
+ - WalletConnect (https://walletconnect.org) 1.0 Support
  - Offline signing (compatible to Parity signing flow)
  - Testnets with direct link to faucets (on görli and ropsten even auto-fill of address)
  - JSON UTC key import/export
