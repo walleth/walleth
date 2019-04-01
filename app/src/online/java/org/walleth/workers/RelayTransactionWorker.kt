@@ -16,12 +16,13 @@ import org.walleth.data.networks.findNetworkDefinition
 import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
 import timber.log.Timber
+import kotlin.random.Random
 
 fun ChainId.getRPCEndpoint() =
         findNetworkDefinition()?.getRPCEndpoint()
 
 fun NetworkDefinition.getRPCEndpoint() =
-        rpcEndpoints.firstOrNull()?.replace("\${INFURA_API_KEY}", "b032785efb6947ceb18b9e0177053a17")
+        rpcEndpoints[Random.nextInt(rpcEndpoints.size)].replace("\${INFURA_API_KEY}", "b032785efb6947ceb18b9e0177053a17")
 
 class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters)
     : Worker(appContext, workerParams), KoinComponent {
