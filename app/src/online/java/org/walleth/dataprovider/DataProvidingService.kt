@@ -109,7 +109,7 @@ class DataProvidingService : LifecycleService() {
 
     private fun relayTransactionsIfNeeded() {
         appDatabase.transactions.getAllToRelayLive().nonNull().observe(this) { transactionList ->
-            transactionList.forEach { sendTransaction(it) }
+            transactionList.filter { it.transactionState.isPending }.forEach { sendTransaction(it) }
         }
     }
 
@@ -119,6 +119,7 @@ class DataProvidingService : LifecycleService() {
                 .setInputData(workDataOf(KEY_TX_HASH to transaction.hash))
                 .build()
 
+        WorkManager.getInstance().cancelAllWork()
         WorkManager.getInstance().enqueue(uploadWorkRequest)
     }
 
