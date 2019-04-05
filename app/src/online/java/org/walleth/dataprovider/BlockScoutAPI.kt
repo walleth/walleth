@@ -57,7 +57,7 @@ class BlockScoutAPI(private val appDatabase: AppDatabase,
                                     newTransaction.transaction.getTokenRelevantTo(),
                                     transaction = newTransaction.transaction.copy(
                                             chain = currentNetwork.chain.id.value,
-                                            creationEpochSecond = System.currentTimeMillis()
+                                            creationEpochSecond = System.currentTimeMillis() / 1000
                                     ),
                                     signatureData = newTransaction.signatureData,
                                     transactionState = TransactionState(isPending = false)
