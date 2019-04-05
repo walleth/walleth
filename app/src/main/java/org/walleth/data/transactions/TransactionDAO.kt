@@ -24,10 +24,10 @@ interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE (\"to\" = :address COLLATE NOCASE OR \"extraIncomingAffectedAddress\" = :address COLLATE NOCASE )AND chain=:chain ORDER BY creationEpochSecond DESC")
     fun getIncomingPaged(address: Address, chain: Long): DataSource.Factory<Int, TransactionEntity>
 
-    @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE AND chain=:chain ORDER BY creationEpochSecond DESC")
+    @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE AND chain=:chain ORDER BY nonce DESC")
     fun getOutgoingPaged(address: Address, chain: Long): DataSource.Factory<Int, TransactionEntity>
 
-    @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE  AND chain=:chain ORDER BY creationEpochSecond DESC")
+    @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE  AND chain=:chain ORDER BY nonce DESC")
     fun getOutgoingTransactionsForAddressOnChainOrdered(address: Address, chain: Long): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses)")
@@ -35,6 +35,10 @@ interface TransactionDAO {
 
     @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses)")
     fun getAllTransactionsForAddress(addresses: List<Address>): List<TransactionEntity>
+
+
+    @Query("SELECT * FROM transactions")
+    fun getAll(): List<TransactionEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(transactionEntity: TransactionEntity)
