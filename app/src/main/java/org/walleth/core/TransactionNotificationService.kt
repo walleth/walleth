@@ -32,8 +32,8 @@ class TransactionNotificationService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        val allTransactionsToNotifyObserver = Observer<List<TransactionEntity>> {
-            it?.let { allTransactionsToNotify ->
+        val allTransactionsToNotifyObserver = Observer<List<TransactionEntity>> { txList ->
+            txList?.let { allTransactionsToNotify ->
                 val relevantTransaction = allTransactionsToNotify.firstOrNull {
                     val currentEpochSeconds = LocalDateTime.now().atZone(ZoneOffset.systemDefault()).toEpochSecond()
                     val isRecent = currentEpochSeconds - (it.transaction.creationEpochSecond ?: 0) < 60
