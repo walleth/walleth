@@ -13,6 +13,7 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
 import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.networks.findNetworkDefinition
+import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
 import timber.log.Timber
@@ -45,7 +46,8 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
         val baseURL = chain?.getRPCEndpoint()
 
         if (baseURL == null) {
-            transaction.transactionState.error = "RPC url not found for chain $chain"
+            transaction.setError("RPC url not found for chain $chain")
+            return Result.failure()
         } else {
             val rpc = EthereumRPC(baseURL, okHttpClient)
 
@@ -54,15 +56,19 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
 
             if (result != null) {
                 if (result.error?.message != null) {
-                    if (result.error?.message != "Transaction with the same hash was already imported.") {
-                        // this error should not be surfaced to user
-                        transaction.transactionState.error = result.error?.message;
+                    return if (result.error?.message != "Transaction with the same hash was already imported.") {
                         transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "ERROR: ${result.error?.message}\n"
 
-                        appDatabase.transactions.upsert(transaction);
+                        transaction.setError(result.error?.message)
+                        appDatabase.transactions.upsert(transaction)
 
-                        return Result.failure()
+                        Result.failure()
+                    } else {
+                        transaction.setError(result.error?.message)
+                        Result.retry()
                     }
+
+
                 } else {
                     val newHash = result.result
                     val oldHash = transaction.hash
@@ -73,10 +79,18 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
 
                     appDatabase.transactions.deleteByHash(oldHash)
                     appDatabase.transactions.upsert(transaction)
+                    return Result.success()
                 }
+            } else {
+                transaction.setError( "Could not relay transaction")
             }
         }
 
-        return Result.success()
+        return Result.retry()
+    }
+
+    private fun TransactionEntity.setError(message: String?) {
+        transactionState.error = message
+        appDatabase.transactions.upsert(this)
     }
 }
