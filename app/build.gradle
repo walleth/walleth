@@ -218,7 +218,7 @@ dependencies {
     implementation "android.arch.lifecycle:extensions:$arch_version"
 
     // Kotlin + coroutines
-    implementation "android.arch.work:work-runtime-ktx:1.0.0"
+    implementation "android.arch.work:work-runtime-ktx:1.0.1"
 
     implementation 'com.github.madrapps:pikolo:1.1.8'
 
