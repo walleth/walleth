@@ -1,5 +1,6 @@
 package org.walleth.activities.nfc
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.nfc.NdefMessage
@@ -33,6 +34,7 @@ class NFCGetAddressActivity : BaseNFCActivity() {
         }
     }
 
+    @SuppressLint("NewApi")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 

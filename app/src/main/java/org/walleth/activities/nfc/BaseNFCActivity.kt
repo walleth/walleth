@@ -32,6 +32,7 @@ open class BaseNFCActivity : BaseSubActivity() {
         nfcAdapter?.enableKhardwareReader(this, cardManager)
     }
 
+    @SuppressLint("NewApi")
     public override fun onPause() {
         super.onPause()
         nfcAdapter?.disableReaderMode(this)
