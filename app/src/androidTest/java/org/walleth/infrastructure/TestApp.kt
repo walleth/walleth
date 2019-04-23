@@ -1,8 +1,8 @@
 package org.walleth.infrastructure
 
-import android.arch.persistence.room.Room
+import androidx.room.Room
 import android.content.Context
-import android.support.v7.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import org.kethereum.keystore.api.KeyStore
 import org.koin.android.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module

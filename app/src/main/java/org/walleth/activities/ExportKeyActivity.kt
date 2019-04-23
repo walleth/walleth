@@ -11,7 +11,7 @@ import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem

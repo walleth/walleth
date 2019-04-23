@@ -1,7 +1,7 @@
 package org.walleth.model
 
 import android.app.Activity
-import android.support.annotation.DrawableRes
+import androidx.annotation.DrawableRes
 import org.walleth.data.addressbook.AccountKeySpec
 
 data class AccountType(

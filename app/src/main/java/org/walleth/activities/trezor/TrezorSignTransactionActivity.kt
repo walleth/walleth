@@ -62,7 +62,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
             .setGasLimit(ByteString.copyFrom(transaction.transaction.gasLimit!!.toByteArray().removeLeadingZero()))
             .setChainId(networkDefinitionProvider.value!!.chain.id.value.toInt())
             .setDataLength(transaction.transaction.input.size)
-            .setDataInitialChunk(ByteString.copyFrom(transaction.transaction.input.toByteArray()))
+            .setDataInitialChunk(ByteString.copyFrom(transaction.transaction.input))
             .addAllAddressN(currentBIP44!!.path.map { it.numberWithHardeningFlag })
             .build()!!
 

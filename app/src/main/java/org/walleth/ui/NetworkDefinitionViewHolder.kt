@@ -1,6 +1,6 @@
 package org.walleth.ui
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.item_network_definition.view.*
 import org.walleth.data.networks.NetworkDefinition

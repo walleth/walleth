@@ -1,7 +1,7 @@
 package org.walleth.activities
 
 import android.app.Activity
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.Observer
 import android.content.Intent
 import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_sign_text.*

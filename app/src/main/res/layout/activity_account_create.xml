@@ -23,7 +23,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:padding="8dp"
@@ -37,7 +37,7 @@
                         android:layout_gravity="center_vertical"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-                <android.support.design.button.MaterialButton
+                <com.google.android.material.button.MaterialButton
                         android:id="@+id/type_select_button"
                         android:layout_margin="8dp"
                         tools:text="select"
@@ -51,30 +51,30 @@
                     android:text="Metadata:"
                     style="@style/section_header"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:padding="8dp"
                     android:id="@+id/name_input_container"
                     android:hint="@string/input_hint_account_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/nameInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:padding="8dp"
                     android:id="@+id/note_input_container"
                     android:hint="@string/input_hint_notes"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/noteInput"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                     android:text="Settings:"
@@ -91,7 +91,7 @@
 
         </LinearLayout>
     </ScrollView>
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/ic_action_done"

@@ -7,7 +7,7 @@
         android:padding="16dp"
         android:animateLayoutChanges="true">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/parity_address_qr_image"
             android:padding="16dp"
             android:layout_width="@dimen/qrcode_size"

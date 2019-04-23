@@ -2,8 +2,8 @@ package org.walleth.activities
 
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AlertDialog
-import android.support.v7.widget.LinearLayoutManager
+import androidx.appcompat.app.AlertDialog
+import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.dialog_add_reference.view.*

@@ -3,7 +3,7 @@ package org.walleth.activities
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_list.*
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert

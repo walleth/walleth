@@ -1,10 +1,10 @@
 package org.walleth.tests
 
-import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.withId
-import android.support.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.InstrumentationRegistry
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.junit.Rule
@@ -79,7 +79,7 @@ class TheTransactionActivity {
     @Test
     fun showsTheCorrectMethodSignature() {
         val transaction = DEFAULT_TX.copy(from = ShapeShift, to = DEFAULT_TEST_ADDRESS,
-                input = "0xdeafbeef000000000000000000000000f44f28b5ca7808b9ad782c759ab8efb041de64d2".hexToByteArray().toList())
+                input = "0xdeafbeef000000000000000000000000f44f28b5ca7808b9ad782c759ab8efb041de64d2".hexToByteArray())
 
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.addressBook.addTestAddresses()

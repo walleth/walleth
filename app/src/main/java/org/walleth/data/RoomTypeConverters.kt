@@ -1,9 +1,7 @@
 package org.walleth.data
 
-import android.arch.persistence.room.TypeConverter
+import androidx.room.TypeConverter
 import org.kethereum.model.Address
-import org.walleth.khex.hexToByteArray
-import org.walleth.khex.toHexString
 import java.math.BigInteger
 import java.util.*
 
@@ -29,17 +27,9 @@ class RoomTypeConverters {
     /** BigInteger  */
 
     @TypeConverter
-    fun fromBigInteger(value: String?) = if (value == null) null else BigInteger(value)
+    fun fromBigInteger(value: ByteArray?) = if (value == null) null else BigInteger(value)
 
     @TypeConverter
-    fun bigIntegerToString(bigInteger: BigInteger?) = bigInteger?.toString()
-
-    /** List<Byte> **/
-
-    @TypeConverter
-    fun fromByteArrayString(value: String) = value.hexToByteArray().toList()
-
-    @TypeConverter
-    fun toTransactionSourceString(value: List<Byte>) = value.toByteArray().toHexString()
+    fun bigIntegerToString(bigInteger: BigInteger?) = bigInteger?.toByteArray()
 
 }

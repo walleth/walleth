@@ -1,6 +1,6 @@
 package org.walleth.data.syncprogress
 
-import android.arch.lifecycle.MutableLiveData
+import androidx.lifecycle.MutableLiveData
 
 class SyncProgressProvider : MutableLiveData<WallethSyncProgress>() {
 

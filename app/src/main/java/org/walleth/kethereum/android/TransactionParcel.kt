@@ -20,7 +20,7 @@ class TransactionParcel(val transaction: Transaction) : Parcelable {
             creationEpochSecond = parcel.readValue(null) as Long?,
             gasPrice = BigInteger(parcel.readString()),
             gasLimit = BigInteger(parcel.readString()),
-            input = parcel.createByteArray().toList()))
+            input = parcel.createByteArray()))
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeLong(transaction.chain!!)
@@ -32,7 +32,7 @@ class TransactionParcel(val transaction: Transaction) : Parcelable {
         dest.writeValue(transaction.creationEpochSecond)
         dest.writeString(transaction.gasPrice.toString())
         dest.writeString(transaction.gasLimit.toString())
-        dest.writeByteArray(transaction.input.toByteArray())
+        dest.writeByteArray(transaction.input)
     }
 
     override fun describeContents() = 0

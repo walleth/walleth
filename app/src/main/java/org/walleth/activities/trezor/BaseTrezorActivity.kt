@@ -3,7 +3,7 @@ package org.walleth.activities.trezor
 import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
-import android.support.v7.app.AlertDialog
+import androidx.appcompat.app.AlertDialog
 import android.text.method.LinkMovementMethod
 import android.view.View
 import com.google.protobuf.GeneratedMessageV3

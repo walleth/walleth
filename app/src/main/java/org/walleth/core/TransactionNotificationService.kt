@@ -3,13 +3,13 @@ package org.walleth.core
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.arch.lifecycle.LifecycleService
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
+import androidx.lifecycle.LifecycleService
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.support.v4.app.NotificationCompat
+import androidx.core.app.NotificationCompat
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.threeten.bp.LocalDateTime

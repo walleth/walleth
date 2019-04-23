@@ -1,24 +1,24 @@
 package org.walleth.activities
 
 import android.app.Activity
-import android.arch.lifecycle.LiveData
-import android.arch.lifecycle.Observer
-import android.arch.lifecycle.Transformations
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
-import android.support.design.widget.Snackbar
-import android.support.v7.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.lifecycle.Transformations
 import com.androidadvance.topsnackbar.TSnackbar
 import com.github.amlcurran.showcaseview.ShowcaseView
 import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener
 import com.github.amlcurran.showcaseview.targets.ViewTarget
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.Dispatchers
@@ -201,9 +201,9 @@ class CreateTransactionActivity : BaseSubActivity() {
         })
 
         intent.getStringExtra("data")?.let {
-            val data = it.hexToByteArray().toList()
+            val data = it.hexToByteArray()
 
-            if (data.startsWith(tokenTransferSignature)) {
+            if (data.toList().startsWith(tokenTransferSignature)) {
                 currentERC681.function = "transfer"
 
                 Log.i("TXData" + data.toHexString())
@@ -444,7 +444,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                     parseValueFromString(it.second)
                 }.toBytes().toNoPrefixHexString()
             }
-            transaction.input = (functionSignature.toHexSignature().hex + parameterContent).hexToByteArray().toList()
+            transaction.input = (functionSignature.toHexSignature().hex + parameterContent).hexToByteArray()
         }
 
         transaction.nonce = nonce_input.asBigInit()

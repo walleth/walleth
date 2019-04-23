@@ -1,6 +1,6 @@
 package org.walleth.data.tokens
 
-import android.arch.persistence.room.Entity
+import androidx.room.Entity
 import org.kethereum.model.Address
 import org.walleth.data.networks.NetworkDefinition
 

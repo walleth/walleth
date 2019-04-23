@@ -25,7 +25,7 @@
             <FrameLayout android:layout_width="0dp"
                          android:layout_weight="38"
                          android:layout_height="match_parent">
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         style="@style/button"
                         android:layout_gravity="center"
                         android:id="@+id/receive_button"
@@ -42,7 +42,7 @@
             <FrameLayout android:layout_width="0dp"
                          android:layout_weight="38"
                          android:layout_height="match_parent">
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         style="@style/button"
                         android:layout_gravity="center"
                         android:id="@+id/send_button"
@@ -58,7 +58,7 @@
             <RelativeLayout android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:id="@+id/empty_view_container">
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/dashboard_image"
                         android:layout_width="256dp"
                         android:layout_height="256dp"
@@ -74,7 +74,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
             </RelativeLayout>
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/transaction_recycler_in"
                     android:visibility="gone"
                     android:paddingRight="8dp"
@@ -82,7 +82,7 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"/>
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/transaction_recycler_out"
                     android:visibility="gone"
                     android:paddingLeft="8dp"
@@ -91,7 +91,7 @@
                     android:layout_height="match_parent"/>
         </LinearLayout>
     </LinearLayout>
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab"
             android:layout_margin="16dp"
             app:srcCompat="@drawable/ic_image_for_fab"

@@ -1,15 +1,15 @@
 package org.walleth
 
-import android.arch.persistence.room.Room
 import android.content.Context
 import android.content.Intent
 import android.net.TrafficStats
 import android.os.StrictMode
-import android.support.annotation.XmlRes
-import android.support.multidex.MultiDex
-import android.support.multidex.MultiDexApplication
-import android.support.v7.app.AppCompatDelegate
-import android.support.v7.preference.PreferenceScreen
+import androidx.annotation.XmlRes
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.multidex.MultiDex
+import androidx.multidex.MultiDexApplication
+import androidx.preference.PreferenceScreen
+import androidx.room.Room
 import com.chibatching.kotpref.Kotpref
 import com.jakewharton.threetenabp.AndroidThreeTen
 import com.squareup.leakcanary.LeakCanary
@@ -88,7 +88,7 @@ open class App : MultiDexApplication() {
 
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
-                    .addMigrations(RecreatingMigration(1, 3), RecreatingMigration(2, 3))
+                    .addMigrations(RecreatingMigration(1, 4), RecreatingMigration(2, 4), RecreatingMigration(3, 4))
                     .build()
         }
 

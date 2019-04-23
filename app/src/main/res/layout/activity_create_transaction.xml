@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"/>
 
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/from_address_list_button"
                     app:srcCompat="@drawable/ic_list_black_24dp"
                     android:layout_alignParentRight="true"
@@ -53,7 +53,7 @@
                     style="@style/section_header"/>
 
 
-            <android.support.v7.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/address_list_button"
                     app:srcCompat="@drawable/ic_list_black_24dp"
                     android:layout_alignParentRight="true"
@@ -111,7 +111,7 @@
                         android:layout_weight="1"
                         android:layout_height="wrap_content"/>
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/sweep_button"
 
                         android:layout_gravity="center"
@@ -149,25 +149,25 @@
                           android:visibility="gone"
                           android:layout_below="@id/fee_value_view"
                           android:id="@+id/gas_price_input_container">
-                <android.support.design.widget.TextInputLayout
+                <com.google.android.material.textfield.TextInputLayout
                         android:hint="@string/create_tx_gas_price"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
-                    <android.support.v7.widget.AppCompatEditText
+                    <androidx.appcompat.widget.AppCompatEditText
                             android:minWidth="128dp"
                             android:id="@+id/gas_price_input"
                             android:inputType="number|numberDecimal"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"/>
-                </android.support.design.widget.TextInputLayout>
+                </com.google.android.material.textfield.TextInputLayout>
 
-                <android.support.v7.widget.AppCompatImageView
+                <androidx.appcompat.widget.AppCompatImageView
                         style="@style/button"
                         app:srcCompat="@drawable/ic_local_gas_station_black_24dp"
                         android:id="@+id/gas_station_image"
                         android:layout_gravity="center_vertical"/>
             </LinearLayout>
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:paddingLeft="16dp"
                     android:layout_below="@id/gas_price_input_container"
                     android:id="@+id/gas_limit_input_container"
@@ -175,13 +175,13 @@
                     android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:minWidth="128dp"
                         android:id="@+id/gas_limit_input"
                         android:inputType="number|numberDecimal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
                     android:layout_width="wrap_content"
@@ -192,7 +192,7 @@
                     android:layout_below="@id/gas_limit_input_container"
                     style="@style/section_header"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:paddingLeft="16dp"
                     android:layout_below="@id/nonce_title"
                     android:id="@+id/nonce_input_container"
@@ -200,13 +200,13 @@
                     android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:minWidth="128dp"
                         android:id="@+id/nonce_input"
                         android:inputType="number"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         </RelativeLayout>
@@ -218,7 +218,7 @@
             android:layout_margin="16dp"
             android:layout_gravity="bottom|right">
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 style="@style/FABStyle"

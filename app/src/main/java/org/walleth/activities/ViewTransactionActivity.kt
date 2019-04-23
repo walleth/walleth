@@ -1,15 +1,15 @@
 package org.walleth.activities
 
-import android.arch.lifecycle.Observer
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.Snackbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.lifecycle.Observer
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.*
 import org.kethereum.extensions.toHexString
@@ -179,7 +179,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                     GlobalScope.launch(Dispatchers.Main) {
                         val signatures = if (it.size >= 4) {
                             withContext(Dispatchers.Default) {
-                                fourByteDirectory.getSignaturesFor(it.subList(0, 4).toHexString())
+                                fourByteDirectory.getSignaturesFor(it.toList().subList(0, 4).toHexString())
                             }
                         } else null
 
@@ -191,8 +191,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                         function_call.text = if (signatures?.isNotEmpty() == true) {
                             function_call_label.setText(R.string.function_call)
                             signatures.joinToString(
-                                    separator = " ${getString(R.string.or)}\n",
-                                    transform = { sig -> sig.textSignature ?: sig.hexSignature })
+                                    separator = " ${getString(R.string.or)}\n",                                    transform = { sig -> sig.textSignature ?: sig.hexSignature })
                         } else {
                             function_call_label.setText(R.string.function_data)
                             transaction.input.toHexString()

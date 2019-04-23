@@ -1,7 +1,7 @@
 package org.walleth.dataprovider
 
-import android.arch.lifecycle.*
 import android.content.Intent
+import androidx.lifecycle.*
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.workDataOf
@@ -144,7 +144,7 @@ class DataProvidingService : LifecycleService() {
                     val balance = if (currentToken.isRootToken()) {
                         rpc.getBalance(address, blockNumberString)
                     } else {
-                        val input = ("0x70a08231" + "0".repeat(24) + address.cleanHex).hexToByteArray().toList()
+                        val input = ("0x70a08231" + "0".repeat(24) + address.cleanHex).hexToByteArray()
                         val tx = Transaction().copy(to = currentToken.address, input = input, gasLimit = null, gasPrice = null)
                         rpc.call(tx, blockNumberString)
                     }

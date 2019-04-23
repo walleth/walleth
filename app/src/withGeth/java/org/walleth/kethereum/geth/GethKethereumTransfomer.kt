@@ -24,7 +24,7 @@ fun Transaction.toGethTransaction(): org.ethereum.geth.Transaction = Geth.newTra
         value!!.toGethInteger(),
         gasLimit!!.toLong(),
         gasPrice!!.toGethInteger(),
-        input.toByteArray()
+        input
 )
 
 fun String.hexToBigInteger() = BigInteger(replace("0x", ""), 16)

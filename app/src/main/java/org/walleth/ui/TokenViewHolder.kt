@@ -1,7 +1,7 @@
 package org.walleth.ui
 
 import android.app.Activity
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.token_list_item.view.*
 import kotlinx.coroutines.GlobalScope

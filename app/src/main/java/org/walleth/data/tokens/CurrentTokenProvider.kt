@@ -1,6 +1,6 @@
 package org.walleth.data.tokens
 
-import android.arch.lifecycle.MediatorLiveData
+import androidx.lifecycle.MediatorLiveData
 import org.walleth.data.networks.NetworkDefinitionProvider
 
 open class CurrentTokenProvider(val networkDefinitionProvider: NetworkDefinitionProvider) : MediatorLiveData<Token>() {

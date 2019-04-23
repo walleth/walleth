@@ -3,7 +3,7 @@ package org.walleth.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.v7.widget.LinearLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_account_type_select.*
 import org.walleth.R
 import org.walleth.data.*

@@ -3,7 +3,7 @@ package org.walleth.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.support.annotation.StringRes
+import androidx.annotation.StringRes
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.EXTRA_KEY_PIN

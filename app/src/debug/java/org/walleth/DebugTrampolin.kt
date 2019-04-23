@@ -1,7 +1,7 @@
 package org.walleth
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.activities.StartupActivity
 

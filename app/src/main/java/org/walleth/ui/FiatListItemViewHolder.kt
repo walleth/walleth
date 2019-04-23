@@ -1,7 +1,7 @@
 package org.walleth.ui
 
 import android.app.Activity
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.View
 import kotlinx.android.synthetic.main.fiat_list_item.view.*
 import org.walleth.data.config.Settings

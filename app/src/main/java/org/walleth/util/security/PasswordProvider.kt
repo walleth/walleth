@@ -1,6 +1,6 @@
 package org.walleth.util.security
 
-import android.support.v4.app.FragmentActivity
+import androidx.fragment.app.FragmentActivity
 import org.walleth.R
 import org.walleth.activities.getPassword
 import org.walleth.activities.showAccountPinDialog

@@ -34,7 +34,7 @@ class TheTransactionParcel {
                 creationEpochSecond = 10L,
                 gasLimit = BigInteger("123"),
                 gasPrice = BigInteger("123542"),
-                input = listOf(1, 2, 3, 4, 2),
+                input = ByteArray(0) { (it + 1).toByte() },
                 txHash = "0xfoo")
         testTransactionParcel(transactionBefore)
     }

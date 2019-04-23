@@ -11,7 +11,7 @@
         android:orientation="vertical"
         tools:context="org.walleth.activities.InfoActivity">
 
-    <android.support.v7.widget.AppCompatImageView
+    <androidx.appcompat.widget.AppCompatImageView
             app:srcCompat="@mipmap/ic_launcher"
             android:layout_gravity="center_horizontal"
             android:layout_margin="48dp"

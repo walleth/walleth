@@ -133,21 +133,28 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    packagingOptions {
+        pickFirst("META-INF/atomicfu.kotlin_module")
+    }
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.1.1"
-    implementation "com.android.support:multidex:$multidex_version"
-    androidTestImplementation "com.android.support:multidex:$multidex_version"
-    androidTestImplementation "com.android.support:multidex-instrumentation:$multidex_version"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.2.0"
+    implementation 'androidx.multidex:multidex:2.0.1'
+    androidTestImplementation 'androidx.multidex:multidex:2.0.1'
+    androidTestImplementation 'androidx.multidex:multidex-instrumentation:2.0.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     withGethImplementation "org.ethereum:geth:1.8.8"
 
-    implementation 'android.arch.paging:runtime:1.0.1'
+    implementation 'androidx.paging:paging-runtime:2.1.0'
 
     implementation "com.github.walleth.kethereum:functions:$kethereum_version"
+    implementation "com.github.walleth.kethereum:model:$kethereum_version"
+    implementation "com.github.walleth.kethereum:crypto:$kethereum_version"
+    implementation "com.github.walleth.kethereum:bip32:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip39:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip39_wordlist_en:$kethereum_version"
     implementation "com.github.walleth.kethereum:bip44:$kethereum_version"
@@ -158,6 +165,7 @@ dependencies {
     implementation "com.github.walleth.kethereum:erc681:$kethereum_version"
     implementation "com.github.walleth.kethereum:erc831:$kethereum_version"
     implementation "com.github.walleth.kethereum:erc1328:$kethereum_version"
+    implementation "com.github.walleth.kethereum:extensions:$kethereum_version"
     implementation "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
     implementation "com.github.walleth.kethereum:method_signatures:$kethereum_version"
     implementation "com.github.walleth.kethereum:networks:$kethereum_version"
@@ -168,6 +176,10 @@ dependencies {
     implementation "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
     implementation "com.github.walleth.kethereum:keystore:$kethereum_version"
 
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.60'
+
+    implementation "com.github.walleth:khex:0.6"
+
     implementation "com.github.walleth:KHardWareWallet:0.8"
     implementation "com.github.walleth.kethereum:crypto_impl_bouncycastle:$kethereum_version"
 
@@ -177,6 +189,7 @@ dependencies {
 
     implementation 'com.github.amlcurran.showcaseview:library:5.4.3'
 
+    implementation 'com.github.ligi.tracedroid:lib:2.1'
     implementation 'com.github.ligi.tracedroid:supportemail:2.1'
 
     implementation 'com.github.ligi:KAXT:0.22'
@@ -190,6 +203,8 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
+    implementation 'com.google.protobuf:protobuf-java:3.3.0'
+
     implementation 'com.github.kenglxn.QRGen:android:2.5.0'
     implementation 'com.google.zxing:core:3.3.3'
 
@@ -201,14 +216,14 @@ dependencies {
     implementation "org.koin:koin-android:1.0.2"
     implementation "org.koin:koin-android-viewmodel:1.0.2"
 
-    implementation "com.android.support:support-v4:$support_version"
-    implementation "com.android.support:appcompat-v7:$support_version"
-    implementation "com.android.support:design:$support_version"
-    implementation "com.android.support:cardview-v7:$support_version"
-    implementation "com.android.support:recyclerview-v7:$support_version"
-    implementation "com.android.support:preference-v14:$support_version"
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
+    implementation 'com.google.android.material:material:1.0.0'
+    implementation 'androidx.cardview:cardview:1.0.0'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+    implementation 'androidx.legacy:legacy-preference-v14:1.0.0'
 
-    implementation "com.chibatching.kotpref:kotpref:2.6.0"
+    implementation "com.chibatching.kotpref:kotpref:2.7.0"
 
     implementation 'com.squareup.moshi:moshi:1.8.0'
 
@@ -217,17 +232,17 @@ dependencies {
 
     implementation 'com.github.ligi:rootbeer:remove_native_workaround'
 
-    implementation "android.arch.lifecycle:extensions:$arch_version"
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
 
     // Kotlin + coroutines
     implementation "android.arch.work:work-runtime-ktx:1.0.1"
 
     implementation 'com.github.madrapps:pikolo:1.1.8'
 
-    implementation "android.arch.persistence.room:runtime:$room_version"
-    kapt "android.arch.persistence.room:compiler:$room_version"
+    implementation 'androidx.room:room-runtime:2.0.0'
+    kapt 'androidx.room:room-compiler:2.0.0'
 
-    kapt "android.arch.lifecycle:compiler:$arch_version"
+    kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
 
     androidTestImplementation "com.google.truth:truth:$truth"
 
@@ -237,8 +252,10 @@ dependencies {
 
     androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.19.1'
 
-    androidTestImplementation 'com.android.support.test.espresso:espresso-contrib:3.0.2'
-    androidTestImplementation 'com.github.ligi:trulesk:0.26'
+
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
+    androidTestImplementation 'com.github.ligi:trulesk:0.28'
 
     testImplementation 'junit:junit:4.12'
     testImplementation "com.google.truth:truth:$truth"
@@ -256,7 +273,7 @@ dependencies {
 
 if (isCI || isLightCI) {
 
-    apply plugin: 'composer'
+    apply plugin: 'com.trevjonez.composer'
     composer {
         apkInstallTimeout 600
     }

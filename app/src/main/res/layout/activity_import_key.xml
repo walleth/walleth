@@ -42,29 +42,29 @@
             </RadioGroup>
 
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/key_container"
                     android:layout_below="@id/key_type_select"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/key_content"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:importantForAccessibility="no"
                         android:fontFamily="sans-serif"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/password_container"
                     style="@style/password_textinputlayout"
                     android:hint="@string/key_import_password_input_hint"
                     android:layout_below="@id/key_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <android.support.v7.widget.AppCompatEditText
+                <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/password"
                         android:inputType="textPassword"
                         android:importantForAccessibility="no"
@@ -72,7 +72,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:fontFamily="sans-serif"/>
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
 
         </RelativeLayout>
@@ -86,7 +86,7 @@
             android:layout_gravity="bottom|right"
             android:clickable="true">
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/fab"
                 app:srcCompat="@drawable/ic_action_done"
                 android:layout_width="wrap_content"

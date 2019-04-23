@@ -9,6 +9,7 @@ import org.kethereum.model.ChainId
 import org.kethereum.rpc.EthereumRPC
 import org.koin.standalone.KoinComponent
 import org.koin.standalone.inject
+import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
 import org.walleth.data.networks.NetworkDefinition
@@ -16,8 +17,6 @@ import org.walleth.data.networks.findNetworkDefinition
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.setHash
 import org.walleth.khex.toHexString
-import timber.log.Timber
-import kotlin.random.Random
 
 fun ChainId.getRPCEndpoint() =
         findNetworkDefinition()?.getRPCEndpoint()
@@ -38,7 +37,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
         val transaction = txHash?.let { appDatabase.transactions.getByHash(it) }
 
         if (transaction == null) {
-            Timber.i("Cannot load address with $txHash")
+            Log.i("Cannot load address with $txHash")
             return Result.failure()
         }
 

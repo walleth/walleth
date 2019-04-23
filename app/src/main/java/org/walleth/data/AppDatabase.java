@@ -1,8 +1,8 @@
 package org.walleth.data;
 
-import android.arch.persistence.room.Database;
-import android.arch.persistence.room.RoomDatabase;
-import android.arch.persistence.room.TypeConverters;
+import androidx.room.Database;
+import androidx.room.RoomDatabase;
+import androidx.room.TypeConverters;
 import org.walleth.data.addressbook.AddressBookDAO;
 import org.walleth.data.addressbook.AddressBookEntry;
 import org.walleth.data.balances.Balance;
@@ -12,7 +12,7 @@ import org.walleth.data.tokens.TokenDAO;
 import org.walleth.data.transactions.TransactionDAO;
 import org.walleth.data.transactions.TransactionEntity;
 
-@Database(entities = {AddressBookEntry.class, Token.class, Balance.class, TransactionEntity.class}, version = 3)
+@Database(entities = {AddressBookEntry.class, Token.class, Balance.class, TransactionEntity.class}, version = 4)
 @TypeConverters({RoomTypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
 

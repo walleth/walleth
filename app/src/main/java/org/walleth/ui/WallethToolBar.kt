@@ -4,8 +4,8 @@ import android.content.Context
 import android.graphics.ColorFilter
 import android.graphics.PorterDuff.Mode.SRC_IN
 import android.graphics.PorterDuffColorFilter
-import android.support.v7.view.menu.ActionMenuItemView
-import android.support.v7.widget.Toolbar
+import androidx.appcompat.view.menu.ActionMenuItemView
+import androidx.appcompat.widget.Toolbar
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
