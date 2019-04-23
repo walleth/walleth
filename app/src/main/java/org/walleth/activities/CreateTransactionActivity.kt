@@ -52,7 +52,10 @@ import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
 import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.*
-import org.walleth.data.addressbook.*
+import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addressbook.getByAddressAsync
+import org.walleth.data.addressbook.getSpec
+import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
@@ -130,15 +133,6 @@ class CreateTransactionActivity : BaseSubActivity() {
                     startTransaction(data?.getStringExtra(EXTRA_KEY_PWD), createTransaction())
                 }
             }
-            /*
-            FROM_ADDRESS_REQUEST_CODE -> {
-                data?.let {
-                    if (data.hasExtra("HEX")) {
-                        setFromAddress(Address(data.getStringExtra("HEX")))
-                    }
-                }
-            }
-            */
             TOKEN_REQUEST_CODE -> {
                 onCurrentTokenChanged()
             }
@@ -186,11 +180,8 @@ class CreateTransactionActivity : BaseSubActivity() {
                 appDatabase.addressBook.getByAddressAsync(address) { entry ->
                     currentAccount = entry
                     from_address.text = entry?.name
-                    val drawable = if (entry?.isTrezor() == true) {
-                        R.drawable.trezor_icon
-                    } else {
-                        ACCOUNT_TYPE_MAP[entry.getSpec()?.type]?.drawable
-                    }
+                    val drawable = ACCOUNT_TYPE_MAP[entry.getSpec()?.type]?.actionDrawable
+
                     fab.setImageResource(drawable ?: R.drawable.ic_action_done)
                     fab.setOnClickListener {
                         onFabClick()

@@ -23,7 +23,6 @@ private val specAdapter = Moshi.Builder().build().adapter(AccountKeySpec::class.
 fun AccountKeySpec.toJSON() = specAdapter.toJson(this)
 
 fun AddressBookEntry?.getSpec() = this?.keySpec?.let { specAdapter.fromJson(it) }
-fun AddressBookEntry?.isTrezor() = this?.keySpec?.startsWith("m/") == true || getSpec()?.type == ACCOUNT_TYPE_TREZOR
 
 fun AddressBookEntry.getTrezorDerivationPath(): String? {
     if (keySpec?.startsWith("m/") == true) {
