@@ -193,7 +193,7 @@ dependencyVerification {
         'com.googlecode.json-simple:json-simple:1.1:json-simple-1.1.jar:2d9484f4c649f708f47f9a479465fc729770ee65617dca3011836602264f6439',
         'com.jakewharton.android.repackaged:dalvik-dx:7.1.0_r7:dalvik-dx-7.1.0_r7.jar:6a30bc82e66320a5398e6e366a6fc73f76b51bac499c2bc4c13abe7d57425c5c',
         'com.jakewharton.android.repackaged:libcore-dex:7.1.0_r7:libcore-dex-7.1.0_r7.jar:83b6abcbddc1bb5ab86f927c4c9ff72188c31b78a34bf860dac42ca6ce9aa137',
-        'com.jakewharton.threetenabp:threetenabp:1.1.2:threetenabp-1.1.2.aar:18c2a046a2071aa17e88a093052d9dc088a9859428adc1141eb6d2f7216da588',
+        'com.jakewharton.threetenabp:threetenabp:1.2.0:threetenabp-1.2.0.aar:c9ab0f56e3472c07cfe2e50cd84da33e4b284f6d32688648cd2fe56cf196d45b',
         'com.jakewharton.timber:timber:4.5.1:timber-4.5.1.aar:d553d3d3e883ce7d061f1b21b95d6ee0840f3bfbf6d3bd51c5671f0b0f0b0091',
         'com.jakewharton:process-phoenix:2.0.0:process-phoenix-2.0.0.aar:229c481a90067878d9b0bceee54600fe2ea48a771c6ff1fb47f0d865cf660844',
         'com.jcraft:jzlib:1.1.3:jzlib-1.1.3.jar:89b1360f407381bf61fde411019d8cbd009ebb10cff715f3669017a031027560',
