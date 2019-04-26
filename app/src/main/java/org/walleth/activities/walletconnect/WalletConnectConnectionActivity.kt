@@ -44,66 +44,64 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     private var accounts = listOf<String>()
 
     private val sessionCallback = object : Session.Callback {
+        override fun handleMethodCall(call: Session.MethodCall) {
+            GlobalScope.launch(Dispatchers.Main) {
+                when (call) {
+                    is Session.MethodCall.SessionRequest -> {
+                        wcViewModel.peerMeta = call.peer.meta
+                        wcViewModel.statusText = "waiting for interactions with " + call.peer.meta?.name + " " + call.peer.meta?.icons
+                        applyViewModel()
+
+                        requestInitialAccount()
+                    }
+
+                    is Session.MethodCall.SignMessage -> {
+                        currentRequestId = call.id
+                        val intent = Intent(this@WalletConnectConnectionActivity, SignTextActivity::class.java).apply {
+                            putExtra(Intent.EXTRA_TEXT, call.message)
+
+                        }
+                        startActivityForResult(intent, REQUEST_ID_SIGN_TEXT)
+                    }
+
+                    is Session.MethodCall.SendTransaction -> {
+                        currentRequestId = call.id
+                        GlobalScope.launch(Dispatchers.Main) {
+                            val url = ERC681(scheme = "ethereum",
+                                    address = call.to,
+                                    value = BigInteger(call.value.clean0xPrefix(), 16),
+                                    gas = call.gasLimit?.let { BigInteger(it.clean0xPrefix(), 16) }
+                            ).generateURL()
+
+
+                            val intent = Intent(this@WalletConnectConnectionActivity, CreateTransactionActivity::class.java).apply {
+                                this.data = Uri.parse(url)
+                                if (call.data.isNotEmpty()) {
+                                    putExtra("data", call.data)
+                                }
+
+                                putExtra("gasPrice", call.gasPrice)
+                                putExtra("nonce", call.nonce)
+                                putExtra("from", call.from)
+                                putExtra("parityFlow", false)
+                            }
+
+                            startActivityForResult(intent, REQUEST_ID_SIGN_TX)
+                        }
+                    }
+                }
+            }
+        }
+
         override fun sessionApproved() {
             wcViewModel.showSwitchAccountButton = true
             wcViewModel.showSwitchNetworkButton = true
             applyViewModel()
         }
 
-        override fun sessionClosed(msg: String?) {
+        override fun sessionClosed() {
             finish()
         }
-
-        override fun sessionRequest(peer: Session.PayloadAdapter.PeerData) {
-            GlobalScope.launch(Dispatchers.Main) {
-                peer.meta?.let {
-                    wcViewModel.peerMeta = it
-                    wcViewModel.statusText = "waiting for interactions with " + it.name + " " + it.icons
-                    applyViewModel()
-
-                    requestInitialAccount()
-
-                }
-            }
-        }
-
-        override fun signMessage(id: Long, address: String, message: String) {
-            currentRequestId = id
-            GlobalScope.launch(Dispatchers.Main) {
-                val intent = Intent(this@WalletConnectConnectionActivity, SignTextActivity::class.java).apply {
-                    putExtra(Intent.EXTRA_TEXT, message)
-
-                }
-                startActivityForResult(intent, 100)
-            }
-        }
-
-        override fun sendTransaction(id: Long, from: String, to: String, nonce: String?, gasPrice: String?, gasLimit: String?, value: String, data: String) {
-            currentRequestId = id
-            GlobalScope.launch(Dispatchers.Main) {
-                val url = ERC681(scheme = "ethereum",
-                        address = to,
-                        value = BigInteger(value.clean0xPrefix(), 16),
-                        gas = gasLimit?.let { BigInteger(it.clean0xPrefix(), 16) }
-                ).generateURL()
-
-
-                val intent = Intent(this@WalletConnectConnectionActivity, CreateTransactionActivity::class.java).apply {
-                    this.data = Uri.parse(url)
-                    if (data.isNotEmpty()) {
-                        putExtra("data", data)
-                    }
-
-                    putExtra("gasPrice", gasPrice)
-                    putExtra("nonce", nonce)
-                    putExtra("from", from)
-                    putExtra("parityFlow", false)
-                }
-
-                startActivityForResult(intent, REQUEST_ID_SIGN_TX)
-            }
-        }
-
 
     }
 

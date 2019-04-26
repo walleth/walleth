@@ -1,9 +1,9 @@
 package org.walleth.data.addressbook
 
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import android.os.Parcelable
 import com.squareup.moshi.Moshi
 import kotlinx.android.parcel.Parcelize
 import org.kethereum.model.Address

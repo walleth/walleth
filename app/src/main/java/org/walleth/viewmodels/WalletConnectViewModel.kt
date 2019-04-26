@@ -27,7 +27,7 @@ class WalletConnectViewModel(val app: Application,
                 MoshiPayloadAdapter(moshi),
                 sessionStore,
                 OkHttpTransport.Builder(OkHttpClient.Builder().build(), moshi),
-                Session.PayloadAdapter.PeerMeta(name = "WallETH")
+                Session.PeerMeta(name = "WallETH")
         )
 
         GlobalScope.launch {
@@ -41,6 +41,6 @@ class WalletConnectViewModel(val app: Application,
     var statusText: String? = null
     var showSwitchNetworkButton = false
     var showSwitchAccountButton = false
-    var peerMeta: Session.PayloadAdapter.PeerMeta? = null
+    var peerMeta: Session.PeerMeta? = null
 
 }
