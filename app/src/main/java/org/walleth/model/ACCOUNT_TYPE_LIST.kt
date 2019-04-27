@@ -1,7 +1,10 @@
 package org.walleth.model
 
 import android.app.Activity
+import android.content.Context.NFC_SERVICE
 import android.content.Intent
+import android.nfc.NfcManager
+import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.AccountPickActivity
 import org.walleth.activities.ImportKeyActivity
@@ -10,6 +13,7 @@ import org.walleth.activities.RequestPasswordActivity
 import org.walleth.activities.nfc.NFCGetAddressActivity
 import org.walleth.activities.trezor.TrezorGetAddressActivity
 import org.walleth.data.*
+
 
 val ACCOUNT_TYPE_LIST = listOf(
 
@@ -58,7 +62,14 @@ val ACCOUNT_TYPE_LIST = listOf(
                 "Contact-less connection to e.g. the keycard (a java card)",
                 R.drawable.ic_nfc_black,
                 R.drawable.ic_nfc_black) { activity, _ ->
-            activity.startActivityForResult(Intent(activity, NFCGetAddressActivity::class.java), REQUEST_CODE_PICK_NFC)
+            val manager = activity.getSystemService(NFC_SERVICE) as NfcManager
+            val adapter = manager.defaultAdapter
+            if (adapter != null && adapter.isEnabled) {
+                activity.startActivityForResult(Intent(activity, NFCGetAddressActivity::class.java), REQUEST_CODE_PICK_NFC)
+            } else {
+                activity.alert("NFC not available - either this device does not have the needed hardware or it is disabled")
+            }
+
         },
         AccountType(ACCOUNT_TYPE_PIN_PROTECTED,
                 "PIN protected",
