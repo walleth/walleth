@@ -21,8 +21,8 @@ import org.kethereum.model.ECKeyPair
 import org.kethereum.model.PrivateKey
 import org.kethereum.model.PublicKey
 import org.koin.android.ext.android.inject
+import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
-import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.trezor.getAddressResult
@@ -74,6 +74,14 @@ class CreateAccountActivity : BaseSubActivity() {
             startActivityForResult(Intent(this, NewAccountTypeSelectActivity::class.java), REQUEST_CODE_PICK_ACCOUNT_TYPE)
         }
 
+        input_address.doAfterEdit {
+            val candidate = Address(it.toString())
+            if (candidate.isValid()) {
+                setAddressFromExternalApplyingChecksum(candidate)
+            }
+
+        }
+
         fab.setOnClickListener {
             if (!nameInput.hasText()) {
                 alert(title = R.string.alert_problem_title, message = R.string.please_enter_name)
@@ -86,25 +94,25 @@ class CreateAccountActivity : BaseSubActivity() {
             when (currentSpec.type) {
 
                 ACCOUNT_TYPE_BURNER -> {
-                    val key = importKey?:createEthereumKeyPair()
+                    val key = importKey ?: createEthereumKeyPair()
                     keyStore.addKey(key, DEFAULT_PASSWORD, true)
 
                     createAccountAndFinish(key.toAddress(), currentSpec)
 
                 }
 
-                ACCOUNT_TYPE_WATCH_ONLY -> {
-
-                }
-
                 ACCOUNT_TYPE_PIN_PROTECTED, ACCOUNT_TYPE_PASSWORD_PROTECTED -> {
-                    val key = importKey?:createEthereumKeyPair()
+                    val key = importKey ?: createEthereumKeyPair()
                     keyStore.addKey(key, currentSpec.pwd!!, true)
 
                     createAccountAndFinish(key.toAddress(), currentSpec.copy(pwd = null))
                 }
-                ACCOUNT_TYPE_NFC, ACCOUNT_TYPE_TREZOR -> {
-                    createAccountAndFinish(currentAddress!!, currentSpec)
+                ACCOUNT_TYPE_NFC, ACCOUNT_TYPE_TREZOR, ACCOUNT_TYPE_WATCH_ONLY -> {
+                    if (currentAddress == null) {
+                        alert("Invalid address")
+                    } else {
+                        createAccountAndFinish(currentAddress!!, currentSpec)
+                    }
                 }
             }
 
@@ -136,11 +144,13 @@ class CreateAccountActivity : BaseSubActivity() {
         type_image.setVisibility(!noneSelected)
         type_select_button.text = if (noneSelected) "select" else "switch"
 
+        input_address_layout.setVisibility(currentSpec.type == ACCOUNT_TYPE_WATCH_ONLY)
+        input_address.setText(currentAddress?.hex)
+
         val accountType = ACCOUNT_TYPE_MAP[currentSpec.type]
         type_image.setImageResource(accountType?.drawable ?: R.drawable.ic_warning_black_24dp)
 
     }
-
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -154,15 +164,8 @@ class CreateAccountActivity : BaseSubActivity() {
         data?.run {
             when (requestCode) {
                 REQUEST_CODE_PICK_ACCOUNT_TYPE -> {
-                    val spec = data.getParcelableExtra<AccountKeySpec>(EXTRA_KEY_ACCOUNTSPEC)
-                    if (spec.type == ACCOUNT_TYPE_WATCH_ONLY) {
-                        currentAddressProvider.setCurrent(Address(data.getStringExtra(EXTRA_KEY_ADDRESS)))
-                        startActivityFromClass(MainActivity::class.java)
-                        finish()
-                    } else {
-                        currentSpec = spec
-                        applyViewModel()
-                    }
+                    currentSpec = data.getParcelableExtra(EXTRA_KEY_ACCOUNTSPEC)
+                    applyViewModel()
                 }
                 else -> {
                     getStringExtra("SCAN_RESULT")?.let { stringExtra ->

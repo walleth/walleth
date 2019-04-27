@@ -76,8 +76,9 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="alert_problem_title">Problem</string>
     <string name="address_not_valid">The address is not valid</string>
     <string name="input_hint_address">Address</string>
-    <string name="input_hint_notes">notes</string>
-    <string name="input_hint_account_name">account name</string>
+    <string name="input_hint_notes">Notes</string>
+    <string name="input_hint_account_name">Name</string>
+    <string name="input_hint_account_address">Address</string>
     <string name="please_enter_name">Please enter a name</string>
     <string name="info">Info</string>
     <string name="copy">Copy</string>

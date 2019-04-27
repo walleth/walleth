@@ -6,13 +6,13 @@ import android.content.Intent
 import android.nfc.NfcManager
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.AccountPickActivity
 import org.walleth.activities.ImportKeyActivity
 import org.walleth.activities.RequestPINActivity
 import org.walleth.activities.RequestPasswordActivity
 import org.walleth.activities.nfc.NFCGetAddressActivity
 import org.walleth.activities.trezor.TrezorGetAddressActivity
 import org.walleth.data.*
+import org.walleth.data.addressbook.AccountKeySpec
 
 
 val ACCOUNT_TYPE_LIST = listOf(
@@ -23,12 +23,9 @@ val ACCOUNT_TYPE_LIST = listOf(
                 "Easy to get you started but weak security.",
                 R.drawable.ic_whatshot_black_24dp,
                 R.drawable.ic_key,
-                wrapsKey = true) { activity, inSpec ->
-            activity.setResult(Activity.RESULT_OK,
-                    Intent().putExtra(EXTRA_KEY_ACCOUNTSPEC, inSpec.copy(type = ACCOUNT_TYPE_BURNER))
-            )
-            activity.finish()
-        },
+                wrapsKey = true,
+                callback = { activity, inSpec -> activity.finishWithType(inSpec, ACCOUNT_TYPE_BURNER) }
+        ),
         AccountType(
                 ACCOUNT_TYPE_TREZOR,
                 "TREZOR wallet",
@@ -53,9 +50,8 @@ val ACCOUNT_TYPE_LIST = listOf(
                 "Watch Only",
                 "No transactions possible then - just monitor or interact with this account",
                 R.drawable.ic_watch,
-                R.drawable.ic_watch) { activity, _ ->
-            activity.startActivityForResult(Intent(activity, AccountPickActivity::class.java), REQUEST_CODE_PICK_WATCH_ONLY)
-        },
+                R.drawable.ic_watch,
+                callback = { activity, inSpec -> activity.finishWithType(inSpec, ACCOUNT_TYPE_WATCH_ONLY) }),
         AccountType(ACCOUNT_TYPE_NFC,
                 "NFC account",
                 "Connect via NFC",
@@ -90,6 +86,13 @@ val ACCOUNT_TYPE_LIST = listOf(
             activity.startActivityForResult(Intent(activity, RequestPasswordActivity::class.java), REQUEST_CODE_ENTER_PASSWORD)
         }
 )
+
+private fun Activity.finishWithType(inSpec: AccountKeySpec, type: String) {
+    setResult(Activity.RESULT_OK,
+            Intent().putExtra(EXTRA_KEY_ACCOUNTSPEC, inSpec.copy(type = type))
+    )
+    finish()
+}
 
 val ACCOUNT_TYPE_MAP by lazy {
     mutableMapOf<String, AccountType>().apply {
