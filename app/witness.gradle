@@ -1,7 +1,5 @@
 dependencyVerification {
     verify = [
-        'android.arch.work:work-runtime-ktx:1.0.1:work-runtime-ktx-1.0.1.aar:5b4cc2b3c8c7c563a5b03802e4df3f721caea38a1be76ff209b0b85d1a54428a',
-        'android.arch.work:work-runtime:1.0.1:work-runtime-1.0.1.aar:cf676a2d038a239d734e9a746f5380e56b2c6bbb13902dc4d7c19eb9d5e70c88',
         'androidx.annotation:annotation:1.0.0:annotation-1.0.0.jar:0baae9755f7caf52aa80cd04324b91ba93af55d4d1d17dcc9a7b53d99ef7c016',
         'androidx.annotation:annotation:1.0.2:annotation-1.0.2.jar:9bcdf4cc5003121db87b51de5f51db5805df335d42a36a70a5ab7405c23163f2',
         'androidx.appcompat:appcompat:1.0.0:appcompat-1.0.0.aar:994254e12036cbd3326b2819a4d8bc3bef139f45022cfb0b1086dc58d36d56ce',
@@ -64,6 +62,8 @@ dependencyVerification {
         'androidx.vectordrawable:vectordrawable:1.0.1:vectordrawable-1.0.1.aar:4ca358957b9510e52fc388e01c9d33c2d655d406bfe6e71984e9afea9f715ed2',
         'androidx.versionedparcelable:versionedparcelable:1.0.0:versionedparcelable-1.0.0.aar:f6438a93ed8016ccddca0e140a70be0b0110e0424edaa1472f84f98fed2e1ce3',
         'androidx.viewpager:viewpager:1.0.0:viewpager-1.0.0.aar:147af4e14a1984010d8f155e5e19d781f03c1d70dfed02a8e0d18428b8fc8682',
+        'androidx.work:work-runtime-ktx:2.0.1:work-runtime-ktx-2.0.1.aar:b839a7f9c5f76a7168d6ded9b72507183b47e5a5cded3c0ad273ad9c673b07fb',
+        'androidx.work:work-runtime:2.0.1:work-runtime-2.0.1.aar:69b1c096a51ad2108cf6b9fbfa04b22c0c8dab8fa5fa17a14e969dd0b63cdc8a',
         'bin:android-sdk:platforms:android.jar:d20853d289a5161d9cf1c1268d7923076487d4fa68c970b0733e2d5a0ccfc3c5',
         'com.android.tools.analytics-library:protos:26.4.0:protos-26.4.0.jar:ad760915586797d39319f402837b378bff3bb4ed583e3e0c48c965631fb2135f',
         'com.android.tools.analytics-library:shared:26.4.0:shared-26.4.0.jar:1332106a905d48909c81268c9e414946de3e83487db394c6073b0a9b5c3d0ed2',
