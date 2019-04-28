@@ -277,8 +277,8 @@ if (isCI || isLightCI) {
     composer {
         apkInstallTimeout 600
     }
-    apply plugin: 'witness'
-    apply from: 'witness.gradle'
+//    apply plugin: 'witness'
+//    apply from: 'witness.gradle'
 }
 if (includeFirebase) {
     apply plugin: 'com.google.gms.google-services'
