@@ -203,7 +203,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation 'com.google.protobuf:protobuf-java:3.3.0'
+    implementation 'com.google.protobuf:protobuf-java:3.7.1'
 
     implementation 'com.github.kenglxn.QRGen:android:2.5.0'
     implementation 'com.google.zxing:core:3.3.3'
