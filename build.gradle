@@ -17,6 +17,7 @@ buildscript {
         maven { url "https://jitpack.io" }
         maven { url "https://kotlin.bintray.com/kotlinx" }
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+        gradlePluginPortal()
         google()
     }
 
@@ -30,6 +31,7 @@ buildscript {
         classpath 'com.google.gms:google-services:4.2.0'
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.6'
         classpath "com.jaredsburrows:gradle-license-plugin:0.8.42"
+        classpath "com.github.plnice:canidropjetifier:0.4"
     }
 }
 task clean(type: Delete) {
@@ -47,6 +49,7 @@ allprojects {
 }
 
 apply plugin: 'com.github.ben-manes.versions'
+apply plugin: 'com.github.plnice.canidropjetifier'
 
 dependencyUpdates.resolutionStrategy {
     componentSelection { rules ->
