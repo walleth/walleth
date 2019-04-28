@@ -20,7 +20,6 @@ dependencyVerification {
         'androidx.drawerlayout:drawerlayout:1.0.0:drawerlayout-1.0.0.aar:9402442cdc5a43cf62fb14f8cf98c63342d4d9d9b805c8033c6cf7e802749ac1',
         'androidx.fragment:fragment:1.0.0:fragment-1.0.0.aar:65dd32d71fe65a32e77989a6cfb1ad09307038927f82a740c7611162d0b518f8',
         'androidx.interpolator:interpolator:1.0.0:interpolator-1.0.0.aar:33193135a64fe21fa2c35eec6688f1a76e512606c0fc83dc1b689e37add7732a',
-        'androidx.legacy:legacy-preference-v14:1.0.0:legacy-preference-v14-1.0.0.aar:d6d11913e56b8f2d14fd560bd1ad6d7fd5624a15dd4ec073b2d9188205f86280',
         'androidx.legacy:legacy-support-core-ui:1.0.0:legacy-support-core-ui-1.0.0.aar:0d1260c6e7e6a337f875df71b516931e703f716e90889817cd3a20fa5ac3d947',
         'androidx.legacy:legacy-support-core-utils:1.0.0:legacy-support-core-utils-1.0.0.aar:a7edcf01d5b52b3034073027bc4775b78a4764bb6202bb91d61c829add8dd1c7',
         'androidx.legacy:legacy-support-v4:1.0.0:legacy-support-v4-1.0.0.aar:78fec1485f0f388a4749022dd51416857127cd2544ae1c3fd0b16589055480b0',

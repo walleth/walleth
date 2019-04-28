@@ -18,7 +18,6 @@
         <item name="colorAccent">@color/colorAccent</item>
         <item name="actionBarStyle">@style/wallethActionBar</item>
         <item name="actionBarTheme">@style/wallethActionBarThemeOverlay</item>
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
     </style>
 
