@@ -26,7 +26,6 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
-import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import java.math.BigInteger
 
@@ -55,7 +54,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
     }
 
     override fun getTaskSpecificMessage() = TrezorMessage.EthereumSignTx.newBuilder()
-            .setTo(ByteString.copyFrom(transaction.transaction.to!!.hex.hexToByteArray()))
+            .setTo(transaction.transaction.to!!.hex)
             .setValue(ByteString.copyFrom(transaction.transaction.value!!.toByteArray().removeLeadingZero()))
             .setNonce(ByteString.copyFrom(transaction.transaction.nonce!!.toByteArray().removeLeadingZero()))
             .setGasPrice(ByteString.copyFrom(transaction.transaction.gasPrice!!.toByteArray().removeLeadingZero()))

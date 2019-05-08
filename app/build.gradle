@@ -199,7 +199,7 @@ dependencies {
 
     implementation 'com.androidadvance:topsnackbar:1.1.1'
 
-    implementation('com.github.trezor.trezor-android:trezor-lib:v2.0.1') {
+    implementation('com.github.ligi:trezor-android:only_library_for_ethereum_tag_core210') {
         exclude group: 'com.android.support'
     }
 

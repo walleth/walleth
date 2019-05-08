@@ -3,20 +3,20 @@ package org.walleth.activities.trezor
 import android.app.Activity
 import android.os.Bundle
 import android.os.Handler
-import androidx.appcompat.app.AlertDialog
 import android.text.method.LinkMovementMethod
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.TrezorException
 import com.satoshilabs.trezor.lib.TrezorManager
 import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
-import com.satoshilabs.trezor.lib.protobuf.TrezorType
 import kotlinx.android.synthetic.main.activity_trezor.*
 import kotlinx.android.synthetic.main.password_input.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
@@ -28,7 +28,6 @@ import org.walleth.activities.BaseSubActivity
 import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.khex.toHexString
 import org.walleth.ui.KEY_MAP_NUM_PAD
 import org.walleth.ui.showPINDialog
 
@@ -86,8 +85,8 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                 trezor_status_text.visibility = View.GONE
 
                 try {
-                    GlobalScope.async(Dispatchers.Main) {
-                        val trezorResult = async { manager.sendMessage(getMessageForState()) }.await()
+                    GlobalScope.launch(Dispatchers.Main) {
+                        val trezorResult = withContext(Dispatchers.Default) { manager.sendMessage(getMessageForState()) }
                         trezorResult.handleTrezorResult()
                     }
 
@@ -134,13 +133,28 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
             }
             is TrezorMessage.PassphraseStateRequest -> enterNewState(PWD_STATE)
             is TrezorMessage.ButtonRequest -> enterNewState(BUTTON_ACK)
-            is TrezorMessage.Features -> enterNewState(READ_ADDRESS)
-            is TrezorMessage.EthereumAddress -> handleAddress(Address(address.toByteArray().toHexString()))
+            is TrezorMessage.Features -> {
+                if (model != "1" && model != "T") {
+                    alert("Only TREZOR model T and ONE supported - but found model: $model")
+                }
+                if (model == "T" && !(majorVersion == 2 && minorVersion == 1)) {
+                    alert("For Trezor model T only Firmware 2.1.X is supported - please update your TREZOR") {
+                        finish()
+                    }
+                } else if (model == "1" && !(majorVersion == 1 && minorVersion == 8)) {
+                    alert("For Trezor model ONE only Firmware 2.1.X is supported - please update your TREZOR") {
+                        finish()
+                    }
+                } else {
+                    enterNewState(READ_ADDRESS)
+                }
+            }
+            is TrezorMessage.EthereumAddress -> handleAddress(Address(address))
             is TrezorMessage.Failure -> when (code) {
-                TrezorType.FailureType.Failure_PinInvalid -> alert(R.string.trezor_pin_invalid, R.string.dialog_title_error) { cancel() }
-                TrezorType.FailureType.Failure_UnexpectedMessage -> Unit
-                TrezorType.FailureType.Failure_ActionCancelled -> cancel()
-                TrezorType.FailureType.Failure_ProcessError -> if (message.contains("not initialized")) {
+                TrezorMessage.Failure.FailureType.Failure_PinInvalid -> alert(R.string.trezor_pin_invalid, R.string.dialog_title_error) { cancel() }
+                TrezorMessage.Failure.FailureType.Failure_UnexpectedMessage -> Unit
+                TrezorMessage.Failure.FailureType.Failure_ActionCancelled -> cancel()
+                TrezorMessage.Failure.FailureType.Failure_ProcessError -> if (message.contains("not initialized")) {
                     alert(R.string.trezor_not_initialized, R.string.dialog_title_error) { cancel() }
                 } else {
                     alert(getString(R.string.process_error, message))
