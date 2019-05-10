@@ -24,7 +24,7 @@ Features
  - JSON UTC key import/export
  - display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI
  - display function calls
- - TREZOR (https://trezor.io) Support via USB-OTG - model 1 and model T are supported
+ - TREZOR (https://trezor.io) Support via USB-OTG - model 1 (v1.8.X) and model T (v2.1.X) are supported
  - watch only accounts
  - one flavor contains go-ethereum light client
 
