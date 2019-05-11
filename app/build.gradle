@@ -203,7 +203,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
 
     implementation "org.koin:koin-android:1.0.2"
-    implementation "org.koin:koin-android-viewmodel:1.0.2"
+    implementation "org.koin:koin-androidx-viewmodel:1.0.2"
 
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'com.google.android.material:material:1.0.0'

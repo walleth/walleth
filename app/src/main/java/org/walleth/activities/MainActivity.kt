@@ -1,7 +1,5 @@
 package org.walleth.activities
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
@@ -9,13 +7,15 @@ import android.content.SharedPreferences
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
-import androidx.recyclerview.widget.LinearLayoutManager
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.INVISIBLE
+import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.toolbar.*
@@ -26,7 +26,7 @@ import org.kethereum.erc681.toERC681
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.ligi.kaxt.livedata.nonNull
 import org.ligi.kaxt.livedata.observe
 import org.ligi.kaxt.setVisibility

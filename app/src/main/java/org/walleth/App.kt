@@ -22,7 +22,7 @@ import org.kethereum.keystore.api.InitializingFileKeyStore
 import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.android.startKoin
-import org.koin.android.viewmodel.ext.koin.viewModel
+import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore

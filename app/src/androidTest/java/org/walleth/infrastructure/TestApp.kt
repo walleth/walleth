@@ -4,7 +4,7 @@ import androidx.room.Room
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
 import org.kethereum.keystore.api.KeyStore
-import org.koin.android.viewmodel.ext.koin.viewModel
+import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`

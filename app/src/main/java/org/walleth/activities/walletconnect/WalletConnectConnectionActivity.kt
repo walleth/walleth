@@ -13,7 +13,7 @@ import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
-import org.koin.android.viewmodel.ext.android.viewModel
+import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.ligi.kaxt.setVisibility
 import org.walletconnect.Session
 import org.walleth.R
