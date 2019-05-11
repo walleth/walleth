@@ -192,7 +192,7 @@ dependencies {
     implementation 'com.github.ligi.tracedroid:lib:3.0'
     implementation 'com.github.ligi.tracedroid:supportemail:3.0'
 
-    implementation 'com.github.ligi:KAXT:0.22'
+    implementation 'com.github.ligi:KAXT:1.0'
 
     implementation 'com.github.ligi:KAXTUI:0.8'
     implementation 'com.github.ligi:thirdpartylicensedisplay:0.4'

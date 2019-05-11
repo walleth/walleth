@@ -3,9 +3,9 @@ package org.walleth.activities
 import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.annotation.LayoutRes
 import kotlinx.android.synthetic.main.activity_base_w_actionbar.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.ligi.kaxt.inflate
 import org.walleth.R
 
 @SuppressLint("Registered")
@@ -22,9 +22,9 @@ open class BaseSubActivity : WallethActivity() {
         }
     }
 
-    override fun setContentView(layoutResID: Int) {
+    override fun setContentView(@LayoutRes layoutResID: Int) {
         content_frame.removeAllViews()
-        inflate(layoutResID, content_frame)
+        layoutInflater.inflate(layoutResID, content_frame)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
