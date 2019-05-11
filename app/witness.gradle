@@ -103,7 +103,7 @@ dependencyVerification {
         'com.github.ligi.KAXT:livedata:0.22:livedata-0.22.aar:499734634bb61a16a25a0ded8c9ba24a4dc058946431620d29e908b066db7118',
         'com.github.ligi.tracedroid:lib:3.0:lib-3.0.aar:c8f72c1adb22ca56a4acdaded3c2e816fe84a5767d1428acce45ade0665f1c91',
         'com.github.ligi.tracedroid:supportemail:3.0:supportemail-3.0.aar:2ea13e60b743a07942b02dffb097f484caef56c70d57e5f4dc31acb1e38c2d27',
-        'com.github.ligi:ExtraCompats:0.5:ExtraCompats-0.5.aar:c1951c9e36fc6a373d43d06dfa28625c05c0e29294e12fba7caf903e5646bbbb',
+        'com.github.ligi:ExtraCompats:1.0:ExtraCompats-1.0.aar:fc2b8f808f7a8f884b4e20b4beec5ca2a2cc5f124be7b0fcf0b90d8a8c5b09ea',
         'com.github.ligi:KAXT:0.22:KAXT-0.22.jar:1a54b1de439bf894bb2488d7b4450d05cd639a5217602a89d1286665ea377587',
         'com.github.ligi:KAXTUI:0.8:KAXTUI-0.8.aar:fb0bb1e9826cd96ba5a15c8b2f0a77a0adf063c5895295c6b40f402d578d779e',
         'com.github.ligi:KRoom:0.4:KRoom-0.4.aar:44a3d2279de2385892f9fc1335a73e740c7942bc445ae34436e265b1abbb225b',
