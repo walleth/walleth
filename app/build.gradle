@@ -114,17 +114,6 @@ android {
         }
     }
 
-    // Ensure the no-op dependency is always used in JVM tests.
-    configurations.all { config ->
-        if (config.name.contains('UnitTest') || config.name.contains('AndroidTest')) {
-            config.resolutionStrategy.eachDependency { details ->
-                if (details.requested.group == 'com.squareup.leakcanary' && details.requested.name == 'leakcanary-android') {
-                    details.useTarget(group: details.requested.group, name: 'leakcanary-android-no-op', version: details.requested.version)
-                }
-            }
-        }
-    }
-
     packagingOptions {
         exclude 'META-INF/main.kotlin_module'
     }
@@ -261,8 +250,7 @@ dependencies {
     testImplementation "com.google.truth:truth:$truth"
     testImplementation 'org.threeten:threetenbp:1.3.8'
 
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.6.3'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.6.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
 
     if (includeFirebase) {
         withFirebaseImplementation "com.google.firebase:firebase-core:15.0.2"
