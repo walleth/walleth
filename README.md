@@ -25,6 +25,7 @@ Features
  - display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI
  - display function calls
  - TREZOR (https://trezor.io) Support via USB-OTG - model 1 (v1.8.X) and model T (v2.1.X) are supported
+ - KeyCard (https://keycard.status.im) support
  - watch only accounts
  - one flavor contains go-ethereum light client
 
