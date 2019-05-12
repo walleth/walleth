@@ -25,6 +25,7 @@ class OnboardingController(val activity: Activity,
                     override fun onShowcaseDisplayed(showcaseView: MaterialShowcaseView?) = Unit
                 })
                 .setDismissText(android.R.string.ok)
+                .setTargetTouchable(true)
                 .setContentText(R.string.onboard_showcase_message)
                 .build()
     }

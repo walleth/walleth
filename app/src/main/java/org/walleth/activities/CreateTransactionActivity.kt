@@ -269,7 +269,6 @@ class CreateTransactionActivity : BaseSubActivity() {
         setToFromURL(currentERC681.generateURL(), false)
 
         address_list_button.setOnClickListener {
-            currentShowCase?.hide()
             val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
             startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
         }
@@ -313,6 +312,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                     .setTarget(address_list_button)
                     .setDismissText(android.R.string.ok)
                     .setContentText(R.string.create_tx_err)
+                    .setTargetTouchable(true)
                     .setListener(object : IShowcaseListener {
                         override fun onShowcaseDismissed(showcaseView: MaterialShowcaseView?) {
                             processShowCaseViewState(false)
