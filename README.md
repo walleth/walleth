@@ -23,7 +23,7 @@ Features
  - Testnets with direct link to faucets (on görli and ropsten even auto-fill of address)
  - JSON UTC key import/export
  - display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI
- - display function calls
+ - display function calls when available from https://github.com/ethereum-lists/4bytes
  - TREZOR (https://trezor.io) Support via USB-OTG - model 1 (v1.8.X) and model T (v2.1.X) are supported
  - KeyCard (https://keycard.status.im) support
  - watch only accounts
