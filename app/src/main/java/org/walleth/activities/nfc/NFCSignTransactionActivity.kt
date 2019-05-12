@@ -14,7 +14,6 @@ import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
-import org.ligi.kroom.inTransaction
 import org.walleth.activities.showAccountPinDialog
 import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
 import org.walleth.data.AppDatabase
@@ -87,9 +86,9 @@ class NFCSignTransactionActivity : BaseNFCActivity() {
                                     GlobalScope.launch(Dispatchers.Main) {
                                         withContext(Dispatchers.Default) {
                                             transaction.transaction.txHash = signedTransaction.encodeRLP().keccak().toHexString()
-                                            appDatabase.inTransaction {
-                                                oldHash?.let { transactions.deleteByHash(it) }
-                                                transactions.upsert(transaction.transaction.toEntity(signedTransaction.signatureData, TransactionState()))
+                                            appDatabase.runInTransaction {
+                                                oldHash?.let { appDatabase.transactions.deleteByHash(it) }
+                                                appDatabase.transactions.upsert(transaction.transaction.toEntity(signedTransaction.signatureData, TransactionState()))
                                             }
                                         }
                                         setResult(RESULT_OK, Intent().apply { putExtra("TXHASH", transaction.transaction.txHash) })

@@ -17,7 +17,6 @@ import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
-import org.ligi.kroom.inTransaction
 import org.walleth.R
 import org.walleth.R.string
 import org.walleth.data.addressbook.getByAddressAsync
@@ -78,9 +77,9 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
             transaction.transaction.txHash = transaction.transaction.encodeRLP(signatureData).keccak().toHexString()
             GlobalScope.launch(Dispatchers.Main) {
                 withContext(Dispatchers.Default) {
-                    appDatabase.inTransaction {
-                        oldHash?.let { transactions.deleteByHash(it) }
-                        transactions.upsert(transaction.transaction.toEntity(signatureData, TransactionState()))
+                    appDatabase.runInTransaction {
+                        oldHash?.let { appDatabase.transactions.deleteByHash(it) }
+                        appDatabase.transactions.upsert(transaction.transaction.toEntity(signatureData, TransactionState()))
                     }
                 }
                 setResult(RESULT_OK, Intent().apply { putExtra("TXHASH", transaction.transaction.txHash) })

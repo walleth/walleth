@@ -105,7 +105,6 @@ dependencyVerification {
         'com.github.ligi:ExtraCompats:1.0:ExtraCompats-1.0.aar:fc2b8f808f7a8f884b4e20b4beec5ca2a2cc5f124be7b0fcf0b90d8a8c5b09ea',
         'com.github.ligi:KAXT:1.0:KAXT-1.0.jar:6756176b412dff9c640cc08ae79209199f9471b35c61d6b46af4295bf1142fc9',
         'com.github.ligi:KAXTUI:1.0:KAXTUI-1.0.aar:f2f3e39c95ccd9678cb50b8e973b6369a8051e94f7fecb1580d852e46d41df80',
-        'com.github.ligi:KRoom:0.4:KRoom-0.4.aar:44a3d2279de2385892f9fc1335a73e740c7942bc445ae34436e265b1abbb225b',
         'com.github.ligi:rootbeer:remove_native_workaround:rootbeer-remove_native_workaround.aar:17ac9185a100b30a271cdc02375ba0024072643f02aa4be1b91cbfc3c3c1c9b1',
         'com.github.ligi:thirdpartylicensedisplay:0.4:thirdpartylicensedisplay-0.4.aar:014f6264d217631f52304b39609bc91f6d92240fa5d590b080631edab7fb54c2',
         'com.github.ligi:tracedroid:2.1:tracedroid-2.1.jar:d2a4a06953150e25ffda5ce12d5cf3e704399be26e162946a58fd78d51357575',
