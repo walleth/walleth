@@ -1,6 +1,5 @@
 def isCI = hasProperty("isCI")
 def isLightCI = hasProperty("isLightCI")
-def includeFirebase = isCI || hasProperty("firebase")
 def includeOffline = hasProperty("isCI")
 
 apply plugin: 'com.android.application'
@@ -48,7 +47,7 @@ android {
         warning 'MissingTranslation'
     }
 
-    flavorDimensions "geth", "fire", "store", "connectivity"
+    flavorDimensions "geth", "store", "connectivity"
 
     productFlavors {
         withGeth {
@@ -74,16 +73,6 @@ android {
             buildConfigField 'String', 'STORE', '"play"'
         }
 
-        if (includeFirebase) {
-            withFirebase {
-                dimension "fire"
-            }
-        }
-
-        noFirebase {
-            dimension "fire"
-        }
-
         online {
             dimension "connectivity"
         }
@@ -101,15 +90,12 @@ android {
 
     android.variantFilter { variant ->
         def geth = variant.getFlavors().get(0).name
-        def firebase = variant.getFlavors().get(1).name
-        def store = variant.getFlavors().get(2).name
-        def connectivity = variant.getFlavors().get(3).name
+        def store = variant.getFlavors().get(1).name
+        def connectivity = variant.getFlavors().get(2).name
 
         if ((project.hasProperty("singleFlavor") && (store != 'forFDroid'))
-                || ((store == 'forAmazon' || store == 'forPlay') && firebase == 'noFirebase')
-                || (store == 'forFDroid' && firebase != 'noFirebase')
                 || (connectivity == "offline" && !includeOffline)
-                || (connectivity == 'offline' && (firebase == 'withFirebase' || geth == 'withGeth'))) {
+                || (connectivity == 'offline' && geth == 'withGeth')) {
             variant.setIgnore(true)
         }
     }
@@ -251,11 +237,6 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.0-alpha-1'
 
-    if (includeFirebase) {
-        withFirebaseImplementation "com.google.firebase:firebase-core:15.0.2"
-        withFirebaseImplementation "com.google.firebase:firebase-crash:15.0.2"
-        withFirebaseImplementation "com.google.firebase:firebase-messaging:15.0.2"
-    }
 }
 
 if (isCI || isLightCI) {
@@ -266,9 +247,6 @@ if (isCI || isLightCI) {
     }
     apply plugin: 'witness'
     apply from: 'witness.gradle'
-}
-if (includeFirebase) {
-    apply plugin: 'com.google.gms.google-services'
 }
 
 licenseReport {
