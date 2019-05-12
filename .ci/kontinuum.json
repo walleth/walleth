@@ -4,6 +4,6 @@
     "testNoGethForFDroidOfflineDebugComposer",
     "lint",
     "test",
-    "assemble"
+    "assembleRelease"
   ]
 }
