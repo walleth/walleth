@@ -184,7 +184,7 @@ dependencies {
     implementation 'com.github.ligi:KAXT:1.0'
 
     implementation 'com.github.ligi:KAXTUI:1.0'
-    implementation 'com.github.ligi:thirdpartylicensedisplay:0.4'
+    implementation 'com.github.ligi:thirdpartylicensedisplay:1.0'
 
     implementation 'com.github.ligi:tsnackbar:android_x_fork_1.0'
 
