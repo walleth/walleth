@@ -114,7 +114,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="snackbar_after_address_copy">Address copied to clipboard</string>
     <string name="ethereum_address">Ethereum Address</string>
     <string name="onboarding_warning_title">Special Awareness</string>
-    <string name="onboard_showcase_message">Please click the arrow if you want to transfer to this account</string>
+    <string name="onboard_showcase_message">Please click green the arrow if you want to transfer to this account.\nTip: everything in this color can be clicked to invoke actions.</string>
     <string name="deleted_account_snack">Deleted Account</string>
     <string name="deleted_token_snack">Deleted Token %s</string>
     <string name="copied_to_clipboard">Copied to clipboard</string>

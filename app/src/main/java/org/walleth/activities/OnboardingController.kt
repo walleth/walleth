@@ -1,55 +1,39 @@
 package org.walleth.activities
 
 import android.app.Activity
-import android.graphics.Paint
-import android.text.TextPaint
-import android.util.TypedValue
-import android.view.MotionEvent
-import com.github.amlcurran.showcaseview.OnShowcaseEventListener
-import com.github.amlcurran.showcaseview.ShowcaseView
-import com.github.amlcurran.showcaseview.targets.ViewTarget
+import kotlinx.android.synthetic.main.activity_main.*
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.viewmodels.TransactionListViewModel
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 
 class OnboardingController(val activity: Activity,
                            private val viewModel: TransactionListViewModel,
                            val settings: Settings) {
 
     private val showcaseView by lazy {
-        ShowcaseView.Builder(activity)
-                .setTarget(ViewTarget(R.id.receive_button, activity))
-                .setContentText(R.string.onboard_showcase_message)
-                .setContentTextPaint(contentPaint)
-                .build()
-    }
+        MaterialShowcaseView.Builder(activity)
+                .setTarget(activity.receive_button)
+                .setListener(object : IShowcaseListener {
+                    override fun onShowcaseDismissed(showcaseView: MaterialShowcaseView?) {
+                        dismiss()
+                    }
 
-    private val contentPaint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
-        textSize = activity.resources.getDimension(R.dimen.abc_text_size_title_material)
-        val typedValue = TypedValue()
-        val arr = activity.obtainStyledAttributes(typedValue.data, intArrayOf(android.R.attr.textColorPrimary))
-        val primaryColor = arr.getColor(0, -1)
-        color = primaryColor
-        arr.recycle()
+                    override fun onShowcaseDisplayed(showcaseView: MaterialShowcaseView?) = Unit
+                })
+                .setDismissText(android.R.string.ok)
+                .setContentText(R.string.onboard_showcase_message)
+                .build()
     }
 
     fun install() {
         if (!settings.onboardingDone) {
             viewModel.isOnboardingVisible.value = true
 
-            showcaseView.setOnShowcaseEventListener(object : OnShowcaseEventListener {
-                override fun onShowcaseViewShow(p0: ShowcaseView?) {}
-                override fun onShowcaseViewHide(p0: ShowcaseView?) {}
-                override fun onShowcaseViewDidHide(p0: ShowcaseView?) {
-                    dismiss()
-                }
-
-                override fun onShowcaseViewTouchBlocked(p0: MotionEvent?) {}
-            })
-
-            showcaseView.show()
+            showcaseView.show(activity)
 
             settings.onboardingDone = true
         } else {

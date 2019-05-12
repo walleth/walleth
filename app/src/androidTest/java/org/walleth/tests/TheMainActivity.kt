@@ -1,12 +1,11 @@
 package org.walleth.tests
 
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.*
-import androidx.appcompat.app.AppCompatDelegate
-import com.github.amlcurran.showcaseview.ShowcaseView
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.junit.FixMethodOrder
@@ -23,6 +22,7 @@ import org.walleth.data.tokens.getRootTokenForChain
 import org.walleth.infrastructure.TestApp
 import org.walleth.infrastructure.setCurrentToken
 import org.walleth.testdata.loadTestData
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 import java.math.BigInteger.ZERO
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
@@ -47,7 +47,7 @@ class TheMainActivity {
 
         rule.launchActivity()
 
-        onView(withClassName(containsString(ShowcaseView::class.java.name))).check(matches(isDisplayed()))
+        onView(withClassName(containsString(MaterialShowcaseView::class.java.name))).check(matches(isDisplayed()))
 
         rule.screenShot("warning")
 
@@ -61,7 +61,7 @@ class TheMainActivity {
 
         rule.launchActivity()
 
-        onView(withClassName(containsString(ShowcaseView::class.java.name))).check(doesNotExist())
+        onView(withClassName(containsString(MaterialShowcaseView::class.java.name))).check(doesNotExist())
 
     }
 

@@ -9,7 +9,7 @@ fun Context.question(msg: Int, title: Int, onOkClickListener: DialogInterface.On
     AlertDialog.Builder(this)
             .setMessage(msg)
             .setTitle(title)
-            .setPositiveButton(R.string.ok, onOkClickListener)
+            .setPositiveButton(android.R.string.ok, onOkClickListener)
             .setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
             .show()
 }

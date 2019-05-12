@@ -3,8 +3,6 @@ package org.walleth.activities
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Color
-import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -14,10 +12,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
-import com.androidadvance.topsnackbar.TSnackbar
-import com.github.amlcurran.showcaseview.ShowcaseView
-import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener
-import com.github.amlcurran.showcaseview.targets.ViewTarget
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
@@ -75,6 +69,8 @@ import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.hasText
 import org.walleth.util.question
 import org.walleth.util.security.getPasswordForAccountType
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 import java.math.BigInteger
 import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
@@ -103,8 +99,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentSignatureData: SignatureData? = null
     private var currentTxHash: String? = null
 
-    private var currentShowCase: ShowcaseView? = null
-    private var currentTopSnackBar: TSnackbar? = null
+    private var currentShowCase: MaterialShowcaseView? = null
 
     private var currentAccount: AddressBookEntry? = null
 
@@ -314,34 +309,25 @@ class CreateTransactionActivity : BaseSubActivity() {
     private fun onFabClick() {
         if (to_address.text.isEmpty() || currentToAddress == null) {
 
-            currentShowCase = ShowcaseView.Builder(this)
-                    .setTarget(ViewTarget(R.id.address_list_button, this))
-                    .setShowcaseEventListener(object : SimpleShowcaseEventListener() {
-                        override fun onShowcaseViewHide(showcaseView: ShowcaseView?) {
+            currentShowCase = MaterialShowcaseView.Builder(this)
+                    .setTarget(address_list_button)
+                    .setDismissText(android.R.string.ok)
+                    .setContentText(R.string.create_tx_err)
+                    .setListener(object : IShowcaseListener {
+                        override fun onShowcaseDismissed(showcaseView: MaterialShowcaseView?) {
                             processShowCaseViewState(false)
-                            currentTopSnackBar?.dismiss()
                         }
+
+                        override fun onShowcaseDisplayed(showcaseView: MaterialShowcaseView?) {
+                        }
+
                     })
                     .build()
 
-            currentShowCase?.show()
+            currentShowCase?.show(this)
 
             processShowCaseViewState(true)
 
-            currentTopSnackBar = TSnackbar.make(fab, getString(R.string.create_tx_err), TSnackbar.LENGTH_INDEFINITE).apply {
-                setAction(android.R.string.ok) {
-                    currentTopSnackBar?.dismiss()
-                }
-                if (Build.VERSION.SDK_INT >= 21) {
-                    setIconPadding(18)
-                    setIconLeft(R.drawable.ic_warning_orange_24dp, 24f)
-                }
-                also {
-                    val textView: TextView = it.view.findViewById(com.androidadvance.topsnackbar.R.id.snackbar_text)
-                    textView.setTextColor(Color.WHITE)
-                }
-                show()
-            }
 
         } else if (currentTokenProvider.getCurrent().isRootToken() && hasEnoughETH()) {
             alert(R.string.create_tx_error_not_enough_funds)
