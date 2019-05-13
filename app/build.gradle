@@ -110,7 +110,9 @@ android {
     }
 
     packagingOptions {
-        pickFirst("META-INF/atomicfu.kotlin_module")
+        pickFirst 'META-INF/kotlinx-io.kotlin_module'
+        pickFirst 'META-INF/atomicfu.kotlin_module'
+        pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
     }
 }
 
@@ -153,12 +155,12 @@ dependencies {
 
     implementation 'org.bouncycastle:bcprov-jdk15on:1.61'
 
-    implementation "com.github.walleth:khex:0.6"
+    implementation "com.github.komputing:KHex:0.6"
 
     implementation "com.github.walleth:KHardWareWallet:0.8"
     implementation "com.github.walleth.kethereum:crypto_impl_bouncycastle:$kethereum_version"
 
-    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.8"
+    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.9.2"
 
     implementation 'com.github.ligi:circular-with-floating-action-button:androidX_v2.0'
 
