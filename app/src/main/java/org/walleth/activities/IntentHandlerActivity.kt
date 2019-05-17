@@ -44,11 +44,16 @@ class IntentHandlerActivity : WallethActivity() {
         super.onCreate(savedInstanceState)
 
         val intentDataString = intent?.data.toString()
-        val parsed831 = EthereumURI(intentDataString).toERC831()
+        val ethereumURI = EthereumURI(intentDataString).toERC831()
 
-        if (parsed831.isERC831()) {
-            if (parsed831.isERC681()) {
-                val erC681 = parsed831.toERC681()
+        if (ethereumURI.isERC1328()) {
+            val wcIntent = Intent(this, WalletConnectConnectionActivity::class.java)
+            wcIntent.data = intent.data
+            startActivity(wcIntent)
+            finish()
+        } else if (ethereumURI.isERC831()) {
+            if (ethereumURI.isERC681()) {
+                val erC681 = ethereumURI.toERC681()
                 if (erC681.valid) {
                     process681(erC681)
                 } else {
@@ -58,15 +63,8 @@ class IntentHandlerActivity : WallethActivity() {
                 }
             }
 
-            if (parsed831.isERC1328()) {
-                val wcIntent = Intent(this, WalletConnectConnectionActivity::class.java)
-                wcIntent.data = intent.data
-                startActivity(wcIntent)
-                finish()
-            }
-
-            if (parsed831.prefix == "esm") {
-                val split = parsed831.payload?.split("/")
+            if (ethereumURI.prefix == "esm") {
+                val split = ethereumURI.payload?.split("/")
                 if (split?.size != 2) {
                     alert("Invalid request. " + intent.data.toString() + " If you think this should be valid - please drop ligi a mail (walleth@walleth.org).")
                     return
