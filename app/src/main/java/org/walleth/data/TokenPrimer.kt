@@ -13,7 +13,7 @@ import org.walleth.data.networks.ALL_NETWORKS
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.getRootTokenForChain
 
-private const val TOKEN_INIT_VERSION = 31
+private const val TOKEN_INIT_VERSION = 32
 // yes this is opinionated - but it also cuts to the chase
 // so much garbage in this token-list ..
 
