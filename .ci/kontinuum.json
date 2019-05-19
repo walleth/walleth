@@ -1,9 +1,21 @@
 {
   "type": "android",
   "stages": [
-    "testNoGethForFDroidOfflineDebugComposer",
-    "lint",
-    "test",
-    "assembleRelease"
+    {
+      "name": "testNoGethForFDroidOfflineDebugComposer",
+      "needsEmulator": true
+    },
+    {
+      "name": "lint",
+      "needsEmulator": false
+    },
+    {
+      "name": "test",
+      "needsEmulator": false
+    },
+    {
+      "name": "assembleRelease",
+      "needsEmulator": false
+    }
   ]
 }
