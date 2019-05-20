@@ -11,7 +11,7 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
-import org.kethereum.rpc.EthereumRPC
+import org.kethereum.rpc.HttpEthereumRPC
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.livedata.nonNull
 import org.ligi.kaxt.livedata.observe
@@ -27,8 +27,8 @@ import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
 import org.walleth.khex.hexToByteArray
+import org.walleth.util.getRPCEndpoint
 import org.walleth.workers.RelayTransactionWorker
-import org.walleth.workers.getRPCEndpoint
 import java.io.IOException
 import java.math.BigInteger
 
@@ -136,7 +136,7 @@ class DataProvidingService : LifecycleService() {
             if (baseURL == null) {
                 Log.e("no RPC URL found for " + networkDefinitionProvider.getCurrent())
             } else {
-                val rpc = EthereumRPC(baseURL, okHttpClient)
+                val rpc = HttpEthereumRPC(baseURL, okHttpClient)
 
                 val blockNumberString = rpc.blockNumber()?.result
                 val blockNumber = blockNumberString?.replace("0x", "")?.toLongOrNull(16)

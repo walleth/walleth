@@ -26,6 +26,7 @@ import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.parseERC681
 import org.kethereum.erc831.isEthereumURLString
+import org.kethereum.extensions.hexToBigInteger
 import org.kethereum.extensions.maybeHexToBigInteger
 import org.kethereum.extensions.toHexStringZeroPadded
 import org.kethereum.functions.*
@@ -55,6 +56,7 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.tokens.*
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
@@ -92,6 +94,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val appDatabase: AppDatabase by inject()
     private val settings: Settings by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
+    private val rpcProvider: RPCProvider by inject()
 
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
@@ -201,8 +204,6 @@ class CreateTransactionActivity : BaseSubActivity() {
             if (data.toList().startsWith(tokenTransferSignature)) {
                 currentERC681.function = "transfer"
 
-                Log.i("TXData" + data.toHexString())
-
                 val tmpTX = Transaction().apply {
                     input = data
                 }
@@ -298,10 +299,34 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         amountController.setValue(amountController.getValueOrZero(), currentToken)
 
+        estimateGas()
+    }
+
+    private fun estimateGas() {
+        val currentToken = currentTokenProvider.getCurrent()
         if (currentToken.isRootToken()) {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
         } else {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
+        }
+
+        GlobalScope.launch(Dispatchers.Default) {
+            if (currentToAddress != null) { // we at least need a to address to create a transaction
+                val rpc = rpcProvider.get()
+
+                val result = rpc.estimateGas(createTransaction().copy(gasLimit = null))
+
+                GlobalScope.launch(Dispatchers.Main) {
+
+                    if (result?.error != null) {
+                        alert("cannot estimate gasLimit for the following reason: " + result.error?.message)
+                    } else {
+                        result?.result?.hexToBigInteger().let {
+                            gas_limit_input.setText(it.toString())
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -344,7 +369,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
     }
 
-    private fun calculateGasCost() = gas_price_input.asBigInit() * gas_limit_input.asBigInit()
+    private fun calculateGasCost() = gas_price_input.asBigInteger() * gas_limit_input.asBigInteger()
     private fun hasEnoughETH() = amountController.getValueOrZero() + calculateGasCost() > currentBalanceSafely()
 
     private fun processShowCaseViewState(isShowcaseViewShown: Boolean) {
@@ -433,16 +458,22 @@ class CreateTransactionActivity : BaseSubActivity() {
             transaction.input = (functionSignature.toHexSignature().hex + parameterContent).hexToByteArray()
         }
 
-        transaction.nonce = nonce_input.asBigInit()
-        transaction.gasPrice = gas_price_input.asBigInit()
-        transaction.gasLimit = gas_limit_input.asBigInit()
+        transaction.nonce = nonce_input.asBigInitOrNull()
+        transaction.gasPrice = gas_price_input.asBigInitOrNull()
+        transaction.gasLimit = gas_limit_input.asBigInitOrNull()
 
         return transaction
     }
 
     private fun currentBalanceSafely() = currentBalance?.balance ?: ZERO
 
-    private fun TextView.asBigInit() = BigInteger(text.toString())
+    private fun TextView.asBigInitOrNull() = try {
+        BigInteger(text.toString())
+    } catch (e: java.lang.NumberFormatException) {
+        null
+    }
+
+    private fun TextView.asBigInteger() = BigInteger(text.toString())
 
     private fun refreshFee() {
         val fee = try {
@@ -485,6 +516,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                 }
                             }
 
+
                             if (localERC681.isTokenTransfer()) {
                                 if (localERC681.address != null) {
                                     { appDatabase.tokens.forAddress(Address(localERC681.address!!)) }.asyncAwait { token ->
@@ -509,9 +541,11 @@ class CreateTransactionActivity : BaseSubActivity() {
                             } else {
 
                                 if (localERC681.function != null) {
-                                    checkFunctionParameters(localERC681)
-
+                                    if (!checkFunctionParameters(localERC681)) {
+                                        localERC681.function = null
+                                    }
                                 }
+
                                 localERC681.value?.let {
 
                                     if (!currentTokenProvider.getCurrent().isRootToken()) {
@@ -529,7 +563,9 @@ class CreateTransactionActivity : BaseSubActivity() {
                                 gas_limit_input.setText(it.toString())
                             }
 
+                            estimateGas()
                         })
+
 
             } else {
                 currentToAddress = null
@@ -562,7 +598,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun checkFunctionParameters(localERC681: ERC681) {
+    private fun checkFunctionParameters(localERC681: ERC681) : Boolean {
         val functionToByteList = localERC681.functionParams.map {
 
             val type = try {
@@ -589,15 +625,19 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         if (indexOfFirstInvalidParam >= 0) {
             val type = localERC681.functionParams[indexOfFirstInvalidParam].first
-            alert(getString(R.string.warning_invalid_param, indexOfFirstInvalidParam.toString(), type))
-            return
+            alert(getString(R.string.warning_invalid_param, indexOfFirstInvalidParam.toString(), type)) {
+                finish()
+            }
+            return false
         }
 
         val indexOfFirstDynamicType = functionToByteList.indexOfFirst { it.first?.isDynamic() == true }
         if (indexOfFirstDynamicType >= 0) {
             val type = localERC681.functionParams[indexOfFirstDynamicType].first
-            alert(getString(R.string.warning_dynamic_length_params_unsupported, indexOfFirstDynamicType.toString(), type))
-            return
+            alert(getString(R.string.warning_dynamic_length_params_unsupported, indexOfFirstDynamicType.toString(), type)) {
+                finish()
+            }
+            return false
         }
 
         val indexOfFirsInvalidParameter = functionToByteList.indexOfFirst { it.second == null }
@@ -605,13 +645,17 @@ class CreateTransactionActivity : BaseSubActivity() {
             val parameter = localERC681.functionParams[indexOfFirsInvalidParameter]
             val type = parameter.first
             val value = parameter.second
-            alert(getString(R.string.warning_problem_with_parameter, indexOfFirsInvalidParameter.toString(), type, value))
-            return
+            alert(getString(R.string.warning_problem_with_parameter, indexOfFirsInvalidParameter.toString(), type, value)) {
+                finish()
+            }
+            return false
         }
+
+        return true
     }
 
     private fun storeDefaultGasPriceAndFinish() {
-        val gasPrice = gas_price_input.asBigInit()
+        val gasPrice = gas_price_input.asBigInteger()
         val networkDefinition = networkDefinitionProvider.getCurrent()
         if (gasPrice != settings.getGasPriceFor(networkDefinition)) {
             AlertDialog.Builder(this)

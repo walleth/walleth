@@ -8,6 +8,7 @@ import org.json.JSONException
 import org.json.JSONObject
 import org.kethereum.functions.getTokenRelevantTo
 import org.kethereum.rpc.EthereumRPC
+import org.kethereum.rpc.HttpEthereumRPC
 import org.ligi.kaxt.letIf
 import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
@@ -15,7 +16,7 @@ import org.walleth.data.networks.NetworkDefinition
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.TransactionState
 import org.walleth.kethereum.blockscout.getBlockscoutBaseURL
-import org.walleth.workers.getRPCEndpoint
+import org.walleth.util.getRPCEndpoint
 import java.io.IOException
 import java.security.cert.CertPathValidatorException
 
@@ -26,7 +27,7 @@ class BlockScoutAPI(private val appDatabase: AppDatabase,
 
     fun queryTransactions(addressHex: String, networkDefinition: NetworkDefinition) {
         networkDefinition.getRPCEndpoint()?.let { rpcEndpoint ->
-            val rpc = EthereumRPC(rpcEndpoint, okHttpClient)
+            val rpc = HttpEthereumRPC(rpcEndpoint, okHttpClient)
 
             val startBlock = lastSeenTransactionsBlock
             requestList(addressHex, networkDefinition, "txlist", rpc, startBlock)

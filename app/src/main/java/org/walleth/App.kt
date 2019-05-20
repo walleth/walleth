@@ -43,6 +43,8 @@ import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.InitializingCurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.rpc.RPCProvider
+import org.walleth.data.rpc.RPCProviderImpl
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootTokenForChain
@@ -84,7 +86,7 @@ open class App : MultiDexApplication() {
         single { keyStore as KeyStore }
         single { KotprefSettings as Settings }
         single { CurrentTokenProvider(get()) }
-
+        single { RPCProviderImpl(get(), get()) as RPCProvider }
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
                     .addMigrations(RecreatingMigration(1, 4), RecreatingMigration(2, 4), RecreatingMigration(3, 4))

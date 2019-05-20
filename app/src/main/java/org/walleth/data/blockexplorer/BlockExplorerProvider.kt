@@ -8,3 +8,4 @@ class BlockExplorerProvider(var network: NetworkDefinitionProvider) {
     fun get() = getBlockScoutBlockExplorer(network.getCurrent().chain)
 
 }
+

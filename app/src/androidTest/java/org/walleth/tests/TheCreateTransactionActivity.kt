@@ -49,6 +49,9 @@ class TheCreateTransactionActivity {
     @get:Rule
     var rule = TruleskIntentRule(CreateTransactionActivity::class.java, autoLaunch = false)
 
+    private val testAddress = "0x1234567890123456789012345678901234567890"
+    private val urlBase = "ethereum:$testAddress"
+
     @Before
     fun setup() {
         TestApp.testDatabase.transactions.deleteAll()
@@ -81,7 +84,7 @@ class TheCreateTransactionActivity {
     @Test
     fun rejectsUnknownChainId() {
         val chainIdForTransaction = 0
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345@" + chainIdForTransaction))
+        rule.launchActivity(Intent.getIntentOld("$urlBase@" + chainIdForTransaction))
 
         Espresso.onView(ViewMatchers.withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
@@ -94,7 +97,7 @@ class TheCreateTransactionActivity {
     @Test
     fun acceptsDifferentChainId() {
         val chainIdForTransaction = TestApp.networkDefinitionProvider.getCurrent().chain.id.value
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345@" + chainIdForTransaction))
+        rule.launchActivity(Intent.getIntentOld("$urlBase@" + chainIdForTransaction))
 
         Espresso.onView(ViewMatchers.withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.doesNotExist())
         Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
@@ -107,29 +110,29 @@ class TheCreateTransactionActivity {
 
     @Test
     fun showsAlertWheInvalidParameterIsUsed() {
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/foo?yo=lo"))
+        rule.launchActivity(Intent.getIntentOld("$urlBase/foo?yo=lo"))
 
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_invalid_param, 0, "yo"))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(rule.activity.getString(R.string.warning_invalid_param, 0, "yo"))).check(matches(ViewMatchers.isDisplayed()))
 
     }
 
     @Test
     fun showsCorrectFunction() {
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/foo"))
+        rule.launchActivity(Intent.getIntentOld("$urlBase/foo"))
 
         Espresso.onView(ViewMatchers.withId(R.id.function_text)).check(matches(withText("foo()")))
     }
 
     @Test
     fun showsCorrectFunctionParameters() {
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/otherFunction?uint256=23&uint256=5"))
+        rule.launchActivity(Intent.getIntentOld("$urlBase/otherFunction?uint256=23&uint256=5"))
 
         Espresso.onView(ViewMatchers.withId(R.id.function_text)).check(matches(withText("otherFunction(23,5)")))
     }
 
     @Test
     fun showsCorrectFunctionParametersWithNegativeValues() {
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/otherFunction?uint256=23&int256=-5"))
+        rule.launchActivity(Intent.getIntentOld("$urlBase/otherFunction?uint256=23&int256=-5"))
 
         Espresso.onView(ViewMatchers.withId(R.id.function_text)).check(matches(withText("otherFunction(23,-5)")))
     }
@@ -137,7 +140,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun showsWarningWhenParameterTypeIsUnsignedButValueIsSigned() {
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/otherFunction?uint8=-23"))
+        rule.launchActivity(Intent.getIntentOld("$urlBase/otherFunction?uint8=-23"))
 
         Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_problem_with_parameter, 0, "uint8", "-23")))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
@@ -147,7 +150,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun showsAlertWhenDynamicParameterIsUsed() {
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x12345/foo?string=bar"))
+        rule.launchActivity(Intent.getIntentOld("$urlBase/foo?string=bar"))
 
         Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_dynamic_length_params_unsupported, 0, "string"))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
@@ -156,8 +159,8 @@ class TheCreateTransactionActivity {
 
     @Test
     fun acceptsSimpleAddress() {
-        rule.launchActivity(Intent.getIntentOld("0x12345"))
-        Espresso.onView(ViewMatchers.withId(R.id.to_address)).check(ViewAssertions.matches(ViewMatchers.withText("0x12345")))
+        rule.launchActivity(Intent.getIntentOld(testAddress))
+        Espresso.onView(ViewMatchers.withId(R.id.to_address)).check(matches(withText(testAddress)))
     }
 
     @Test
@@ -165,13 +168,13 @@ class TheCreateTransactionActivity {
         setCurrentToken(eth)
         TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x123456?value=1"))
+        rule.launchActivity(Intent.getIntentOld("$urlBase?value=1"))
 
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
 
-        val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(Address("0x123456")))
+        val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(Address(testAddress)))
         Truth.assertThat(allTransactionsForAddress).hasSize(1)
-        Truth.assertThat(allTransactionsForAddress.get(0).transaction.to?.hex).isEqualTo("0x123456")
+        Truth.assertThat(allTransactionsForAddress.get(0).transaction.to?.hex).isEqualTo(testAddress)
         Truth.assertThat(allTransactionsForAddress.get(0).transaction.value).isEqualTo(BigInteger("1"))
 
     }
@@ -180,13 +183,13 @@ class TheCreateTransactionActivity {
     fun usesCorrectValuesForETHTransaction2() {
         setCurrentToken(testToken)
         TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
-        rule.launchActivity(Intent.getIntentOld("ethereum:0x123456?value=1"))
+        rule.launchActivity(Intent.getIntentOld("$urlBase?value=1"))
 
-        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
 
-        val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(Address("0x123456")))
+        val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(Address(testAddress)))
         Truth.assertThat(allTransactionsForAddress).hasSize(1)
-        Truth.assertThat(allTransactionsForAddress.get(0).transaction.to?.hex).isEqualTo("0x123456")
+        Truth.assertThat(allTransactionsForAddress.get(0).transaction.to?.hex).isEqualTo(testAddress)
         Truth.assertThat(allTransactionsForAddress.get(0).transaction.value).isEqualTo(BigInteger("1"))
 
     }

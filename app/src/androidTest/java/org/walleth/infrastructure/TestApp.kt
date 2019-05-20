@@ -1,9 +1,11 @@
 package org.walleth.infrastructure
 
-import androidx.room.Room
 import android.content.Context
 import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.room.Room
 import org.kethereum.keystore.api.KeyStore
+import org.kethereum.rpc.EthereumRPC
+import org.kethereum.rpc.model.StringResultResponse
 import org.koin.androidx.viewmodel.ext.koin.viewModel
 import org.koin.dsl.module.module
 import org.mockito.Mockito
@@ -17,6 +19,7 @@ import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.CurrentTokenProvider
@@ -49,6 +52,9 @@ class TestApp : App() {
         single { currentTokenProvider }
         single { testDatabase }
         single { testFourByteDirectory }
+        single { mock(RPCProvider::class.java).apply {
+            `when`(get()).thenReturn(RPCMock)
+        } }
 
         viewModel { TransactionListViewModel(this@TestApp, get(),get(),get()) }
     }
@@ -60,6 +66,9 @@ class TestApp : App() {
     }
 
     companion object {
+        val RPCMock = mock(EthereumRPC::class.java).apply {
+            `when`(estimateGas(any())).thenReturn(StringResultResponse("0x00"))
+        }
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
         val keyStore = TestKeyStore()
         val mySettings = mock(Settings::class.java).apply {
