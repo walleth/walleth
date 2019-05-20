@@ -35,13 +35,13 @@ fun Context.chainIDAlert(networkDefinitionProvider: NetworkDefinitionProvider,
 
         AlertDialog.Builder(this)
                 .setMessage("wrong chainID - do you want to switch?")
-                .setPositiveButton(android.R.string.yes, { _, _ ->
+                .setPositiveButton(android.R.string.yes) { _, _ ->
                     networkDefinitionProvider.setCurrent(networkToSwitchTo)
                     continuationWithCorrectOrNullChainId()
-                })
-                .setNegativeButton(android.R.string.no, { _, _ ->
+                }
+                .setNegativeButton(android.R.string.no) { _, _ ->
                     continuationWithWrongChainId()
-                })
+                }
                 .setCancelable(false)
                 .show()
 
