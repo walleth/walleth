@@ -87,7 +87,11 @@ class RequestActivity : BaseSubActivity() {
 
             if (add_value_checkbox.isChecked) {
                 try {
-                    currentERC67String = ERC681(address = relevantAddress.hex, value = valueInputController?.getValueOrZero()).generateURL()
+                    currentERC67String = ERC681(
+                            address = relevantAddress.hex,
+                            value = valueInputController?.getValueOrZero(),
+                            chainId = networkDefinitionProvider.getCurrent().chain.id.value
+                    ).generateURL()
                 } catch (e: NumberFormatException) {
                 }
             }
