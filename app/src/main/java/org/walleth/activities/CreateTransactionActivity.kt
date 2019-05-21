@@ -34,13 +34,15 @@ import org.kethereum.keccakshortcut.keccak
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.methodsignatures.toHexSignature
-import org.kethereum.model.*
+import org.kethereum.model.Address
+import org.kethereum.model.SignatureData
+import org.kethereum.model.Transaction
+import org.kethereum.model.createTransactionWithDefaults
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
-import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.activities.nfc.startNFCSigningActivity
 import org.walleth.activities.qrscan.startScanActivityForResult
@@ -54,8 +56,8 @@ import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.tokens.*
 import org.walleth.data.transactions.TransactionState
@@ -74,8 +76,7 @@ import org.walleth.util.security.getPasswordForAccountType
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 import java.math.BigInteger
-import java.math.BigInteger.ONE
-import java.math.BigInteger.ZERO
+import java.math.BigInteger.*
 import java.util.*
 
 const val TO_ADDRESS_REQUEST_CODE = 1
@@ -88,7 +89,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentToAddress: Address? = null
 
     private val currentAddressProvider: CurrentAddressProvider by inject()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val chainInfoProvider: ChainInfoProvider by inject()
     private val currentTokenProvider: CurrentTokenProvider by inject()
     private val keyStore: KeyStore by inject()
     private val appDatabase: AppDatabase by inject()
@@ -165,8 +166,8 @@ class CreateTransactionActivity : BaseSubActivity() {
             lastWarningURI = savedInstanceState.getString("lastERC67")
         }
 
-        networkDefinitionProvider.observe(this, Observer {
-            supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, networkDefinitionProvider.getCurrent().getNetworkName())
+        chainInfoProvider.observe(this, Observer {
+            supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, it.name)
         })
 
         currentTokenProvider.observe(this, Observer {
@@ -195,7 +196,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         gas_price_input.setText(if (intent.getStringExtra("gasPrice") != null) {
             intent.getStringExtra("gasPrice").maybeHexToBigInteger().toString()
         } else {
-            settings.getGasPriceFor(networkDefinitionProvider.getCurrent()).toString()
+            settings.getGasPriceFor(chainInfoProvider.getCurrent()!!.chainId).toString()
         })
 
         intent.getStringExtra("data")?.let {
@@ -253,7 +254,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
 
         Transformations.switchMap(currentAddressProvider) { address ->
-            appDatabase.transactions.getNonceForAddressLive(address, networkDefinitionProvider.getCurrent().chain.id.value)
+            appDatabase.transactions.getNonceForAddressLive(address, chainInfoProvider.getCurrent()!!.chainId)
         }.observe(this, Observer {
 
             if (intent.getStringExtra("nonce") == null) {
@@ -291,7 +292,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private fun onCurrentTokenChanged() {
         val currentToken = currentTokenProvider.getCurrent()
         currentBalanceLive = Transformations.switchMap(currentAddressProvider) { address ->
-            appDatabase.balances.getBalanceLive(address, currentToken.address, networkDefinitionProvider.getCurrent().chain.id.value)
+            appDatabase.balances.getBalanceLive(address, currentToken.address, chainInfoProvider.getCurrent()!!.chainId)
         }
         currentBalanceLive!!.observe(this, Observer {
             currentBalance = it
@@ -314,7 +315,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             if (currentToAddress != null) { // we at least need a to address to create a transaction
                 val rpc = rpcProvider.get()
 
-                val result = rpc.estimateGas(createTransaction().copy(gasLimit = null))
+                val result = rpc?.estimateGas(createTransaction().copy(gasLimit = null))
 
                 GlobalScope.launch(Dispatchers.Main) {
 
@@ -401,7 +402,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                     val currentAddress = currentAddressProvider.getCurrentNeverNull()
                     val signatureData = keyStore.getKeyForAddress(currentAddress, password ?: DEFAULT_PASSWORD)?.let {
                         Snackbar.make(fab, "Signing transaction", Snackbar.LENGTH_INDEFINITE).show()
-                        transaction.signViaEIP155(it, networkDefinitionProvider.getCurrent().chain)
+                        transaction.signViaEIP155(it, chainInfoProvider.getCurrentChainId())
                     }
 
                     currentSignatureData = signatureData
@@ -443,7 +444,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                 to = currentTokenProvider.getCurrent().address,
                 from = currentAddressProvider.getCurrentNeverNull(),
                 input = createTokenTransferTransactionInput(currentToAddress!!, amountController.getValueOrZero())
-        )).copy(chain = networkDefinitionProvider.getCurrent().chain.id.value, creationEpochSecond = System.currentTimeMillis() / 1000)
+        )).copy(chain = chainInfoProvider.getCurrentChainId().value, creationEpochSecond = System.currentTimeMillis() / 1000)
 
 
         if (currentTokenProvider.getCurrent().isRootToken() && localERC681.function != null) {
@@ -481,7 +482,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
-        feeValueViewModel.setValue(fee, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+        feeValueViewModel.setValue(fee, chainInfoProvider.getCurrent()?.getRootToken())
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -498,8 +499,9 @@ class CreateTransactionActivity : BaseSubActivity() {
 
             if (currentERC681.valid) {
 
-                chainIDAlert(networkDefinitionProvider,
-                        localERC681.chainId?.let { ChainId(it) },
+                chainIDAlert(chainInfoProvider,
+                        appDatabase,
+                        localERC681.chainId,
                         continuationWithWrongChainId = {
                             finish()
                         },
@@ -549,9 +551,11 @@ class CreateTransactionActivity : BaseSubActivity() {
                                 localERC681.value?.let {
 
                                     if (!currentTokenProvider.getCurrent().isRootToken()) {
-                                        currentTokenProvider.setCurrent(getRootTokenForChain(networkDefinitionProvider.getCurrent()))
-                                        currentBalanceLive?.removeObservers(this)
-                                        onCurrentTokenChanged()
+                                        chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
+                                            currentTokenProvider.setCurrent(token)
+                                            currentBalanceLive?.removeObservers(this)
+                                            onCurrentTokenChanged()
+                                        }
                                     }
 
                                     amountController.setValue(it, currentTokenProvider.getCurrent())
@@ -598,7 +602,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun checkFunctionParameters(localERC681: ERC681) : Boolean {
+    private fun checkFunctionParameters(localERC681: ERC681): Boolean {
         val functionToByteList = localERC681.functionParams.map {
 
             val type = try {
@@ -656,13 +660,13 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private fun storeDefaultGasPriceAndFinish() {
         val gasPrice = gas_price_input.asBigInteger()
-        val networkDefinition = networkDefinitionProvider.getCurrent()
-        if (gasPrice != settings.getGasPriceFor(networkDefinition)) {
+        val chainId = chainInfoProvider.getCurrentChainId()
+        if (gasPrice != settings.getGasPriceFor(chainId.value)) {
             AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.default_gas_price, networkDefinition.getNetworkName()))
+                    .setTitle(getString(R.string.default_gas_price, chainInfoProvider.getCurrent()!!.name))
                     .setMessage(R.string.store_gas_price)
                     .setPositiveButton(R.string.save) { _: DialogInterface, _: Int ->
-                        settings.storeGasPriceFor(gasPrice, networkDefinition)
+                        settings.storeGasPriceFor(gasPrice, chainId.value)
                         finishAndFollowUp()
                     }
                     .setNegativeButton(R.string.no) { _: DialogInterface, _: Int ->
@@ -679,7 +683,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             currentSignatureData?.let {
                 val hex = it.r.toHexStringZeroPadded(64, false) +
                         it.s.toHexStringZeroPadded(64, false) +
-                        (it.v - 35 - (it.extractChainID() ?: 0) * 2).toBigInteger().toHexStringZeroPadded(2, false)
+                        (it.v - valueOf(35) - (it.extractChainID() ?: ZERO) * valueOf(2)).toHexStringZeroPadded(2, false)
                 val intent = Intent(this, ParitySignerQRActivity::class.java)
                         .putExtra("signatureHex", hex)
                 startActivity(intent)

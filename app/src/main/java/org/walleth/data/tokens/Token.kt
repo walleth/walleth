@@ -2,17 +2,18 @@ package org.walleth.data.tokens
 
 import androidx.room.Entity
 import org.kethereum.model.Address
-import org.walleth.data.networks.NetworkDefinition
+import org.walleth.data.chaininfo.ChainInfo
+import java.math.BigInteger
 
 fun Token.isRootToken() = address.hex == "0x0"
 
-fun getRootTokenForChain(networkDefinition: NetworkDefinition) = Token(
-        symbol = networkDefinition.tokenShortName,
-        name = "Ether",
-        decimals = 18,
+fun ChainInfo.getRootToken() = Token(
+        symbol = nativeCurrency.symbol,
+        name = nativeCurrency.name,
+        decimals = nativeCurrency.decimals,
         address = Address("0x0"),
-        chain = networkDefinition.chain.id.value,
-        showInList = true,
+        chain = chainId,
+        softDeleted = false,
         starred = false,
         fromUser = false,
         order = 0
@@ -24,9 +25,9 @@ data class Token(
         val symbol: String,
         val address: Address,
         val decimals: Int,
-        val chain: Long,
-        val showInList: Boolean,
+        val chain: BigInteger,
+        val softDeleted: Boolean,
         val starred: Boolean,
         val fromUser: Boolean,
-        val order:Int
+        val order: Int
 )

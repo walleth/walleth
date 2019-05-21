@@ -16,7 +16,7 @@ interface TokenDAO {
     @Query("SELECT * FROM tokens ORDER BY \"order\" DESC ,\"chain\",\"symbol\"")
     fun allLive(): LiveData<List<Token>>
 
-    @Query("UPDATE tokens SET showInList=1")
+    @Query("UPDATE tokens SET softDeleted=1")
     fun showAll()
 
     @Query("SELECT * FROM tokens WHERE address = :address COLLATE NOCASE")

@@ -6,6 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import org.kethereum.model.Address
+import java.math.BigInteger
 
 fun BalanceDAO.upsertIfNewerBlock(entry: Balance) {
     val oldBalance = getBalance(entry.address, entry.tokenAddress, entry.chain)
@@ -18,10 +19,10 @@ fun BalanceDAO.upsertIfNewerBlock(entry: Balance) {
 interface BalanceDAO {
 
     @Query("SELECT * FROM balances WHERE address = :address AND tokenAddress = :tokenAddress AND chain = :chain")
-    fun getBalance(address: Address, tokenAddress: Address?, chain: Long): Balance?
+    fun getBalance(address: Address, tokenAddress: Address?, chain: BigInteger): Balance?
 
     @Query("SELECT * FROM balances WHERE address = :address AND tokenAddress = :tokenAddress AND chain = :chain")
-    fun getBalanceLive(address: Address, tokenAddress: Address?, chain: Long): LiveData<Balance>
+    fun getBalanceLive(address: Address, tokenAddress: Address?, chain: BigInteger?): LiveData<Balance>
 
     @Query("SELECT * FROM balances")
     fun getAllBalances(): List<Balance>

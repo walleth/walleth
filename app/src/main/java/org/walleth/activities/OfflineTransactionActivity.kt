@@ -31,7 +31,7 @@ import org.walleth.R
 import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.khex.clean0xPrefix
@@ -51,7 +51,7 @@ fun Context.getOfflineTransactionIntent(content: String) = Intent(this, OfflineT
 
 class OfflineTransactionActivity : BaseSubActivity() {
 
-    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val chainInfoProvider: ChainInfoProvider by inject()
     private val appDatabase: AppDatabase by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
 
@@ -71,7 +71,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
         }
 
         intent.getStringExtra(KEY_CONTENT)?.let {
-            if (!it.isEmpty()) {
+            if (it.isNotEmpty()) {
                 transaction_to_relay_hex.setText(it)
                 execute()
             }
@@ -102,9 +102,9 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
                     val chainID = (signatureData.extractChainID()
                             ?: throw IllegalArgumentException("Cannot extract chainID from RLP"))
-                    transaction.chain = chainID.toLong()
+                    transaction.chain = chainID
 
-                    transaction.from = transaction.extractFrom(signatureData, chainID)
+                    transaction.from = transaction.extractFrom(signatureData, ChainId(chainID))
                     transaction.txHash = txRLP.encode().keccak().toHexString()
                     createTransaction(transaction, signatureData)
                 } catch (e: Exception) {
@@ -132,7 +132,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
             val chainId = (rlp.element[6] as RLPElement).toUnsignedBigIntegerFromRLP()
 
-            chainIDAlert(networkDefinitionProvider, ChainId(chainId.toLong())) {
+            chainIDAlert(chainInfoProvider, appDatabase, ChainId(chainId.toLong())) {
 
                 if (transaction == null) {
                     alert("could not decode transaction")
@@ -145,7 +145,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                             nonce = transaction.nonce!!.toHexString(),
                             gasPrice = transaction.gasPrice!!.toHexString(),
                             gasLimit = transaction.gasLimit!!.toHexString(),
-                            chainId = networkDefinitionProvider.getCurrent().chain.id,
+                            chainId = chainInfoProvider.getCurrentChainId(),
                             parityFlow = true
                     )
                 }
@@ -187,7 +187,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
             return
         }
 
-        if (chainId != networkDefinitionProvider.getCurrent().chain.id) {
+        if (chainId != chainInfoProvider.getCurrentChainId()) {
             alert("The chainId of the transaction ($chainId) does not match your current chainId")
             return
         }
@@ -196,7 +196,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                 address = to,
                 value = BigInteger(value.clean0xPrefix(), 16),
                 gas = BigInteger(gasLimit.clean0xPrefix(), 16),
-                chainId = chainId.value
+                chainId = chainId
         ).generateURL()
 
         startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
@@ -231,7 +231,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
 
                 val extractChainID = signatureData.extractChainID()
-                val chainId = extractChainID?.toLong()?.let { ChainId(it) } ?: networkDefinitionProvider.getCurrent().chain.id
+                val chainId = extractChainID?.toLong()?.let { ChainId(it) } ?: chainInfoProvider.getCurrentChainId()
 
                 transaction?.chain = chainId.value
                 transaction?.let {

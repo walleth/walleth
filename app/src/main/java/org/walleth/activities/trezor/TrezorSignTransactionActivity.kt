@@ -58,7 +58,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
             .setNonce(ByteString.copyFrom(transaction.transaction.nonce!!.toByteArray().removeLeadingZero()))
             .setGasPrice(ByteString.copyFrom(transaction.transaction.gasPrice!!.toByteArray().removeLeadingZero()))
             .setGasLimit(ByteString.copyFrom(transaction.transaction.gasLimit!!.toByteArray().removeLeadingZero()))
-            .setChainId(networkDefinitionProvider.value!!.chain.id.value.toInt())
+            .setChainId(chainInfoProvider.value!!.chainId.toInt())
             .setDataLength(transaction.transaction.input.size)
             .setDataInitialChunk(ByteString.copyFrom(transaction.transaction.input))
             .addAllAddressN(currentBIP44!!.path.map { it.numberWithHardeningFlag })
@@ -72,7 +72,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
             val signatureData = SignatureData(
                     r = BigInteger(res.signatureR.toByteArray()),
                     s = BigInteger(res.signatureS.toByteArray()),
-                    v = res.signatureV.toByte()
+                    v = res.signatureV.toBigInteger()
             )
             transaction.transaction.txHash = transaction.transaction.encodeRLP(signatureData).keccak().toHexString()
             GlobalScope.launch(Dispatchers.Main) {

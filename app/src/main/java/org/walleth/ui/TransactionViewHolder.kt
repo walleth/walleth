@@ -1,8 +1,8 @@
 package org.walleth.ui
 
-import androidx.recyclerview.widget.RecyclerView
 import android.text.format.DateUtils
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.transaction_item.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -17,14 +17,14 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.tokens.getRootTokenForChain
+import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.ui.valueview.ValueViewController
 
 class TransactionViewHolder(itemView: View,
                             private val direction: TransactionAdapterDirection,
-                            val networkDefinitionProvider: NetworkDefinitionProvider,
+                            val chainInfoProvider: ChainInfoProvider,
                             private val exchangeRateProvider: ExchangeRateProvider,
                             val settings: Settings) : RecyclerView.ViewHolder(itemView) {
 
@@ -53,7 +53,7 @@ class TransactionViewHolder(itemView: View,
                     }
                 }
             } else {
-                amountViewModel.setValue(transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+                amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent()?.getRootToken())
             }
 
             relevantAddress?.let {

@@ -27,9 +27,9 @@ import org.walleth.data.addressbook.resolveNameAsync
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
-import org.walleth.data.tokens.getRootTokenForChain
+import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.functions.setQRCode
 import org.walleth.khex.toHexString
@@ -45,7 +45,7 @@ class ViewTransactionActivity : BaseSubActivity() {
     private val appDatabase: AppDatabase by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val blockExplorerProvider: BlockExplorerProvider by inject()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val chainInfoProvider: ChainInfoProvider by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
     private val settings: Settings by inject()
 
@@ -92,8 +92,12 @@ class ViewTransactionActivity : BaseSubActivity() {
                     }
                 }
 
-                feeViewModel.setValue(txEntry.transaction.gasLimit!! * txEntry.transaction.gasPrice!!, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
-
+                GlobalScope.launch(Dispatchers.Default) {
+                    val rootToken = appDatabase.chainInfo.getByChainId(txEntry.transaction.chain!!)?.getRootToken()
+                    GlobalScope.launch(Dispatchers.Main) {
+                        feeViewModel.setValue(txEntry.transaction.gasLimit!! * txEntry.transaction.gasPrice!!, rootToken)
+                    }
+                }
                 val relevantAddress = if (transaction.from == currentAddressProvider.getCurrent()) {
                     from_to_title.setText(R.string.transaction_to_label)
                     if (transaction.isTokenTransfer()) {
@@ -131,7 +135,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                 }
 
 
-                if (txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && (!txEntry.transactionState.relayed.isNotEmpty())) {
+                if (txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && (txEntry.transactionState.relayed.isEmpty())) {
                     rlp_header.visibility = View.VISIBLE
                     rlp_image.visibility = View.VISIBLE
 
@@ -167,7 +171,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                         }
                     }
                 } else {
-                    amountViewModel.setValue(transaction.value, getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+                    amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent()?.getRootToken())
                 }
                 var message = "Hash:" + transaction.txHash
                 txEntry.transactionState.error?.let { error ->
@@ -191,7 +195,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                         function_call.text = if (signatures?.isNotEmpty() == true) {
                             function_call_label.setText(R.string.function_call)
                             signatures.joinToString(
-                                    separator = " ${getString(R.string.or)}\n",                                    transform = { sig -> sig.textSignature ?: sig.hexSignature })
+                                    separator = " ${getString(R.string.or)}\n", transform = { sig -> sig.textSignature ?: sig.hexSignature })
                         } else {
                             function_call_label.setText(R.string.function_data)
                             transaction.input.toHexString()
@@ -224,8 +228,10 @@ class ViewTransactionActivity : BaseSubActivity() {
 
         R.id.menu_etherscan -> true.also {
             txEntity?.let {
-                val url = blockExplorerProvider.get().getTransactionURL(it.transaction.txHash!!)
-                startActivityFromURL(url)
+                blockExplorerProvider.getOrAlert(this)?.run {
+                    val url = getTransactionURL(it.transaction.txHash!!)
+                    startActivityFromURL(url)
+                }
             }
         }
         else -> super.onOptionsItemSelected(item)

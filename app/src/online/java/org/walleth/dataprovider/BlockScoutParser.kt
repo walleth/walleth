@@ -1,11 +1,10 @@
 package org.walleth.dataprovider
 
 import org.json.JSONArray
-import org.kethereum.model.ChainDefinition
 
 class ParseResult(val list: List<String>, val highestBlock: Long)
 
-fun parseBlockScoutTransactionList(jsonArray: JSONArray, chain: ChainDefinition): ParseResult {
+fun parseBlockScoutTransactionList(jsonArray: JSONArray): ParseResult {
     var lastBlockNumber = 0L
     val list = (0 until jsonArray.length()).map {
         val transactionJson = jsonArray.getJSONObject(it)

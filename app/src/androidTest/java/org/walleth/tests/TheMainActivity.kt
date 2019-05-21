@@ -12,13 +12,14 @@ import org.junit.FixMethodOrder
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runners.MethodSorters
+import org.kethereum.model.ChainId
 import org.ligi.trulesk.TruleskActivityRule
 import org.mockito.Mockito.`when`
 import org.walleth.R
 import org.walleth.activities.MainActivity
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.balances.Balance
-import org.walleth.data.tokens.getRootTokenForChain
+import org.walleth.data.tokens.getRootToken
 import org.walleth.infrastructure.TestApp
 import org.walleth.infrastructure.setCurrentToken
 import org.walleth.testdata.loadTestData
@@ -28,7 +29,7 @@ import java.math.BigInteger.ZERO
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TheMainActivity {
 
-    val currentNetwork = TestApp.networkDefinitionProvider.getCurrent()
+    val currentNetwork = TestApp.chainInfoProvider.getCurrent()
 
     @get:Rule
     var rule = TruleskActivityRule(MainActivity::class.java, false)
@@ -39,7 +40,7 @@ class TheMainActivity {
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain.id.value, 42, ZERO))
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork!!.getRootToken().address, currentNetwork.chainId, 42, ZERO))
         }
 
         `when`(TestApp.mySettings.onboardingDone).thenReturn(false)
@@ -68,7 +69,7 @@ class TheMainActivity {
     @Test
     fun behavesCorrectlyNoTransactions() {
 
-        val balance = Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain.id.value, 42, ZERO)
+        val balance = Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork!!.getRootToken().address, currentNetwork.chainId, 42, ZERO)
 
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
@@ -96,8 +97,8 @@ class TheMainActivity {
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.transactions.loadTestData(currentNetwork.chain.id)
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain.id.value, 42, ETH_IN_WEI))
+            TestApp.testDatabase.transactions.loadTestData(ChainId(currentNetwork!!.chainId))
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork.getRootToken().address, currentNetwork.chainId, 42, ETH_IN_WEI))
         }
         rule.launchActivity()
 
@@ -119,9 +120,9 @@ class TheMainActivity {
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.transactions.loadTestData(currentNetwork.chain.id)
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getRootTokenForChain(currentNetwork).address, currentNetwork.chain.id.value, 42, ETH_IN_WEI))
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, currentNetwork.chain.id.value, 42, ZERO))
+            TestApp.testDatabase.transactions.loadTestData(ChainId(currentNetwork!!.chainId))
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork!!.getRootToken().address, currentNetwork.chainId, 42, ETH_IN_WEI))
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, currentNetwork.chainId, 42, ZERO))
         }
 
         rule.launchActivity()

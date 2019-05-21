@@ -6,15 +6,16 @@ import org.kethereum.model.Address
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
 import java.math.BigInteger
+import java.math.BigInteger.ZERO
 
 class TheBalanceProvider : AbstractDatabaseTest() {
 
     val SOME_TOKEN_ADDRESS = Address("0x124")
-    val TEST_CHAIN = 4L
+    val TEST_CHAIN = BigInteger.valueOf(4L)
 
     @Test
     fun unknownAddressHasNullBalance() {
-        assertThat(database.balances.getBalance(Address("0x123"), null, 0L)).isNull()
+        assertThat(database.balances.getBalance(Address("0x123"), null, ZERO)).isNull()
     }
 
     @Test

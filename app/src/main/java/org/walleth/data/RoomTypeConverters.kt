@@ -2,6 +2,7 @@ package org.walleth.data
 
 import androidx.room.TypeConverter
 import org.kethereum.model.Address
+import org.kethereum.model.ChainId
 import java.math.BigInteger
 import java.util.*
 
@@ -10,26 +11,39 @@ class RoomTypeConverters {
     /** Address  */
 
     @TypeConverter
-    fun fromTimestamp(value: String?) = if (value == null) null else Address(value)
+    fun addressFromString(value: String?) = if (value == null) null else Address(value)
 
     @TypeConverter
-    fun dateToTimestamp(address: Address?) = address?.hex
+    fun addressToString(address: Address?) = address?.hex
 
     /** Date  */
 
     @TypeConverter
-    fun fromTimestamp(value: Long?) = if (value == null) null else Date(value)
+    fun dateFromLong(value: Long?) = if (value == null) null else Date(value)
 
     @TypeConverter
-    fun dateToTimestamp(date: Date?) = date?.time
-
+    fun dateToLong(date: Date?) = date?.time
 
     /** BigInteger  */
 
     @TypeConverter
-    fun fromBigInteger(value: ByteArray?) = if (value == null) null else BigInteger(value)
+    fun bigintegerFromByteArray(value: ByteArray?) = if (value == null) null else BigInteger(value)
 
     @TypeConverter
-    fun bigIntegerToString(bigInteger: BigInteger?) = bigInteger?.toByteArray()
+    fun bigIntegerToByteArray(bigInteger: BigInteger?) = bigInteger?.toByteArray()
 
+
+    /** List<String> */
+    @TypeConverter
+    fun stringListFromString(value: String?) = value?.split("%!%")?.filter { it.isNotBlank() }
+
+    @TypeConverter
+    fun stringListToString(value: List<String>?) = value?.joinToString("%!%")
+
+    /** List<String> */
+    @TypeConverter
+    fun longToChainId(value: Long?) = value?.let { ChainId(it) }
+
+    @TypeConverter
+    fun chainIdToLong(value: ChainId?) = value?.value
 }

@@ -39,10 +39,10 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.tokens.getRootTokenForChain
+import org.walleth.data.tokens.getRootToken
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
@@ -60,7 +60,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
 
     private val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
-    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val chainInfoProvider: ChainInfoProvider by inject()
     private val appDatabase: AppDatabase by inject()
     private val settings: Settings by inject()
     private val currentTokenProvider: CurrentTokenProvider by inject()
@@ -185,11 +185,11 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
-        currentAddressProvider.observe(this, Observer { address ->
+        currentAddressProvider.observe(this, Observer {
             refreshSubtitle()
         })
 
-        networkDefinitionProvider.observe(this, Observer {
+        chainInfoProvider.observe(this, Observer {
             refreshSubtitle()
         })
 
@@ -197,10 +197,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
             setCurrentBalanceObservers()
         })
 
-        val incomingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, INCOMING, networkDefinitionProvider, exchangeRateProvider, settings)
+        val incomingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, INCOMING, chainInfoProvider, exchangeRateProvider, settings)
         transaction_recycler_in.adapter = incomingTransactionsAdapter
 
-        val outgoingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, OUTGOING, networkDefinitionProvider, exchangeRateProvider, settings)
+        val outgoingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, OUTGOING, chainInfoProvider, exchangeRateProvider, settings)
         transaction_recycler_out.adapter = outgoingTransactionsAdapter
 
         transactionViewModel.isEmptyViewVisible.nonNull().observe(this) { isEmptyVisible ->
@@ -226,7 +226,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         })
 
 
-        networkDefinitionProvider.observe(this, Observer {
+        chainInfoProvider.observe(this, Observer {
             setCurrentBalanceObservers()
         })
 
@@ -246,15 +246,15 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
     private fun refreshSubtitle() {
         appDatabase.addressBook.byAddressLiveData(currentAddressProvider.getCurrentNeverNull()).observe(this, Observer { currentAddress ->
             currentAddress?.let { entry ->
-                val networkName = networkDefinitionProvider.value!!.getNetworkName()
-                supportActionBar?.subtitle = entry.name + "@" + networkName
+                val name = chainInfoProvider.value!!.name
+                supportActionBar?.subtitle = entry.name + "@" + name
             }
         })
     }
 
 
     private val balanceObserver = Observer<Balance> {
-        if (it != null && it.chain == networkDefinitionProvider.getCurrent().chain.id.value) {
+        if (it != null && it.chain == chainInfoProvider.getCurrent()?.chainId) {
             amountViewModel.setValue(it.balance, currentTokenProvider.getCurrent())
         } else {
             amountViewModel.setValue(null, currentTokenProvider.getCurrent())
@@ -273,10 +273,10 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         val currentAddress = currentAddressProvider.value
         if (currentAddress != null) {
             balanceLiveData?.removeObserver(balanceObserver)
-            balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.getCurrent().address, networkDefinitionProvider.getCurrent().chain.id.value)
+            balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.getCurrent().address, chainInfoProvider.getCurrent()?.chainId)
             balanceLiveData?.observe(this, balanceObserver)
             etherLiveData?.removeObserver(etherObserver)
-            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, getRootTokenForChain(networkDefinitionProvider.getCurrent()).address, networkDefinitionProvider.getCurrent().chain.id.value)
+            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, chainInfoProvider.getCurrent()?.let { it.getRootToken().address }, chainInfoProvider.getCurrent()?.chainId)
             etherLiveData?.observe(this, etherObserver)
         }
     }

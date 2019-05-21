@@ -1,10 +1,11 @@
 package org.walleth.ui
 
 import android.app.Activity
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.RecyclerView
+import org.kethereum.model.ChainId
 import org.walleth.R
 import org.walleth.data.tokens.Token
 
@@ -27,14 +28,16 @@ class TokenListAdapter(private val activity: Activity) : RecyclerView.Adapter<To
         tokenList = newTokenList
     }
 
-    fun filter(search: CharSequence, starredOny: Boolean, withChain: Long?) {
-        val newSortedList = tokenList.filter {
-            !starredOny || it.starred
-        }.filter {
-            it.symbol.contains(search, true) || it.name.contains(search, true)
-        }.filter {
-            (withChain == null) || it.chain == withChain
-        }.sortedByDescending { it.order }
+    fun filter(search: CharSequence, starredOny: Boolean, withChain: ChainId?) {
+        val newSortedList = tokenList.asSequence()
+                .filter { !it.softDeleted }
+                .filter {
+                    !starredOny || it.starred
+                }.filter {
+                    it.symbol.contains(search, true) || it.name.contains(search, true)
+                }.filter {
+                    (withChain == null) || ChainId(it.chain) == withChain
+                }.sortedByDescending { it.order }.toList()
 
         val diff = DiffUtil.calculateDiff(object : DiffUtil.Callback() {
             override fun getOldListSize() = sortedList.size

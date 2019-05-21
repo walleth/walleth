@@ -21,13 +21,13 @@ import org.walleth.activities.MainActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
-import org.walleth.data.tokens.getRootTokenForChain
+import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
-import org.walleth.kethereum.geth.toGethAddr
+import org.walleth.geth.toGethAddr
 import java.io.File
 import java.math.BigInteger
 import org.ethereum.geth.Context as EthereumContext
@@ -50,7 +50,7 @@ class GethLightEthereumService : LifecycleService() {
     private val syncProgress: SyncProgressProvider by inject()
     private val appDatabase: AppDatabase by inject()
     private val settings: Settings by inject()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val networkDefinitionProvider: ChainInfoProvider by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val path by lazy { File(baseContext.cacheDir, "ethereumdata").absolutePath }
     private val notificationManager by lazy { getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager }
@@ -90,7 +90,7 @@ class GethLightEthereumService : LifecycleService() {
 
                     val notification = NotificationCompat.Builder(this@GethLightEthereumService, NOTIFICATION_CHANNEL_ID)
                             .setContentTitle(getString(R.string.geth_service_notification_title))
-                            .setContentText(resources.getString(R.string.geth_service_notification_content_text, networkDefinitionProvider.getCurrent().getNetworkName()))
+                            .setContentText(resources.getString(R.string.geth_service_notification_content_text, networkDefinitionProvider.getCurrent()?.name))
                             .setContentIntent(contentIntent)
                             .addAction(android.R.drawable.ic_menu_close_clear_cancel, "exit", pendingStopIntent)
                             .setSmallIcon(R.drawable.notification)
@@ -101,83 +101,85 @@ class GethLightEthereumService : LifecycleService() {
 
                 val network = networkDefinitionProvider.getCurrent()
 
-                networkDefinitionProvider.observe(this@GethLightEthereumService, Observer {
-                    if (network != networkDefinitionProvider.getCurrent()) {
-                        shouldRun = false
-                        shouldRestart = true
-                    }
-                })
+                if (network != null) {
+                    networkDefinitionProvider.observe(this@GethLightEthereumService, Observer {
+                        if (network != networkDefinitionProvider.getCurrent()) {
+                            shouldRun = false
+                            shouldRestart = true
+                        }
+                    })
 
-                val subPath = File(path, "chain" + network.chain.id.toString())
-                subPath.mkdirs()
-                val nodeConfig = NodeConfig().apply {
+                    val subPath = File(path, "chain" + network.chainId)
+                    subPath.mkdirs()
+                    val nodeConfig = NodeConfig().apply {
 
-                    ethereumNetworkID = network.chain.id.value
+                        ethereumNetworkID = network.chainId.toLong()
 
-                    ethereumGenesis = when (network.chain.id.value) {
-                        1L -> Geth.mainnetGenesis()
-                        3L -> Geth.testnetGenesis()
-                        4L -> Geth.rinkebyGenesis()
-                        else -> throw (IllegalStateException("NO genesis"))
-                    }
-
-                }
-                val ethereumNode = Geth.newNode(subPath.absolutePath, nodeConfig)
-
-                Log.i("Starting Node for " + nodeConfig.ethereumNetworkID)
-                ethereumNode.start()
-                isRunning = true
-                while (shouldRun && !finishedSyncing) {
-                    delay(1000)
-                    syncTick(ethereumNode, ethereumContext)
-                }
-                val transactionsLiveData = appDatabase.transactions.getAllToRelayLive()
-                val transactionObserver = Observer<List<TransactionEntity>> {
-                    it?.forEach { transaction ->
-                        transaction.execute(ethereumNode.ethereumClient, ethereumContext)
-                    }
-                }
-                transactionsLiveData.observe(this@GethLightEthereumService, transactionObserver)
-                try {
-                    ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
-                        override fun onNewHead(p0: Header) {
-                            val address = currentAddressProvider.getCurrentNeverNull()
-                            val gethAddress = address.toGethAddr()
-                            val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, gethAddress, p0.number)
-                            appDatabase.balances.upsert(Balance(
-                                    address = address,
-                                    tokenAddress = getRootTokenForChain(network).address,
-                                    chain = network.chain.id.value,
-                                    balance = BigInteger(balance.string()),
-                                    block = p0.number))
+                        ethereumGenesis = when (ethereumNetworkID) {
+                            1L -> Geth.mainnetGenesis()
+                            3L -> Geth.testnetGenesis()
+                            4L -> Geth.rinkebyGenesis()
+                            else -> throw (IllegalStateException("NO genesis"))
                         }
 
-                        override fun onError(p0: String?) {}
+                    }
+                    val ethereumNode = Geth.newNode(subPath.absolutePath, nodeConfig)
 
-                    }, 16)
+                    Log.i("Starting Node for " + nodeConfig.ethereumNetworkID)
+                    ethereumNode.start()
+                    isRunning = true
+                    while (shouldRun && !finishedSyncing) {
+                        delay(1000)
+                        syncTick(ethereumNode, ethereumContext)
+                    }
+                    val transactionsLiveData = appDatabase.transactions.getAllToRelayLive()
+                    val transactionObserver = Observer<List<TransactionEntity>> {
+                        it?.forEach { transaction ->
+                            transaction.execute(ethereumNode.ethereumClient, ethereumContext)
+                        }
+                    }
+                    transactionsLiveData.observe(this@GethLightEthereumService, transactionObserver)
+                    try {
+                        ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
+                            override fun onNewHead(p0: Header) {
+                                val address = currentAddressProvider.getCurrentNeverNull()
+                                val gethAddress = address.toGethAddr()
+                                val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, gethAddress, p0.number)
+                                appDatabase.balances.upsert(Balance(
+                                        address = address,
+                                        tokenAddress = network.getRootToken().address,
+                                        chain = network.chainId,
+                                        balance = BigInteger(balance.string()),
+                                        block = p0.number))
+                            }
 
-                } catch (e: Exception) {
-                    Log.e("node error", e)
-                }
+                            override fun onError(p0: String?) {}
 
-                while (shouldRun) {
-                    syncTick(ethereumNode, ethereumContext)
-                }
+                        }, 16)
 
-                async(Dispatchers.Main) {
-                    transactionsLiveData.removeObserver(transactionObserver)
-                    launch {
-                        ethereumNode.stop()
+                    } catch (e: Exception) {
+                        Log.e("node error", e)
                     }
 
-                    if (!shouldRestart) {
-                        stopForeground(true)
-                        stopSelf()
-                        isRunning = false
-                    } else {
-                        notificationManager.cancel(NOTIFICATION_ID)
+                    while (shouldRun) {
+                        syncTick(ethereumNode, ethereumContext)
                     }
-                }.await()
+
+                    async(Dispatchers.Main) {
+                        transactionsLiveData.removeObserver(transactionObserver)
+                        launch {
+                            ethereumNode.stop()
+                        }
+
+                        if (!shouldRestart) {
+                            stopForeground(true)
+                            stopSelf()
+                            isRunning = false
+                        } else {
+                            notificationManager.cancel(NOTIFICATION_ID)
+                        }
+                    }.await()
+                }
             }
 
         }

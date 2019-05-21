@@ -21,7 +21,7 @@ import org.walleth.data.KEY_TX_HASH
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
@@ -38,7 +38,7 @@ class DataProvidingService : LifecycleService() {
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val tokenProvider: CurrentTokenProvider by inject()
     private val appDatabase: AppDatabase by inject()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val chainInfoProvider: ChainInfoProvider by inject()
 
     private val blockScoutApi = BlockScoutAPI(appDatabase, okHttpClient)
 
@@ -72,7 +72,7 @@ class DataProvidingService : LifecycleService() {
         super.onStartCommand(intent, flags, startId)
 
         currentAddressProvider.observe(this, ResettingObserver())
-        networkDefinitionProvider.observe(this, ResettingObserver())
+        chainInfoProvider.observe(this, ResettingObserver())
 
         lifecycle.addObserver(TimingModifyingLifecycleObserver())
 
@@ -81,24 +81,25 @@ class DataProvidingService : LifecycleService() {
             while (true) {
                 last_run = System.currentTimeMillis()
 
-                val currentChainId = networkDefinitionProvider.getCurrent().chain.id.value
-                currentAddressProvider.value?.let { address ->
+                chainInfoProvider.getCurrent()?.chainId?.let { currentChainId ->
+                    currentAddressProvider.value?.let { address ->
 
-                    try {
-                        if (ALL_BLOCKSCOUT_SUPPORTED_NETWORKS.contains(currentChainId)) {
-                            tryFetchFromBlockscout(address)
+                        try {
+                            if (ALL_BLOCKSCOUT_SUPPORTED_NETWORKS.contains(currentChainId)) {
+                                tryFetchFromBlockscout(address)
+                            }
+
+                            queryRPCForBalance(address)
+                        } catch (ioe: IOException) {
+                            Log.i("problem fetching data - are we online? ", ioe)
                         }
-
-                        queryRPCForBalance(address)
-                    } catch (ioe: IOException) {
-                        Log.i("problem fetching data - are we online? ", ioe)
                     }
-                }
 
-                while ((last_run + timing) > System.currentTimeMillis() && !shortcut) {
-                    delay(100)
+                    while ((last_run + timing) > System.currentTimeMillis() && !shortcut) {
+                        delay(100)
+                    }
+                    shortcut = false
                 }
-                shortcut = false
             }
         }
 
@@ -124,17 +125,19 @@ class DataProvidingService : LifecycleService() {
     }
 
     private fun tryFetchFromBlockscout(address: Address) {
-        blockScoutApi.queryTransactions(address.hex, networkDefinitionProvider.getCurrent())
+        chainInfoProvider.getCurrent()?.let { currentChain ->
+            blockScoutApi.queryTransactions(address.hex, currentChain)
+        }
     }
 
     private fun queryRPCForBalance(address: Address) {
 
-        networkDefinitionProvider.value?.let { currentNetwork ->
-            val baseURL = networkDefinitionProvider.getCurrent().getRPCEndpoint()
+        chainInfoProvider.value?.let { currentNetwork ->
+            val baseURL = chainInfoProvider.getCurrent()?.getRPCEndpoint()
             val currentToken = tokenProvider.getCurrent()
 
             if (baseURL == null) {
-                Log.e("no RPC URL found for " + networkDefinitionProvider.getCurrent())
+                Log.e("no RPC URL found for " + chainInfoProvider.getCurrent())
             } else {
                 val rpc = HttpEthereumRPC(baseURL, okHttpClient)
 
@@ -156,7 +159,7 @@ class DataProvidingService : LifecycleService() {
                                             block = blockNumber,
                                             balance = BigInteger(balance.result.replace("0x", ""), 16),
                                             tokenAddress = currentToken.address,
-                                            chain = currentNetwork.chain.id.value
+                                            chain = currentNetwork.chainId
                                     )
                             )
                         } catch (e: NumberFormatException) {

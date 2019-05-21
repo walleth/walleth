@@ -32,7 +32,7 @@ import org.walleth.data.addressbook.toJSON
 import org.walleth.data.balances.Balance
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.TokenTransfer
-import org.walleth.data.tokens.getRootTokenForChain
+import org.walleth.data.tokens.getRootToken
 import org.walleth.data.tokens.toERC681
 import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.infrastructure.TestApp
@@ -41,8 +41,8 @@ import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
 import java.math.BigInteger
 
-val testToken = Token("Test", "TEST", Address("0x01"), 15, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, true, false, false, 1)
-val eth = getRootTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
+val testToken = Token("Test", "TEST", Address("0x01"), 15, TestApp.chainInfoProvider.getCurrent()!!.chainId, true, false, false, 1)
+val eth = TestApp.chainInfoProvider.getCurrent()!!.getRootToken()
 
 class TheCreateTransactionActivity {
 
@@ -61,10 +61,10 @@ class TheCreateTransactionActivity {
 
     @Test
     fun chainNameDisplayedInSubtitle() {
-        val chainDefinition = TestApp.networkDefinitionProvider.getCurrent()
+        val chainDefinition = TestApp.chainInfoProvider.getCurrent()
         rule.launchActivity()
 
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.create_transaction_on_network_subtitle, chainDefinition.getNetworkName())))
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.create_transaction_on_network_subtitle, chainDefinition?.name)))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         rule.screenShot("chain_name_in_subtitle")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
@@ -96,7 +96,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun acceptsDifferentChainId() {
-        val chainIdForTransaction = TestApp.networkDefinitionProvider.getCurrent().chain.id.value
+        val chainIdForTransaction = TestApp.chainInfoProvider.getCurrent()!!.chainId
         rule.launchActivity(Intent.getIntentOld("$urlBase@" + chainIdForTransaction))
 
         Espresso.onView(ViewMatchers.withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.doesNotExist())
@@ -166,7 +166,7 @@ class TheCreateTransactionActivity {
     @Test
     fun usesCorrectValuesForETHTransaction1() {
         setCurrentToken(eth)
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
         rule.launchActivity(Intent.getIntentOld("$urlBase?value=1"))
 
@@ -182,7 +182,7 @@ class TheCreateTransactionActivity {
     @Test
     fun usesCorrectValuesForETHTransaction2() {
         setCurrentToken(testToken)
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
         rule.launchActivity(Intent.getIntentOld("$urlBase?value=1"))
 
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
@@ -202,8 +202,8 @@ class TheCreateTransactionActivity {
         val toAddress = DEFAULT_TEST_ADDRESS2
         val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()
 
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
         rule.launchActivity(Intent.getIntentOld(uri))
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
@@ -220,11 +220,11 @@ class TheCreateTransactionActivity {
 
     @Test
     fun usesCorrectValuesForNewTokenTransfer() {
-        val eth = getRootTokenForChain(TestApp.networkDefinitionProvider.getCurrent())
+        val eth = TestApp.chainInfoProvider.getCurrent()!!.getRootToken()
         setCurrentToken(eth)
         TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, 1L, BigInteger.TEN * eth.decimalsAsMultiplicator().toBigInteger()))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.networkDefinitionProvider.getCurrent().chain.id.value, 1L, BigInteger.TEN * testToken.decimalsAsMultiplicator().toBigInteger()))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * eth.decimalsAsMultiplicator().toBigInteger()))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * testToken.decimalsAsMultiplicator().toBigInteger()))
 
         val toAddress = DEFAULT_TEST_ADDRESS2
         val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()
@@ -245,7 +245,7 @@ class TheCreateTransactionActivity {
 
     @Test
     fun doesNotAcceptUnknownTokenTransfer() {
-        setCurrentToken(getRootTokenForChain(TestApp.networkDefinitionProvider.getCurrent()))
+        setCurrentToken(TestApp.chainInfoProvider.getCurrent()!!.getRootToken())
 
         val toAddress = DEFAULT_TEST_ADDRESS2
         val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()

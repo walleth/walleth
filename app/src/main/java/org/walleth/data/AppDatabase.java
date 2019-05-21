@@ -7,12 +7,14 @@ import org.walleth.data.addressbook.AddressBookDAO;
 import org.walleth.data.addressbook.AddressBookEntry;
 import org.walleth.data.balances.Balance;
 import org.walleth.data.balances.BalanceDAO;
+import org.walleth.data.chaininfo.ChainInfo;
+import org.walleth.data.chaininfo.ChainInfoDAO;
 import org.walleth.data.tokens.Token;
 import org.walleth.data.tokens.TokenDAO;
 import org.walleth.data.transactions.TransactionDAO;
 import org.walleth.data.transactions.TransactionEntity;
 
-@Database(entities = {AddressBookEntry.class, Token.class, Balance.class, TransactionEntity.class}, version = 4)
+@Database(entities = {AddressBookEntry.class, Balance.class, ChainInfo.class, Token.class, TransactionEntity.class}, version = 5)
 @TypeConverters({RoomTypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
@@ -23,4 +25,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract TransactionDAO getTransactions();
 
     public abstract BalanceDAO getBalances();
+
+    public abstract ChainInfoDAO getChainInfo();
+
 }

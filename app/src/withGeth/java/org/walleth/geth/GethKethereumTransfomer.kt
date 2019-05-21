@@ -6,7 +6,6 @@ import org.json.JSONObject
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
-import org.walleth.khex.hexToByteArray
 import java.math.BigInteger
 import org.ethereum.geth.Address as GethAddress
 
@@ -34,7 +33,7 @@ fun org.ethereum.geth.Transaction.extractSignatureData(): SignatureData? {
             SignatureData(
                     r = it.getString("r").hexToBigInteger(),
                     s = it.getString("s").hexToBigInteger(),
-                    v = it.getString("v").hexToByteArray().first()
+                    v = it.getString("v").hexToBigInteger()
             )
         }
 }

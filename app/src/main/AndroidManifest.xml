@@ -29,7 +29,7 @@
 
         <activity android:name="org.walleth.activities.qrscan.QRScanActivity"/>
 
-        <activity android:name="org.walleth.activities.SwitchNetworkActivity"/>
+        <activity android:name="org.walleth.activities.SwitchChainActivity"/>
         <activity android:name="org.walleth.activities.RequestActivity"/>
         <activity android:name=".activities.QRCodeActivity"/>
         <activity android:name="org.walleth.activities.InfoActivity"/>

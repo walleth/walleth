@@ -18,8 +18,8 @@ import org.ligi.kaxt.setVisibility
 import org.walletconnect.Session
 import org.walleth.R
 import org.walleth.activities.*
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.khex.clean0xPrefix
 import org.walleth.viewmodels.WalletConnectViewModel
 import java.math.BigInteger
@@ -35,7 +35,7 @@ private const val REQUEST_ID_SWITCH_NET = 102
 class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private val currentAddressProvider: CurrentAddressProvider by inject()
-    private val currentNetworkProvider: NetworkDefinitionProvider by inject()
+    private val currentNetworkProvider: ChainInfoProvider by inject()
 
     private val wcViewModel: WalletConnectViewModel by viewModel()
 
@@ -112,7 +112,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                     when (i) {
                         0 -> {
                             accounts = listOf(currentAddressProvider.getCurrentNeverNull().hex)
-                            wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent().chain.id.value)
+                            wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
                         }
 
                         1 -> selectAccount()
@@ -139,7 +139,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         }
 
         wc_change_network.setOnClickListener {
-            startActivityForResult(Intent(this@WalletConnectConnectionActivity, SwitchNetworkActivity::class.java), REQUEST_ID_SWITCH_NET)
+            startActivityForResult(Intent(this@WalletConnectConnectionActivity, SwitchChainActivity::class.java), REQUEST_ID_SWITCH_NET)
         }
 
         if (!wcViewModel.processURI(intent?.data.toString())) {
@@ -179,7 +179,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
         when (requestCode) {
             REQUEST_ID_SWITCH_NET -> {
-                wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent().chain.id.value)
+                wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
             }
 
 
@@ -188,7 +188,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                     val addressHex = data.getStringExtra("HEX")
                     currentAddressProvider.setCurrent(Address(addressHex))
                     accounts = listOf(addressHex)
-                    wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent().chain.id.value)
+                    wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
                 }
             }
 

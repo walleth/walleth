@@ -3,12 +3,11 @@ package org.walleth.data.config
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.preference.PreferenceManager
-import androidx.core.content.ContextCompat
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import com.chibatching.kotpref.KotprefModel
 import org.walleth.R
 import org.walleth.data.DEFAULT_GAS_PRICE
-import org.walleth.data.networks.NetworkDefinition
 import org.walleth.functions.asBigDecimal
 import java.math.BigInteger
 import java.security.SecureRandom
@@ -67,14 +66,14 @@ object KotprefSettings : KotprefModel(), Settings {
     override fun registerListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.registerOnSharedPreferenceChangeListener(listener)
     override fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.unregisterOnSharedPreferenceChangeListener(listener)
 
-    override fun getGasPriceFor(current: NetworkDefinition): BigInteger {
-        val gasPrice = sharedPreferences.getString("KEY_GAS_PRICE" + current.chain.id, null)
+    override fun getGasPriceFor(chainId: BigInteger): BigInteger {
+        val gasPrice = sharedPreferences.getString("KEY_GAS_PRICE" + chainId, null)
         return gasPrice?.asBigDecimal()?.toBigInteger() ?: DEFAULT_GAS_PRICE
     }
 
-    override fun storeGasPriceFor(gasPrice: BigInteger, network: NetworkDefinition) {
+    override fun storeGasPriceFor(gasPrice: BigInteger, chainId: BigInteger) {
         sharedPreferences.edit()
-                .putString("KEY_GAS_PRICE" + network.chain.id, gasPrice.toString())
+                .putString("KEY_GAS_PRICE" + chainId, gasPrice.toString())
                 .apply()
     }
 }

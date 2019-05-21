@@ -1,18 +1,18 @@
 package org.walleth.activities
 
+import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
+import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
-import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
-import android.view.Menu
-import android.view.MenuItem
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_list_stars.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -21,7 +21,7 @@ import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
-import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.tokens.Token
 import org.walleth.ui.TokenListAdapter
 
@@ -31,7 +31,7 @@ class TokenActivityViewModel : ViewModel() {
 
 class SelectTokenActivity : BaseSubActivity() {
 
-    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val chainInfoProvider: ChainInfoProvider by inject()
     private val appDatabase: AppDatabase by inject()
     private val settings: Settings by inject()
 
@@ -65,7 +65,7 @@ class SelectTokenActivity : BaseSubActivity() {
             if (allTokens != null) {
                 updateFilter()
                 tokenListAdapter.updateTokenList(allTokens)
-                showDelete = allTokens.any { !it.showInList }
+                showDelete = allTokens.any { !it.softDeleted }
             }
             invalidateOptionsMenu()
         })
@@ -78,10 +78,10 @@ class SelectTokenActivity : BaseSubActivity() {
                 val currentToken = tokenListAdapter.sortedList.get(viewHolder.adapterPosition)
                 fun changeDeleteState(state: Boolean) {
                     GlobalScope.launch {
-                        upsert(appDatabase, currentToken.copy(showInList = state))
+                        upsert(appDatabase, currentToken.copy(softDeleted = state))
                     }
                 }
-                changeDeleteState(false)
+                changeDeleteState(true)
                 val snackMessage = getString(R.string.deleted_token_snack, currentToken.symbol)
                 Snackbar.make(coordinator, snackMessage, Snackbar.LENGTH_INDEFINITE)
                         .setAction(getString(R.string.undo)) { changeDeleteState(true) }
@@ -136,7 +136,7 @@ class SelectTokenActivity : BaseSubActivity() {
     fun updateFilter() {
         tokenListAdapter.filter(viewModel.searchTerm, settings.showOnlyStaredTokens,
                 if (settings.showOnlyTokensOnCurrentNetwork) {
-                    networkDefinitionProvider.getCurrent().chain.id.value
+                    chainInfoProvider.getCurrentChainId()
                 } else {
                     null
                 })

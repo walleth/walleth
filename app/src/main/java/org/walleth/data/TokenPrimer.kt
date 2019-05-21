@@ -9,11 +9,10 @@ import org.json.JSONObject
 import org.kethereum.model.Address
 import org.ligi.tracedroid.logging.Log
 import org.walleth.data.config.Settings
-import org.walleth.data.networks.ALL_NETWORKS
 import org.walleth.data.tokens.Token
-import org.walleth.data.tokens.getRootTokenForChain
+import org.walleth.data.tokens.getRootToken
 
-private const val TOKEN_INIT_VERSION = 32
+private const val TOKEN_INIT_VERSION = 33
 // yes this is opinionated - but it also cuts to the chase
 // so much garbage in this token-list ..
 
@@ -32,12 +31,11 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
     if (settings.tokensInitVersion < TOKEN_INIT_VERSION) {
 
         GlobalScope.launch(Dispatchers.Default) {
-            ALL_NETWORKS.forEach {
+            appDatabase.chainInfo.getAll().forEach { chainInfo ->
                 try {
-                    appDatabase.tokens.upsert(getRootTokenForChain(it).copy(order = 8888))
+                    appDatabase.tokens.upsert(chainInfo.getRootToken().copy(order = 8888))
 
-                    val chain = it.chain
-                    val open = assets.open("token_init/${chain.id.value}.json")
+                    val open = assets.open("token_init/${chainInfo.chainId}.json")
                     val jsonArray = JSONArray(open.use { it.reader().readText() })
                     val newTokens = (0 until jsonArray.length()).map { jsonArray.get(it) as JSONObject }.map {
                         val address = it.getString("address")
@@ -47,9 +45,9 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
                                 decimals = Integer.parseInt(it.getString("decimals")),
                                 address = Address(address),
                                 starred = false,
-                                showInList = true,
+                                softDeleted = false,
                                 fromUser = false,
-                                chain = chain.id.value,
+                                chain = chainInfo.chainId,
                                 order = mapToOrder(address)
                         )
 

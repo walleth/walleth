@@ -6,13 +6,16 @@ import android.net.TrafficStats
 import android.os.StrictMode
 import androidx.annotation.XmlRes
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Observer
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.preference.PreferenceScreen
 import androidx.room.Room
 import com.chibatching.kotpref.Kotpref
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
+import com.squareup.moshi.ToJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,31 +39,36 @@ import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.allPrePopulationAddresses
 import org.walleth.data.addressbook.toJSON
 import org.walleth.data.blockexplorer.BlockExplorerProvider
+import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.InitializingCurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.rpc.RPCProviderImpl
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.tokens.getRootTokenForChain
+import org.walleth.data.tokens.getRootToken
+import org.walleth.migrations.ChainAddingAndRecreatingMigration
 import org.walleth.migrations.RecreatingMigration
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.viewmodels.WalletConnectViewModel
 import java.io.File
+import java.math.BigInteger
 import java.net.Socket
 import java.security.Security
 import javax.net.SocketFactory
 
+
 open class App : MultiDexApplication() {
 
     private val koinModule = module {
-        single { Moshi.Builder().build() }
+        single { Moshi.Builder().add(BigIntegerAdapter()).build() }
+
         single {
             val socketFactory = object : DelegatingSocketFactory(SocketFactory.getDefault()) {
                 override fun configureSocket(socket: Socket): Socket {
@@ -79,8 +87,20 @@ open class App : MultiDexApplication() {
     val appDatabase: AppDatabase by inject()
     val settings: Settings by inject()
 
-    open fun createKoin() = module {
 
+    class BigIntegerAdapter {
+        @ToJson
+        internal fun toJson(bigInteger: BigInteger): String {
+            return bigInteger.toString()
+        }
+
+        @FromJson
+        internal fun fromJson(bigInteger: String): BigInteger {
+            return BigInteger(bigInteger)
+        }
+    }
+
+    open fun createKoin() = module {
         single { CryptoCompareExchangeProvider(this@App, get()) as ExchangeRateProvider }
         single { SyncProgressProvider() }
         single { keyStore as KeyStore }
@@ -89,11 +109,15 @@ open class App : MultiDexApplication() {
         single { RPCProviderImpl(get(), get()) as RPCProvider }
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
-                    .addMigrations(RecreatingMigration(1, 4), RecreatingMigration(2, 4), RecreatingMigration(3, 4))
-                    .build()
+                    .addMigrations(
+                            RecreatingMigration(1),
+                            RecreatingMigration(2),
+                            RecreatingMigration(3),
+                            ChainAddingAndRecreatingMigration(4)
+                    ).build()
         }
 
-        single { NetworkDefinitionProvider(get()) }
+        single { ChainInfoProvider(get(), get(), get(), assets) }
         single { BlockExplorerProvider(get()) }
         single {
             InitializingCurrentAddressProvider(settings = get()) as CurrentAddressProvider
@@ -138,7 +162,6 @@ open class App : MultiDexApplication() {
         AndroidThreeTen.init(this)
         applyNightMode(settings)
         executeCodeWeWillIgnoreInTests()
-        initTokens(settings, assets, appDatabase)
         if (settings.addressInitVersion < 2) {
             settings.addressInitVersion = 2
 
@@ -149,9 +172,19 @@ open class App : MultiDexApplication() {
         postInitCallbacks.forEach { it.invoke() }
 
         val currentTokenProvider: CurrentTokenProvider by inject()
-        val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+        val chainInfoProvider: ChainInfoProvider by inject()
 
-        currentTokenProvider.setCurrent(getRootTokenForChain(networkDefinitionProvider.getCurrent()))
+        val initialChainObserver = object : Observer<ChainInfo> {
+            override fun onChanged(chainInfo: ChainInfo?) {
+                chainInfo?.getRootToken()?.let { rootToken ->
+                    initTokens(settings, assets, appDatabase)
+                    currentTokenProvider.setCurrent(rootToken)
+                    chainInfoProvider.removeObserver(this)
+                }
+            }
+        }
+
+        chainInfoProvider.observeForever(initialChainObserver)
 
         if (settings.dataVersion < 1) {
             settings.dataVersion = 1

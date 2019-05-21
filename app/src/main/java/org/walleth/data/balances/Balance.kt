@@ -8,7 +8,7 @@ import java.math.BigInteger
 data class Balance(
         val address: Address,
         val tokenAddress: Address,
-        val chain: Long,
+        val chain: BigInteger,
 
         val block: Long,
         val balance: BigInteger

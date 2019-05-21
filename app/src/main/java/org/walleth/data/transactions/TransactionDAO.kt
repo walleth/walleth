@@ -19,16 +19,16 @@ interface TransactionDAO {
     fun getTransactionsLive(): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions WHERE (\"to\" = :address COLLATE NOCASE OR \"extraIncomingAffectedAddress\" = :address COLLATE NOCASE ) AND chain=:chain ORDER BY creationEpochSecond DESC")
-    fun getIncomingTransactionsForAddressOnChainOrdered(address: Address, chain: Long): LiveData<List<TransactionEntity>>
+    fun getIncomingTransactionsForAddressOnChainOrdered(address: Address, chain: BigInteger): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions WHERE (\"to\" = :address COLLATE NOCASE OR \"extraIncomingAffectedAddress\" = :address COLLATE NOCASE )AND chain=:chain ORDER BY creationEpochSecond DESC")
-    fun getIncomingPaged(address: Address, chain: Long): DataSource.Factory<Int, TransactionEntity>
+    fun getIncomingPaged(address: Address, chain: BigInteger): DataSource.Factory<Int, TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE AND chain=:chain ORDER BY nonce DESC")
-    fun getOutgoingPaged(address: Address, chain: Long): DataSource.Factory<Int, TransactionEntity>
+    fun getOutgoingPaged(address: Address, chain: BigInteger): DataSource.Factory<Int, TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE \"from\" = :address COLLATE NOCASE  AND chain=:chain ORDER BY nonce DESC")
-    fun getOutgoingTransactionsForAddressOnChainOrdered(address: Address, chain: Long): LiveData<List<TransactionEntity>>
+    fun getOutgoingTransactionsForAddressOnChainOrdered(address: Address, chain: BigInteger): LiveData<List<TransactionEntity>>
 
     @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses)")
     fun getAllTransactionsForAddressLive(addresses: List<Address>): LiveData<List<TransactionEntity>>
@@ -47,10 +47,10 @@ interface TransactionDAO {
     fun upsert(transactionEntities: List<TransactionEntity>)
 
     @Query("SELECT nonce from transactions WHERE \"from\" = :address COLLATE NOCASE AND chain=:chain")
-    fun getNonceForAddressLive(address: Address, chain: Long): LiveData<List<BigInteger>>
+    fun getNonceForAddressLive(address: Address, chain: BigInteger): LiveData<List<BigInteger>>
 
     @Query("SELECT nonce from transactions WHERE \"from\" = :address COLLATE NOCASE AND chain=:chain")
-    fun getNonceForAddress(address: Address, chain: Long): List<BigInteger>
+    fun getNonceForAddress(address: Address, chain: BigInteger): List<BigInteger>
 
     @Query("SELECT * from transactions WHERE r IS NOT NULL AND relayed=\"\" AND error IS NULL")
     fun getAllToRelayLive(): LiveData<List<TransactionEntity>>

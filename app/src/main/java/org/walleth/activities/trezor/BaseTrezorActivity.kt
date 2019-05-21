@@ -27,7 +27,7 @@ import org.walleth.R
 import org.walleth.activities.BaseSubActivity
 import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
 import org.walleth.data.AppDatabase
-import org.walleth.data.networks.NetworkDefinitionProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.ui.KEY_MAP_NUM_PAD
 import org.walleth.ui.showPINDialog
 
@@ -40,7 +40,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
 
     protected var currentBIP44: BIP44? = null
     protected val appDatabase: AppDatabase by inject()
-    protected val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    protected val chainInfoProvider: ChainInfoProvider by inject()
 
     protected val handler = Handler()
     private val manager by lazy { TrezorManager(this) }

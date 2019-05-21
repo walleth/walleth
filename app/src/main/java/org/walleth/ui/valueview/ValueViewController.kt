@@ -7,12 +7,12 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.networks.all.NetworkDefinition1
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.isRootToken
 import org.walleth.functions.*
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.math.BigInteger.ONE
 import java.math.BigInteger.ZERO
 
 open class ValueViewController(private val valueView: ValueView,
@@ -66,7 +66,7 @@ open class ValueViewController(private val valueView: ValueView,
 
         valueView.current_value_rounding_indicator.setVisibility(currentAmount != getValueFromString())
 
-        val shouldDisplayFiat = currentToken?.chain == NetworkDefinition1().chain.id.value && currentToken?.isRootToken() == true
+        val shouldDisplayFiat = currentToken?.chain == ONE && currentToken?.isRootToken() == true
 
         valueView.current_fiat_rounding_indicator.setVisibility(shouldDisplayFiat && isFiatRounded())
 

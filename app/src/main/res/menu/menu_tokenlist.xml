@@ -28,6 +28,5 @@
     <item
             android:id="@+id/menu_undelete"
             android:title="@string/undelete_all"
-            android:checkable="true"
             app:showAsAction="ifRoom"/>
 </menu>

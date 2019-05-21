@@ -8,14 +8,15 @@ import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_request.*
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
+import org.kethereum.model.ChainId
 import org.koin.android.ext.android.inject
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.NetworkDefinitionProvider
 import org.walleth.data.networks.getFaucetURL
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
@@ -28,7 +29,7 @@ class RequestActivity : BaseSubActivity() {
     private lateinit var currentERC67String: String
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val currentTokenProvider: CurrentTokenProvider by inject()
-    private val networkDefinitionProvider: NetworkDefinitionProvider by inject()
+    private val chainInfoProvider: ChainInfoProvider by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
     private val settings: Settings by inject()
 
@@ -48,10 +49,10 @@ class RequestActivity : BaseSubActivity() {
             }
         }
 
-        val initText = if (networkDefinitionProvider.getCurrent().faucets.isNotEmpty()) {
-            val faucetURL = networkDefinitionProvider.getCurrent().chain.id.getFaucetURL(currentAddressProvider.getCurrentNeverNull())
+        val initText = if (chainInfoProvider.getCurrent()?.faucets?.isNotEmpty() == true) {
+            val faucetURL = chainInfoProvider.getCurrent()?.getFaucetURL(currentAddressProvider.getCurrentNeverNull())
             getString(R.string.request_faucet_message,
-                    networkDefinitionProvider.getCurrent().getNetworkName(),
+                    chainInfoProvider.getCurrent()!!.name,
                     faucetURL)
         } else {
             getString(R.string.no_faucet)
@@ -90,7 +91,7 @@ class RequestActivity : BaseSubActivity() {
                     currentERC67String = ERC681(
                             address = relevantAddress.hex,
                             value = valueInputController?.getValueOrZero(),
-                            chainId = networkDefinitionProvider.getCurrent().chain.id.value
+                            chainId = chainInfoProvider.getCurrent()?.let { ChainId(it.chainId) }
                     ).generateURL()
                 } catch (e: NumberFormatException) {
                 }
