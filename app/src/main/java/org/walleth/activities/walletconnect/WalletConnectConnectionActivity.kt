@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper.setUrlDrawable
+import com.squareup.picasso3.Picasso
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -169,7 +169,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         wc_change_network.setVisibility(wcViewModel.showSwitchNetworkButton)
         status_text.text = wcViewModel.statusText
         wcViewModel.iconURL?.let {
-            setUrlDrawable(dapp_icon, it)
+            Picasso.Builder(this).build().load(it).into(dapp_icon)
         }
     }
 
