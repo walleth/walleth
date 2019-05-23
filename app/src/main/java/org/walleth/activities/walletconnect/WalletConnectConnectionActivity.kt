@@ -174,6 +174,10 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        wcViewModel.session?.kill()
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
