@@ -19,6 +19,7 @@ import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.deSerialize
 import org.walleth.ui.NetworkAdapter
+import javax.net.ssl.SSLProtocolException
 
 open class SwitchChainActivity : BaseSubActivity() {
 
@@ -63,16 +64,22 @@ open class SwitchChainActivity : BaseSubActivity() {
     private fun refresh() {
         swipe_refresh_layout.isRefreshing = true
         GlobalScope.launch(Dispatchers.IO) {
-            val request = Request.Builder().url("https://chainid.network/chains_mini.json")
-            okHttpClient.newCall(request.build()).execute().body()?.string()?.let { json ->
-                moshi.deSerialize(json)
-            }?.let { list ->
-                appDatabase.chainInfo.upsert(list)
-            }
-            delay(1000)
-            GlobalScope.launch(Dispatchers.Main) {
-                setAdapter()
-                swipe_refresh_layout.isRefreshing = false
+            try {
+                val request = Request.Builder().url("https://chainid.network/chains_mini.json")
+                okHttpClient.newCall(request.build()).execute().body()?.string()?.let { json ->
+                    moshi.deSerialize(json)
+                }?.let { list ->
+                    appDatabase.chainInfo.upsert(list)
+                }
+                delay(1000)
+                GlobalScope.launch(Dispatchers.Main) {
+                    setAdapter()
+                    swipe_refresh_layout.isRefreshing = false
+                }
+            } catch (e: SSLProtocolException) {
+                GlobalScope.launch {
+                    alert("SSL error - cannot load chains.")
+                }
             }
         }
     }
