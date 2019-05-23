@@ -18,6 +18,7 @@ import org.ligi.kaxt.setVisibility
 import org.walletconnect.Session
 import org.walleth.R
 import org.walleth.activities.*
+import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.khex.clean0xPrefix
@@ -184,8 +185,8 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
 
             TO_ADDRESS_REQUEST_CODE -> {
-                if (data?.hasExtra("HEX") == true) {
-                    val addressHex = data.getStringExtra("HEX")
+                if (data?.hasExtra(EXTRA_KEY_ADDRESS) == true) {
+                    val addressHex = data.getStringExtra(EXTRA_KEY_ADDRESS)
                     currentAddressProvider.setCurrent(Address(addressHex))
                     accounts = listOf(addressHex)
                     wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
