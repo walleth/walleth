@@ -24,7 +24,7 @@ fun AssetManager.loadInitChains(moshi: Moshi): List<ChainInfo> {
     return moshi.deSerialize(chainsJSON)
 }
 
-val orderMap = mapOf(1 to 1337, 100 to 88, 61 to 61, 5 to 42, 6 to 6, 4 to 4, 3 to 3, 977 to 2)
+val orderMap = mapOf(1 to 1337, 100 to 88, 61 to 61, 5 to 42, 6 to 6, 4 to 4, 3 to 3, 977 to 2, 77 to 1)
 
 fun Moshi.deSerialize(chainsJSON: String): List<ChainInfo> {
     val adapter: JsonAdapter<List<ChainInfo>> = adapter(newParameterizedType(List::class.java, ChainInfo::class.java))
