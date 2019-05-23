@@ -205,7 +205,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             REQUEST_ID_SIGN_TX -> {
                 if (data?.hasExtra("TXHASH") == true) {
                     val result = data.getStringExtra("TXHASH")
-                    wcViewModel.session?.approveRequest(currentRequestId!!, "0x$result")
+                    wcViewModel.session?.approveRequest(currentRequestId!!, result)
                 }
 
             }
