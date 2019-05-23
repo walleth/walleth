@@ -39,6 +39,7 @@ class WalletConnectViewModel(val app: Application,
     }
 
     var statusText: String? = null
+    var iconURL: String? = null
     var showSwitchNetworkButton = false
     var showSwitchAccountButton = false
     var peerMeta: Session.PeerMeta? = null

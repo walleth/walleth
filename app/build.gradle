@@ -184,6 +184,8 @@ dependencies {
     implementation 'com.github.kenglxn.QRGen:android:2.5.0'
     implementation 'com.google.zxing:core:3.4.0'
 
+    implementation 'com.koushikdutta.urlimageviewhelper:urlimageviewhelper:1.0.4'
+
     implementation 'com.jakewharton:process-phoenix:2.0.0'
 
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.0'

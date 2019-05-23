@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import com.koushikdutta.urlimageviewhelper.UrlImageViewHelper.setUrlDrawable
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -50,7 +51,8 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                 when (call) {
                     is Session.MethodCall.SessionRequest -> {
                         wcViewModel.peerMeta = call.peer.meta
-                        wcViewModel.statusText = "waiting for interactions with " + call.peer.meta?.name + " " + call.peer.meta?.icons
+                        wcViewModel.statusText = "waiting for interactions with " + call.peer.meta?.name
+                        wcViewModel.iconURL = call.peer.meta?.icons?.firstOrNull()
                         applyViewModel()
 
                         requestInitialAccount()
@@ -166,7 +168,9 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         wc_change_account.setVisibility(wcViewModel.showSwitchAccountButton)
         wc_change_network.setVisibility(wcViewModel.showSwitchNetworkButton)
         status_text.text = wcViewModel.statusText
-
+        wcViewModel.iconURL?.let {
+            setUrlDrawable(dapp_icon, it)
+        }
     }
 
     private fun selectAccount() {
