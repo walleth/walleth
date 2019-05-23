@@ -184,6 +184,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        wcViewModel.session?.addCallback(sessionCallback)
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
