@@ -9,6 +9,7 @@ import org.walleth.R
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.model.ACCOUNT_TYPE_LIST
+import org.walleth.ui.AccountTypeAdapter
 
 class ImportAsActivity : BaseSubActivity() {
 
