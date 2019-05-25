@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_account_create.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -67,8 +68,6 @@ class CreateAccountActivity : BaseSubActivity() {
         if (currentSpec.type == ACCOUNT_TYPE_NONE) {
             startActivityForResult(Intent(this, NewAccountTypeSelectActivity::class.java), REQUEST_CODE_PICK_ACCOUNT_TYPE)
         }
-
-        supportActionBar?.setDisplayHomeAsUpEnabled(currentAddressProvider.getCurrent() != null)
 
         type_select_button.setOnClickListener {
             startActivityForResult(Intent(this, NewAccountTypeSelectActivity::class.java), REQUEST_CODE_PICK_ACCOUNT_TYPE)
@@ -138,6 +137,21 @@ class CreateAccountActivity : BaseSubActivity() {
         }
     }
 
+    override fun onBackPressed() {
+        if (currentAddressProvider.getCurrent() == null) {
+            selectAccountType()
+        }
+    }
+
+    private fun selectAccountType() {
+        val newAccountTypeSelectActivity = Intent(this, NewAccountTypeSelectActivity::class.java)
+        startActivityForResult(newAccountTypeSelectActivity, REQUEST_CODE_PICK_ACCOUNT_TYPE)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+        android.R.id.home -> false.also { selectAccountType() }
+        else -> true
+    }
 
     private fun applyViewModel() {
         val noneSelected = currentSpec.type == ACCOUNT_TYPE_NONE
