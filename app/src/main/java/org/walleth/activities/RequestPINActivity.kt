@@ -30,13 +30,15 @@ class RequestPINActivity : BaseSubActivity() {
         super.onCreate(savedInstanceState)
 
         showAccountPinDialog { pin1 ->
-            showAccountPinDialog(R.string.please_confirm_your_pin) { pin2 ->
-                if (pin1 == pin2) {
-                    setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_KEY_PIN, pin1))
-                    finish()
-                } else {
-                    alert("PINs do not mach", title = "Error") {
+            if (pin1 != null) {
+                showAccountPinDialog(R.string.please_confirm_your_pin) { pin2 ->
+                    if (pin1 == pin2) {
+                        setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_KEY_PIN, pin1))
                         finish()
+                    } else {
+                        alert("PINs do not mach", title = "Error") {
+                            finish()
+                        }
                     }
                 }
             }
