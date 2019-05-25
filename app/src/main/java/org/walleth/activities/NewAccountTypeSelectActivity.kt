@@ -3,16 +3,18 @@ package org.walleth.activities
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.activity_account_type_select.*
 import kotlinx.android.synthetic.main.item_account_type.view.*
+import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.model.ACCOUNT_TYPE_LIST
 import org.walleth.model.AccountType
 
@@ -41,12 +43,16 @@ class AccountTypeAdapter(val list: List<AccountType>, val inSpec: AccountKeySpec
 
 open class NewAccountTypeSelectActivity : BaseSubActivity() {
 
+    val currentAddressProvider: CurrentAddressProvider by inject()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_account_type_select)
 
         supportActionBar?.subtitle = "New account"
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(currentAddressProvider.getCurrent() != null)
 
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = AccountTypeAdapter(ACCOUNT_TYPE_LIST, AccountKeySpec(ACCOUNT_TYPE_NONE))
@@ -71,7 +77,6 @@ open class NewAccountTypeSelectActivity : BaseSubActivity() {
                 }
             }
             finish()
-
 
         }
     }
