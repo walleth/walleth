@@ -7,6 +7,12 @@
             app:showAsAction="ifRoom"
     />
     <item
+            android:title="@string/share"
+            android:id="@+id/menu_copy_to_clipboard"
+            android:icon="@drawable/ic_content_copy"
+            app:showAsAction="ifRoom"
+    />
+    <item
             android:title="@string/save"
             android:id="@+id/menu_save"
             android:icon="@drawable/ic_save_black_24dp"

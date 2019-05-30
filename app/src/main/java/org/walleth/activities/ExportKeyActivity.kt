@@ -2,9 +2,7 @@ package org.walleth.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
+import android.content.*
 import android.graphics.Bitmap
 import android.graphics.Point
 import android.graphics.drawable.BitmapDrawable
@@ -19,6 +17,7 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_show_qr.*
 import kotlinx.coroutines.*
 import net.glxn.qrgen.android.QRCode
@@ -130,6 +129,13 @@ class ExportKeyActivity : AddressReceivingActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
+
+        R.id.menu_copy_to_clipboard -> true.also {
+            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("key", keyJSON)
+            clipboard.primaryClip = clip
+            Snackbar.make(activity_export_key, "Key copied to clipboard", Snackbar.LENGTH_LONG).show()
+        }
 
         R.id.menu_share -> true.also {
             startAfterKeyIsReady {
