@@ -2,6 +2,7 @@ package org.walleth.activities
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
@@ -11,13 +12,13 @@ import android.os.Build
 import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
-import androidx.annotation.RequiresApi
 import android.util.Base64
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import androidx.annotation.RequiresApi
 import kotlinx.android.synthetic.main.activity_show_qr.*
 import kotlinx.coroutines.*
 import net.glxn.qrgen.android.QRCode
@@ -55,7 +56,7 @@ class ExportKeyActivity : AddressReceivingActivity() {
 
         appDatabase.addressBook.getByAddressAsync(relevantAddress) {
             currentAccountType = it?.getSpec()?.type
-            getPasswordForAccountType(currentAccountType?: ACCOUNT_TYPE_BURNER) { password ->
+            getPasswordForAccountType(currentAccountType ?: ACCOUNT_TYPE_BURNER) { password ->
                 if (password == null) {
                     finish()
                 } else {
@@ -138,7 +139,11 @@ class ExportKeyActivity : AddressReceivingActivity() {
                     putExtra(Intent.EXTRA_TEXT, keyJSON)
                     type = "text/plain"
                 }
-                startActivity(sendIntent)
+                try {
+                    startActivity(sendIntent)
+                } catch (e: ActivityNotFoundException) {
+                    alert("Did not find any app to share with.")
+                }
             }
         }
 
