@@ -53,7 +53,6 @@ import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.migrations.ChainAddingAndRecreatingMigration
-import org.walleth.migrations.RecreatingMigration
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.viewmodels.WalletConnectViewModel
@@ -110,9 +109,9 @@ open class App : MultiDexApplication() {
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
                     .addMigrations(
-                            RecreatingMigration(1),
-                            RecreatingMigration(2),
-                            RecreatingMigration(3),
+                            ChainAddingAndRecreatingMigration(1),
+                            ChainAddingAndRecreatingMigration(2),
+                            ChainAddingAndRecreatingMigration(3),
                             ChainAddingAndRecreatingMigration(4)
                     ).build()
         }
