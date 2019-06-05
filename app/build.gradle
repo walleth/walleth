@@ -214,7 +214,7 @@ dependencies {
     // Kotlin + coroutines
     implementation 'androidx.work:work-runtime-ktx:2.0.1'
 
-    implementation 'com.github.ligi:Pikolo:migrate_androidx_tag'
+    implementation 'com.github.madrapps:pikolo:2.0.1'
 
     implementation 'androidx.room:room-runtime:2.0.0'
     kapt 'androidx.room:room-compiler:2.0.0'
