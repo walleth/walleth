@@ -1,7 +1,7 @@
 package org.walleth.infrastructure
 
-import org.koin.dsl.module.module
-import org.koin.standalone.StandAloneContext.loadKoinModules
+import org.koin.core.context.loadKoinModules
+import org.koin.dsl.module
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 

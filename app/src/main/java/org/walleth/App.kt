@@ -24,9 +24,11 @@ import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.kethereum.keystore.api.InitializingFileKeyStore
 import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
-import org.koin.android.ext.android.startKoin
-import org.koin.androidx.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.module
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.core.context.startKoin
+import org.koin.dsl.module
 import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
@@ -147,7 +149,11 @@ open class App : MultiDexApplication() {
         Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
         Security.addProvider(BouncyCastleProvider())
 
-        startKoin(this, listOf(koinModule, createKoin()))
+         startKoin {
+            androidLogger()
+            androidContext(this@App)
+            modules(listOf(koinModule, createKoin()))
+        }
 
         if (BuildConfig.DEBUG) {
             StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()

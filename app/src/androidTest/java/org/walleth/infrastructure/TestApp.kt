@@ -11,8 +11,8 @@ import org.kethereum.DEFAULT_GAS_PRICE
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.rpc.EthereumRPC
 import org.kethereum.rpc.model.StringResultResponse
-import org.koin.androidx.viewmodel.ext.koin.viewModel
-import org.koin.dsl.module.module
+import org.koin.androidx.viewmodel.dsl.viewModel
+import org.koin.dsl.module
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock

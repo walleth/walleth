@@ -3,8 +3,8 @@ package org.walleth.ui
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_network_definition.view.*
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.networks.CurrentAddressProvider
 

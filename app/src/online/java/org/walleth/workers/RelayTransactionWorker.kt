@@ -6,8 +6,8 @@ import androidx.work.WorkerParameters
 import okhttp3.OkHttpClient
 import org.kethereum.functions.encodeRLP
 import org.kethereum.rpc.HttpEthereumRPC
-import org.koin.standalone.KoinComponent
-import org.koin.standalone.inject
+import org.koin.core.KoinComponent
+import org.koin.core.inject
 import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
