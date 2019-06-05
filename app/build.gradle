@@ -230,8 +230,8 @@ dependencies {
     androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.25.0'
 
 
-    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.1.1'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.1.1'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
     androidTestImplementation 'com.github.ligi:trulesk:0.28'
 
     testImplementation 'junit:junit:4.12'
