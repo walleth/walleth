@@ -52,6 +52,7 @@ class CreateAccountActivity : BaseSubActivity() {
 
     private var currentSpec: AccountKeySpec = AccountKeySpec(ACCOUNT_TYPE_NONE)
     private var currentAddress: Address? = null
+    private var isCreatingAccount = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -82,35 +83,37 @@ class CreateAccountActivity : BaseSubActivity() {
         }
 
         fab.setOnClickListener {
-            if (!nameInput.hasText()) {
-                alert(title = R.string.alert_problem_title, message = R.string.please_enter_name)
-                return@setOnClickListener
-            }
-            val importKey = currentSpec.initPayload?.let {
-                val split = it.split("/")
-                ECKeyPair(PrivateKey(split.first()), PublicKey(split.last()))
-            }
-            when (currentSpec.type) {
-
-                ACCOUNT_TYPE_BURNER -> {
-                    val key = importKey ?: createEthereumKeyPair()
-                    keyStore.addKey(key, DEFAULT_PASSWORD, true)
-
-                    createAccountAndFinish(key.toAddress(), currentSpec)
-
+            if (!isCreatingAccount) {
+                if (!nameInput.hasText()) {
+                    alert(title = R.string.alert_problem_title, message = R.string.please_enter_name)
+                    return@setOnClickListener
                 }
-
-                ACCOUNT_TYPE_PIN_PROTECTED, ACCOUNT_TYPE_PASSWORD_PROTECTED -> {
-                    val key = importKey ?: createEthereumKeyPair()
-                    keyStore.addKey(key, currentSpec.pwd!!, true)
-
-                    createAccountAndFinish(key.toAddress(), currentSpec.copy(pwd = null))
+                val importKey = currentSpec.initPayload?.let {
+                    val split = it.split("/")
+                    ECKeyPair(PrivateKey(split.first()), PublicKey(split.last()))
                 }
-                ACCOUNT_TYPE_NFC, ACCOUNT_TYPE_TREZOR, ACCOUNT_TYPE_WATCH_ONLY -> {
-                    if (currentAddress == null) {
-                        alert("Invalid address")
-                    } else {
-                        createAccountAndFinish(currentAddress!!, currentSpec)
+                when (currentSpec.type) {
+
+                    ACCOUNT_TYPE_BURNER -> {
+                        val key = importKey ?: createEthereumKeyPair()
+                        keyStore.addKey(key, DEFAULT_PASSWORD, true)
+
+                        createAccountAndFinish(key.toAddress(), currentSpec)
+
+                    }
+
+                    ACCOUNT_TYPE_PIN_PROTECTED, ACCOUNT_TYPE_PASSWORD_PROTECTED -> {
+                        val key = importKey ?: createEthereumKeyPair()
+                        keyStore.addKey(key, currentSpec.pwd!!, true)
+
+                        createAccountAndFinish(key.toAddress(), currentSpec.copy(pwd = null))
+                    }
+                    ACCOUNT_TYPE_NFC, ACCOUNT_TYPE_TREZOR, ACCOUNT_TYPE_WATCH_ONLY -> {
+                        if (currentAddress == null) {
+                            alert("Invalid address")
+                        } else {
+                            createAccountAndFinish(currentAddress!!, currentSpec)
+                        }
                     }
                 }
             }
@@ -122,6 +125,7 @@ class CreateAccountActivity : BaseSubActivity() {
     }
 
     private fun createAccountAndFinish(address: Address, keySpec: AccountKeySpec) {
+        isCreatingAccount = true
         GlobalScope.launch(Dispatchers.Main) {
             withContext(Dispatchers.Default) {
                 appDatabase.addressBook.upsert(AddressBookEntry(
