@@ -99,7 +99,7 @@
                   android:windowSoftInputMode="adjustResize"/>
 
         <activity android:name=".activities.NewAccountTypeSelectActivity"/>
-        <activity android:name=".activities.StartupActivity">
+        <activity android:name=".startup.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 

@@ -3,7 +3,7 @@ package org.walleth
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.ligi.kaxt.startActivityFromClass
-import org.walleth.activities.StartupActivity
+import org.walleth.startup.StartupActivity
 
 class DebugTrampolin : AppCompatActivity() {
 

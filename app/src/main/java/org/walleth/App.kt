@@ -55,6 +55,7 @@ import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.migrations.ChainAddingAndRecreatingMigration
+import org.walleth.startup.StartupViewModel
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.viewmodels.WalletConnectViewModel
@@ -136,6 +137,7 @@ open class App : MultiDexApplication() {
         }
         viewModel { TransactionListViewModel(this@App, get(), get(), get()) }
         viewModel { WalletConnectViewModel(this@App, get(), get()) }
+        viewModel { StartupViewModel(get(),get()) }
     }
 
     override fun attachBaseContext(base: Context) {

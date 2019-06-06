@@ -212,6 +212,7 @@ dependencies {
     implementation 'com.github.ligi:rootbeer:remove_native_workaround'
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-beta01'
 
     // Kotlin + coroutines
     implementation 'androidx.work:work-runtime-ktx:2.0.1'
