@@ -1,4 +1,4 @@
-package org.walleth.activities
+package org.walleth.accounts
 
 import android.annotation.TargetApi
 import android.app.Activity
@@ -8,10 +8,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AlertDialog
 import kotlinx.android.synthetic.main.activity_import_key.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -28,22 +28,29 @@ import org.kethereum.wallet.loadKeysFromWalletJsonString
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.qrscan.startScanActivityForResult
+import org.walleth.activities.BaseSubActivity
+import org.walleth.activities.ImportAsActivity
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.khex.hexToByteArray
+import org.walleth.qrscan.startScanActivityForResult
 import java.io.FileNotFoundException
 
 enum class KeyType {
     ECDSA, JSON, WORDLIST
 }
 
-fun Context.getKeyImportIntent(key: String, type: KeyType) = Intent(this, ImportKeyActivity::class.java).apply {
-    putExtra(KEY_INTENT_EXTRA_TYPE, type.toString())
-    putExtra(KEY_INTENT_EXTRA_KEYCONTENT, key)
+private const val SERIALISATION_DELIMITER = "%%%"
+fun getAccountSpec(value: String, type: KeyType): AccountKeySpec = AccountKeySpec(ACCOUNT_TYPE_IMPORT, initPayload = "$type%%%$value")
+
+fun Context.getCreateImportIntentFor(value: String, type: KeyType) = getKeyImportIntentViaCreate(getAccountSpec(value, type))
+fun Context.getKeyImportIntent(spec: AccountKeySpec) = Intent(this, ImportKeyActivity::class.java).apply {
+    putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
+}
+fun Context.getKeyImportIntentViaCreate(spec: AccountKeySpec) = Intent(this, CreateAccountActivity::class.java).apply {
+    putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
 }
 
-private const val READ_REQUEST_CODE = 42
 
 open class ImportKeyActivity : BaseSubActivity() {
 
@@ -53,14 +60,20 @@ open class ImportKeyActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_import_key)
 
-        intent.getStringExtra(KEY_INTENT_EXTRA_KEYCONTENT)?.let {
-            key_content.setText(it)
+        var type = KeyType.WORDLIST.toString()
+        intent.getParcelableExtra<AccountKeySpec>(EXTRA_KEY_ACCOUNTSPEC)?.let { spec ->
+
+            spec.initPayload?.split(SERIALISATION_DELIMITER)?.let { params ->
+                key_content.setText(params.last())
+                type = params.first()
+
+
+            }
+
         }
 
-        val typeExtra = intent.getStringExtra(KEY_INTENT_EXTRA_TYPE) ?: KeyType.WORDLIST.toString()
-
-        type_wordlist_select.isChecked = KeyType.valueOf(typeExtra) == KeyType.WORDLIST
-        type_json_select.isChecked = KeyType.valueOf(typeExtra) == KeyType.JSON
+        type_wordlist_select.isChecked = KeyType.valueOf(type) == KeyType.WORDLIST
+        type_json_select.isChecked = KeyType.valueOf(type) == KeyType.JSON
         type_ecdsa_select.isChecked = !type_json_select.isChecked && !type_wordlist_select.isChecked
 
         key_type_select.setOnCheckedChangeListener { _, _ ->
@@ -115,8 +128,6 @@ open class ImportKeyActivity : BaseSubActivity() {
             if (importKey != null) {
                 val initPayload = importKey.privateKey.key.toHexString() + "/" + importKey.publicKey.key.toHexString()
                 val spec = AccountKeySpec(ACCOUNT_TYPE_IMPORT, initPayload = initPayload)
-                //setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_KEY_ACCOUNTSPEC, spec))
-                //finish()
 
                 val intent = Intent(this@ImportKeyActivity, ImportAsActivity::class.java).putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
                 startActivityForResult(intent, REQUEST_CODE_IMPORT_AS)
@@ -149,7 +160,7 @@ open class ImportKeyActivity : BaseSubActivity() {
             if (it.hasExtra("SCAN_RESULT")) {
                 key_content.setText(it.getStringExtra("SCAN_RESULT"))
             }
-            if (requestCode == READ_REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+            if (requestCode == REQUEST_CODE_OPEN_DOCUMENT && resultCode == Activity.RESULT_OK) {
 
                 it.data?.let { data ->
                     readTextFromUri(data)?.run {
@@ -170,7 +181,7 @@ open class ImportKeyActivity : BaseSubActivity() {
     }
 
     private fun readTextFromUri(uri: Uri) = try {
-        contentResolver.openInputStream(uri).reader().readText()
+        contentResolver.openInputStream(uri)?.reader()?.readText()
     } catch (fileNotFoundException: FileNotFoundException) {
         alert("Cannot read from $uri - if you think I should - please contact walleth@walleth.org with details of the device (Android version,Brand) and the beginning of the uri")
         null
@@ -196,7 +207,7 @@ open class ImportKeyActivity : BaseSubActivity() {
             intent.addCategory(Intent.CATEGORY_OPENABLE)
             intent.type = "*/*"
 
-            startActivityForResult(intent, READ_REQUEST_CODE)
+            startActivityForResult(intent, REQUEST_CODE_OPEN_DOCUMENT)
         } catch (e: ActivityNotFoundException) {
             alert(R.string.saf_activity_not_found_problem)
         }

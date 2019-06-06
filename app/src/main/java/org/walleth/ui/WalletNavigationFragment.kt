@@ -11,6 +11,7 @@ import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
+import org.walleth.accounts.SwitchAccountActivity
 import org.walleth.activities.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings

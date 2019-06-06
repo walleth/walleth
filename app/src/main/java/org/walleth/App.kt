@@ -71,18 +71,7 @@ open class App : MultiDexApplication() {
     private val koinModule = module {
         single { Moshi.Builder().add(BigIntegerAdapter()).build() }
 
-        single {
-            val socketFactory = object : DelegatingSocketFactory(SocketFactory.getDefault()) {
-                override fun configureSocket(socket: Socket): Socket {
-                    // https://github.com/walleth/walleth/issues/164
-                    // https://github.com/square/okhttp/issues/3537
-                    TrafficStats.tagSocket(socket)
 
-                    return socket
-                }
-            }
-            OkHttpClient.Builder().socketFactory(socketFactory).build()
-        }
     }
 
     private val keyStore by lazy { InitializingFileKeyStore(File(filesDir, "keystore")) }
@@ -135,9 +124,22 @@ open class App : MultiDexApplication() {
         single {
             NFCCredentialStore(this@App)
         }
+
+        single {
+            val socketFactory = object : DelegatingSocketFactory(SocketFactory.getDefault()) {
+                override fun configureSocket(socket: Socket): Socket {
+                    // https://github.com/walleth/walleth/issues/164
+                    // https://github.com/square/okhttp/issues/3537
+                    TrafficStats.tagSocket(socket)
+
+                    return socket
+                }
+            }
+            OkHttpClient.Builder().socketFactory(socketFactory).build()
+        }
         viewModel { TransactionListViewModel(this@App, get(), get(), get()) }
-        viewModel { WalletConnectViewModel(this@App, get(), get()) }
-        viewModel { StartupViewModel(get(),get()) }
+        viewModel { WalletConnectViewModel(this@App, get(), get(), get()) }
+        viewModel { StartupViewModel(get(), get()) }
     }
 
     override fun attachBaseContext(base: Context) {
@@ -151,7 +153,7 @@ open class App : MultiDexApplication() {
         Security.removeProvider(BouncyCastleProvider.PROVIDER_NAME)
         Security.addProvider(BouncyCastleProvider())
 
-         startKoin {
+        startKoin {
             androidLogger()
             androidContext(this@App)
             modules(listOf(koinModule, createKoin()))

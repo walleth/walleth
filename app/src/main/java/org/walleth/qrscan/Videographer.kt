@@ -1,4 +1,4 @@
-package org.walleth.activities.qrscan
+package org.walleth.qrscan
 
 import android.app.Activity
 import android.graphics.ImageFormat
@@ -137,7 +137,7 @@ class Videographer(val activity: Activity) {
             parameters.focusMode = focusMode
         }
 
-        if ("Nexus 4".equals(Build.MODEL)) {
+        if ("Nexus 4" == Build.MODEL) {
             //Workaround for slow camera preview on Nexus 4
             parameters.setRecordingHint(true)
         }
@@ -160,9 +160,7 @@ class Videographer(val activity: Activity) {
         val info = Camera.CameraInfo()
         Camera.getCameraInfo(defaultCameraId, info)
 
-        val rotation = activity.windowManager.defaultDisplay.rotation
-
-        var degrees = when (rotation) {
+        var degrees = when (activity.windowManager.defaultDisplay.rotation) {
             Surface.ROTATION_0 -> 0
             Surface.ROTATION_90 -> 90
             Surface.ROTATION_180 -> 180

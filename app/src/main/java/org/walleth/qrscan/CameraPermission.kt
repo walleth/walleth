@@ -1,10 +1,10 @@
-package org.walleth.activities.qrscan
+package org.walleth.qrscan
 
 import android.Manifest
 import android.app.Activity
 import android.content.pm.PackageManager
-import androidx.core.app.ActivityCompat
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import org.walleth.R
 
 private const val REQUEST_CAMERA = 0
@@ -24,8 +24,6 @@ class CameraPermission(val activity: Activity) {
     fun isGranted() = getPermission() == PackageManager.PERMISSION_GRANTED
 
     fun request() {
-        ActivityCompat.requestPermissions(activity,
-                arrayOf(android.Manifest.permission.CAMERA),
-                REQUEST_CAMERA)
+        ActivityCompat.requestPermissions(activity, arrayOf(Manifest.permission.CAMERA), REQUEST_CAMERA)
     }
 }

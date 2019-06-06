@@ -15,6 +15,7 @@ import org.walletconnect.impls.WCSessionStore
 
 class WalletConnectViewModel(val app: Application,
                              val moshi: Moshi,
+                             val okHttpClient: OkHttpClient,
                              val sessionStore: WCSessionStore) : AndroidViewModel(app) {
 
     var session: WCSession? = null
@@ -26,7 +27,7 @@ class WalletConnectViewModel(val app: Application,
                 fromWCUri(_uri),
                 MoshiPayloadAdapter(moshi),
                 sessionStore,
-                OkHttpTransport.Builder(OkHttpClient.Builder().build(), moshi),
+                OkHttpTransport.Builder(okHttpClient, moshi),
                 Session.PeerMeta(name = "WallETH")
         )
 

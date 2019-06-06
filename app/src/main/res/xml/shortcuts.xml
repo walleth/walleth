@@ -11,22 +11,22 @@
         <intent
                 android:action="android.intent.action.MAIN"
                 android:targetPackage="org.walleth"
-                android:targetClass="org.walleth.activities.CreateTransactionActivity" />
+                android:targetClass="org.walleth.activities.CreateTransactionActivity"/>
 
     </shortcut>
 
     <shortcut
-        android:shortcutId="scan"
-        android:enabled="true"
-        android:icon="@mipmap/ic_camera_shortcut"
-        android:shortcutShortLabel="@string/scan"
-        android:shortcutLongLabel="@string/scan"
-        android:shortcutDisabledMessage="@string/scan_disabled"
-        tools:targetApi="n_mr1">
+            android:shortcutId="scan"
+            android:enabled="true"
+            android:icon="@mipmap/ic_camera_shortcut"
+            android:shortcutShortLabel="@string/scan"
+            android:shortcutLongLabel="@string/scan"
+            android:shortcutDisabledMessage="@string/scan_disabled"
+            tools:targetApi="n_mr1">
         <intent
-            android:action="org.walleth.action.SCAN"
-            android:targetPackage="org.walleth"
-            android:targetClass="org.walleth.activities.MainActivity" />
+                android:action="android.intent.action.MAIN"
+                android:targetPackage="org.walleth"
+                android:targetClass="org.walleth.qrscan.QRScanActivityAndProcessActivity"/>
     </shortcut>
 
 </shortcuts>

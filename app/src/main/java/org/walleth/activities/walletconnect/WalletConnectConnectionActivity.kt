@@ -18,6 +18,7 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.ligi.kaxt.setVisibility
 import org.walletconnect.Session
 import org.walleth.R
+import org.walleth.accounts.AccountPickActivity
 import org.walleth.activities.*
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.networks.ChainInfoProvider

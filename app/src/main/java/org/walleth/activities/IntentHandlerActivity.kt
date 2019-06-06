@@ -18,6 +18,8 @@ import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.accounts.AccountPickActivity
+import org.walleth.accounts.startCreateAccountActivity
 import org.walleth.activities.walletconnect.WalletConnectConnectionActivity
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
@@ -33,7 +35,7 @@ fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentH
 
 class IntentHandlerActivity : WallethActivity() {
 
-    var textToSign: String? = null
+    private var textToSign: String? = null
 
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val keyStore: KeyStore by inject()

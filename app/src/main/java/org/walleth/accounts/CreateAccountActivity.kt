@@ -1,4 +1,4 @@
-package org.walleth.activities
+package org.walleth.accounts
 
 import android.app.Activity
 import android.content.Context
@@ -26,6 +26,7 @@ import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.BaseSubActivity
 import org.walleth.activities.trezor.getAddressResult
 import org.walleth.activities.trezor.hasAddressResult
 import org.walleth.data.*
@@ -36,11 +37,9 @@ import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.model.ACCOUNT_TYPE_MAP
 import org.walleth.util.hasText
 
-private const val HEX_INTENT_EXTRA_KEY = "HEX"
-
 fun Context.startCreateAccountActivity(hex: String) {
     startActivity(Intent(this, CreateAccountActivity::class.java).apply {
-        putExtra(HEX_INTENT_EXTRA_KEY, hex)
+        putExtra(EXTRA_KEY_ACCOUNTSPEC, AccountKeySpec(ACCOUNT_TYPE_WATCH_ONLY, source = hex))
     })
 }
 
@@ -61,17 +60,21 @@ class CreateAccountActivity : BaseSubActivity() {
 
         supportActionBar?.subtitle = getString(R.string.create_account_subtitle)
 
-        intent.getStringExtra(HEX_INTENT_EXTRA_KEY)?.let {
-            currentSpec = AccountKeySpec(ACCOUNT_TYPE_WATCH_ONLY)
-            setAddressFromExternalApplyingChecksum(Address(it))
+        intent.getParcelableExtra<AccountKeySpec>(EXTRA_KEY_ACCOUNTSPEC)?.let {
+            currentSpec = it
         }
 
-        if (currentSpec.type == ACCOUNT_TYPE_NONE) {
-            startActivityForResult(Intent(this, NewAccountTypeSelectActivity::class.java), REQUEST_CODE_PICK_ACCOUNT_TYPE)
+        when (currentSpec.type) {
+            ACCOUNT_TYPE_WATCH_ONLY -> currentSpec.source?.let {
+                setAddressFromExternalApplyingChecksum(Address(it))
+            }
+            ACCOUNT_TYPE_IMPORT -> startActivityForResult(getKeyImportIntent(currentSpec), REQUEST_CODE_IMPORT)
+            ACCOUNT_TYPE_NONE -> startActivityForResult(getSelectTypeIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
+
         }
 
         type_select_button.setOnClickListener {
-            startActivityForResult(Intent(this, NewAccountTypeSelectActivity::class.java), REQUEST_CODE_PICK_ACCOUNT_TYPE)
+            startActivityForResult(getSelectTypeIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
         }
 
         input_address.doAfterEdit {
@@ -148,9 +151,10 @@ class CreateAccountActivity : BaseSubActivity() {
     }
 
     private fun selectAccountType() {
-        val newAccountTypeSelectActivity = Intent(this, NewAccountTypeSelectActivity::class.java)
-        startActivityForResult(newAccountTypeSelectActivity, REQUEST_CODE_PICK_ACCOUNT_TYPE)
+        startActivityForResult(getSelectTypeIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
     }
+
+    private fun getSelectTypeIntent() = Intent(this, NewAccountTypeSelectActivity::class.java)
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> false.also { selectAccountType() }
@@ -181,7 +185,7 @@ class CreateAccountActivity : BaseSubActivity() {
         }
         data?.run {
             when (requestCode) {
-                REQUEST_CODE_PICK_ACCOUNT_TYPE -> {
+                REQUEST_CODE_PICK_ACCOUNT_TYPE, REQUEST_CODE_IMPORT -> {
                     currentSpec = data.getParcelableExtra(EXTRA_KEY_ACCOUNTSPEC)
                     applyViewModel()
                 }

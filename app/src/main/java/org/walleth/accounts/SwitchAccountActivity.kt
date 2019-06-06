@@ -1,4 +1,4 @@
-package org.walleth.activities
+package org.walleth.accounts
 
 import android.os.Bundle
 import org.walleth.R

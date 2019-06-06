@@ -8,7 +8,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
-import org.walleth.activities.AccountPickActivity
+import org.walleth.accounts.AccountPickActivity
 
 class TheAccountPickActivity {
 

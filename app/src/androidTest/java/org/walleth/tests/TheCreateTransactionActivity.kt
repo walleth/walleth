@@ -24,7 +24,7 @@ import org.kethereum.model.Address
 import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
 import org.walleth.activities.CreateTransactionActivity
-import org.walleth.activities.qrscan.QRScanActivity
+import org.walleth.qrscan.QRScanActivity
 import org.walleth.data.ACCOUNT_TYPE_BURNER
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.AddressBookEntry

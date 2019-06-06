@@ -14,10 +14,10 @@ import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.tokens.Token
+import org.walleth.qrscan.startScanActivityForResult
 
 
 class CreateTokenDefinitionActivity : BaseSubActivity() {

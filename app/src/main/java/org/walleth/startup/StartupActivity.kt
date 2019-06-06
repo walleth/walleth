@@ -10,7 +10,7 @@ import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
-import org.walleth.activities.CreateAccountActivity
+import org.walleth.accounts.CreateAccountActivity
 import org.walleth.activities.MainActivity
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.REQUEST_CODE_CREATE_ACCOUNT

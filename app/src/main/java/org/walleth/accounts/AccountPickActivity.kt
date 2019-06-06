@@ -1,4 +1,4 @@
-package org.walleth.activities
+package org.walleth.accounts
 
 import android.app.Activity
 import android.content.Intent

@@ -2,6 +2,7 @@ dependencyVerification {
     verify = [
         'androidx.annotation:annotation:1.0.0:annotation-1.0.0.jar:0baae9755f7caf52aa80cd04324b91ba93af55d4d1d17dcc9a7b53d99ef7c016',
         'androidx.annotation:annotation:1.0.2:annotation-1.0.2.jar:9bcdf4cc5003121db87b51de5f51db5805df335d42a36a70a5ab7405c23163f2',
+        'androidx.annotation:annotation:1.1.0-rc01:annotation-1.1.0-rc01.jar:d38d63edb30f1467818d50aaf05f8a692dea8b31392a049bfa991b159ad5b692',
         'androidx.appcompat:appcompat:1.0.0:appcompat-1.0.0.aar:994254e12036cbd3326b2819a4d8bc3bef139f45022cfb0b1086dc58d36d56ce',
         'androidx.appcompat:appcompat:1.0.2:appcompat-1.0.2.aar:a3080cdd5e5c56cb72f9d428b1657d4380011ec211cfedf76e084b95f6bf0d03',
         'androidx.arch.core:core-common:2.0.0:core-common-2.0.0.jar:4b80b337779b526e64b0ee0ca9e0df43b808344d145f8e9b1c42a134dac57ad8',
@@ -29,7 +30,9 @@ dependencyVerification {
         'androidx.lifecycle:lifecycle-process:2.0.0:lifecycle-process-2.0.0.aar:d8ff6fd844559743050c9ae010a6df230f2a3dbdf3e14498316f30bd8df836b5',
         'androidx.lifecycle:lifecycle-runtime:2.0.0:lifecycle-runtime-2.0.0.aar:e4afc9e636183f6f3e0edf1cf46121a492ffd2c673075bb07f55c7a99dd43cfb',
         'androidx.lifecycle:lifecycle-service:2.0.0:lifecycle-service-2.0.0.aar:cb2b15bb0cf14134e953ed8ead96f94265018643f519367d51fd837f7311e9f8',
+        'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0-beta01:lifecycle-viewmodel-ktx-2.1.0-beta01.aar:3a65cdd44db693c3f15796b5f78205471c0be33e8a3798595711ddaa9cca249f',
         'androidx.lifecycle:lifecycle-viewmodel:2.0.0:lifecycle-viewmodel-2.0.0.aar:d6460aea1b6bad80ab14cf88297e9e43bfde8d87c3e5c28f2c508233ffbcc062',
+        'androidx.lifecycle:lifecycle-viewmodel:2.1.0-beta01:lifecycle-viewmodel-2.1.0-beta01.aar:9f2efb59328027fa9f0c413d4d5910aab68d149b139ca8ce432135105b74833a',
         'androidx.loader:loader:1.0.0:loader-1.0.0.aar:11f735cb3b55c458d470bed9e25254375b518b4b1bad6926783a7026db0f5025',
         'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0:localbroadcastmanager-1.0.0.aar:e71c328ceef5c4a7d76f2d86df1b65d65fe2acf868b1a4efd84a3f34336186d8',
         'androidx.media:media:1.0.0:media-1.0.0.aar:b23b527b2bac870c4a7451e6982d7132e413e88d7f27dbeb1fc7640a720cd9ee',

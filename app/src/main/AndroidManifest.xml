@@ -27,7 +27,7 @@
 
         <service android:name="org.walleth.core.TransactionNotificationService"/>
 
-        <activity android:name="org.walleth.activities.qrscan.QRScanActivity"/>
+        <activity android:name="org.walleth.qrscan.QRScanActivity"/>
 
         <activity android:name="org.walleth.activities.SwitchChainActivity"/>
         <activity android:name="org.walleth.activities.RequestActivity"/>
@@ -40,14 +40,12 @@
 
         <activity android:name="org.walleth.activities.nfc.NFCGetAddressActivity"/>
         <activity android:name="org.walleth.activities.nfc.NFCSignTransactionActivity"/>
-        <activity android:name="org.walleth.activities.ImportKeyActivity"/>
 
         <activity android:name="org.walleth.activities.walletconnect.WalletConnectConnectionActivity"/>
         <activity android:name="org.walleth.activities.walletconnect.WalletConnectErrorActivity"/>
 
         <activity android:name="org.walleth.activities.ExportKeyActivity"/>
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
-        <activity android:name="org.walleth.activities.CreateAccountActivity"/>
         <activity android:name="org.walleth.activities.SelectReferenceActivity"/>
         <activity android:name="org.walleth.activities.ParitySignerQRActivity"/>
         <activity android:name="org.walleth.activities.SignTextActivity"/>
@@ -55,8 +53,6 @@
         <activity android:name="org.walleth.activities.CreateTokenDefinitionActivity"/>
         <activity android:name="org.walleth.activities.SecurityInfoActivity"/>
 
-        <activity android:name="org.walleth.activities.AccountPickActivity"/>
-        <activity android:name="org.walleth.activities.SwitchAccountActivity"/>
         <activity android:name="org.walleth.activities.PreferenceActivity"/>
         <activity android:name="org.walleth.activities.ViewTransactionActivity"/>
         <activity android:name="org.walleth.activities.CreateTransactionActivity"/>
@@ -98,7 +94,12 @@
         <activity android:name="org.walleth.activities.OfflineTransactionActivity"
                   android:windowSoftInputMode="adjustResize"/>
 
-        <activity android:name=".activities.NewAccountTypeSelectActivity"/>
+        <activity android:name="org.walleth.accounts.CreateAccountActivity"/>
+        <activity android:name="org.walleth.accounts.NewAccountTypeSelectActivity"/>
+        <activity android:name="org.walleth.accounts.AccountPickActivity"/>
+        <activity android:name="org.walleth.accounts.SwitchAccountActivity"/>
+        <activity android:name="org.walleth.accounts.ImportKeyActivity"/>
+
         <activity android:name=".startup.StartupActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -122,6 +123,7 @@
         <activity android:name=".activities.RequestPasswordActivity"
                   android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".activities.ImportAsActivity"/>
+        <activity android:name=".qrscan.QRScanActivityAndProcessActivity"/>
 
     </application>
 

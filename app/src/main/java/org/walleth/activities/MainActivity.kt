@@ -11,7 +11,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.INVISIBLE
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,11 +18,9 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.json.JSONObject
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.toERC681
-import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -33,8 +30,6 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.qrscan.startScanActivityForResult
-import org.walleth.activities.walletconnect.getWalletConnectIntent
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
@@ -43,14 +38,13 @@ import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootToken
+import org.walleth.qrscan.QRScanActivityAndProcessActivity
+import org.walleth.qrscan.startScanActivityForResult
 import org.walleth.ui.TransactionAdapterDirection.INCOMING
 import org.walleth.ui.TransactionAdapterDirection.OUTGOING
 import org.walleth.ui.TransactionRecyclerAdapter
 import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.copyToClipboard
-import org.walleth.util.isParityUnsignedTransactionJSON
-import org.walleth.util.isSignedTransactionJSON
-import org.walleth.util.isUnsignedTransactionJSON
 import org.walleth.viewmodels.TransactionListViewModel
 import java.math.BigInteger.ZERO
 
@@ -110,53 +104,6 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
-    private fun String.isJSONKey() = try {
-        JSONObject(this).let {
-            it.has("address") && (it.has("crypto") || it.has("Crypto"))
-        }
-    } catch (e: Exception) {
-        false
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (data != null && data.hasExtra("SCAN_RESULT")) {
-            val scanResult = data.getStringExtra("SCAN_RESULT")
-
-            when {
-                scanResult.startsWith("wc:") -> {
-                    startActivity(getWalletConnectIntent(Uri.parse(scanResult)))
-                }
-
-                scanResult.isEthereumURLString() -> {
-                    startActivity(getEthereumViewIntent(scanResult))
-                }
-
-                scanResult.length == 64 -> {
-                    startActivity(getKeyImportIntent(scanResult, KeyType.ECDSA))
-                }
-
-                scanResult.isJSONKey() -> {
-                    startActivity(getKeyImportIntent(scanResult, KeyType.JSON))
-                }
-
-                scanResult.isUnsignedTransactionJSON() || scanResult.isSignedTransactionJSON() || scanResult.isParityUnsignedTransactionJSON() -> {
-                    startActivity(getOfflineTransactionIntent(scanResult))
-                }
-
-                scanResult.startsWith("0x") -> {
-                    startActivity(getEthereumViewIntent(ERC681(address = scanResult).generateURL()))
-                }
-
-                else -> {
-                    AlertDialog.Builder(this)
-                            .setMessage(R.string.scan_not_interpreted_error_message)
-                            .setPositiveButton(android.R.string.ok, null)
-                            .show()
-                }
-            }
-        }
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -180,7 +127,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         }
 
         fab.setOnClickListener {
-            startScanActivityForResult(this)
+            startActivityFromClass(QRScanActivityAndProcessActivity::class.java)
         }
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)

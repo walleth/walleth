@@ -28,7 +28,6 @@ import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.ChainInfoProvider
@@ -37,6 +36,7 @@ import org.walleth.data.transactions.toEntity
 import org.walleth.khex.clean0xPrefix
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
+import org.walleth.qrscan.startScanActivityForResult
 import org.walleth.ui.chainIDAlert
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON

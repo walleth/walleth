@@ -6,7 +6,7 @@ import android.content.Intent
 import android.nfc.NfcManager
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.ImportKeyActivity
+import org.walleth.accounts.ImportKeyActivity
 import org.walleth.activities.RequestPINActivity
 import org.walleth.activities.RequestPasswordActivity
 import org.walleth.activities.nfc.NFCGetAddressActivity

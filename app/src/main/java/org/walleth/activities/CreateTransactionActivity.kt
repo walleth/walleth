@@ -41,11 +41,12 @@ import org.kethereum.model.createTransactionWithDefaults
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
+import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.accounts.AccountPickActivity
 import org.walleth.activities.nfc.startNFCSigningActivity
-import org.walleth.activities.qrscan.startScanActivityForResult
 import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
 import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.*
@@ -67,6 +68,8 @@ import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.khex.toNoPrefixHexString
 import org.walleth.model.ACCOUNT_TYPE_MAP
+import org.walleth.qrscan.startScanActivityForResult
+import org.walleth.startup.StartupActivity
 import org.walleth.ui.asyncAwait
 import org.walleth.ui.chainIDAlert
 import org.walleth.ui.valueview.ValueViewController
@@ -114,6 +117,20 @@ class CreateTransactionActivity : BaseSubActivity() {
         ValueViewController(fee_value_view, exchangeRateProvider, settings)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_create_transaction)
+
+        if (currentAddressProvider.getCurrent() == null) {
+            alert("Account needed to make a transaction") {
+                startActivityFromClass(StartupActivity::class.java)
+                finish()
+            }
+        } else {
+            createAfterCheck(savedInstanceState)
+        }
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -151,11 +168,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private fun isParityFlow() = intent.getBooleanExtra("parityFlow", false)
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        setContentView(R.layout.activity_create_transaction)
-
+    private fun createAfterCheck(savedInstanceState: Bundle?) {
         currentERC681 = if (savedInstanceState != null && savedInstanceState.containsKey("ERC67")) {
             savedInstanceState.getString("ERC67")
         } else {
@@ -258,7 +271,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }.observe(this, Observer {
 
             if (intent.getStringExtra("nonce") == null) {
-                val nonceBigInt = if (it != null && !it.isEmpty()) {
+                val nonceBigInt = if (it != null && it.isNotEmpty()) {
                     it.max()!! + ONE
                 } else {
                     ZERO

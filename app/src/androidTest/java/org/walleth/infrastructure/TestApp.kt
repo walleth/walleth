@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.OkHttpClient
 import org.kethereum.DEFAULT_GAS_PRICE
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.rpc.EthereumRPC
@@ -16,6 +17,7 @@ import org.koin.dsl.module
 import org.mockito.Mockito
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.walletconnect.impls.WCSessionStore
 import org.walleth.App
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
@@ -32,6 +34,7 @@ import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
 import org.walleth.viewmodels.TransactionListViewModel
+import org.walleth.viewmodels.WalletConnectViewModel
 
 private fun <T> any(): T {
     Mockito.any<T>()
@@ -62,6 +65,15 @@ class TestApp : App() {
             }
         }
 
+        single {
+            mock(WCSessionStore::class.java)
+        }
+
+        single {
+            mock(OkHttpClient::class.java)
+        }
+
+        viewModel { WalletConnectViewModel(this@TestApp, get(), get(),get()) }
         viewModel { TransactionListViewModel(this@TestApp, get(), get(), get()) }
     }
 

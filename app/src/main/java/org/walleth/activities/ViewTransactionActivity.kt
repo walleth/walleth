@@ -21,6 +21,7 @@ import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
+import org.walleth.accounts.startCreateAccountActivity
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameAsync

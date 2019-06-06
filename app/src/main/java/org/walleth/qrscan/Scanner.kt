@@ -1,4 +1,4 @@
-package org.walleth.activities.qrscan
+package org.walleth.qrscan
 
 import com.google.zxing.BinaryBitmap
 import com.google.zxing.PlanarYUVLuminanceSource
