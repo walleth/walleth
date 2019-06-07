@@ -12,7 +12,7 @@ import org.walleth.data.config.Settings
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.getRootToken
 
-private const val TOKEN_INIT_VERSION = 33
+private const val TOKEN_INIT_VERSION = 34
 // yes this is opinionated - but it also cuts to the chase
 // so much garbage in this token-list ..
 
