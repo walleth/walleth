@@ -21,7 +21,7 @@ android {
 
         versionCode 459
         versionName "0.45.9"
-        archivesBaseName = "WALLETH-$versionName"
+        archivesBaseName = "WallETH-$versionName"
 
         testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
         vectorDrawables.useSupportLibrary = true

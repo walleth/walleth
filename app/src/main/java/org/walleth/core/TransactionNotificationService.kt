@@ -54,7 +54,7 @@ class TransactionNotificationService : LifecycleService() {
                     }
 
                     val notification = NotificationCompat.Builder(baseContext, "transactions").apply {
-                        setContentTitle("WALLETH Transaction")
+                        setContentTitle("WallETH Transaction")
                         setContentText("Got transaction")
                         setAutoCancel(true)
                         setContentIntent(contentIntent)
