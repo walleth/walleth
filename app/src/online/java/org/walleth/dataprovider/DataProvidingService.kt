@@ -20,8 +20,9 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
@@ -81,12 +82,13 @@ class DataProvidingService : LifecycleService() {
             while (true) {
                 last_run = System.currentTimeMillis()
 
-                chainInfoProvider.getCurrent()?.chainId?.let { currentChainId ->
+                chainInfoProvider.getCurrent()?.let { currentChain ->
+                    val currentChainId = currentChain.chainId
                     currentAddressProvider.value?.let { address ->
 
                         try {
                             if (ALL_BLOCKSCOUT_SUPPORTED_NETWORKS.contains(currentChainId)) {
-                                tryFetchFromBlockscout(address)
+                                tryFetchFromBlockscout(address, currentChain)
                             }
 
                             queryRPCForBalance(address)
@@ -124,10 +126,8 @@ class DataProvidingService : LifecycleService() {
         WorkManager.getInstance().enqueue(uploadWorkRequest)
     }
 
-    private fun tryFetchFromBlockscout(address: Address) {
-        chainInfoProvider.getCurrent()?.let { currentChain ->
-            blockScoutApi.queryTransactions(address.hex, currentChain)
-        }
+    private fun tryFetchFromBlockscout(address: Address, chain: ChainInfo) {
+        blockScoutApi.queryTransactions(address.hex, chain)
     }
 
     private fun queryRPCForBalance(address: Address) {
