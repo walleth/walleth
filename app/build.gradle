@@ -210,7 +210,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
 
-    implementation "com.chibatching.kotpref:kotpref:2.8.0"
+    implementation "com.chibatching.kotpref:kotpref:2.9.1"
 
     implementation 'com.squareup.moshi:moshi:1.8.0'
 
