@@ -190,7 +190,7 @@ dependencies {
 
     implementation 'com.google.protobuf:protobuf-java:3.8.0'
 
-    implementation 'com.github.kenglxn.QRGen:android:2.5.0'
+    implementation 'com.github.kenglxn.QRGen:android:2.6.0'
 
     // Do not update to 3.4.0 - breaks old devices: https://github.com/walleth/walleth/issues/382
     implementation 'com.google.zxing:core:3.3.3'
