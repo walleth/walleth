@@ -289,7 +289,7 @@ dependencyVerification {
         'org.koin:koin-androidx-scope:2.0.1:koin-androidx-scope-2.0.1.aar:c9d9820b19a62c8facbfc59fb15ffe4080ee211f482fdacef66a68fda360d930',
         'org.koin:koin-androidx-viewmodel:2.0.1:koin-androidx-viewmodel-2.0.1.aar:fbf9ff730620eb66220afc08bbf94680b5b8f2465e43033b911fb841ec3a0f3c',
         'org.koin:koin-core:2.0.1:koin-core-2.0.1.jar:64bee4ac0fae05e2bd754366b6c89757204383e0772322b565c0de8e5892a822',
-        'org.mockito:mockito-core:2.28.2:mockito-core-2.28.2.jar:b0af36fed3a6c2147c0cd9028a1d814fd4f4e8196c539f2befddb61ca6ec9e27',
+        'org.mockito:mockito-core:3.0.0:mockito-core-3.0.0.jar:ae2efd8f05ceda5ed9c802a43265a95adfa885ca5535a8476a7aaa0b15b95abb',
         'org.objenesis:objenesis:2.6:objenesis-2.6.jar:5e168368fbc250af3c79aa5fef0c3467a2d64e5a7bd74005f25d8399aeb0708d',
         'org.ow2.asm:asm-analysis:6.0:asm-analysis-6.0.jar:2f1a6387219c3a6cc4856481f221b03bd9f2408a326d416af09af5d6f608c1f4',
         'org.ow2.asm:asm-commons:6.0:asm-commons-6.0.jar:f1bce5c648a96a017bdcd01fe5d59af9845297fd7b79b81c015a6fbbd9719abf',
