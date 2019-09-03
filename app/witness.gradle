@@ -176,7 +176,7 @@ dependencyVerification {
         'com.google.j2objc:j2objc-annotations:1.1:j2objc-annotations-1.1.jar:2994a7eb78f2710bd3d3bfb639b2c94e219cedac0d4d084d516e78c16dddecf6',
         'com.google.jimfs:jimfs:1.1:jimfs-1.1.jar:c4828e28d7c0a930af9387510b3bada7daa5c04d7c25a75c7b8b081f1c257ddd',
         'com.google.protobuf:protobuf-java:3.4.0:protobuf-java-3.4.0.jar:dce7e66b32456a1b1198da0caff3a8acb71548658391e798c79369241e6490a4',
-        'com.google.protobuf:protobuf-java:3.8.0:protobuf-java-3.8.0.jar:94ba90a869ddad07eb49afaa8f39e676c2554b5b1c417ad9e1188257e79be60f',
+        'com.google.protobuf:protobuf-java:3.9.1:protobuf-java-3.9.1.jar:5a1e5c225791eccd3d67a598922e637406190c90155fb97f38e4eab29719324d',
         'com.google.truth:truth:1.0:truth-1.0.jar:edaa12f3b581fcf1c07311e94af8766919c4f3d904b00d3503147b99bf5b4004',
         'com.google.zxing:core:3.3.3:core-3.3.3.jar:5820f81e943e4bce0329306621e2d6255d2930b0a6ce934c5c23c0d6d3f20599',
         'com.googlecode.java-diff-utils:diffutils:1.3.0:diffutils-1.3.0.jar:61ba4dc49adca95243beaa0569adc2a23aedb5292ae78aa01186fa782ebdc5c2',

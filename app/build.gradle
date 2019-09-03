@@ -188,7 +188,7 @@ dependencies {
         exclude group: 'com.android.support'
     }
 
-    implementation 'com.google.protobuf:protobuf-java:3.8.0'
+    implementation 'com.google.protobuf:protobuf-java:3.9.1'
 
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
 
