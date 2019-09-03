@@ -25,7 +25,6 @@ dependencyVerification {
         'androidx.legacy:legacy-support-core-utils:1.0.0:legacy-support-core-utils-1.0.0.aar:a7edcf01d5b52b3034073027bc4775b78a4764bb6202bb91d61c829add8dd1c7',
         'androidx.legacy:legacy-support-v4:1.0.0:legacy-support-v4-1.0.0.aar:78fec1485f0f388a4749022dd51416857127cd2544ae1c3fd0b16589055480b0',
         'androidx.lifecycle:lifecycle-common:2.0.0:lifecycle-common-2.0.0.jar:7bad7a188804adea6fa1f35d5ef99b705f20bd93ecadde484760ff86b535fefc',
-        'androidx.lifecycle:lifecycle-compiler:2.0.0:lifecycle-compiler-2.0.0.jar:59f24233c7f1b6e0f4991b27542f2cf1bf707abfe8686e36fe0f961baaa1cb3d',
         'androidx.lifecycle:lifecycle-extensions:2.0.0:lifecycle-extensions-2.0.0.aar:8d4072201b6231d67e4192d608d46b1f5c920845106c9831632c2e3ffe706117',
         'androidx.lifecycle:lifecycle-livedata-core:2.0.0:lifecycle-livedata-core-2.0.0.aar:fde334ec7e22744c0f5bfe7caf1a84c9d717327044400577bdf9bd921ec4f7bc',
         'androidx.lifecycle:lifecycle-livedata:2.0.0:lifecycle-livedata-2.0.0.aar:c82609ced8c498f0a701a30fb6771bb7480860daee84d82e0a81ee86edf7ba39',

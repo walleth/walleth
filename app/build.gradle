@@ -231,8 +231,6 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
-    kapt 'androidx.lifecycle:lifecycle-compiler:2.0.0'
-
     androidTestImplementation "com.google.truth:truth:$truth"
 
     testImplementation "org.mockito:mockito-core:$mockito_version"
