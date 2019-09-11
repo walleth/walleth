@@ -19,6 +19,7 @@ import org.walleth.R
 import org.walleth.data.*
 import org.walleth.data.addressbook.getSpec
 import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.khex.hexToByteArray
 import org.walleth.util.security.getPasswordForAccountType
 
 class SignTextActivity : BaseSubActivity() {
@@ -71,11 +72,12 @@ class SignTextActivity : BaseSubActivity() {
 
             val text = intent.getStringExtra(Intent.EXTRA_TEXT)
 
-            textToSign.text = text
+            val asByteArray = text.hexToByteArray()
+            textToSign.text = String(asByteArray)
 
             fab.setOnClickListener {
 
-                val signature = key.signWithEIP191PersonalSign(text.toByteArray())
+                val signature = key.signWithEIP191PersonalSign(asByteArray)
 
                 val putExtra = Intent()
                         .putExtra("SIGNATURE", signature.toHex())

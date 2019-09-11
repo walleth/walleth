@@ -16,7 +16,10 @@ import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.ligi.kaxt.setVisibility
+import org.ligi.kaxtui.alert
 import org.walletconnect.Session
+import org.walletconnect.Session.Status.Approved
+import org.walletconnect.Session.Status.Closed
 import org.walleth.R
 import org.walleth.accounts.AccountPickActivity
 import org.walleth.activities.*
@@ -47,7 +50,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     private var accounts = listOf<String>()
 
     private val sessionCallback = object : Session.Callback {
-        override fun handleMethodCall(call: Session.MethodCall) {
+        override fun onMethodCall(call: Session.MethodCall) {
             GlobalScope.launch(Dispatchers.Main) {
                 when (call) {
                     is Session.MethodCall.SessionRequest -> {
@@ -93,20 +96,58 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                             startActivityForResult(intent, REQUEST_ID_SIGN_TX)
                         }
                     }
+
+                    is Session.MethodCall.Custom -> {
+                        currentRequestId = call.id
+                        if (call.method == "personal_sign") {
+                            if (call.params == null) {
+                                alert("got personal_sign without parameters")
+                            } else {
+                                signText("" + call.params!!.first())
+                            }
+                        }
+                    }
+                    else -> {
+                        GlobalScope.launch(Dispatchers.Main) {
+                            alert("" + call)
+                        }
+                    }
                 }
             }
+
         }
 
-        override fun sessionApproved() {
-            wcViewModel.showSwitchAccountButton = true
-            wcViewModel.showSwitchNetworkButton = true
-            applyViewModel()
+        override fun onStatus(status: Session.Status) {
+            GlobalScope.launch(Dispatchers.Main) {
+                when (status) {
+                    is Error -> alert("Error:" + status.message)
+                    is Approved -> {
+                        wcViewModel.showSwitchAccountButton = true
+                        wcViewModel.showSwitchNetworkButton = true
+                        applyViewModel()
+                    }
+                    is Closed -> {
+                        finish()
+                    }
+                    is Session.Status.Connected -> {
+                        //requestInitialAccount()
+                    }
+                    else -> alert("Error:" + status)
+                }
+
+            }
+
         }
 
-        override fun sessionClosed() {
-            finish()
-        }
 
+    }
+
+    private fun signText(message: String) {
+        val intent = Intent(this@WalletConnectConnectionActivity, SignTextActivity::class.java).apply {
+            putExtra(Intent.EXTRA_TEXT, message)
+
+        }
+        startActivityForResult(intent, REQUEST_ID_SIGN_TEXT)
     }
 
     private fun requestInitialAccount(): AlertDialog? {
@@ -221,6 +262,9 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
             }
 
+            else -> {
+                alert("unknown")
+            }
         }
 
     }
