@@ -24,8 +24,8 @@ import org.walleth.khex.toHexString
 
 
 fun Activity.startNFCSigningActivity(transactionParcel: TransactionParcel) {
-    val trezorIntent = Intent(this, NFCSignTransactionActivity::class.java).putExtra("TX", transactionParcel)
-    startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
+    val nfcIntent = Intent(this, NFCSignTransactionActivity::class.java).putExtra("TX", transactionParcel)
+    startActivityForResult(nfcIntent, TREZOR_REQUEST_CODE)
 }
 
 class NFCSignTransactionActivity : BaseNFCActivity() {
