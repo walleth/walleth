@@ -124,6 +124,7 @@
                   android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".activities.ImportAsActivity"/>
         <activity android:name=".qrscan.QRScanActivityAndProcessActivity"/>
+        <activity android:name=".activities.nfc.NFCSignTextActivity" />
 
     </application>
 

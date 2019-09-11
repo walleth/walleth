@@ -3,19 +3,11 @@ package org.walleth.activities.nfc
 import android.os.Bundle
 import im.status.keycard.io.WrongPINException
 import kotlinx.android.synthetic.main.activity_nfc.*
-import org.kethereum.crypto.toAddress
-import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.activities.showAccountPinDialog
-import org.walleth.data.AppDatabase
-import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khartwarewallet.KHardwareChannel
 
 abstract class NFCBaseActivityWithPINHandling : BaseNFCActivity() {
-
-    private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
-
-    private val appDatabase: AppDatabase by inject()
 
     lateinit var pin: String
 
@@ -54,15 +46,7 @@ abstract class NFCBaseActivityWithPINHandling : BaseNFCActivity() {
                                 setText("verify PIN")
                                 channel.commandSet.verifyPIN(pin).checkAuthOK()
 
-                                val address = channel.toPublicKey().toAddress()
-
-                                if (transaction.transaction.from != address) {
-                                    setText("The given card does not match the account")
-                                } else {
-                                    setText("signing")
-
-                                    afterCorrectPin(channel)
-                                }
+                                afterCorrectPin(channel)
                             }
                         }
                     } catch (wrongPin: WrongPINException) {
@@ -88,7 +72,6 @@ abstract class NFCBaseActivityWithPINHandling : BaseNFCActivity() {
             cardManager.start()
         }
 
-        supportActionBar?.subtitle = "Sign via NFC"
     }
 
     internal abstract fun afterCorrectPin(channel: KHardwareChannel)
