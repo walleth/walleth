@@ -30,7 +30,6 @@ buildscript {
         classpath files('app/libs/gradle-witness.jar')
         classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:0.8.6'
         classpath "com.jaredsburrows:gradle-license-plugin:0.8.42"
-        classpath "com.github.plnice:canidropjetifier:0.4"
     }
 }
 task clean(type: Delete) {
@@ -48,4 +47,3 @@ allprojects {
 }
 
 apply from: 'https://raw.githubusercontent.com/ligi/gradle-common/master/versions_plugin_stable_only.gradle'
-apply plugin: 'com.github.plnice.canidropjetifier'
