@@ -137,36 +137,38 @@ dependencies {
 
     implementation 'androidx.paging:paging-runtime:2.1.0'
 
-    implementation "com.github.walleth.kethereum:functions:$kethereum_version"
-    implementation "com.github.walleth.kethereum:model:$kethereum_version"
-    implementation "com.github.walleth.kethereum:crypto:$kethereum_version"
-    implementation "com.github.walleth.kethereum:bip32:$kethereum_version"
-    implementation "com.github.walleth.kethereum:bip39:$kethereum_version"
-    implementation "com.github.walleth.kethereum:bip39_wordlist_en:$kethereum_version"
-    implementation "com.github.walleth.kethereum:bip44:$kethereum_version"
-    implementation "com.github.walleth.kethereum:blockscout:$kethereum_version"
-    implementation "com.github.walleth.kethereum:erc55:$kethereum_version"
-    implementation "com.github.walleth.kethereum:eip155:$kethereum_version"
-    implementation "com.github.walleth.kethereum:eip191:$kethereum_version"
-    implementation "com.github.walleth.kethereum:erc681:$kethereum_version"
-    implementation "com.github.walleth.kethereum:erc831:$kethereum_version"
-    implementation "com.github.walleth.kethereum:erc1328:$kethereum_version"
-    implementation "com.github.walleth.kethereum:extensions:$kethereum_version"
-    implementation "com.github.walleth.kethereum:keccak_shortcut:$kethereum_version"
-    implementation "com.github.walleth.kethereum:method_signatures:$kethereum_version"
-    implementation "com.github.walleth.kethereum:etherscan:$kethereum_version"
-    implementation "com.github.walleth.kethereum:rlp:$kethereum_version"
-    implementation "com.github.walleth.kethereum:rpc:$kethereum_version"
-    implementation "com.github.walleth.kethereum:wallet:$kethereum_version"
-    implementation "com.github.walleth.kethereum:contract_abi_types:$kethereum_version"
-    implementation "com.github.walleth.kethereum:keystore:$kethereum_version"
+    implementation "com.github.komputing.kethereum:functions:$kethereum_version"
+    implementation "com.github.komputing.kethereum:model:$kethereum_version"
+    implementation "com.github.komputing.kethereum:crypto:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip32:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip39:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip39_wordlist_en:$kethereum_version"
+    implementation "com.github.komputing.kethereum:bip44:$kethereum_version"
+    implementation "com.github.komputing.kethereum:blockscout:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc55:$kethereum_version"
+    implementation "com.github.komputing.kethereum:eip155:$kethereum_version"
+    implementation "com.github.komputing.kethereum:eip191:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc681:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc831:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc1328:$kethereum_version"
+    implementation "com.github.komputing.kethereum:extensions:$kethereum_version"
+    implementation "com.github.komputing.kethereum:keccak_shortcut:$kethereum_version"
+    implementation "com.github.komputing.kethereum:method_signatures:$kethereum_version"
+    implementation "com.github.komputing.kethereum:etherscan:$kethereum_version"
+    implementation "com.github.komputing.kethereum:rlp:$kethereum_version"
+    implementation "com.github.komputing.kethereum:rpc:$kethereum_version"
+    implementation "com.github.komputing.kethereum:wallet:$kethereum_version"
+    implementation "com.github.komputing.kethereum:contract_abi_types:$kethereum_version"
+    implementation "com.github.komputing.kethereum:keystore:$kethereum_version"
 
     implementation 'org.bouncycastle:bcprov-jdk15on:1.62'
 
     implementation "com.github.komputing:KHex:0.6"
 
-    implementation "com.github.walleth:KHardWareWallet:0.8"
-    implementation "com.github.walleth.kethereum:crypto_impl_bouncycastle:$kethereum_version"
+    implementation "com.github.walleth:KHardWareWallet:0.9"
+    implementation 'com.squareup.okio:okio:2.4.0'
+
+    implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
 
     implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.9.3"
     implementation 'com.github.ligi:circular-with-floating-action-button:androidX_v2.0'
