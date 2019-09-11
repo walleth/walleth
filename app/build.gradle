@@ -258,8 +258,6 @@ if (isCI || isLightCI) {
     composer {
         apkInstallTimeout 600
     }
-    apply plugin: 'witness'
-    apply from: 'witness.gradle'
 }
 
 licenseReport {
