@@ -262,9 +262,9 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
+    override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState!!.putString(KEY_LAST_PASTED_DATA, lastPastedData)
+        outState.putString(KEY_LAST_PASTED_DATA, lastPastedData)
     }
 
 

@@ -54,6 +54,7 @@
     <trusted-key id='9c4f7e9d98b1cc53' group='commons-io' />
     <trusted-key id='a41f13c999945293' group='commons-logging' />
     <trusted-key id='6449005f96bc97a3' group='de.undercouch' />
+    <trusted-key id='4d176dc503fb4267' group='io.coil-kt' />
     <trusted-key id='94b291aef984a085' group='io.reactivex' />
     <trusted-key id='5e2f2b3d474efe6b' group='it.unimi.dsi' />
     <trusted-key id='6e02af115075d251' group='javax.xml.bind' />
@@ -127,17 +128,29 @@
     <dependency group='androidx.cardview' module='cardview' version='1.0.0' extension='aar'>
       <sha512>46F60B7BB2DCD5B379227705FE774FEF33F931D463685CD96D6D9D7DFC43456183787E5F9420532495A9298233CF0B9D38317A5C5675139C97466E1DAB69B71C</sha512>
     </dependency>
+    <dependency group='androidx.collection' module='collection-ktx' version='1.1.0'>
+      <sha512>263CA0485B6B7147DAF8A9C40D39B06A023F92BDEEFED40DE6D5EBE005A803473CCF966CF1D6AAF086043D4806AFC21CA6728281D2C7CBF7832757026B0AE466</sha512>
+    </dependency>
     <dependency group='androidx.collection' module='collection' version='1.0.0'>
       <sha512>DB2983035FDE268EDC5247F15010BF04F2D0009817B55D53ACFB15DE34B98583A123003E1DB4C6E771F3940A8199F1B33BC6B511C9B24B8BF68E023370182E92</sha512>
     </dependency>
+    <dependency group='androidx.collection' module='collection' version='1.1.0'>
+      <sha512>16BEA47B0147E000B7EB6781FAB38FD85F736B56CF5E28EF9A6547FB17F4CA9DA569CF15FECC2169DD521055476442E481D45DC0CB7A3253535770E48C2CD7F2</sha512>
+    </dependency>
     <dependency group='androidx.coordinatorlayout' module='coordinatorlayout' version='1.0.0' extension='aar'>
       <sha512>AAA3894A468C872DB96071536023CE54DDC8B35639539087817114F6AEDD06A2BB5182E6851ECF4F33F5D72EEDC49DAF605F928AD1344AFA9015B266B5AC6AD7</sha512>
+    </dependency>
+    <dependency group='androidx.core' module='core-ktx' version='1.1.0' extension='aar'>
+      <sha512>E0DF6F61D3895635A0176FB4BA5515713AD25F444B0D62425AF87A94B95C807A944E31BDE86A73FFCA6987A0C18C7741ADAD4D4E5CF19AFDEE14CE987882E7B</sha512>
     </dependency>
     <dependency group='androidx.core' module='core' version='1.0.0' extension='aar'>
       <sha512>E8533695055D383043019AE180EC4EC4AEE3CA432EC9D3D31976699443DFD2840F623D3E455B1D091CE507EB868EE007C71FD3220EC07DB067E23D585CD024BD</sha512>
     </dependency>
     <dependency group='androidx.core' module='core' version='1.0.1' extension='aar'>
       <sha512>F19BCC9B2828C89D8A2794EC0F19D58F9B9CFE3701FF0B2F29E1A3DC5C207F07DFE33C2AF10925C43C871A94F83E3517B0FD2E9C422D48C40E575045D660A9DB</sha512>
+    </dependency>
+    <dependency group='androidx.core' module='core' version='1.1.0' extension='aar'>
+      <sha512>601CB05741E8AD3F25EA6B46E95C7EC3CBD187AAC8C25E6547F7D212133AD2D8B242378C5D5D1BFE052674C48EAFE199BF594E83C826D35F624D94BF9CF1E168</sha512>
     </dependency>
     <dependency group='androidx.cursoradapter' module='cursoradapter' version='1.0.0' extension='aar'>
       <sha512>176AC8E4604749EF5BB7F444C24ADD479F1D2CC5CAAB1046BBB35F937BF1CFC4329786CD1FDAC3D6EE92FEC78CB55AB89E5169AE5C6EE24DD4D20243AA867891</sha512>
@@ -163,6 +176,9 @@
     <dependency group='androidx.drawerlayout' module='drawerlayout' version='1.0.0' extension='aar'>
       <sha512>C3A92947B15AF89D55A2268526579B7AD43CEFDE589F8824DE0A9BF0DD1E3058E1853C046BEB64BE2DF6A3A74DDF5BA494BAFAF534E81C963B6FA9270E05A8EF</sha512>
     </dependency>
+    <dependency group='androidx.exifinterface' module='exifinterface' version='1.0.0' extension='aar'>
+      <sha512>7698B8F3A6D21622AE5CA18A3B3B2AF4B4DFD7360B4107155CD8AD09AA3E508E41D16A3F3720BDF4DC09615917C047F8DC242FB3208D922D397FA3C49136FE81</sha512>
+    </dependency>
     <dependency group='androidx.fragment' module='fragment' version='1.0.0' extension='aar'>
       <sha512>194D03F69B46B48D9E399D579F3FB0C24F2076B2DBBDCA539810E64268B38422AA7671A5BBC263077C933889CB96DE3F446998D74A89C8BFF0894CA9E9A07C8</sha512>
     </dependency>
@@ -178,8 +194,14 @@
     <dependency group='androidx.legacy' module='legacy-support-v4' version='1.0.0' extension='aar'>
       <sha512>D25824E1A0FB7AE5D39637A11B0D86A904A2C2F0BF142310DAE2603ECCAC30FCAFBB1DD01589A5DAFD7467484A2E44C5A7BFE55E3F18AC8B9ADC8A52E3C9F0DE</sha512>
     </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-common-java8' version='2.1.0'>
+      <sha512>4F8F9CE47803C9724075978F7F046FB067198251E1923D4D47E27A5A9F50B76AA0696AF423DE13C97F09C4B3214F567C4BF4B1025354B231FD5EF8E56787FFE9</sha512>
+    </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-common' version='2.0.0'>
       <sha512>6E68B7F29FC5AD61E9F5F04AFE5CF280A7673801403E77FA296818E6CE52E3999612022265441BE3E8DD5BACB2FFE5B76C1CB3DA8ECEEF89EA971631F600BD5F</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-common' version='2.1.0'>
+      <sha512>85C075BBAC011B107CF45F03469293B37B6ABF83C7F269C80194B6746B93B4CADC499AAB8970B69052F61863A33D0E77D141ECC1851938E7ECBD101D0C1B3255</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-compiler' version='2.0.0'>
       <sha512>2C12D7F57C39F1ABCA8E07B832ED5F78EE243D5A859B20ED770BE84D003001E8BD3FD999E5443A93830DF4242FE316121028B01DA3F4627A433919ECAC3C29EE</sha512>
@@ -303,6 +325,9 @@
     </dependency>
     <dependency group='androidx.versionedparcelable' module='versionedparcelable' version='1.0.0' extension='aar'>
       <sha512>16DEA325B8F2850FADF221811FD57C4BFFA7C968C19934AB32544E6225D538B716D2D33919D41DF35458A257D2AF417042D3E709AB452941780694D577ACBD15</sha512>
+    </dependency>
+    <dependency group='androidx.versionedparcelable' module='versionedparcelable' version='1.1.0' extension='aar'>
+      <sha512>8053DD3559F2EED1BB3C4FB8FA2BFB3E0C450EADB6DAA858C1F0398E77E1ED1A1AD083F7D46A17E07E78B58ABBE2AAA0B08436D6171686355EBC2F82E30193A8</sha512>
     </dependency>
     <dependency group='androidx.viewpager' module='viewpager' version='1.0.0' extension='aar'>
       <sha512>7B78494130D0C6DD0F18E7506C8DC5DDA428C56D836D186643360B09992A7F2CCC6072D4316AF17BCD406482DFD426866747B9A48FAB6AA3FB0BB2DF648E62F4</sha512>

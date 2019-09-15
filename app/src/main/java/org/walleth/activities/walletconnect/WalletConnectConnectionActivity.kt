@@ -5,7 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
-import com.squareup.picasso3.Picasso
+import coil.api.load
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -210,8 +210,8 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         wc_change_account.setVisibility(wcViewModel.showSwitchAccountButton)
         wc_change_network.setVisibility(wcViewModel.showSwitchNetworkButton)
         status_text.text = wcViewModel.statusText
-        wcViewModel.iconURL?.let {
-            Picasso.Builder(this).build().load(it).into(dapp_icon)
+        wcViewModel.iconURL?.let { url ->
+            dapp_icon.load(url)
         }
     }
 
