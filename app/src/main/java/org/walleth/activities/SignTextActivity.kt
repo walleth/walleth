@@ -16,26 +16,33 @@ import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.nfc.getNFCSignTextIntent
 import org.walleth.data.*
 import org.walleth.data.addressbook.getSpec
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.khex.hexToByteArray
+import org.walleth.khex.toHexString
 import org.walleth.util.security.getPasswordForAccountType
 
 class SignTextActivity : BaseSubActivity() {
 
     private val keyStore: KeyStore by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
+
+    private val currentAddress by lazy { currentAddressProvider.getCurrentNeverNull() }
     private val appDatabase: AppDatabase by inject()
+
+    private val text by lazy { intent.getStringExtra(Intent.EXTRA_TEXT).hexToByteArray() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_sign_text)
 
+        textToSign.text = String(text)
+
         GlobalScope.launch(Dispatchers.Default) {
 
-            val currentAddress = currentAddressProvider.getCurrentNeverNull()
 
             val account = appDatabase.addressBook.byAddress(currentAddress)
 
@@ -46,11 +53,27 @@ class SignTextActivity : BaseSubActivity() {
                             signTextWithPassword(currentAddress, pwd)
                         }
                     }
-                    ACCOUNT_TYPE_NFC -> alert("signing text not yet supported for NFC")
+                    ACCOUNT_TYPE_NFC -> {
+                        fab.setImageResource(R.drawable.ic_nfc_black)
+                        fab.setOnClickListener {
+                            startActivityForResult(getNFCSignTextIntent(text.toHexString(), currentAddress.cleanHex), REQUEST_CODE_NFC)
+                        }
+                    }
                     ACCOUNT_TYPE_TREZOR -> alert("signing text not yet supported for TREZOR")
                 }
             }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        val putExtra = Intent()
+                .putExtra("SIGNATURE", data?.getStringExtra("HEX"))
+                .putExtra("ADDRESS", currentAddress.cleanHex)
+        setResult(Activity.RESULT_OK, putExtra)
+
+        finish()
     }
 
     private fun signTextWithPassword(currentAddress: Address, password: String) {
@@ -70,14 +93,11 @@ class SignTextActivity : BaseSubActivity() {
                 supportActionBar?.subtitle = "Signing as " + (entry?.name ?: currentAddress.hex)
             })
 
-            val text = intent.getStringExtra(Intent.EXTRA_TEXT)
 
-            val asByteArray = text.hexToByteArray()
-            textToSign.text = String(asByteArray)
 
             fab.setOnClickListener {
 
-                val signature = key.signWithEIP191PersonalSign(asByteArray)
+                val signature = key.signWithEIP191PersonalSign(text)
 
                 val putExtra = Intent()
                         .putExtra("SIGNATURE", signature.toHex())

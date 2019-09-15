@@ -165,7 +165,7 @@ dependencies {
 
     implementation "com.github.komputing:KHex:0.6"
 
-    implementation "com.github.walleth:KHardWareWallet:0.9"
+    implementation "com.github.walleth:KHardWareWallet:0.9.1"
     implementation 'com.squareup.okio:okio:2.4.0'
 
     implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
