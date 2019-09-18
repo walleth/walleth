@@ -19,7 +19,7 @@ import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.deSerialize
 import org.walleth.ui.NetworkAdapter
-import javax.net.ssl.SSLProtocolException
+import javax.net.ssl.SSLException
 
 open class SwitchChainActivity : BaseSubActivity() {
 
@@ -76,11 +76,18 @@ open class SwitchChainActivity : BaseSubActivity() {
                     setAdapter()
                     swipe_refresh_layout.isRefreshing = false
                 }
-            } catch (e: SSLProtocolException) {
-                GlobalScope.launch {
-                    alert("SSL error - cannot load chains.")
-                }
+            } catch (e: SSLException) {
+                handleRefreshError("SSLError - cannot load chains. Setting your time can help in some cases.")
+            } catch (e: Throwable) {
+                handleRefreshError("General Error - cannot load chains. $e")
             }
+        }
+    }
+
+    private fun handleRefreshError(message: String) {
+        GlobalScope.launch(Dispatchers.Main) {
+            swipe_refresh_layout.isRefreshing = false
+            alert(message)
         }
     }
 
