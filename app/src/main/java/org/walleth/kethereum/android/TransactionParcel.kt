@@ -13,16 +13,16 @@ import java.math.BigInteger
 class TransactionParcel(val transaction: Transaction) : Parcelable {
 
     constructor(parcel: Parcel) : this(createTransactionWithDefaults(
-            chain = ChainId(parcel.readString().hexToBigInteger()),
+            chain = ChainId(parcel.readString()!!.hexToBigInteger()),
             value = BigInteger(parcel.readString()),
-            from = Address(parcel.readString()),
+            from = Address(parcel.readString()!!),
             txHash = parcel.readValue(null) as String?,
             to = (parcel.readValue(null) as String?)?.let { Address(it) },
             nonce = (parcel.readValue(null) as String?)?.let { BigInteger(it) },
             creationEpochSecond = parcel.readValue(null) as Long?,
             gasPrice = BigInteger(parcel.readString()),
             gasLimit = BigInteger(parcel.readString()),
-            input = parcel.createByteArray()))
+            input = parcel.createByteArray()!!))
 
     override fun writeToParcel(dest: Parcel, flags: Int) {
         dest.writeString(transaction.chain!!.toHexString())

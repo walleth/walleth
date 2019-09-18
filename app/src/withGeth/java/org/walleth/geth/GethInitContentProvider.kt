@@ -44,18 +44,20 @@ class GethInitContentProvider : ContentProvider() {
 
         val settings: Settings by inject()
 
-        App.postInitCallbacks.add({
-            ProcessLifecycleOwner.get().lifecycle.addObserver(GethInitAppLifecycleObserver(context, settings))
-        })
+        App.postInitCallbacks.add {
+            context?.let { context ->
+                ProcessLifecycleOwner.get().lifecycle.addObserver(GethInitAppLifecycleObserver(context, settings))
+            }
+        }
 
         App.extraPreferences.add(Pair(R.xml.geth_prefs, { prefs ->
-            val startLightKey = context.getString(R.string.key_prefs_start_light)
+            val startLightKey = context?.getString(R.string.key_prefs_start_light)
             val startLightPreference = prefs.findPreference(startLightKey) as CheckBoxPreference
             startLightPreference.setOnPreferenceChangeListener { preference, newValue ->
 
                 if (newValue != GethLightEthereumService.isRunning) {
                     if (GethLightEthereumService.isRunning) {
-                        preference.context.startService(context.gethStopIntent())
+                        preference.context.startService(context?.gethStopIntent())
                     } else {
                         preference.context.startService(Intent(preference.context, GethLightEthereumService::class.java))
                     }
@@ -82,10 +84,10 @@ class GethInitContentProvider : ContentProvider() {
         return true
     }
 
-    override fun insert(uri: Uri?, values: ContentValues?) = null
-    override fun query(uri: Uri?, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?) = null
-    override fun update(uri: Uri?, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?) = 0
-    override fun delete(uri: Uri?, selection: String?, selectionArgs: Array<out String>?) = 0
-    override fun getType(uri: Uri?) = null
+    override fun insert(uri: Uri, values: ContentValues?) = null
+    override fun query(uri: Uri, projection: Array<out String>?, selection: String?, selectionArgs: Array<out String>?, sortOrder: String?) = null
+    override fun update(uri: Uri, values: ContentValues?, selection: String?, selectionArgs: Array<out String>?) = 0
+    override fun delete(uri: Uri, selection: String?, selectionArgs: Array<out String>?) = 0
+    override fun getType(uri: Uri) = null
 
 }

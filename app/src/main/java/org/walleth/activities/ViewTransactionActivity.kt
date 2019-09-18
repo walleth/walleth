@@ -125,7 +125,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                     copy_address.setOnClickListener {
                         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
                         val clip = ClipData.newPlainText(getString(R.string.ethereum_address), ensured_relevant_address.hex)
-                        clipboard.primaryClip = clip
+                        clipboard.setPrimaryClip(clip)
                         Snackbar.make(fab, R.string.snackbar_after_address_copy, Snackbar.LENGTH_LONG).show()
                     }
                 }

@@ -133,7 +133,7 @@ class ExportKeyActivity : AddressReceivingActivity() {
         R.id.menu_copy_to_clipboard -> true.also {
             val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
             val clip = ClipData.newPlainText("key", keyJSON)
-            clipboard.primaryClip = clip
+            clipboard.setPrimaryClip(clip)
             Snackbar.make(activity_export_key, "Key copied to clipboard", Snackbar.LENGTH_LONG).show()
         }
 
