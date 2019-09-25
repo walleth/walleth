@@ -33,6 +33,7 @@ import org.walleth.kethereum.model.ContractFunction
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
+import org.walleth.util.jsonadapter.BigIntegerJSONAdapter
 import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.viewmodels.WalletConnectViewModel
 
@@ -102,7 +103,7 @@ class TestApp : App() {
         }
         val currentAddressProvider = DefaultCurrentAddressProvider(mySettings, keyStore)
         val chainInfoProvider by lazy {
-            ChainInfoProvider(mySettings, testDatabase, Moshi.Builder().add(BigIntegerAdapter()).build(), companionContext!!.assets)
+            ChainInfoProvider(mySettings, testDatabase, Moshi.Builder().add(BigIntegerJSONAdapter()).build(), companionContext!!.assets)
         }
         val currentTokenProvider by lazy {
             CurrentTokenProvider(chainInfoProvider)

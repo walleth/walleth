@@ -13,9 +13,7 @@ import androidx.preference.PreferenceScreen
 import androidx.room.Room
 import com.chibatching.kotpref.Kotpref
 import com.jakewharton.threetenabp.AndroidThreeTen
-import com.squareup.moshi.FromJson
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.ToJson
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -57,10 +55,10 @@ import org.walleth.data.tokens.getRootToken
 import org.walleth.migrations.ChainAddingAndRecreatingMigration
 import org.walleth.startup.StartupViewModel
 import org.walleth.util.DelegatingSocketFactory
+import org.walleth.util.jsonadapter.BigIntegerJSONAdapter
 import org.walleth.viewmodels.TransactionListViewModel
 import org.walleth.viewmodels.WalletConnectViewModel
 import java.io.File
-import java.math.BigInteger
 import java.net.Socket
 import java.security.Security
 import javax.net.SocketFactory
@@ -69,27 +67,12 @@ import javax.net.SocketFactory
 open class App : MultiDexApplication() {
 
     private val koinModule = module {
-        single { Moshi.Builder().add(BigIntegerAdapter()).build() }
-
-
+        single { Moshi.Builder().add(BigIntegerJSONAdapter()).build() }
     }
 
     private val keyStore by lazy { InitializingFileKeyStore(File(filesDir, "keystore")) }
     val appDatabase: AppDatabase by inject()
     val settings: Settings by inject()
-
-
-    class BigIntegerAdapter {
-        @ToJson
-        internal fun toJson(bigInteger: BigInteger): String {
-            return bigInteger.toString()
-        }
-
-        @FromJson
-        internal fun fromJson(bigInteger: String): BigInteger {
-            return BigInteger(bigInteger)
-        }
-    }
 
     open fun createKoin() = module {
         single { CryptoCompareExchangeProvider(this@App, get()) as ExchangeRateProvider }
