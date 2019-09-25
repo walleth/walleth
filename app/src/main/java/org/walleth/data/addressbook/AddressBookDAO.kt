@@ -7,17 +7,17 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kethereum.model.Address
 
 fun AddressBookDAO.resolveName(address: Address) = byAddress(address)?.name ?: address.hex
 fun AddressBookDAO.resolveNameAsync(address: Address, callback: (name: String) -> Unit) = GlobalScope.launch(Dispatchers.Main) {
-    callback(async(Dispatchers.Default) { resolveName(address) }.await())
+    callback(withContext(Dispatchers.Default) { resolveName(address) })
 }
 
 fun AddressBookDAO.getByAddressAsync(address: Address, callback: (name: AddressBookEntry?) -> Unit) = GlobalScope.launch(Dispatchers.Main) {
-    callback(async(Dispatchers.Default) { byAddress(address) }.await())
+    callback(withContext(Dispatchers.Default) { byAddress(address) })
 }
 
 @Dao
