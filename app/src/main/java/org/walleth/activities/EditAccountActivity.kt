@@ -3,10 +3,12 @@ package org.walleth.activities
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.core.view.isVisible
 import kotlinx.android.synthetic.main.activity_account_edit.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.startActivityFromURL
@@ -22,6 +24,7 @@ const val INTENT_KEY_ADDRESS = "ADDRESS"
 class EditAccountActivity : AddressReceivingActivity() {
 
     private val appDatabase: AppDatabase by inject()
+    private val keyStore: KeyStore by inject()
 
     private val blockExplorerProvider: BlockExplorerProvider by inject()
     private lateinit var currentAddressInfo: AddressBookEntry
@@ -33,6 +36,10 @@ class EditAccountActivity : AddressReceivingActivity() {
 
         supportActionBar?.subtitle = getString(R.string.edit_account_subtitle)
 
+        export_key_button.isVisible = keyStore.hasKeyForForAddress(relevantAddress)
+        export_key_button.setOnClickListener {
+            startAddressReceivingActivity(relevantAddress, ExportKeyActivity::class.java)
+        }
         appDatabase.addressBook.getByAddressAsync(relevantAddress) {
             currentAddressInfo = it!!
 

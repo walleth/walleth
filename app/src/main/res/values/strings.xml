@@ -256,5 +256,6 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="invalid_pin">Invalid PIN</string>
     <string name="invalid_password">Invalid password</string>
     <string name="refresh">refresh</string>
+    <string name="export_key">export key</string>
 
 </resources>
