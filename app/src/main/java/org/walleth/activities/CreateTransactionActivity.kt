@@ -206,10 +206,11 @@ class CreateTransactionActivity : BaseSubActivity() {
             startActivityForResult(Intent(this, SelectTokenActivity::class.java), TOKEN_REQUEST_CODE)
         }
 
-        gas_price_input.setText(if (intent.getStringExtra("gasPrice") != null) {
-            intent.getStringExtra("gasPrice").maybeHexToBigInteger().toString()
-        } else {
-            settings.getGasPriceFor(chainInfoProvider.getCurrent()!!.chainId).toString()
+        val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
+        gas_price_input.setText(when {
+            gasPriceFromStringExtra != null -> gasPriceFromStringExtra.maybeHexToBigInteger().toString()
+            currentERC681.gas != null -> currentERC681.gas.toString()
+            else -> settings.getGasPriceFor(chainInfoProvider.getCurrent()!!.chainId).toString()
         })
 
         intent.getStringExtra("data")?.let {
