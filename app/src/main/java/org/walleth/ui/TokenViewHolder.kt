@@ -48,7 +48,7 @@ class TokenViewHolder(itemView: View, val activity: Activity) : RecyclerView.Vie
                 )
 
                 if (tokenDescriptor.isRootToken()) {
-                    itemView.faucet.prepareFaucetButton(chainInfo,currentAddressProvider)
+                    itemView.faucet.prepareFaucetButton(chainInfo, currentAddressProvider)
                 }
 
                 itemView.setOnClickListener {
@@ -76,7 +76,9 @@ class TokenViewHolder(itemView: View, val activity: Activity) : RecyclerView.Vie
 
 }
 
-fun AppCompatImageView.prepareFaucetButton(chainInfo: ChainInfo?, currentAddressProvider: CurrentAddressProvider) {
+fun AppCompatImageView.prepareFaucetButton(chainInfo: ChainInfo?,
+                                           currentAddressProvider: CurrentAddressProvider,
+                                           postAction: () -> Unit = {}) {
     if (chainInfo?.faucets?.isNotEmpty() == true) {
         setImageResource(if (chainInfo.faucets.find { it.contains(FAUCET_ADDRESS_TOKEN) } != null) R.drawable.ic_flash_on_black_24dp else R.drawable.ic_redeem_black_24dp)
         setVisibility(true)
@@ -87,6 +89,7 @@ fun AppCompatImageView.prepareFaucetButton(chainInfo: ChainInfo?, currentAddress
     setOnClickListener {
         chainInfo?.getFaucetURL(currentAddressProvider.getCurrentNeverNull())?.let { url ->
             context.startActivityFromURL(url)
+            postAction.invoke()
         }
     }
 }

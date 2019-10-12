@@ -17,7 +17,9 @@ class NetworkDefinitionViewHolder(itemView: View) : RecyclerView.ViewHolder(item
         itemView.info_indicator.visibility = if (chainInfo.infoURL.isNotEmpty()) View.VISIBLE else View.INVISIBLE
 
         val currentAddressProvider: CurrentAddressProvider by inject()
-        itemView.faucet_indicator.prepareFaucetButton(chainInfo, currentAddressProvider)
+        itemView.faucet_indicator.prepareFaucetButton(chainInfo, currentAddressProvider, postAction = {
+            onClickAction.invoke(chainInfo)
+        })
 
         itemView.setOnClickListener {
             onClickAction.invoke(chainInfo)
