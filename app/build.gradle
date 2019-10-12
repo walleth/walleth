@@ -161,7 +161,7 @@ dependencies {
     implementation "com.github.komputing.kethereum:contract_abi_types:$kethereum_version"
     implementation "com.github.komputing.kethereum:keystore:$kethereum_version"
 
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.62'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
 
     implementation "com.github.komputing:khex:0.6"
 
