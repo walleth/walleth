@@ -863,6 +863,9 @@
     <dependency group='com.github.trevjonez.composer-gradle-plugin' module='plugin' version='0.13.0'>
       <sha512>B0EEE0E081A7C77C9181FAD797CB849365E24DB7FE1940E69BD73676BFAC5329C157A94A7BB6A9E2595E86170854E8F541FB4567E3CC929B0250FA2BA3146049</sha512>
     </dependency>
+    <dependency group='com.github.trevjonez.composer-gradle-plugin' module='plugin' version='0.13.1'>
+      <sha512>38EA0513ABCC4DFE12DD4135C3485F52E4640A0DB5E78E4D9C614878E1430D395BD4B56B301B71D648B2F8B77F3FFD4994F23D56D3A915E7519C102CA750300E</sha512>
+    </dependency>
     <dependency group='com.github.walletconnect' module='kotlin-walletconnect-lib' version='0.9.2'>
       <sha512>F5C00EF00117F2122DFB419E861D995615B5D5E5B5D88AA9918F61E46D189590AFB8899731AA982632826BE35B583FF629DDBADB6103EFAEF9C252518749C901</sha512>
     </dependency>
