@@ -122,8 +122,8 @@ class DataProvidingService : LifecycleService() {
                 .setInputData(workDataOf(KEY_TX_HASH to transaction.hash))
                 .build()
 
-        WorkManager.getInstance().cancelAllWork()
-        WorkManager.getInstance().enqueue(uploadWorkRequest)
+        WorkManager.getInstance(this).cancelAllWork()
+        WorkManager.getInstance(this).enqueue(uploadWorkRequest)
     }
 
     private fun tryFetchFromBlockscout(address: Address, chain: ChainInfo) {
