@@ -111,6 +111,7 @@ android {
         pickFirst 'META-INF/kotlinx-io.kotlin_module'
         pickFirst 'META-INF/atomicfu.kotlin_module'
         pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
+        pickFirst 'META-INF/lib_release.kotlin_module'
     }
 
     // For Kotlin projects
@@ -229,6 +230,9 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
+
+    implementation "com.github.tincubeth:android:0.0.3"
+
     kapt "androidx.room:room-compiler:$room_version"
 
     implementation 'com.github.tingyik90:snackprogressbar:6.2.0'
