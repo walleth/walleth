@@ -14,6 +14,12 @@
             app:showAsAction="ifRoom|withText">
         <menu>
             <item
+                    android:id="@+id/menu_has_tincubeth"
+                    android:checkable="true"
+                    android:icon="@drawable/ic_tincubeth_logo_mono"
+                    android:title="TincubETH support"
+                    app:iconTint="@color/fgColor" />
+            <item
                     android:id="@+id/menu_has_fast_faucet"
                     android:checkable="true"
                     android:icon="@drawable/ic_flash_on_black_24dp"
@@ -26,6 +32,7 @@
                     android:icon="@drawable/ic_redeem_black_24dp"
                     android:title="Has normal faucet"
                     app:iconTint="@color/fgColor" />
+
         </menu>
     </item>
 

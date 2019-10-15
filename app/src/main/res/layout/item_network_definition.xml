@@ -8,6 +8,16 @@
         android:layout_margin="4dp"
         app:cardMaxElevation="8dp">
 
+    <LinearLayout android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/topright_indicator">
+        <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/in3_indicator"
+                app:srcCompat="@drawable/ic_tincubeth_logo_mono"
+                style="@style/topright_indicator_icon"/>
+
+    </LinearLayout>
+
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

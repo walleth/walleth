@@ -40,7 +40,7 @@ class DataProvidingService : LifecycleServiceWorkaround() {
     private val appDatabase: AppDatabase by inject()
     private val chainInfoProvider: ChainInfoProvider by inject()
     private val rpcProvider: RPCProvider by inject()
-    private val blockScoutApi = BlockScoutAPI(appDatabase, okHttpClient)
+    private val blockScoutApi = BlockScoutAPI(appDatabase, rpcProvider, okHttpClient)
 
     companion object {
         private var timing = 7_000 // in MilliSeconds
@@ -128,7 +128,7 @@ class DataProvidingService : LifecycleServiceWorkaround() {
         WorkManager.getInstance(this).enqueue(uploadWorkRequest)
     }
 
-    private fun tryFetchFromBlockscout(address: Address, chain: ChainInfo) {
+    private suspend fun tryFetchFromBlockscout(address: Address, chain: ChainInfo) {
         blockScoutApi.queryTransactions(address.hex, chain)
     }
 
@@ -152,7 +152,7 @@ class DataProvidingService : LifecycleServiceWorkaround() {
                         } else {
                             ERC20RPCConnector(currentToken.address, rpc).balanceOf(address)
                         }
-                        if (balance!=null) {
+                        if (balance != null) {
                             appDatabase.balances.upsertIfNewerBlock(
                                     Balance(address = address,
                                             block = blockNumber.toLong(),

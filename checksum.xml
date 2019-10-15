@@ -61,6 +61,7 @@
     <trusted-key id='94b291aef984a085' group='io.reactivex' />
     <trusted-key id='5e2f2b3d474efe6b' group='it.unimi.dsi' />
     <trusted-key id='6e02af115075d251' group='javax.xml.bind' />
+    <trusted-key id='85911f425ec61b51' group='junit' />
     <trusted-key id='efe8086f9e93774e' group='junit' />
     <trusted-key id='86e02c5a42196ca8' group='log4j' />
     <trusted-key id='7999befba1039e8b' group='net.bytebuddy' />
@@ -2231,6 +2232,9 @@
     </dependency>
     <dependency group='com.github.status-im.status-keycard-java' module='lib' version='3.0.1'>
       <sha512>D612D43F5057AB3147C928D2893048DAC9F066AF2A4C6B7F0B31A76D16357E622386AE00696158532E5BFB1FDFDCACEF7B396E05C3F1F5A24F923338297F8BD1</sha512>
+    </dependency>
+    <dependency group='com.github.tincubeth' module='android' version='0.0.3' extension='aar'>
+      <sha512>F40C96EAB07C70CDCF5CDF594FF2F5CB1B7AC430155ED474054D550F02EC213DF54965C9CE58AD736DB5DC5CE6A635C0B8E0F46FFF9EA5ABE76246837975D65D</sha512>
     </dependency>
     <dependency group='com.github.tingyik90' module='snackprogressbar' version='6.2.0' extension='aar'>
       <sha512>A3F7877C9E2DB0A397C7C7583B316E86520E390BCA8F4B0129C2451192289C353DEB8A334F56AA3941EC1FBD652A75F38F8A88D74D28B19A20778AFD9AF656CB</sha512>

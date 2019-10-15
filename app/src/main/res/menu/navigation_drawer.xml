@@ -31,4 +31,10 @@
             android:title="@string/security_information"
             android:icon="@drawable/ic_security_black_24dp"/>
 
+    <item
+            android:id="@+id/menu_tincubeth"
+            android:title="Privacy/Security settings"
+            android:icon="@drawable/ic_tincubeth_logo_mono_thick"/>
+
+
 </menu>

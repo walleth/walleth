@@ -126,6 +126,7 @@
         <activity android:name="org.walleth.qr.scan.QRScanActivityAndProcessActivity"/>
         <activity android:name="org.walleth.nfc.NFCSignTextActivity" />
         <activity android:name="org.walleth.chains.EditChainActivity" />
+        <activity android:name=".activities.TincubETHActivity"/>
 
     </application>
 

@@ -13,6 +13,7 @@ import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.accounts.EditAccountActivity
 import org.walleth.accounts.SwitchAccountActivity
+import org.walleth.activities.TincubETHActivity
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.chains.SwitchChainActivity
 import org.walleth.data.AppDatabase
@@ -64,7 +65,8 @@ class WalletNavigationFragment : Fragment() {
                 R.id.menu_accounts to SwitchAccountActivity::class,
                 R.id.menu_offline_transaction to OfflineTransactionActivity::class,
                 R.id.menu_settings to PreferenceActivity::class,
-                R.id.menu_security to SecurityInfoActivity::class
+                R.id.menu_security to SecurityInfoActivity::class,
+                R.id.menu_tincubeth to TincubETHActivity::class
         )
 
 

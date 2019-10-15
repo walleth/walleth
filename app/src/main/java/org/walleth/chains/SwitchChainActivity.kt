@@ -14,15 +14,18 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.android.ext.android.inject
+import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.activities.findChainsWithTincubethSupportAndStore
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.enhancedlist.BaseEnhancedListActivity
 import org.walleth.enhancedlist.EnhancedListAdapter
 import org.walleth.enhancedlist.EnhancedListInterface
+import org.walleth.util.hasTincubethSupport
 import org.walleth.util.question
 import javax.net.ssl.SSLException
 
@@ -40,6 +43,7 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
             override suspend fun deleteAllSoftDeleted() = appDatabase.chainInfo.deleteAllSoftDeleted()
             override fun filter(item: ChainInfo) = (!settings.filterFastFaucet || item.hasFaucetWithAddressSupport())
                     && (!settings.filterFaucet || (item.faucets.isNotEmpty() && !item.hasFaucetWithAddressSupport()))
+                    && (!settings.filterTincubeth || (item.hasTincubethSupport()))
                     && checkForSearchTerm(item.name, item.nativeCurrency.symbol, item.nativeCurrency.name)
         }
     }
@@ -68,13 +72,16 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
         menu.findItem(R.id.menu_has_fast_faucet).isChecked = settings.filterFastFaucet
         menu.findItem(R.id.menu_has_faucet).isChecked = settings.filterFaucet
+        menu.findItem(R.id.menu_has_tincubeth).isChecked = settings.filterTincubeth
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = super.onOptionsItemSelected(item).also {
         when (item.itemId) {
             R.id.menu_refresh -> downloadNewChains()
-
+            R.id.menu_has_tincubeth -> item.filterToggle {
+                settings.filterTincubeth = it
+            }
             R.id.menu_has_fast_faucet -> item.filterToggle {
                 settings.filterFastFaucet = it
                 if (it) settings.filterFaucet = !it
@@ -107,6 +114,7 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
                             question(configurator = { setMessage("Really Import ${newList.size} Elements?") }, action = {
                                 lifecycleScope.launch(Dispatchers.Main) {
                                     appDatabase.chainInfo.upsert(newList)
+                                    findChainsWithTincubethSupportAndStore(appDatabase)
                                     refreshAdapter()
                                 }
                             })
@@ -137,6 +145,7 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
                         chainInfoProvider.setCurrent(chainInfo)
                         finish()
                     }
+                    view.in3_indicator.setVisibility(chainInfo.hasTincubethSupport())
                     val currentAddressProvider: CurrentAddressProvider by inject()
                     view.faucet_indicator.prepareFaucetButton(chainInfo, currentAddressProvider, postAction = {
                         view.performClick()
