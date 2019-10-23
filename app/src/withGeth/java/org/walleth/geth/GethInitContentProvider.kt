@@ -50,37 +50,38 @@ class GethInitContentProvider : ContentProvider() {
             }
         }
 
-        App.extraPreferences.add(Pair(R.xml.geth_prefs, { prefs ->
-            val startLightKey = context?.getString(R.string.key_prefs_start_light)
-            val startLightPreference = prefs.findPreference(startLightKey) as CheckBoxPreference
-            startLightPreference.setOnPreferenceChangeListener { preference, newValue ->
+        context?.let { context ->
+            App.extraPreferences.add(Pair(R.xml.geth_prefs, { prefs ->
+                val startLightKey = context?.getString(R.string.key_prefs_start_light)
+                val startLightPreference = prefs.findPreference<CheckBoxPreference>(startLightKey)
+                startLightPreference?.setOnPreferenceChangeListener { preference, newValue ->
 
-                if (newValue != GethLightEthereumService.isRunning) {
-                    if (GethLightEthereumService.isRunning) {
-                        preference.context.startService(context?.gethStopIntent())
-                    } else {
-                        preference.context.startService(Intent(preference.context, GethLightEthereumService::class.java))
-                    }
-                    GlobalScope.async(Dispatchers.Main) {
-                        val alert = AlertDialog.Builder(preference.context)
-                                .setCancelable(false)
-                                .setMessage(R.string.settings_please_wait)
-                                .show()
+                    if (newValue != GethLightEthereumService.isRunning) {
+                        if (GethLightEthereumService.isRunning) {
+                            preference.context.startService(context?.gethStopIntent())
+                        } else {
+                            preference.context.startService(Intent(preference.context, GethLightEthereumService::class.java))
+                        }
+                        GlobalScope.async(Dispatchers.Main) {
+                            val alert = AlertDialog.Builder(preference.context)
+                                    .setCancelable(false)
+                                    .setMessage(R.string.settings_please_wait)
+                                    .show()
 
-                        async(Dispatchers.Default) {
-                            while (GethLightEthereumService.isRunning != GethLightEthereumService.shouldRun) {
-                                delay(100)
-                            }
-                        }.await()
-                        alert.dismiss()
+                            async(Dispatchers.Default) {
+                                while (GethLightEthereumService.isRunning != GethLightEthereumService.shouldRun) {
+                                    delay(100)
+                                }
+                            }.await()
+                            alert.dismiss()
+                        }
                     }
+
+                    true
                 }
 
-                true
-            }
-
-        }))
-
+            }))
+        }
         return true
     }
 
