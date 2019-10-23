@@ -149,6 +149,7 @@ class NFCGetAddressActivity : BaseNFCActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK && data != null) {
             credentials = data.getParcelableExtra(EXTRA_KEY_NFC_CREDENTIALS)
         } else {

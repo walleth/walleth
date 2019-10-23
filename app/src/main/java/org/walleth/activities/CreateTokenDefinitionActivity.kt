@@ -76,6 +76,7 @@ class CreateTokenDefinitionActivity : BaseSubActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         data?.let {
             if (data.hasExtra("SCAN_RESULT")) {
                 token_address_input.setText(data.getStringExtra("SCAN_RESULT"))

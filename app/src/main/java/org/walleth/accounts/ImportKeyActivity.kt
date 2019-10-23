@@ -47,6 +47,7 @@ fun Context.getCreateImportIntentFor(value: String, type: KeyType) = getKeyImpor
 fun Context.getKeyImportIntent(spec: AccountKeySpec) = Intent(this, ImportKeyActivity::class.java).apply {
     putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
 }
+
 fun Context.getKeyImportIntentViaCreate(spec: AccountKeySpec) = Intent(this, CreateAccountActivity::class.java).apply {
     putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
 }
@@ -155,7 +156,7 @@ open class ImportKeyActivity : BaseSubActivity() {
     public override fun onActivityResult(requestCode: Int, resultCode: Int,
                                          resultData: Intent?) {
 
-
+        super.onActivityResult(requestCode, resultCode, resultData)
         resultData?.let {
             if (it.hasExtra("SCAN_RESULT")) {
                 key_content.setText(it.getStringExtra("SCAN_RESULT"))
