@@ -252,6 +252,9 @@
     <dependency group='androidx.lifecycle' module='lifecycle-viewmodel-ktx' version='2.1.0-beta01' extension='aar'>
       <sha512>EFCA90A49C0F04C7D319BFE1EA612C63A6E3B5323F5F9C1B3D375928FA32851E51373095EBB24F954B390D4D2BFB3AE5DFFDEC6C4751FC890A85C881D4FE0121</sha512>
     </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-viewmodel-ktx' version='2.1.0' extension='aar'>
+      <sha512>63929A21702B68CE17246CF488EF87898AB411A98B056EDE428BBB46BC428C07BDA624FA1C5E20E51B904C045930C4EBE7FC64435BFEF5136336E65E68879200</sha512>
+    </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-viewmodel' version='2.0.0' extension='aar'>
       <sha512>82CE8692E69330D65E9773751F3941B74996C539002FE7D2ADD94CE2154BB320B71370E8A23CD7FFD612FAAA77BEAFAD3D7B6A58F1ED84B6D0FC0A6D298B1941</sha512>
     </dependency>
