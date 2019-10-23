@@ -19,7 +19,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:fontFamily="sans-serif"
+                app:fontFamily="sans-serif"
                 android:padding="16dp"
                 android:textSize="16sp"
                 tools:text="main"/>

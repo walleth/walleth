@@ -32,7 +32,7 @@
 
         <TextView
                 android:id="@+id/transaction_err"
-                android:fontFamily="sans-serif-condensed"
+                app:fontFamily="sans-serif-condensed"
                 android:textSize="12dp"
                 android:layout_gravity="center_horizontal"
                 android:layout_width="wrap_content"
@@ -44,13 +44,13 @@
                   android:id="@+id/date"
                   android:layout_gravity="center_horizontal"
                   android:textSize="12dp"
-                  android:fontFamily="sans-serif-condensed"/>
+                  app:fontFamily="sans-serif-condensed"/>
 
 
         <TextView
                 android:id="@+id/address"
                 android:layout_gravity="center_horizontal"
-                android:fontFamily="sans-serif-condensed"
+                app:fontFamily="sans-serif-condensed"
                 android:textSize="12dp"
                 android:singleLine="true"
                 android:ellipsize="middle"

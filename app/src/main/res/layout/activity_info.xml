@@ -24,7 +24,7 @@
         <TextView
                 android:padding="8dp"
                 android:id="@+id/intro_text"
-                android:fontFamily="sans-serif"
+                app:fontFamily="sans-serif"
                 android:textSize="16sp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>

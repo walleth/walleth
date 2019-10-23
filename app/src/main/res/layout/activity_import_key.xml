@@ -53,7 +53,7 @@
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
                         android:importantForAccessibility="no"
-                        android:fontFamily="sans-serif"/>
+                        app:fontFamily="sans-serif"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -71,7 +71,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_centerHorizontal="true"
-                        android:fontFamily="sans-serif"/>
+                        app:fontFamily="sans-serif"/>
             </com.google.android.material.textfield.TextInputLayout>
 
 

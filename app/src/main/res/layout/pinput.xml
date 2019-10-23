@@ -22,7 +22,7 @@
                 android:id="@+id/pin_textview"
                 android:textSize="24sp"
                 android:layout_gravity="center_vertical"
-                android:fontFamily="sans-serif"
+                app:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
         <androidx.appcompat.widget.AppCompatImageView

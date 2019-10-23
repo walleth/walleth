@@ -18,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:fontFamily="sans-serif"
+                app:fontFamily="sans-serif"
                 android:textSize="16sp"
                 android:padding="16dp"
                 android:text="@string/text_extract_funds"/>
@@ -53,7 +53,7 @@
                 android:id="@+id/request_hint"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fontFamily="sans-serif"
+                app:fontFamily="sans-serif"
                 android:paddingTop="16dp"
                 android:layout_below="@id/value_input"/>
 

@@ -39,7 +39,7 @@
                 android:layout_toRightOf="@id/token_starred"
 
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
-                android:fontFamily="sans-serif"
+                app:fontFamily="sans-serif"
                 tools:text="Etheraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
 
         <TextView
@@ -49,7 +49,7 @@
                 android:id="@+id/token_chain"
                 android:layout_toRightOf="@id/token_starred"
                 android:layout_below="@id/token_name"
-                android:fontFamily="sans-serif"
+                app:fontFamily="sans-serif"
                 android:layout_alignParentRight="true"
                 tools:text="18"/>
 

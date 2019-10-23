@@ -20,7 +20,7 @@
 
             <TextView
                     android:id="@+id/from_to_title"
-                    android:fontFamily="sans-serif"
+                    app:fontFamily="sans-serif"
                     android:textSize="18dp"
                     android:paddingBottom="8dp"
                     android:layout_width="wrap_content"
@@ -63,7 +63,7 @@
 
             <TextView
                     android:text="Fee:"
-                    android:fontFamily="sans-serif"
+                    app:fontFamily="sans-serif"
                     android:textSize="18dp"
                     android:paddingBottom="8dp"
                     android:layout_width="wrap_content"
@@ -80,7 +80,7 @@
                     android:id="@+id/function_call_label"
                     android:text="@string/function_call"
                     android:visibility="gone"
-                    android:fontFamily="sans-serif"
+                    app:fontFamily="sans-serif"
                     android:textSize="18dp"
                     android:paddingBottom="8dp"
                     android:layout_width="wrap_content"
@@ -95,7 +95,7 @@
 
             <TextView
                     android:id="@+id/rlp_header"
-                    android:fontFamily="sans-serif"
+                    app:fontFamily="sans-serif"
                     android:textSize="18dp"
                     android:visibility="gone"
                     android:paddingBottom="8dp"
@@ -135,7 +135,7 @@
 
                 <TextView
                         android:text="Nonce:"
-                        android:fontFamily="sans-serif"
+                        app:fontFamily="sans-serif"
                         android:textSize="18dp"
                         android:paddingBottom="8dp"
                         android:layout_width="wrap_content"
@@ -151,7 +151,7 @@
 
                 <TextView
                         android:text="Log:"
-                        android:fontFamily="sans-serif"
+                        app:fontFamily="sans-serif"
                         android:textSize="18dp"
                         android:paddingBottom="8dp"
                         android:layout_width="wrap_content"

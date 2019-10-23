@@ -19,7 +19,7 @@
             android:text="@string/please_connect_your_trezor"
             android:layout_below="@id/trezor_connect_indicator"
             android:layout_centerHorizontal="true"
-            android:fontFamily="sans-serif"
+            app:fontFamily="sans-serif"
             android:textSize="18dp"
             android:gravity="center_horizontal"
             android:padding="32dp"

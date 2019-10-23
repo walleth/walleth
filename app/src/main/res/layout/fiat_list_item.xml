@@ -21,7 +21,7 @@
                   android:id="@+id/fiat_symbol"
                   android:textSize="32dp"
                   android:padding="8dp"
-                  android:fontFamily="sans-serif-condensed"
+                  app:fontFamily="sans-serif-condensed"
                   android:layout_alignParentRight="true"/>
 
         <LinearLayout
@@ -34,13 +34,13 @@
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:id="@+id/fiat_exchange_rate"
-                      android:fontFamily="sans-serif"
+                      app:fontFamily="sans-serif"
                       android:layout_alignParentRight="true"/>
 
             <TextView android:layout_width="wrap_content"
                       android:layout_height="wrap_content"
                       android:id="@+id/fiat_update_date"
-                      android:fontFamily="sans-serif"
+                      app:fontFamily="sans-serif"
                       android:layout_alignParentRight="true"/>
 
         </LinearLayout>

@@ -23,7 +23,7 @@
                 android:id="@+id/accountName"
                 app:autoSizeTextType="uniform"
                 android:paddingRight="8dp"
-                android:fontFamily="sans-serif"
+                app:fontFamily="sans-serif"
                 android:textColor="@android:color/black"
                 android:lines="1"
                 android:maxLines="1"
@@ -43,7 +43,7 @@
     <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/accountHash"
             android:padding="8dp"
-            android:fontFamily="sans-serif"
+            app:fontFamily="sans-serif"
             android:textColor="@android:color/black"
             android:singleLine="true"
             android:ellipsize="middle"

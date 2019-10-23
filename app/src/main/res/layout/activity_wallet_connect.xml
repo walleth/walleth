@@ -19,7 +19,7 @@
               android:layout_height="wrap_content"
               tools:text="Waiting for interaction with application"
               android:textAlignment="center"
-              android:fontFamily="sans-serif"
+              app:fontFamily="sans-serif"
               android:textAppearance="?android:attr/textAppearanceLarge"
               android:id="@+id/status_text"/>
 
