@@ -1077,6 +1077,12 @@
     <dependency group='com.github.ligi.KAXT' module='livedata' version='1.0' extension='aar'>
       <sha512>BA8574E89716AF8464ABCCE36F760ACCAE96CE5F7F58C5CC8F53ADE034FFD203F248CFFF63D403212732C7644264CBD1DB4F900B783C49221E7DFD3D979737E4</sha512>
     </dependency>
+    <dependency group='com.github.ligi.hardwallet-lite-android' module='android' version='846d5901cd229ffd9c8e21b7d0bfcbf9ca521080'>
+      <sha512>CD014E999301667FDD12843FE36995B0DA4E1D8C0FA5E5158ACCEFCAB0E740ADF29F5E325DB77918ED38B56809EFEEABB55E5788C9BC08EE5E02036852060F70</sha512>
+    </dependency>
+    <dependency group='com.github.ligi.hardwallet-lite-android' module='lib' version='846d5901cd229ffd9c8e21b7d0bfcbf9ca521080'>
+      <sha512>26666150868F2921DCCDB95DEF34CEC3D8659BCF83F33DB201BB15ECD662C8ACB771D4F9ED02A03D4FABFE16668EA4EE042BF8C22C788112C47A1ECE24CCE2F8</sha512>
+    </dependency>
     <dependency group='com.github.ligi.tracedroid' module='lib' version='3.0' extension='aar'>
       <sha512>7908A29397A4247C3D30B96787BB5199D6F86D53875FAE469A03683E4533A428EBF0A2CCC77A52D742B7E8A7F603C54A03DED1FE4FE7B68CF303C61DA47680CF</sha512>
     </dependency>
@@ -1122,8 +1128,20 @@
     <dependency group='com.github.status-im.status-keycard-java' module='android' version='2.2.1'>
       <sha512>16AE27554FD875E21EFB4CAF7BBBF5838E5440578AE8DB6EA2FFDC2B6FA37C58950140F61EBC2B4B29ADC1F0F88CBA76A3F0611692544EC6708EB925BF6492B6</sha512>
     </dependency>
+    <dependency group='com.github.status-im.status-keycard-java' module='android' version='3.0.0'>
+      <sha512>52B9CCA72F756F191DB87B30F60D3C39F091923ED00218984FF92868545E8D4D7B230EB26F24857F7710C1ED985A0DCD52B85CBA62BC9D8C9F7DF67343798A41</sha512>
+    </dependency>
+    <dependency group='com.github.status-im.status-keycard-java' module='android' version='3.0.1'>
+      <sha512>FB273F4814668CC4997A9772F11C6CB09C19908ED53D8002034E16C2A0B872E647095114F695A09E4619FEB443B1775BF8AD5F27B80A4D85BB635C3318A30EEE</sha512>
+    </dependency>
     <dependency group='com.github.status-im.status-keycard-java' module='lib' version='2.2.1'>
       <sha512>E066D4E8776856304DAD2FF8CEF3C5129872E1DABEDF857256845454B7FC6C8BA23B87312303D38BA941330B89BFC1CC36CE810D149569455FAB3493985B0D5A</sha512>
+    </dependency>
+    <dependency group='com.github.status-im.status-keycard-java' module='lib' version='3.0.0'>
+      <sha512>21897C8E462FFCA7D0341AB8B83094EF5876676C3C0DF11C0A305485723D5ACA19A4D8AC2C4D0A8B509B9E330BAD0BB62D3CD22B7060DA9485A98DE497248E7F</sha512>
+    </dependency>
+    <dependency group='com.github.status-im.status-keycard-java' module='lib' version='3.0.1'>
+      <sha512>D612D43F5057AB3147C928D2893048DAC9F066AF2A4C6B7F0B31A76D16357E622386AE00696158532E5BFB1FDFDCACEF7B396E05C3F1F5A24F923338297F8BD1</sha512>
     </dependency>
     <dependency group='com.github.trevjonez.composer-gradle-plugin' module='plugin' version='0.12.0'>
       <sha512>DC8A8C520BF10AED98D493881E2E979AC90930F745C4DDB39AF588496027600464F767191BFA6C54A7E1E96E86C04C94999278DA4FB00CC5636E14250F2A7200</sha512>
@@ -1245,10 +1263,16 @@
     <dependency group='com.github.walleth' module='KHardWareWallet' version='0.9.2' extension='aar'>
       <sha512>BDC1D27D299A0FFFCBE507A361E11204193A48191382BF3C925EFD63AE3C7029B57C2DD8BB0D6C2199BF08BD1185A3FD11F346B0F781BE2775DEAC8680AD9F19</sha512>
     </dependency>
-    <dependency group='com.github.walleth' module='KHardWareWallet' version='0.9' extension='aar'>
-      <sha512>1DF552A76512451788821F3533024C4C5CA81D3A57C6FD95CDEAB53DF3A53585C12D708B3F1F7ACD42906089C8330995E243B4047F387B25994DD79BAE3E66F9</sha512>
+    <dependency group='com.github.walleth' module='KHardWareWallet' version='0.9.3' extension='aar'>
+      <sha512>BDC1D27D299A0FFFCBE507A361E11204193A48191382BF3C925EFD63AE3C7029B57C2DD8BB0D6C2199BF08BD1185A3FD11F346B0F781BE2775DEAC8680AD9F19</sha512>
     </dependency>
-    <dependency group='com.github.walleth' module='KHardWareWallet' version='04d7450f681c18fe1e7a9f410d45114bbc65b58b' extension='aar'>
+    <dependency group='com.github.walleth' module='KHardWareWallet' version='0.9.4' extension='aar'>
+      <sha512>BDC1D27D299A0FFFCBE507A361E11204193A48191382BF3C925EFD63AE3C7029B57C2DD8BB0D6C2199BF08BD1185A3FD11F346B0F781BE2775DEAC8680AD9F19</sha512>
+    </dependency>
+    <dependency group='com.github.walleth' module='KHardWareWallet' version='0.9.5' extension='aar'>
+      <sha512>1D7EFA26FD4187BEC35523CCD53D89542CE1D8431FFE69A4EDE0FFC1D2192EADAD2EBCC07A15F3FDD6BFF81C72F4C129E157DB1F02FA161E97F57FF871792D13</sha512>
+    </dependency>
+    <dependency group='com.github.walleth' module='KHardWareWallet' version='0.9' extension='aar'>
       <sha512>1DF552A76512451788821F3533024C4C5CA81D3A57C6FD95CDEAB53DF3A53585C12D708B3F1F7ACD42906089C8330995E243B4047F387B25994DD79BAE3E66F9</sha512>
     </dependency>
     <dependency group='com.google.android.material' module='material' version='1.0.0' extension='aar'>
