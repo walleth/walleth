@@ -17,7 +17,7 @@ class NFCEnterCredentialsActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_nfc_enter_credentials)
 
-        radio_new_card.setOnCheckedChangeListener { _, b ->
+        radio_new_card.setOnCheckedChangeListener { _, _ ->
             refresh()
         }
 
