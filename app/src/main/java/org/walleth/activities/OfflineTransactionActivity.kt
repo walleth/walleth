@@ -29,8 +29,8 @@ import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.AppDatabase
-import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.khex.clean0xPrefix
@@ -91,9 +91,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                     val transactionRLP = json.getString("signedTransactionRLP").hexToByteArray()
                     val txRLP = transactionRLP.decodeRLP() as? RLPList
                             ?: throw IllegalArgumentException("RLP not a list")
-                    if (txRLP.element.size != 9) {
-                        throw IllegalArgumentException("RLP list has the wrong size ${txRLP.element.size} != 9")
-                    }
+                    require(txRLP.element.size == 9) { "RLP list has the wrong size ${txRLP.element.size} != 9" }
 
 
                     val signatureData = txRLP.toTransactionSignatureData()
