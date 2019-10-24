@@ -8,7 +8,7 @@ import androidx.lifecycle.Observer
 import kotlinx.android.synthetic.main.activity_create_token.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
@@ -48,7 +48,7 @@ class CreateTokenDefinitionActivity : BaseSubActivity() {
                     if (networkDefinition == null)
                         throw IllegalStateException("NetworkDefinition should not be null")
 
-                    GlobalScope.async(Dispatchers.Main) {
+                    GlobalScope.launch(Dispatchers.Main) {
                         withContext(Dispatchers.Default) {
                             appDatabase.tokens.upsert(Token(
                                     name = newTokenName,
