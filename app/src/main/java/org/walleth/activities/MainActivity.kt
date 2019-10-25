@@ -223,7 +223,7 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
             balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.getCurrent().address, chainInfoProvider.getCurrent()?.chainId)
             balanceLiveData?.observe(this, balanceObserver)
             etherLiveData?.removeObserver(etherObserver)
-            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, chainInfoProvider.getCurrent()?.let { it.getRootToken().address }, chainInfoProvider.getCurrent()?.chainId)
+            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, chainInfoProvider.getCurrent()?.getRootToken()?.address, chainInfoProvider.getCurrent()?.chainId)
             etherLiveData?.observe(this, etherObserver)
         }
     }
