@@ -69,10 +69,11 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
 
                     appDatabase.transactions.deleteByHash(oldHash)
                     appDatabase.transactions.upsert(transaction)
+                    transaction.setError(null)
                     return Result.success()
                 }
             } else {
-                transaction.setError( "Could not (yet) relay transaction")
+                transaction.setError("Could not (yet) relay transaction")
             }
         }
 
