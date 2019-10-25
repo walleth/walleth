@@ -2,9 +2,7 @@ package org.walleth.dataprovider
 
 import android.content.Intent
 import androidx.lifecycle.*
-import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.workDataOf
+import androidx.work.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -32,6 +30,7 @@ import org.walleth.util.getRPCEndpoint
 import org.walleth.workers.RelayTransactionWorker
 import java.io.IOException
 import java.math.BigInteger
+import java.util.concurrent.TimeUnit
 
 class DataProvidingService : LifecycleService() {
 
@@ -119,10 +118,13 @@ class DataProvidingService : LifecycleService() {
     private fun sendTransaction(transaction: TransactionEntity) {
 
         val uploadWorkRequest = OneTimeWorkRequestBuilder<RelayTransactionWorker>()
+                .setBackoffCriteria(
+                        BackoffPolicy.LINEAR,
+                        OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                        TimeUnit.MILLISECONDS)
                 .setInputData(workDataOf(KEY_TX_HASH to transaction.hash))
                 .build()
 
-        WorkManager.getInstance(this).cancelAllWork()
         WorkManager.getInstance(this).enqueue(uploadWorkRequest)
     }
 
