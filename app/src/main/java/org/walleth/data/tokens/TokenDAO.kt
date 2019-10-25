@@ -20,7 +20,7 @@ interface TokenDAO {
     fun showAll()
 
     @Query("SELECT * FROM tokens WHERE address = :address COLLATE NOCASE")
-    fun forAddress(address: Address): Token?
+    suspend fun forAddress(address: Address): Token?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun upsert(entry: Token)

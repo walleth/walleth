@@ -70,7 +70,6 @@ import org.walleth.khex.toNoPrefixHexString
 import org.walleth.model.ACCOUNT_TYPE_MAP
 import org.walleth.qrscan.startScanActivityForResult
 import org.walleth.startup.StartupActivity
-import org.walleth.ui.asyncAwait
 import org.walleth.ui.chainIDAlert
 import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.hasText
@@ -535,12 +534,13 @@ class CreateTransactionActivity : BaseSubActivity() {
 
                             if (localERC681.isTokenTransfer()) {
                                 if (localERC681.address != null) {
-                                    { appDatabase.tokens.forAddress(Address(localERC681.address!!)) }.asyncAwait { token ->
+                                    lifecycleScope.launch {
+                                        val token = appDatabase.tokens.forAddress(Address(localERC681.address!!))
                                         if (token != null) {
 
                                             if (token != currentTokenProvider.getCurrent()) {
                                                 currentTokenProvider.setCurrent(token)
-                                                currentBalanceLive?.removeObservers(this)
+                                                currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
                                                 onCurrentTokenChanged()
                                             }
 

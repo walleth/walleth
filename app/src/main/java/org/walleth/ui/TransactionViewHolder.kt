@@ -4,10 +4,8 @@ import android.text.format.DateUtils
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.transaction_item.view.*
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.kethereum.functions.getTokenRelevantTo
 import org.kethereum.functions.getTokenRelevantValue
 import org.ligi.kaxt.setVisibility
@@ -48,8 +46,10 @@ class TransactionViewHolder(itemView: View,
             if (tokenValue != null) {
                 val tokenAddress = transaction.to
                 if (tokenAddress != null) {
-                    { appDatabase.tokens.forAddress(tokenAddress) }.asyncAwaitNonNull { token ->
-                        amountViewModel.setValue(tokenValue, token)
+                    GlobalScope.launch {
+                        appDatabase.tokens.forAddress(tokenAddress)?.let {
+                            amountViewModel.setValue(tokenValue, it)
+                        }
                     }
                 }
             } else {
@@ -93,21 +93,4 @@ class TransactionViewHolder(itemView: View,
         }
     }
 
-}
-
-fun <T> (() -> T).asyncAwait(resultCall: (T) -> Unit) {
-    GlobalScope.launch(Dispatchers.Main) {
-        resultCall(withContext(Dispatchers.Default) {
-            invoke()
-        })
-    }
-}
-
-
-fun <T> (() -> T?).asyncAwaitNonNull(resultCall: (T) -> Unit) {
-    GlobalScope.launch(Dispatchers.Main) {
-        withContext(Dispatchers.Default) {
-            invoke()
-        }?.let { resultCall(it) }
-    }
 }
