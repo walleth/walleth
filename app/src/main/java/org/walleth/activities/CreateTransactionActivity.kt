@@ -51,9 +51,8 @@ import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
 import org.walleth.activities.trezor.startTrezorActivity
 import org.walleth.data.*
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.getSpec
-import org.walleth.data.addressbook.resolveNameAsync
+import org.walleth.data.addressbook.resolveNameWithFallback
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
@@ -188,7 +187,8 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         currentAddressProvider.observe(this, Observer { address ->
             address?.let {
-                appDatabase.addressBook.getByAddressAsync(address) { entry ->
+                lifecycleScope.launch {
+                    val entry = appDatabase.addressBook.byAddress(address)
                     currentAccount = entry
                     from_address.text = entry?.name
                     val drawable = ACCOUNT_TYPE_MAP[entry.getSpec()?.type]?.actionDrawable
@@ -519,22 +519,20 @@ class CreateTransactionActivity : BaseSubActivity() {
                             finish()
                         },
                         continuationWithCorrectOrNullChainId = {
+                            lifecycleScope.launch {
 
-                            intent.getStringExtra("nonce")?.let {
-                                nonce_input.setText(it.maybeHexToBigInteger().toString())
-                            }
-
-                            currentToAddress = localERC681.getToAddress()?.apply {
-                                to_address.text = this.hex
-                                appDatabase.addressBook.resolveNameAsync(this) {
-                                    to_address.text = it
+                                intent.getStringExtra("nonce")?.let {
+                                    nonce_input.setText(it.maybeHexToBigInteger().toString())
                                 }
-                            }
+
+                                currentToAddress = localERC681.getToAddress()?.apply {
+                                    to_address.text = this.hex
+                                    to_address.text = appDatabase.addressBook.resolveNameWithFallback(this)
+                                }
 
 
-                            if (localERC681.isTokenTransfer()) {
-                                if (localERC681.address != null) {
-                                    lifecycleScope.launch {
+                                if (localERC681.isTokenTransfer()) {
+                                    if (localERC681.address != null) {
                                         val token = appDatabase.tokens.forAddress(Address(localERC681.address!!))
                                         if (token != null) {
 
@@ -550,38 +548,39 @@ class CreateTransactionActivity : BaseSubActivity() {
                                         } else {
                                             alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
                                         }
+
+                                    } else {
+                                        alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
                                     }
                                 } else {
-                                    alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
-                                }
-                            } else {
 
-                                if (localERC681.function != null) {
-                                    if (!checkFunctionParameters(localERC681)) {
-                                        localERC681.function = null
-                                    }
-                                }
-
-                                localERC681.value?.let {
-
-                                    if (!currentTokenProvider.getCurrent().isRootToken()) {
-                                        chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
-                                            currentTokenProvider.setCurrent(token)
-                                            currentBalanceLive?.removeObservers(this)
-                                            onCurrentTokenChanged()
+                                    if (localERC681.function != null) {
+                                        if (!checkFunctionParameters(localERC681)) {
+                                            localERC681.function = null
                                         }
                                     }
 
-                                    amountController.setValue(it, currentTokenProvider.getCurrent())
+                                    localERC681.value?.let {
+
+                                        if (!currentTokenProvider.getCurrent().isRootToken()) {
+                                            chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
+                                                currentTokenProvider.setCurrent(token)
+                                                currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
+                                                onCurrentTokenChanged()
+                                            }
+                                        }
+
+                                        amountController.setValue(it, currentTokenProvider.getCurrent())
+                                    }
                                 }
-                            }
 
-                            localERC681.gas?.let {
-                                show_advanced_button.callOnClick()
-                                gas_limit_input.setText(it.toString())
-                            }
+                                localERC681.gas?.let {
+                                    show_advanced_button.callOnClick()
+                                    gas_limit_input.setText(it.toString())
+                                }
 
-                            estimateGas()
+                                estimateGas()
+                            }
                         })
 
 

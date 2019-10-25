@@ -15,7 +15,6 @@ import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.util.copyToClipboard
 
@@ -40,8 +39,9 @@ class EditAccountActivity : AddressReceivingActivity() {
         export_key_button.setOnClickListener {
             startAddressReceivingActivity(relevantAddress, ExportKeyActivity::class.java)
         }
-        appDatabase.addressBook.getByAddressAsync(relevantAddress) {
-            currentAddressInfo = it!!
+
+        lifecycleScope.launch {
+            currentAddressInfo = appDatabase.addressBook.byAddress(relevantAddress)!!
 
             nameInput.setText(currentAddressInfo.name)
             noteInput.setText(currentAddressInfo.note)

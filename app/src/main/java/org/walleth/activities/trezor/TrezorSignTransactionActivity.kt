@@ -19,7 +19,6 @@ import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string
-import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.getTrezorDerivationPath
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
@@ -91,13 +90,13 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
     override fun onResume() {
         super.onResume()
 
-        appDatabase.addressBook.getByAddressAsync(currentAddressProvider.getCurrentNeverNull()) {
-            currentBIP44 = it?.getTrezorDerivationPath()?.let { trezorDerivationPath ->
+        lifecycleScope.launch {
+            appDatabase.addressBook.byAddress(currentAddressProvider.getCurrentNeverNull())?.getTrezorDerivationPath()?.let { trezorDerivationPath ->
                 BIP44(trezorDerivationPath)
             } ?: throw IllegalArgumentException("Starting TREZOR Activity without derivation path")
+
             handler.post(mainRunnable)
         }
-
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

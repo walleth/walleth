@@ -4,6 +4,7 @@ import android.text.format.DateUtils
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.transaction_item.view.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.kethereum.functions.getTokenRelevantTo
@@ -12,7 +13,7 @@ import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.activities.getTransactionActivityIntentForHash
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.resolveNameAsync
+import org.walleth.data.addressbook.resolveNameWithFallback
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.ChainInfoProvider
@@ -46,7 +47,7 @@ class TransactionViewHolder(itemView: View,
             if (tokenValue != null) {
                 val tokenAddress = transaction.to
                 if (tokenAddress != null) {
-                    GlobalScope.launch {
+                    GlobalScope.launch(Dispatchers.Main) {
                         appDatabase.tokens.forAddress(tokenAddress)?.let {
                             amountViewModel.setValue(tokenValue, it)
                         }
@@ -57,8 +58,8 @@ class TransactionViewHolder(itemView: View,
             }
 
             relevantAddress?.let {
-                appDatabase.addressBook.resolveNameAsync(it) { name ->
-                    itemView.address.text = name
+                GlobalScope.launch(Dispatchers.Main) {
+                    itemView.address.text = appDatabase.addressBook.resolveNameWithFallback(it)
                 }
             }
 

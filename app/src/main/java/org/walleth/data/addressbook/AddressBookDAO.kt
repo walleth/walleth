@@ -5,20 +5,9 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import org.kethereum.model.Address
 
-fun AddressBookDAO.resolveName(address: Address) = byAddress(address)?.name ?: address.hex
-fun AddressBookDAO.resolveNameAsync(address: Address, callback: (name: String) -> Unit) = GlobalScope.launch(Dispatchers.Main) {
-    callback(withContext(Dispatchers.Default) { resolveName(address) })
-}
-
-fun AddressBookDAO.getByAddressAsync(address: Address, callback: (name: AddressBookEntry?) -> Unit) = GlobalScope.launch(Dispatchers.Main) {
-    callback(withContext(Dispatchers.Default) { byAddress(address) })
-}
+suspend fun AddressBookDAO.resolveNameWithFallback(address: Address) = byAddress(address)?.name ?: address.hex
 
 @Dao
 interface AddressBookDAO {
@@ -45,7 +34,7 @@ interface AddressBookDAO {
     fun byAddressLiveData(address: Address): LiveData<AddressBookEntry?>
 
     @Query("SELECT * FROM addressbook where address = :address COLLATE NOCASE")
-    fun byAddress(address: Address): AddressBookEntry?
+    suspend fun byAddress(address: Address): AddressBookEntry?
 
     @Query("DELETE FROM addressbook")
     fun deleteAll()

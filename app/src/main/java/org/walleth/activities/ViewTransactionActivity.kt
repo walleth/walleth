@@ -28,7 +28,7 @@ import org.walleth.R
 import org.walleth.accounts.startCreateAccountActivity
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.resolveNameAsync
+import org.walleth.data.addressbook.resolveNameWithFallback
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
@@ -115,22 +115,23 @@ class ViewTransactionActivity : BaseSubActivity() {
                     txEntry.transaction.from
                 }
 
-                relevantAddress?.let { ensured_relevant_address ->
-                    appDatabase.addressBook.resolveNameAsync(ensured_relevant_address) { name ->
+                lifecycleScope.launch {
+                    relevantAddress?.let { ensured_relevant_address ->
+                        val name = appDatabase.addressBook.resolveNameWithFallback(ensured_relevant_address)
                         from_to.text = name
-
                         add_address.setVisibility(name == ensured_relevant_address.hex)
-                    }
 
-                    add_address.setOnClickListener {
-                        startCreateAccountActivity(ensured_relevant_address.hex)
-                    }
 
-                    copy_address.setOnClickListener {
-                        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        val clip = ClipData.newPlainText(getString(R.string.ethereum_address), ensured_relevant_address.hex)
-                        clipboard.setPrimaryClip(clip)
-                        Snackbar.make(fab, R.string.snackbar_after_address_copy, Snackbar.LENGTH_LONG).show()
+                        add_address.setOnClickListener {
+                            startCreateAccountActivity(ensured_relevant_address.hex)
+                        }
+
+                        copy_address.setOnClickListener {
+                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText(getString(R.string.ethereum_address), ensured_relevant_address.hex)
+                            clipboard.setPrimaryClip(clip)
+                            Snackbar.make(fab, R.string.snackbar_after_address_copy, Snackbar.LENGTH_LONG).show()
+                        }
                     }
                 }
 

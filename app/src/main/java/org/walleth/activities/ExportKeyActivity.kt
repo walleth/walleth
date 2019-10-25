@@ -37,7 +37,6 @@ import org.walleth.R
 import org.walleth.data.ACCOUNT_TYPE_BURNER
 import org.walleth.data.AppDatabase
 import org.walleth.data.REQUEST_CODE_SELECT_TOKEN
-import org.walleth.data.addressbook.getByAddressAsync
 import org.walleth.data.addressbook.getSpec
 import org.walleth.util.security.getInvalidStringResForAccountType
 import org.walleth.util.security.getPasswordForAccountType
@@ -57,8 +56,9 @@ class ExportKeyActivity : AddressReceivingActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        appDatabase.addressBook.getByAddressAsync(relevantAddress) {
-            currentAccountType = it?.getSpec()?.type
+        lifecycleScope.launch {
+            currentAccountType = appDatabase.addressBook.byAddress(relevantAddress)?.getSpec()?.type
+
             getPasswordForAccountType(currentAccountType ?: ACCOUNT_TYPE_BURNER) { password ->
                 if (password == null) {
                     finish()
@@ -89,7 +89,6 @@ class ExportKeyActivity : AddressReceivingActivity() {
                 }
             }
         }
-
     }
 
     private fun checkConfirmation() {
