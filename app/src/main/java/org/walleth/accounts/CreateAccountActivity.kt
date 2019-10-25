@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_account_create.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.crypto.createEthereumKeyPair
@@ -129,7 +129,7 @@ class CreateAccountActivity : BaseSubActivity() {
 
     private fun createAccountAndFinish(address: Address, keySpec: AccountKeySpec) {
         isCreatingAccount = true
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch(Dispatchers.Main) {
             withContext(Dispatchers.Default) {
                 appDatabase.addressBook.upsert(AddressBookEntry(
                         name = nameInput.text.toString(),

@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_sign_text.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.crypto.toHex
@@ -41,12 +41,12 @@ class SignTextActivity : BaseSubActivity() {
 
         textToSign.text = String(text)
 
-        GlobalScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch(Dispatchers.Default) {
 
 
             val account = appDatabase.addressBook.byAddress(currentAddress)
 
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 when (val type = account.getSpec()?.type) {
                     ACCOUNT_TYPE_PIN_PROTECTED, ACCOUNT_TYPE_BURNER, ACCOUNT_TYPE_PASSWORD_PROTECTED -> getPasswordForAccountType(type) { pwd ->
                         if (pwd != null) {
@@ -80,7 +80,7 @@ class SignTextActivity : BaseSubActivity() {
         val key = keyStore.getKeyForAddress(currentAddress, password)
 
         if (key == null) {
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 val accountName = withContext(Dispatchers.Default) {
                     appDatabase.addressBook.byAddress(currentAddress)?.name ?: currentAddress.hex
                 }

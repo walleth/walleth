@@ -12,11 +12,11 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.contract.abi.types.convertStringToABIType
@@ -325,13 +325,13 @@ class CreateTransactionActivity : BaseSubActivity() {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
         }
 
-        GlobalScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch(Dispatchers.Default) {
             if (currentToAddress != null) { // we at least need a to address to create a transaction
                 val rpc = rpcProvider.get()
 
                 val result = rpc?.estimateGas(createTransaction().copy(gasLimit = null))
 
-                GlobalScope.launch(Dispatchers.Main) {
+                lifecycleScope.launch(Dispatchers.Main) {
 
                     if (result?.error != null) {
                         alert("cannot estimate gasLimit for the following reason: " + result.error?.message)
@@ -406,7 +406,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun startTransaction(password: String?, transaction: Transaction) {
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch(Dispatchers.Main) {
 
             fab_progress_bar.visibility = View.VISIBLE
             fab.isEnabled = false

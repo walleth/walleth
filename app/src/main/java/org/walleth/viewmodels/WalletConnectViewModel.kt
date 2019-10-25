@@ -2,8 +2,8 @@ package org.walleth.viewmodels
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.squareup.moshi.Moshi
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.walletconnect.Session
@@ -31,7 +31,7 @@ class WalletConnectViewModel(val app: Application,
                 Session.PeerMeta(name = "WallETH")
         )
 
-        GlobalScope.launch {
+        viewModelScope.launch {
             session?.init()
         }
         true

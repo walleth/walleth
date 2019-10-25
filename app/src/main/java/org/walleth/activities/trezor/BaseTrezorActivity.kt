@@ -6,6 +6,7 @@ import android.os.Handler
 import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.TrezorException
@@ -14,7 +15,6 @@ import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
 import kotlinx.android.synthetic.main.activity_trezor.*
 import kotlinx.android.synthetic.main.password_input.view.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.bip44.BIP44
@@ -85,7 +85,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                 trezor_status_text.visibility = View.GONE
 
                 try {
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch(Dispatchers.Main) {
                         val trezorResult = withContext(Dispatchers.Default) { manager.sendMessage(getMessageForState()) }
                         trezorResult.handleTrezorResult()
                     }

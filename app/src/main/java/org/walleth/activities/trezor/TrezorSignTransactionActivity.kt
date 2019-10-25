@@ -3,11 +3,11 @@ package org.walleth.activities.trezor
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import com.google.protobuf.ByteString
 import com.google.protobuf.Message
 import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.bip44.BIP44
@@ -75,7 +75,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
                     v = res.signatureV.toBigInteger()
             )
             transaction.transaction.txHash = transaction.transaction.encodeRLP(signatureData).keccak().toHexString()
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 withContext(Dispatchers.Default) {
                     appDatabase.runInTransaction {
                         oldHash?.let { appDatabase.transactions.deleteByHash(it) }

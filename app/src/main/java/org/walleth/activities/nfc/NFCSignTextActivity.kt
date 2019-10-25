@@ -3,8 +3,8 @@ package org.walleth.activities.nfc
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.kethereum.crypto.toAddress
 import org.kethereum.crypto.toHex
@@ -56,7 +56,7 @@ class NFCSignTextActivity : NFCBaseActivityWithPINHandling() {
             }
 
             setText("signed")
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 setResult(RESULT_OK, Intent().apply { putExtra("HEX", signed.toHex()) })
                 finish()
             }

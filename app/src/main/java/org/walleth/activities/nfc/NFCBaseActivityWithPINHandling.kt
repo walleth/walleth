@@ -1,6 +1,7 @@
 package org.walleth.activities.nfc
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import im.status.keycard.io.WrongPINException
 import kotlinx.android.synthetic.main.activity_nfc.*
 import org.ligi.kaxtui.alert
@@ -69,7 +70,7 @@ abstract class NFCBaseActivityWithPINHandling : BaseNFCActivity() {
 
             }
 
-            cardManager.start()
+            cardManager.start(lifecycleScope)
         }
 
     }

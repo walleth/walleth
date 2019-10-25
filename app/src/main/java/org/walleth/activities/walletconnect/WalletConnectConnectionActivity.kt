@@ -5,10 +5,10 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import coil.api.load
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
@@ -51,7 +51,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private val sessionCallback = object : Session.Callback {
         override fun onMethodCall(call: Session.MethodCall) {
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 when (call) {
                     is Session.MethodCall.SessionRequest -> {
                         wcViewModel.peerMeta = call.peer.meta
@@ -73,7 +73,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
                     is Session.MethodCall.SendTransaction -> {
                         currentRequestId = call.id
-                        GlobalScope.launch(Dispatchers.Main) {
+                        lifecycleScope.launch(Dispatchers.Main) {
                             val url = ERC681(scheme = "ethereum",
                                     address = call.to,
                                     value = BigInteger(call.value.clean0xPrefix(), 16),
@@ -108,7 +108,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                         }
                     }
                     else -> {
-                        GlobalScope.launch(Dispatchers.Main) {
+                        lifecycleScope.launch(Dispatchers.Main) {
                             alert("" + call)
                         }
                     }
@@ -118,7 +118,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         }
 
         override fun onStatus(status: Session.Status) {
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 when (status) {
                     is Error -> alert("Error:" + status.message)
                     is Approved -> {

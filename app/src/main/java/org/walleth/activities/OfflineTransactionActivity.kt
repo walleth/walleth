@@ -6,9 +6,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_relay.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
@@ -243,7 +243,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
     }
 
     private fun createTransaction(transaction: Transaction,
-                                  signatureData: SignatureData?) = GlobalScope.launch(Dispatchers.Main) {
+                                  signatureData: SignatureData?) = lifecycleScope.launch(Dispatchers.Main) {
         try {
 
             withContext(Dispatchers.Default) {

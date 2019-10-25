@@ -5,11 +5,11 @@ import android.os.Bundle
 import android.os.TransactionTooLargeException
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_logs.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import java.io.IOException
@@ -49,8 +49,8 @@ class DebugWallethActivity : BaseSubActivity() {
 
     private fun displayLog() {
         try {
-            GlobalScope.launch(Dispatchers.Main) {
-                val textToPrint = async {
+            lifecycleScope.launch(Dispatchers.Main) {
+                val textToPrint = withContext(Dispatchers.Default) {
                     if (golog_switch.isChecked) {
                         readLogcatString().lines().asSequence().filter {
                             it.contains("GoLog")
@@ -58,7 +58,7 @@ class DebugWallethActivity : BaseSubActivity() {
                     } else {
                         readLogcatString()
                     }
-                }.await()
+                }
 
                 runOnUiThread {
                     log_text.text = textToPrint

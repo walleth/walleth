@@ -12,9 +12,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_import_key.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.bip39.dirtyPhraseToMnemonicWords
@@ -99,7 +99,7 @@ open class ImportKeyActivity : BaseSubActivity() {
         })
     }
 
-    private fun doImport() = GlobalScope.launch(Dispatchers.Main) {
+    private fun doImport() = lifecycleScope.launch(Dispatchers.Main) {
         if (importing) {
             return@launch
         }

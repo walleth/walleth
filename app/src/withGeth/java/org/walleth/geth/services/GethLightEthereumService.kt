@@ -11,7 +11,11 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
-import kotlinx.coroutines.*
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.ethereum.geth.*
 import org.kethereum.functions.encodeRLP
 import org.koin.android.ext.android.inject
@@ -70,7 +74,7 @@ class GethLightEthereumService : LifecycleService() {
         shouldRun = true
 
 
-        GlobalScope.async(Dispatchers.Default) {
+        lifecycleScope.launch(Dispatchers.Default) {
             Geth.setVerbosity(settings.currentGoVerbosity.toLong())
             val ethereumContext = EthereumContext()
 
@@ -197,7 +201,7 @@ class GethLightEthereumService : LifecycleService() {
         try {
             val ethereumSyncProgress = ethereumNode.ethereumClient.syncProgress(ethereumContext)
 
-            GlobalScope.async(Dispatchers.Main) {
+            lifecycleScope.async(Dispatchers.Main) {
                 if (ethereumSyncProgress != null) {
                     isSyncing = true
                     val newSyncProgress = ethereumSyncProgress.let {

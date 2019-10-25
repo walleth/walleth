@@ -3,8 +3,8 @@ package org.walleth.activities.nfc
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.crypto.toAddress
@@ -55,7 +55,7 @@ class NFCSignTransactionActivity : NFCBaseActivityWithPINHandling() {
             val signedTransaction = channel.signTransaction(transaction.transaction)
 
             setText("signed")
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 withContext(Dispatchers.Default) {
                     transaction.transaction.txHash = signedTransaction.encodeRLP().keccak().toHexString()
                     appDatabase.runInTransaction {

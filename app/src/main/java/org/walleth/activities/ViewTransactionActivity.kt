@@ -9,9 +9,13 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_view_transaction.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.kethereum.extensions.toHexString
 import org.kethereum.functions.encodeRLP
 import org.kethereum.functions.getTokenTransferTo
@@ -83,7 +87,7 @@ class ViewTransactionActivity : BaseSubActivity() {
 
                 fab.setVisibility(txEntry.transactionState.needsSigningConfirmation)
                 fab.setOnClickListener {
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch(Dispatchers.Main) {
                         launch(Dispatchers.Default) {
                             txEntry.transactionState.needsSigningConfirmation = false
                             appDatabase.transactions.upsert(txEntry)
@@ -93,9 +97,9 @@ class ViewTransactionActivity : BaseSubActivity() {
                     }
                 }
 
-                GlobalScope.launch(Dispatchers.Default) {
+                lifecycleScope.launch(Dispatchers.Default) {
                     val rootToken = appDatabase.chainInfo.getByChainId(txEntry.transaction.chain!!)?.getRootToken()
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch(Dispatchers.Main) {
                         feeViewModel.setValue(txEntry.transaction.gasLimit!! * txEntry.transaction.gasPrice!!, rootToken)
                     }
                 }
@@ -161,7 +165,7 @@ class ViewTransactionActivity : BaseSubActivity() {
 
                 if (transaction.isTokenTransfer()) {
 
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch(Dispatchers.Main) {
                         val token = withContext(Dispatchers.Default) {
                             transaction.to?.let { appDatabase.tokens.forAddress(it) }
                         }
@@ -181,7 +185,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                 details.text = message
 
                 transaction.input.let {
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch(Dispatchers.Main) {
                         val signatures = if (it.size >= 4) {
                             withContext(Dispatchers.Default) {
                                 fourByteDirectory.getSignaturesFor(it.toList().subList(0, 4).toHexString())
@@ -218,7 +222,7 @@ class ViewTransactionActivity : BaseSubActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_delete -> true.also {
             txEntity?.hash?.let {
-                GlobalScope.async(Dispatchers.Main) {
+                lifecycleScope.async(Dispatchers.Main) {
                     withContext(Dispatchers.Default) {
                         appDatabase.transactions.deleteByHash(it)
                     }

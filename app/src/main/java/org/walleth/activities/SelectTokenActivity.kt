@@ -7,6 +7,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
@@ -14,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_list_stars.*
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
@@ -77,7 +77,7 @@ class SelectTokenActivity : BaseSubActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
                 val currentToken = tokenListAdapter.sortedList.get(viewHolder.adapterPosition)
                 fun changeDeleteState(state: Boolean) {
-                    GlobalScope.launch {
+                    lifecycleScope.launch {
                         upsert(appDatabase, currentToken.copy(softDeleted = state))
                     }
                 }
@@ -152,7 +152,7 @@ class SelectTokenActivity : BaseSubActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_undelete -> true.also {
-            GlobalScope.launch {
+            lifecycleScope.launch {
                 appDatabase.tokens.showAll()
             }
         }

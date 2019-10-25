@@ -17,9 +17,13 @@ import android.view.View
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_show_qr.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import net.glxn.qrgen.android.QRCode
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.wallet.LIGHT_SCRYPT_CONFIG
@@ -94,7 +98,7 @@ class ExportKeyActivity : AddressReceivingActivity() {
 
     private fun reGenerate() {
         keyJSON = null
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch(Dispatchers.Main) {
             try {
                 val bmpScaled = withContext(Dispatchers.Default) {
 
@@ -171,7 +175,7 @@ class ExportKeyActivity : AddressReceivingActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun startAfterKeyIsReady(action: () -> Unit) = GlobalScope.launch(Dispatchers.Main) {
+    private fun startAfterKeyIsReady(action: () -> Unit) = lifecycleScope.launch(Dispatchers.Main) {
         key_progress.visibility = View.VISIBLE
 
         withContext(Dispatchers.Default) {

@@ -4,9 +4,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.core.view.isVisible
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_account_edit.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
@@ -64,7 +64,7 @@ class EditAccountActivity : AddressReceivingActivity() {
 
     override fun onPause() {
         super.onPause()
-        GlobalScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch(Dispatchers.Default) {
             appDatabase.addressBook.upsert(currentAddressInfo)
         }
     }

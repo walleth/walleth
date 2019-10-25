@@ -5,10 +5,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_list.*
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.android.ext.android.inject
@@ -53,7 +57,7 @@ open class SwitchChainActivity : BaseSubActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.menu_refresh -> GlobalScope.launch(Dispatchers.Main) {
+            R.id.menu_refresh -> lifecycleScope.launch(Dispatchers.Main) {
                 refresh()
 
             }
@@ -63,7 +67,7 @@ open class SwitchChainActivity : BaseSubActivity() {
 
     private fun refresh() {
         swipe_refresh_layout.isRefreshing = true
-        GlobalScope.launch(Dispatchers.IO) {
+        lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val request = Request.Builder().url("https://chainid.network/chains_mini.json")
                 okHttpClient.newCall(request.build()).execute().body()?.string()?.let { json ->
@@ -72,7 +76,7 @@ open class SwitchChainActivity : BaseSubActivity() {
                     appDatabase.chainInfo.upsert(list)
                 }
                 delay(1000)
-                GlobalScope.launch(Dispatchers.Main) {
+                lifecycleScope.launch(Dispatchers.Main) {
                     setAdapter()
                     swipe_refresh_layout.isRefreshing = false
                 }
@@ -85,7 +89,7 @@ open class SwitchChainActivity : BaseSubActivity() {
     }
 
     private fun handleRefreshError(message: String) {
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch(Dispatchers.Main) {
             swipe_refresh_layout.isRefreshing = false
             alert(message)
         }
@@ -93,7 +97,7 @@ open class SwitchChainActivity : BaseSubActivity() {
 
     override fun onResume() {
         super.onResume()
-        GlobalScope.launch(Dispatchers.Main) {
+        lifecycleScope.launch(Dispatchers.Main) {
             setAdapter()
         }
     }

@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
@@ -13,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_list_addresses.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.keystore.api.KeyStore
@@ -70,7 +70,7 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
 
                 val current = adapter.displayList[viewHolder.adapterPosition]
                 fun changeDeleteState(state: Boolean) {
-                    GlobalScope.launch(Dispatchers.Main) {
+                    lifecycleScope.launch(Dispatchers.Main) {
                         withContext(Dispatchers.Default) {
                             appDatabase.addressBook.upsert(current.apply {
                                 deleted = state
@@ -111,7 +111,7 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_undelete -> true.also {
-            GlobalScope.launch(Dispatchers.Main) {
+            lifecycleScope.launch(Dispatchers.Main) {
                 withContext(Dispatchers.Default) {
                     appDatabase.addressBook.undeleteAll()
                 }
@@ -131,7 +131,7 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
                     .setTitle(R.string.are_you_sure)
                     .setMessage(R.string.permanent_accounts_delete_confirmation)
                     .setPositiveButton(R.string.delete) { _, _ ->
-                        GlobalScope.launch(Dispatchers.Default) {
+                        lifecycleScope.launch(Dispatchers.Default) {
                             appDatabase.addressBook.run {
                                 allDeleted().forEach {
                                     keyStore.deleteKey(it.address)
