@@ -3,6 +3,7 @@ package org.walleth.testdata
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
+import kotlinx.coroutines.withContext
 import org.kethereum.model.Address
 import org.walleth.data.addressbook.AddressBookDAO
 import org.walleth.data.addressbook.AddressBookEntry
@@ -16,7 +17,7 @@ val Ligi = Address("0xfdf1210fc262c73d0436236a0e07be419babbbc4")
 
 fun AddressBookDAO.addTestAddresses() {
     GlobalScope.async(Dispatchers.Main) {
-        async(Dispatchers.Default) {
+        withContext(Dispatchers.Default) {
             upsert(listOf(
                     AddressBookEntry(Room77, "Room77"),
                     AddressBookEntry(ShapeShift, "ShapeShift"),
@@ -25,6 +26,6 @@ fun AddressBookDAO.addTestAddresses() {
                     AddressBookEntry(Faucet, "Faucet"),
                     AddressBookEntry(Ligi, "Ligi")
             ))
-        }.await()
+        }
     }
 }
