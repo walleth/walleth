@@ -324,6 +324,10 @@ class CreateTransactionActivity : BaseSubActivity() {
             gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
         }
 
+        estimateGasLimit()
+    }
+
+    private fun estimateGasLimit() {
         lifecycleScope.launch(Dispatchers.Default) {
             if (currentToAddress != null) { // we at least need a to address to create a transaction
                 val rpc = rpcProvider.get()
@@ -332,10 +336,20 @@ class CreateTransactionActivity : BaseSubActivity() {
 
                 lifecycleScope.launch(Dispatchers.Main) {
 
-                    if (result?.error != null) {
-                        alert("cannot estimate gasLimit for the following reason: " + result.error?.message)
+                    if (result?.error != null || result?.result == null) {
+                        var message = "You might want to set it manually."
+                        result?.error?.message?.let {
+                            message = "This was the reason: $it\n$message"
+                        }
+                        AlertDialog.Builder(this@CreateTransactionActivity)
+                                .setTitle("Cannot estimate gasLimit")
+                                .setMessage(message)
+                                .setPositiveButton("OK", null)
+                                .setNeutralButton("Retry") { _, _ -> estimateGasLimit() }
+                                .show()
+                        show_advanced_button.performClick()
                     } else {
-                        result?.result?.hexToBigInteger().let {
+                        result.result.hexToBigInteger().let {
                             gas_limit_input.setText(it.toString())
                         }
                     }
