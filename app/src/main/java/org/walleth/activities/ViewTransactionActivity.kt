@@ -141,27 +141,41 @@ class ViewTransactionActivity : BaseSubActivity() {
                 }
 
 
-                if (txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && (txEntry.transactionState.relayed.isEmpty())) {
-                    rlp_header.visibility = View.VISIBLE
-                    rlp_image.visibility = View.VISIBLE
+                val rlpVisible = txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && txEntry.transactionState.relayed.isEmpty()
+                rlp_container.setVisibility(rlpVisible)
+                if (rlpVisible) {
 
-                    if (txEntry.signatureData != null) {
+                    val content = if (txEntry.signatureData != null) {
                         rlp_header.setText(R.string.signed_rlp_header_text)
-                        rlp_image.setQRCode("""{
+                        """{
                             "signedTransactionRLP":"${txEntry.transaction.encodeRLP(txEntry.signatureData).toHexString()}",
                             "chainId":${txEntry.transaction.chain}
-                            }""")
+                            }"""
                     } else {
                         rlp_header.setText(R.string.unsigned_rlp_header_text)
-
-                        rlp_image.setQRCode("""{
+                        """{
 "nonce":"${txEntry.transaction.nonce?.toHexString()}","gasPrice":"${txEntry.transaction.gasPrice!!.toHexString()}","gasLimit":"${txEntry.transaction.gasLimit!!.toHexString()}","to":"${txEntry.transaction.to}","from":"${txEntry.transaction.from}","value":"${txEntry.transaction.value!!.toHexString()}","data":"${txEntry.transaction.input.toHexString("0x")}","chainId":${txEntry.transaction.chain}
                             }
-                            """)
+                            """
                     }
-                } else {
-                    rlp_image.visibility = View.GONE
-                    rlp_header.visibility = View.GONE
+                    rlp_image.setQRCode(content)
+                    rlp_copy_button.setOnClickListener {
+                        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                        clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.clipboard_copy_name), content))
+                        Snackbar.make(fab, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
+                    }
+                    rlp_share_button.setOnClickListener {
+                        val sendIntent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            putExtra(Intent.EXTRA_TEXT, content)
+                            type = "text/plain"
+                        }
+                        startActivity(sendIntent)
+                    }
+                    rlp_fullscreen_button.setOnClickListener {
+                        startActivity(getQRCodeIntent(content))
+                    }
+
                 }
 
                 if (transaction.isTokenTransfer()) {
