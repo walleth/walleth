@@ -72,7 +72,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
                     return Result.success()
                 }
             } else {
-                transaction.setError( "Could not relay transaction")
+                transaction.setError( "Could not (yet) relay transaction")
             }
         }
 
