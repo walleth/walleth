@@ -55,8 +55,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
 
                         Result.failure()
                     } else {
-                        transaction.setError(result.error?.message)
-                        Result.retry()
+                        Result.success()
                     }
 
 
