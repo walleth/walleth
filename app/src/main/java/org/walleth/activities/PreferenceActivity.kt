@@ -5,15 +5,12 @@ import android.os.Bundle
 import org.walleth.R
 
 
-class PreferenceActivity : BaseSubActivity() {
-
-    var firstResume = false
+class PreferenceActivity : BaseSubActivity() ,  ToolbarColorChangeDetector by DefaultToolbarChangeDetector() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_prefs)
-        firstResume = true
 
         supportActionBar?.subtitle = getString(R.string.preferences_activity_subtitle)
     }
@@ -21,11 +18,8 @@ class PreferenceActivity : BaseSubActivity() {
     override fun onResume() {
         super.onResume()
 
-        if (!firstResume) {
-            // to apply the new toolbar configuration
+        if (didToolbarColorChange()) {
             recreate()
         }
-
-        firstResume = false
     }
 }

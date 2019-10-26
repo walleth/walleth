@@ -4,6 +4,7 @@ import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
@@ -50,13 +51,12 @@ import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
 
-class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChangeListener {
+class MainActivity : WallethActivity(), OnSharedPreferenceChangeListener, ToolbarColorChangeDetector by DefaultToolbarChangeDetector() {
 
     private val actionBarDrawerToggle by lazy { ActionBarDrawerToggle(this, drawer_layout, R.string.drawer_open, R.string.drawer_close) }
 
     private val chainInfoProvider: ChainInfoProvider by inject()
     private val appDatabase: AppDatabase by inject()
-    private val settings: Settings by inject()
     private val currentTokenProvider: CurrentTokenProvider by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
@@ -77,10 +77,12 @@ class MainActivity : WallethActivity(), SharedPreferences.OnSharedPreferenceChan
     override fun onResume() {
         super.onResume()
 
-        if (lastNightMode != null && lastNightMode != settings.getNightMode()) {
+        if (lastNightMode != null && lastNightMode != settings.getNightMode() ||
+                didToolbarColorChange()) {
             recreate()
             return
         }
+        lastToolbarColor = calcToolbarColorCombination()
         lastNightMode = settings.getNightMode()
         setCurrentBalanceObservers()
 
