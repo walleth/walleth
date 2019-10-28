@@ -21,13 +21,12 @@ import org.walleth.R
 import org.walleth.accounts.AccountPickActivity
 import org.walleth.accounts.startCreateAccountActivity
 import org.walleth.activities.walletconnect.WalletConnectConnectionActivity
+import org.walleth.data.REQUEST_CODE_CREATE_TX
+import org.walleth.data.REQUEST_CODE_SIGN_TX
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.isTokenTransfer
 import java.math.BigInteger.ZERO
-
-private const val CREATE_TX_REQUEST_CODE = 10123
-private const val SIGN_TX_REQUEST_CODE = 10124
 
 fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentHandlerActivity::class.java).apply {
     data = Uri.parse(ethereumString)
@@ -102,7 +101,7 @@ class IntentHandlerActivity : WallethActivity() {
         if (erC681.address == null || erC681.isTokenTransfer() || erC681.value != null && erC681.value != ZERO) {
             startActivityForResult(Intent(this, CreateTransactionActivity::class.java).apply {
                 data = intent.data
-            }, CREATE_TX_REQUEST_CODE)
+            }, REQUEST_CODE_CREATE_TX)
         } else {
             AlertDialog.Builder(this)
                     .setTitle(R.string.select_action_messagebox_title)
@@ -116,7 +115,7 @@ class IntentHandlerActivity : WallethActivity() {
                                 val intent = Intent(this, CreateTransactionActivity::class.java).apply {
                                     data = intent.data
                                 }
-                                startActivityForResult(intent, CREATE_TX_REQUEST_CODE)
+                                startActivityForResult(intent, REQUEST_CODE_CREATE_TX)
                             }
                             2 -> alert("TODO", "add token definition") {
                                 finish()
@@ -138,7 +137,7 @@ class IntentHandlerActivity : WallethActivity() {
         super.onActivityResult(requestCode, resultCode, data)
 
         when (requestCode) {
-            SIGN_TX_REQUEST_CODE, CREATE_TX_REQUEST_CODE -> {
+            REQUEST_CODE_SIGN_TX, REQUEST_CODE_CREATE_TX -> {
                 setResult(resultCode, data)
                 finish()
             }
@@ -162,6 +161,6 @@ class IntentHandlerActivity : WallethActivity() {
     private fun startEthereumSignedMessage() {
         val intent = Intent(this, SignTextActivity::class.java)
         intent.putExtra(Intent.EXTRA_TEXT, textToSign)
-        startActivityForResult(intent, SIGN_TX_REQUEST_CODE)
+        startActivityForResult(intent, REQUEST_CODE_SIGN_TX)
     }
 }
