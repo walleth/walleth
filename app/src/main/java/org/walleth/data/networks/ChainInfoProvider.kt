@@ -15,9 +15,10 @@ import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.config.Settings
 import java.math.BigInteger
 
-
-const val FAUCET_ADDRESS_TOKEN = "\${ADDRESS}"
-fun ChainInfo.getFaucetURL(address: Address) = faucets.firstOrNull()?.replace(FAUCET_ADDRESS_TOKEN, address.hex)
+private const val FAUCET_ADDRESS_TOKEN = "\${ADDRESS}"
+fun ChainInfo.getFaucetURL(address: Address) = getFaucetWithAddressSupport()?.replace(FAUCET_ADDRESS_TOKEN, address.hex) ?: faucets.firstOrNull()
+fun ChainInfo.hasFaucetWithAddressSupport() = getFaucetWithAddressSupport() != null
+private fun ChainInfo.getFaucetWithAddressSupport() = faucets.firstOrNull { it.contains(FAUCET_ADDRESS_TOKEN) }
 
 fun AssetManager.loadInitChains(moshi: Moshi): List<ChainInfo> {
     val chainsJSON = open("init_chains.json").reader().readText()

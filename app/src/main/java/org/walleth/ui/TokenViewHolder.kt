@@ -18,8 +18,8 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.FAUCET_ADDRESS_TOKEN
 import org.walleth.data.networks.getFaucetURL
+import org.walleth.data.networks.hasFaucetWithAddressSupport
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.isRootToken
@@ -80,7 +80,7 @@ fun AppCompatImageView.prepareFaucetButton(chainInfo: ChainInfo?,
                                            currentAddressProvider: CurrentAddressProvider,
                                            postAction: () -> Unit = {}) {
     if (chainInfo?.faucets?.isNotEmpty() == true) {
-        setImageResource(if (chainInfo.faucets.find { it.contains(FAUCET_ADDRESS_TOKEN) } != null) R.drawable.ic_flash_on_black_24dp else R.drawable.ic_redeem_black_24dp)
+        setImageResource(if (chainInfo.hasFaucetWithAddressSupport()) R.drawable.ic_flash_on_black_24dp else R.drawable.ic_redeem_black_24dp)
         setVisibility(true)
     } else {
         setVisibility(false)
