@@ -7,6 +7,7 @@ import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.walleth.data.networks.CurrentAddressProvider
 
+private const val INTENT_KEY_ADDRESS = "ADDRESS"
 
 fun Context.startAddressReceivingActivity(address: Address, clazz: Class<out AddressReceivingActivity>) {
 

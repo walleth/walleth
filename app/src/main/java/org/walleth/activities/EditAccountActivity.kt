@@ -18,8 +18,6 @@ import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.util.copyToClipboard
 
-const val INTENT_KEY_ADDRESS = "ADDRESS"
-
 class EditAccountActivity : AddressReceivingActivity() {
 
     private val appDatabase: AppDatabase by inject()
