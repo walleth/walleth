@@ -40,8 +40,8 @@ class SecurityInfoActivity : BaseSubActivity() {
 
         val infoList = listOf(
                 getPatchInfo(),
-                getRootInfo(this),
-                getLockInfo(this),
+                getRootInfo(),
+                getLockInfo(),
                 getNoAuditWarning()
         )
 
@@ -63,29 +63,30 @@ class SecurityInfoActivity : BaseSubActivity() {
 
 }
 
-private fun getNoAuditWarning() = SecurityInfoItem(ORANGE, "This software did not yet have an security audit. Please only use it with significant amounts when secured by e.g. a TREZOR.")
+private fun Context.getNoAuditWarning() = SecurityInfoItem(ORANGE, getString(R.string.security_info_no_audit_warning))
 
-private fun getLockInfo(context: Context) = if (isDeviceLockScreenProtected(context)) {
-    SecurityInfoItem(GREEN, "Your device has a secured lock screen - so people finding your device cannot simply access your funds. Be aware if you use very simple PINs, patterns or passwords: then you might still be at risk. For obvious reasons we cannot check the quality of your PINs, patterns or passwords. Also on some Android versions it was possible to brute force e.g. the PINs. And if you use fingerprint as protection - be aware they can easily be copied and should just be used for identification, but not authentification.")
+private fun Context.getLockInfo() = if (isDeviceLockScreenProtected(this)) {
+    SecurityInfoItem(GREEN, getString(R.string.security_info_has_lockscreen))
 } else {
-    SecurityInfoItem(RED, "Your device has no (good) lock screen method set. This means if you loose your phone - your funds are at risk. Please consider setting ideally a password there to protect your funds!")
+    SecurityInfoItem(RED, getString(R.string.security_info_no_lockscreen))
 }
 
-private fun getPatchInfo() = getDaysSincePatch().let {
+private fun Context.getPatchInfo() = getDaysSincePatch().let {
     when {
 
-        it == null -> SecurityInfoItem(RED, "Could not determine the date of your last Android security patch - this is a really bad sign")
+        it == null -> SecurityInfoItem(RED, getString(R.string.security_info_patch_date_unknown))
 
-        it < 33 -> SecurityInfoItem(GREEN, "Your Android system was patched $it days ago - which is considered good. ")
+        it < 33 -> SecurityInfoItem(GREEN, getString(R.string.security_info_pached_bad, it))
 
-        it < 123 -> SecurityInfoItem(ORANGE, "Your Android got the last security updates $it days ago - which is reasonable - but could be better. Nag your phone provider to provide you with patches or install a custom ROM with recent security updates. You might also consider a hardware wallet like a TREZOR to mitigate the problem.")
+        it < 123 -> SecurityInfoItem(ORANGE, getString(R.string.security_info_patched_reasonably, it))
 
-        else -> SecurityInfoItem(RED, "Your Android system was patched $it days ago - which is considered bad as it is old and the chance is high that there are security flaws and your funds are at risk. Nag your phone provider to provide you with patches or install a custom ROM with recent security patches. You might also consider a hardware wallet like a TREZOR to mitigate the problem")
+        else -> SecurityInfoItem(RED, getString(R.string.security_info_patched_badly, it)
+        )
     }
 }
 
-private fun getRootInfo(context: Context) = if (RootBeer(context).isRooted) {
-    SecurityInfoItem(RED, "There are indicators this phone is rooted. This breaks app-isolation and other apps might be able to access your keys. We will not forbid you to use this app as we hope you know what you are doing (e.g. only use this app for watch-only accounts, use a TREZOR or only have insignificant value in accounts used with WallETH.)")
+private fun Context.getRootInfo() = if (RootBeer(this).isRooted) {
+    SecurityInfoItem(RED, getString(R.string.security_info_rooted))
 } else {
-    SecurityInfoItem(GREEN, "No indication of rooting found - which is good as this would break app isolation and other apps could potentially access your keys. Please be advised that we can only check for indicators - if you rooted your device and cloaked (e.g. to use banking apps that do not allow to run on rooted phones) it good we might not detect it. If you did so please be aware of the security implications. We will not forbid you to use this app as we hope you know what you are doing (e.g. only use this app for watch-only accounts, use a TREZOR or only have insignificant value in accounts used with WallETH.)")
+    SecurityInfoItem(GREEN, getString(R.string.security_info_not_rooted))
 }
