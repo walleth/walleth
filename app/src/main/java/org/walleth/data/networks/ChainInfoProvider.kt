@@ -38,7 +38,10 @@ fun Moshi.deSerialize(chainsJSON: String): List<ChainInfo> {
     return list
 }
 
-class ChainInfoProvider(val settings: Settings, val appDatabase: AppDatabase, val moshi: Moshi, val assetManager: AssetManager) : MutableLiveData<ChainInfo>() {
+class ChainInfoProvider(val settings: Settings,
+                        val appDatabase: AppDatabase,
+                        private val moshi: Moshi,
+                        private val assetManager: AssetManager) : MutableLiveData<ChainInfo>() {
 
     init {
         GlobalScope.launch(Dispatchers.Default) {
