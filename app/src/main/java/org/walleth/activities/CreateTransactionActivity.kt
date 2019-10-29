@@ -46,9 +46,9 @@ import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.accounts.AccountPickActivity
-import org.walleth.activities.nfc.startNFCSigningActivity
-import org.walleth.activities.trezor.TREZOR_REQUEST_CODE
-import org.walleth.activities.trezor.startTrezorActivity
+import org.walleth.nfc.startNFCSigningActivity
+import org.walleth.trezor.TREZOR_REQUEST_CODE
+import org.walleth.trezor.startTrezorActivity
 import org.walleth.data.*
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getSpec

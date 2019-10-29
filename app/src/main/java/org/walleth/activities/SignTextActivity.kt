@@ -16,7 +16,7 @@ import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.nfc.getNFCSignTextIntent
+import org.walleth.nfc.getNFCSignTextIntent
 import org.walleth.data.*
 import org.walleth.data.addressbook.getSpec
 import org.walleth.data.networks.CurrentAddressProvider

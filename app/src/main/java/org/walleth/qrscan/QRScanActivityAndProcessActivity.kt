@@ -10,7 +10,7 @@ import org.walleth.accounts.KeyType
 import org.walleth.accounts.getCreateImportIntentFor
 import org.walleth.activities.getEthereumViewIntent
 import org.walleth.activities.getOfflineTransactionIntent
-import org.walleth.activities.walletconnect.getWalletConnectIntent
+import org.walleth.walletconnect.getWalletConnectIntent
 import org.walleth.util.isJSONKey
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON

@@ -9,8 +9,8 @@ import org.walleth.R
 import org.walleth.accounts.ImportKeyActivity
 import org.walleth.activities.RequestPINActivity
 import org.walleth.activities.RequestPasswordActivity
-import org.walleth.activities.nfc.NFCGetAddressActivity
-import org.walleth.activities.trezor.TrezorGetAddressActivity
+import org.walleth.nfc.NFCGetAddressActivity
+import org.walleth.trezor.TrezorGetAddressActivity
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 

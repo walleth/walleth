@@ -1,4 +1,4 @@
-package org.walleth.activities.nfc
+package org.walleth.nfc
 
 import android.annotation.SuppressLint
 import android.app.Activity

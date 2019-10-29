@@ -27,8 +27,8 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.BaseSubActivity
-import org.walleth.activities.trezor.getAddressResult
-import org.walleth.activities.trezor.hasAddressResult
+import org.walleth.trezor.getAddressResult
+import org.walleth.trezor.hasAddressResult
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.AddressBookEntry

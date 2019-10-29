@@ -1,4 +1,4 @@
-package org.walleth.activities.trezor
+package org.walleth.trezor
 
 import android.app.Activity
 import android.content.Intent

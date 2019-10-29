@@ -1,4 +1,4 @@
-package org.walleth.activities.nfc
+package org.walleth.nfc
 
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope

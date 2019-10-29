@@ -1,4 +1,4 @@
-package org.walleth.activities.nfc
+package org.walleth.nfc
 
 import android.app.Activity
 import android.content.Intent

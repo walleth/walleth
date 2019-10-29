@@ -1,4 +1,4 @@
-package org.walleth.activities.trezor
+package org.walleth.trezor
 
 import android.app.Activity
 import android.os.Bundle
@@ -25,7 +25,7 @@ import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.BaseSubActivity
-import org.walleth.activities.trezor.BaseTrezorActivity.STATES.*
+import org.walleth.trezor.BaseTrezorActivity.STATES.*
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.ui.KEY_MAP_NUM_PAD

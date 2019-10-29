@@ -35,14 +35,14 @@
         <activity android:name="org.walleth.activities.InfoActivity"/>
         <activity android:name="org.walleth.activities.DebugWallethActivity"/>
 
-        <activity android:name="org.walleth.activities.trezor.TrezorSignTransactionActivity"/>
-        <activity android:name="org.walleth.activities.trezor.TrezorGetAddressActivity"/>
+        <activity android:name="org.walleth.trezor.TrezorSignTransactionActivity"/>
+        <activity android:name="org.walleth.trezor.TrezorGetAddressActivity"/>
 
-        <activity android:name="org.walleth.activities.nfc.NFCGetAddressActivity"/>
-        <activity android:name="org.walleth.activities.nfc.NFCSignTransactionActivity"/>
+        <activity android:name="org.walleth.nfc.NFCGetAddressActivity"/>
+        <activity android:name="org.walleth.nfc.NFCSignTransactionActivity"/>
 
-        <activity android:name="org.walleth.activities.walletconnect.WalletConnectConnectionActivity"/>
-        <activity android:name="org.walleth.activities.walletconnect.WalletConnectErrorActivity"/>
+        <activity android:name="org.walleth.walletconnect.WalletConnectConnectionActivity"/>
+        <activity android:name="org.walleth.walletconnect.WalletConnectErrorActivity"/>
 
         <activity android:name="org.walleth.activities.ExportKeyActivity"/>
         <activity android:name="org.walleth.activities.EditAccountActivity"/>
@@ -109,10 +109,10 @@
             <meta-data android:name="android.app.shortcuts"
                        android:resource="@xml/shortcuts"/>
         </activity>
-        <activity android:name=".activities.nfc.NFCEnterCredentialsActivity"
+        <activity android:name="org.walleth.nfc.NFCEnterCredentialsActivity"
                   android:windowSoftInputMode="adjustResize"/>
 
-        <activity android:name=".activities.nfc.NDEFTagHandlingActivity">
+        <activity android:name="org.walleth.nfc.NDEFTagHandlingActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED"/>
                 <category android:name="android.intent.category.DEFAULT"/>
@@ -125,7 +125,7 @@
                   android:windowSoftInputMode="adjustResize"/>
         <activity android:name=".activities.ImportAsActivity"/>
         <activity android:name=".qrscan.QRScanActivityAndProcessActivity"/>
-        <activity android:name=".activities.nfc.NFCSignTextActivity" />
+        <activity android:name="org.walleth.nfc.NFCSignTextActivity" />
 
     </application>
 

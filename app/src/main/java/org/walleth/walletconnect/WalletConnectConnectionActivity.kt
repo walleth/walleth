@@ -1,4 +1,4 @@
-package org.walleth.activities.walletconnect
+package org.walleth.walletconnect
 
 import android.content.Context
 import android.content.Intent
