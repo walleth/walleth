@@ -17,6 +17,7 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.securityinfo.SecurityInfoActivity
 import java.security.KeyStore
 
 class WalletNavigationFragment : Fragment() {

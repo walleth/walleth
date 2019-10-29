@@ -1,4 +1,4 @@
-package org.walleth.activities
+package org.walleth.securityinfo
 
 
 import android.content.Context
@@ -9,17 +9,9 @@ import kotlinx.android.synthetic.main.activity_security_info.*
 import kotlinx.android.synthetic.main.activity_security_item.view.*
 import org.ligi.compat.HtmlCompat
 import org.walleth.R
-import org.walleth.activities.ProblemLevel.*
-import org.walleth.util.security.getDaysSincePatch
+import org.walleth.activities.BaseSubActivity
+import org.walleth.securityinfo.ProblemLevel.*
 import org.walleth.util.security.isDeviceLockScreenProtected
-
-private enum class ProblemLevel {
-    GREEN,
-    ORANGE,
-    RED
-}
-
-private data class SecurityInfoItem(val level: ProblemLevel, val message: String)
 
 class SecurityInfoActivity : BaseSubActivity() {
 

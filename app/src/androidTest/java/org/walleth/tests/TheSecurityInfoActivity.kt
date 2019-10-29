@@ -8,7 +8,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
-import org.walleth.activities.SecurityInfoActivity
+import org.walleth.securityinfo.SecurityInfoActivity
 
 class TheSecurityInfoActivity {
 

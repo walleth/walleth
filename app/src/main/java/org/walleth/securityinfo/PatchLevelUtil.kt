@@ -1,5 +1,4 @@
-package org.walleth.util.security
-
+package org.walleth.securityinfo
 
 import android.os.Build
 import org.ligi.tracedroid.logging.Log
@@ -8,7 +7,6 @@ import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
 import java.util.*
 
-
 private const val GETPROP_EXECUTABLE_PATH = "/system/bin/getprop"
 private val PATCH_LEVEL_DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.ENGLISH)
 
@@ -16,7 +14,7 @@ fun getDaysSincePatch() = getSecurityPatchDate()?.let {
     ChronoUnit.DAYS.between(it, LocalDate.now())
 }
 
-fun getSecurityPatchDate() = readSecurityPatchDateString()?.let {
+private fun getSecurityPatchDate() = readSecurityPatchDateString()?.let {
     try {
         LocalDate.parse(it, PATCH_LEVEL_DATE_FORMAT)
     } catch (e: Exception) {
@@ -25,7 +23,7 @@ fun getSecurityPatchDate() = readSecurityPatchDateString()?.let {
     }
 }
 
-fun readSecurityPatchDateString(): String? {
+private fun readSecurityPatchDateString(): String? {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
         return Build.VERSION.SECURITY_PATCH
 
