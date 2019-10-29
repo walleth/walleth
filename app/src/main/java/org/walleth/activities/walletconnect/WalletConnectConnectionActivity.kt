@@ -22,8 +22,12 @@ import org.walletconnect.Session.Status.Approved
 import org.walletconnect.Session.Status.Closed
 import org.walleth.R
 import org.walleth.accounts.AccountPickActivity
-import org.walleth.activities.*
+import org.walleth.activities.BaseSubActivity
+import org.walleth.activities.CreateTransactionActivity
+import org.walleth.activities.SignTextActivity
+import org.walleth.activities.SwitchChainActivity
 import org.walleth.data.EXTRA_KEY_ADDRESS
+import org.walleth.data.REQUEST_CODE_SELECT_TO_ADDRESS
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.khex.clean0xPrefix
@@ -217,7 +221,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private fun selectAccount() {
         val intent = Intent(this@WalletConnectConnectionActivity, AccountPickActivity::class.java)
-        startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
+        startActivityForResult(intent, REQUEST_CODE_SELECT_TO_ADDRESS)
     }
 
     override fun onDestroy() {
@@ -235,7 +239,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             }
 
 
-            TO_ADDRESS_REQUEST_CODE -> {
+            REQUEST_CODE_SELECT_TO_ADDRESS -> {
                 if (data?.hasExtra(EXTRA_KEY_ADDRESS) == true) {
                     val addressHex = data.getStringExtra(EXTRA_KEY_ADDRESS)
                     currentAddressProvider.setCurrent(Address(addressHex))

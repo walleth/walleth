@@ -80,10 +80,6 @@ import java.math.BigInteger
 import java.math.BigInteger.*
 import java.util.*
 
-const val TO_ADDRESS_REQUEST_CODE = 1
-const val FROM_ADDRESS_REQUEST_CODE = 2
-const val TOKEN_REQUEST_CODE = 3
-
 class CreateTransactionActivity : BaseSubActivity() {
 
     private var currentERC681: ERC681 = ERC681()
@@ -147,7 +143,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                     startTransaction(data?.getStringExtra(EXTRA_KEY_PWD), createTransaction())
                 }
             }
-            TOKEN_REQUEST_CODE -> {
+            REQUEST_CODE_SELECT_TOKEN -> {
                 onCurrentTokenChanged()
             }
             else -> data?.let {
@@ -202,7 +198,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         })
 
         current_token_symbol.setOnClickListener {
-            startActivityForResult(Intent(this, SelectTokenActivity::class.java), TOKEN_REQUEST_CODE)
+            startActivityForResult(Intent(this, SelectTokenActivity::class.java), REQUEST_CODE_SELECT_TOKEN)
         }
 
         val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
@@ -285,12 +281,12 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         address_list_button.setOnClickListener {
             val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
-            startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
+            startActivityForResult(intent, REQUEST_CODE_SELECT_TO_ADDRESS)
         }
 
         from_address_list_button.setOnClickListener {
             val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
-            startActivityForResult(intent, FROM_ADDRESS_REQUEST_CODE)
+            startActivityForResult(intent, REQUEST_CODE_SELECT_FROM_ADDRESS)
         }
 
         val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()

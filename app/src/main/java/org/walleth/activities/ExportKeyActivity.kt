@@ -36,7 +36,7 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.ACCOUNT_TYPE_BURNER
 import org.walleth.data.AppDatabase
-import org.walleth.data.REQUEST_CODE_SELECT_TOKEN
+import org.walleth.data.REQUEST_CODE_CREATE_DOCUMENT
 import org.walleth.data.addressbook.getSpec
 import org.walleth.util.security.getInvalidStringResForAccountType
 import org.walleth.util.security.getPasswordForAccountType
@@ -163,7 +163,7 @@ class ExportKeyActivity : AddressReceivingActivity() {
                     putExtra(Intent.EXTRA_TITLE, relevantAddress.hex + ".key")
                     type = "application/json"
                 }
-                startActivityForResult(sendIntent, REQUEST_CODE_SELECT_TOKEN)
+                startActivityForResult(sendIntent, REQUEST_CODE_CREATE_DOCUMENT)
             }
         }
 

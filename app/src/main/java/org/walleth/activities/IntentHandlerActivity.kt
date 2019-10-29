@@ -22,6 +22,7 @@ import org.walleth.accounts.AccountPickActivity
 import org.walleth.accounts.startCreateAccountActivity
 import org.walleth.activities.walletconnect.WalletConnectConnectionActivity
 import org.walleth.data.REQUEST_CODE_CREATE_TX
+import org.walleth.data.REQUEST_CODE_SELECT_TO_ADDRESS
 import org.walleth.data.REQUEST_CODE_SIGN_TX
 import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
@@ -76,7 +77,7 @@ class IntentHandlerActivity : WallethActivity() {
                     oldFilterAddressesKeyOnly = settings.filterAddressesKeyOnly
                     settings.filterAddressesKeyOnly = true
                     val intent = Intent(this, AccountPickActivity::class.java)
-                    startActivityForResult(intent, TO_ADDRESS_REQUEST_CODE)
+                    startActivityForResult(intent, REQUEST_CODE_SELECT_TO_ADDRESS)
                 } else {
                     val wantedAddress = Address(split.first())
 
@@ -142,7 +143,7 @@ class IntentHandlerActivity : WallethActivity() {
                 finish()
             }
 
-            TO_ADDRESS_REQUEST_CODE -> {
+            REQUEST_CODE_SELECT_TO_ADDRESS -> {
 
                 if (resultCode == Activity.RESULT_OK) {
                     if (data?.hasExtra("HEX") == true) {
