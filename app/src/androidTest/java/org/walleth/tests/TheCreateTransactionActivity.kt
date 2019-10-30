@@ -13,6 +13,7 @@ import androidx.test.espresso.intent.matcher.IntentMatchers.hasComponent
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.google.common.truth.Truth
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +25,6 @@ import org.kethereum.model.Address
 import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
 import org.walleth.activities.CreateTransactionActivity
-import org.walleth.qrscan.QRScanActivity
 import org.walleth.data.ACCOUNT_TYPE_BURNER
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.AddressBookEntry
@@ -37,6 +37,7 @@ import org.walleth.data.tokens.toERC681
 import org.walleth.functions.decimalsAsMultiplicator
 import org.walleth.infrastructure.TestApp
 import org.walleth.infrastructure.setCurrentToken
+import org.walleth.qrscan.QRScanActivity
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
 import java.math.BigInteger
@@ -195,7 +196,7 @@ class TheCreateTransactionActivity {
     }
 
     @Test
-    fun usesCorrectValuesForCurrentTokenTransfer() {
+    fun usesCorrectValuesForCurrentTokenTransfer(): Unit = runBlocking {
         TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
         setCurrentToken(testToken)
 
@@ -219,7 +220,7 @@ class TheCreateTransactionActivity {
     }
 
     @Test
-    fun usesCorrectValuesForNewTokenTransfer() {
+    fun usesCorrectValuesForNewTokenTransfer(): Unit = runBlocking {
         val eth = TestApp.chainInfoProvider.getCurrent()!!.getRootToken()
         setCurrentToken(eth)
         TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
@@ -261,20 +262,21 @@ class TheCreateTransactionActivity {
 
     @Test
     fun doesNotChangeTokenOnToAddressScan() {
-        setCurrentToken(testToken)
-        TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
+        runBlocking {
+            setCurrentToken(testToken)
+            TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
 
-        val uri = TokenTransfer(DEFAULT_TEST_ADDRESS2, testToken, BigInteger.TEN).toERC681()
-                .generateURL()
-        rule.launchActivity(Intent.getIntentOld(uri))
+            val uri = TokenTransfer(DEFAULT_TEST_ADDRESS2, testToken, BigInteger.TEN).toERC681()
+                    .generateURL()
+            rule.launchActivity(Intent.getIntentOld(uri))
 
-        val result = Instrumentation.ActivityResult(RESULT_OK, Intent().putExtra("SCAN_RESULT", DEFAULT_TEST_ADDRESS3.hex))
-        intending(hasComponent(QRScanActivity::class.java.canonicalName)).respondWith(result)
+            val result = Instrumentation.ActivityResult(RESULT_OK, Intent().putExtra("SCAN_RESULT", DEFAULT_TEST_ADDRESS3.hex))
+            intending(hasComponent(QRScanActivity::class.java.canonicalName)).respondWith(result)
 
-        Espresso.onView(ViewMatchers.withId(R.id.menu_scan)).perform(click())
+            Espresso.onView(ViewMatchers.withId(R.id.menu_scan)).perform(click())
 
-        Espresso.onView(ViewMatchers.withText(testToken.symbol)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            Espresso.onView(ViewMatchers.withText(testToken.symbol)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
+        }
     }
-
 }

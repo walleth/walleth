@@ -65,7 +65,7 @@ class SelectTokenActivity : BaseSubActivity() {
             if (allTokens != null) {
                 updateFilter()
                 tokenListAdapter.updateTokenList(allTokens)
-                showDelete = allTokens.any { !it.softDeleted }
+                showDelete = allTokens.any { it.softDeleted }
             }
             invalidateOptionsMenu()
         })
@@ -84,7 +84,7 @@ class SelectTokenActivity : BaseSubActivity() {
                 changeDeleteState(true)
                 val snackMessage = getString(R.string.deleted_token_snack, currentToken.symbol)
                 Snackbar.make(coordinator, snackMessage, Snackbar.LENGTH_INDEFINITE)
-                        .setAction(getString(R.string.undo)) { changeDeleteState(true) }
+                        .setAction(getString(R.string.undo)) { changeDeleteState(false) }
                         .show()
             }
         }
@@ -93,7 +93,7 @@ class SelectTokenActivity : BaseSubActivity() {
         itemTouchHelper.attachToRecyclerView(recycler_view)
     }
 
-    fun upsert(appDatabase: AppDatabase, token: Token) {
+    suspend fun upsert(appDatabase: AppDatabase, token: Token) {
         appDatabase.tokens.upsert(token)
     }
 

@@ -1,6 +1,7 @@
 package org.walleth.tests.database
 
 import com.google.common.truth.Truth
+import kotlinx.coroutines.runBlocking
 import org.junit.Test
 import org.walleth.data.tokens.Token
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS
@@ -23,12 +24,12 @@ class TheTokens : AbstractDatabaseTest() {
             order = 0)
 
     @Test
-    fun isEmptyInitially() {
+    fun isEmptyInitially(): Unit = runBlocking {
         Truth.assertThat(database.tokens.all().size).isEqualTo(0)
     }
 
     @Test
-    fun weCanInsertTwo() {
+    fun weCanInsertTwo(): Unit = runBlocking {
         database.tokens.upsert(DEFAULT_TOKEN.copy(name = "foo", address = DEFAULT_TEST_ADDRESS, chain = CHAIN1))
         database.tokens.upsert(DEFAULT_TOKEN.copy(name = "foo", address = DEFAULT_TEST_ADDRESS2, chain = CHAIN1))
 
@@ -37,7 +38,7 @@ class TheTokens : AbstractDatabaseTest() {
 
 
     @Test
-    fun weCanQueryForOneChain() {
+    fun weCanQueryForOneChain(): Unit = runBlocking {
         database.tokens.upsert(DEFAULT_TOKEN.copy(name = "foo", address = DEFAULT_TEST_ADDRESS, chain = CHAIN1))
         database.tokens.upsert(DEFAULT_TOKEN.copy(name = "foo", address = DEFAULT_TEST_ADDRESS, chain = CHAIN2))
 
@@ -46,13 +47,15 @@ class TheTokens : AbstractDatabaseTest() {
 
     @Test
     fun weCanUpsert() {
-        val token1 = DEFAULT_TOKEN.copy(name = "foo", address = DEFAULT_TEST_ADDRESS, chain = CHAIN1)
-        database.tokens.upsert(token1)
-        val token2 = DEFAULT_TOKEN.copy(name = "bar", address = DEFAULT_TEST_ADDRESS, chain = CHAIN1)
-        database.tokens.upsert(token2)
+        runBlocking {
+            val token1 = DEFAULT_TOKEN.copy(name = "foo", address = DEFAULT_TEST_ADDRESS, chain = CHAIN1)
+            database.tokens.upsert(token1)
+            val token2 = DEFAULT_TOKEN.copy(name = "bar", address = DEFAULT_TEST_ADDRESS, chain = CHAIN1)
+            database.tokens.upsert(token2)
 
-        Truth.assertThat(database.tokens.all()).hasSize(1)
-        Truth.assertThat(database.tokens.all()).containsExactly(token2)
+            Truth.assertThat(database.tokens.all()).hasSize(1)
+            Truth.assertThat(database.tokens.all()).containsExactly(token2)
+        }
     }
 
 

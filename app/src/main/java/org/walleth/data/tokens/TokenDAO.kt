@@ -11,25 +11,25 @@ import org.kethereum.model.Address
 interface TokenDAO {
 
     @Query("SELECT * FROM tokens")
-    fun all(): List<Token>
+    suspend fun all(): List<Token>
 
     @Query("SELECT * FROM tokens ORDER BY \"order\" DESC ,\"chain\",\"symbol\"")
     fun allLive(): LiveData<List<Token>>
 
-    @Query("UPDATE tokens SET softDeleted=1")
-    fun showAll()
+    @Query("UPDATE tokens SET softDeleted=0")
+    suspend fun showAll()
 
     @Query("SELECT * FROM tokens WHERE address = :address COLLATE NOCASE")
     suspend fun forAddress(address: Address): Token?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(entry: Token)
+    suspend fun upsert(entry: Token)
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(entries: List<Token>)
+    suspend fun upsert(entries: List<Token>)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun addIfNotPresent(entries: List<Token>)
+    suspend fun addIfNotPresent(entries: List<Token>)
 
 
 }
