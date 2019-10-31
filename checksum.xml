@@ -231,6 +231,9 @@
     <dependency group='androidx.lifecycle' module='lifecycle-common' version='2.2.0-beta01'>
       <sha512>C69EDA78BE9AEB0C3A91A736EB2FC9AC3F51382BCAC769284728A2102B25CDC3A36EE30B342937C81F837CD8059B5D1458AB8EB616F8FA7A70AD9ABA6444533B</sha512>
     </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-common' version='2.2.0-rc01'>
+      <sha512>C69EDA78BE9AEB0C3A91A736EB2FC9AC3F51382BCAC769284728A2102B25CDC3A36EE30B342937C81F837CD8059B5D1458AB8EB616F8FA7A70AD9ABA6444533B</sha512>
+    </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-compiler' version='2.0.0'>
       <sha512>2C12D7F57C39F1ABCA8E07B832ED5F78EE243D5A859B20ED770BE84D003001E8BD3FD999E5443A93830DF4242FE316121028B01DA3F4627A433919ECAC3C29EE</sha512>
     </dependency>
@@ -261,6 +264,9 @@
     <dependency group='androidx.lifecycle' module='lifecycle-runtime-ktx' version='2.2.0-beta01' extension='aar'>
       <sha512>C83B77CC5F61DAAEE765A0CBEDBEA4667B0E2CCE5F37601496859A2E4E7896A2B698AE61513059418358B7C2719C55057230CC14F4E48E77029271CD3BB7C8B5</sha512>
     </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-runtime-ktx' version='2.2.0-rc01' extension='aar'>
+      <sha512>5AB018D27886D2F6D84012D04A8F80E665F4763545D47DA8467CA18966E549AE816BF7F3CC5360D1BEDB60515043843A9C3358BD2673F23D89D9D6EFD86E63DE</sha512>
+    </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-runtime' version='2.0.0' extension='aar'>
       <sha512>AA399364B7A91FB6BA571695F9432C648305C552C053D9DE3A41411D6F90AD36FC59BA2887A47F9FD3C9FB8AD078237F7FB0DD1D34FBB5EBC68D025CDA152C19</sha512>
     </dependency>
@@ -269,6 +275,9 @@
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-runtime' version='2.2.0-beta01' extension='aar'>
       <sha512>4662D74C1E6EA11C28C8494415AA568EFA840C629F1862B89750F979BFA3B2BB1C9D863BB97D41C231BA773668E8A742808B269EBABE751FD5EED13EF0138EEF</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-runtime' version='2.2.0-rc01' extension='aar'>
+      <sha512>97036DDC2F5A2518847F9B6ED7C7E251DBE5EAB416EE2B8EAABFE13FE953B08F79465E50F50B589A06FA213691B3D3B6BBA123C36350C9DFAB335089EEBFD503</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-service' version='2.0.0' extension='aar'>
       <sha512>3FBCDDC3D552CA4EBFE2F81C1F721F304D7524B1006253CBFC39A31E184BFA831DE1B22488E3BD2750AA9EFD5F6397D8F43AECBE2A3C30743894980A701EA7AD</sha512>
