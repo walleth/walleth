@@ -1,6 +1,5 @@
 def isCI = hasProperty("isCI")
 def isLightCI = hasProperty("isLightCI")
-def includeOffline = hasProperty("isCI")
 
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
@@ -94,7 +93,6 @@ android {
         def connectivity = variant.getFlavors().get(2).name
 
         if ((project.hasProperty("singleFlavor") && (store != 'forFDroid'))
-                || (connectivity == "offline" && !includeOffline)
                 || (connectivity == 'offline' && geth == 'withGeth')) {
             variant.setIgnore(true)
         }
