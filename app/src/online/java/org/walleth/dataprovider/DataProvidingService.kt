@@ -9,7 +9,6 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.kethereum.model.Address
 import org.kethereum.model.Transaction
-import org.kethereum.rpc.HttpEthereumRPC
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.livedata.nonNull
 import org.ligi.kaxt.livedata.observe
@@ -21,12 +20,12 @@ import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
 import org.walleth.khex.hexToByteArray
-import org.walleth.util.getRPCEndpoint
 import org.walleth.workers.RelayTransactionWorker
 import java.io.IOException
 import java.math.BigInteger
@@ -39,7 +38,7 @@ class DataProvidingService : LifecycleService() {
     private val tokenProvider: CurrentTokenProvider by inject()
     private val appDatabase: AppDatabase by inject()
     private val chainInfoProvider: ChainInfoProvider by inject()
-
+    private val rpcProvider: RPCProvider by inject()
     private val blockScoutApi = BlockScoutAPI(appDatabase, okHttpClient)
 
     companion object {
@@ -134,14 +133,13 @@ class DataProvidingService : LifecycleService() {
 
     private fun queryRPCForBalance(address: Address) {
 
-        chainInfoProvider.value?.let { currentNetwork ->
-            val baseURL = chainInfoProvider.getCurrent()?.getRPCEndpoint()
-            val currentToken = tokenProvider.getCurrent()
-
-            if (baseURL == null) {
-                Log.e("no RPC URL found for " + chainInfoProvider.getCurrent())
-            } else {
-                val rpc = HttpEthereumRPC(baseURL, okHttpClient)
+        val currentToken = tokenProvider.getCurrent()
+        val currentChainId = chainInfoProvider.getCurrent()?.chainId
+        val rpc = rpcProvider.get()
+        when {
+            currentChainId == null -> Log.e("no current chain is null")
+            rpc == null -> Log.e("no RPC found")
+            else -> {
 
                 val blockNumberString = rpc.blockNumber()?.result
                 val blockNumber = blockNumberString?.replace("0x", "")?.toLongOrNull(16)
@@ -156,12 +154,13 @@ class DataProvidingService : LifecycleService() {
 
                     if (balance?.error == null && balance?.result != null) {
                         try {
+
                             appDatabase.balances.upsertIfNewerBlock(
                                     Balance(address = address,
                                             block = blockNumber,
                                             balance = BigInteger(balance.result.replace("0x", ""), 16),
                                             tokenAddress = currentToken.address,
-                                            chain = currentNetwork.chainId
+                                            chain = currentChainId
                                     )
                             )
                         } catch (e: NumberFormatException) {
