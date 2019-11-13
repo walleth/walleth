@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:focusableInTouchMode="true"
-        tools:context="org.walleth.activities.CreateTransactionActivity"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        tools:context="org.walleth.activities.CreateTransactionActivity">
+
     <ScrollView
-            android:focusableInTouchMode="true"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true">
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -19,193 +19,209 @@
                 android:padding="16dp">
 
             <TextView
-                    android:text="@string/create_transaction_sender_label"
                     android:id="@+id/from_label"
-                    style="@style/section_header"/>
+                    style="@style/section_header"
+                    android:text="@string/create_transaction_sender_label" />
 
 
             <TextView
+                    android:id="@+id/from_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/from_label"
                     android:layout_alignParentLeft="true"
                     android:layout_toLeftOf="@id/from_address_list_button"
-                    android:singleLine="true"
                     android:ellipsize="middle"
                     android:padding="16dp"
-                    android:id="@+id/from_address"
-                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu"
+                    android:singleLine="true"
                     app:fontFamily="sans-serif"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/from_address_list_button"
-                    app:srcCompat="@drawable/ic_list_black_24dp"
-                    android:layout_alignParentRight="true"
+                    style="@style/button"
                     android:layout_below="@id/from_label"
-                    style="@style/button"/>
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_list_black_24dp" />
 
 
             <TextView
-                    android:layout_below="@id/from_address"
-                    android:text="@string/create_transaction_receiver_label"
                     android:id="@+id/to_label"
-                    style="@style/section_header"/>
+                    style="@style/section_header"
+                    android:layout_below="@id/from_address"
+                    android:text="@string/create_transaction_receiver_label" />
 
 
             <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/address_list_button"
-                    app:srcCompat="@drawable/ic_list_black_24dp"
-                    android:layout_alignParentRight="true"
+                    style="@style/button"
                     android:layout_below="@id/to_label"
-                    style="@style/button"/>
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_list_black_24dp" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/from_address_enter_button"
+                    style="@style/button"
+                    android:layout_below="@id/to_label"
+                    android:layout_toLeftOf="@id/address_list_button"
+                    app:srcCompat="@drawable/ic_keyboard" />
 
             <TextView
+                    android:id="@+id/to_address"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/to_label"
                     android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@id/address_list_button"
-                    android:singleLine="true"
+                    android:layout_toLeftOf="@id/from_address_enter_button"
                     android:ellipsize="middle"
                     android:padding="16dp"
-                    android:id="@+id/to_address"
-                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu"
+                    android:singleLine="true"
                     app:fontFamily="sans-serif"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
 
             <TextView
-                    android:text="@string/create_transaction_function_label"
                     android:id="@+id/function_label"
+                    style="@style/section_header"
                     android:layout_below="@id/to_address"
-                    style="@style/section_header"/>
+                    android:text="@string/create_transaction_function_label" />
 
             <TextView
+                    android:id="@+id/function_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_below="@id/function_label"
                     android:layout_alignParentLeft="true"
-                    android:singleLine="true"
                     android:ellipsize="middle"
                     android:padding="16dp"
-                    android:id="@+id/function_text"
-                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu"
+                    android:singleLine="true"
                     app:fontFamily="sans-serif"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
 
             <TextView
-                    android:layout_below="@id/function_text"
-                    android:text="@string/create_tx_amount"
+                    android:id="@+id/amount_label"
                     style="@style/section_header"
-                    android:id="@+id/amount_label"/>
+                    android:layout_below="@id/function_text"
+                    android:text="@string/create_tx_amount" />
 
             <LinearLayout
                     android:id="@+id/amount_container"
-                    android:layout_below="@id/amount_label"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/amount_label">
+
                 <org.walleth.ui.valueview.ValueView
-                        android:layout_gravity="center"
                         android:id="@+id/amount_value"
-                        app:allowEdit="true"
-                        android:paddingBottom="16dp"
                         android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:layout_height="wrap_content"/>
+                        android:paddingBottom="16dp"
+                        app:allowEdit="true" />
 
                 <androidx.appcompat.widget.AppCompatImageView
                         android:id="@+id/sweep_button"
 
+                        style="@style/button"
                         android:layout_gravity="center"
-                        app:srcCompat="@drawable/ic_all_inclusive_black_24dp"
-                        style="@style/button"/>
+                        app:srcCompat="@drawable/ic_all_inclusive_black_24dp" />
 
             </LinearLayout>
 
 
             <org.walleth.ui.valueview.ValueViewSmall
-                    android:layout_centerHorizontal="true"
                     android:id="@+id/fee_value_view"
-                    android:layout_below="@id/amount_container"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/amount_container"
+                    android:layout_centerHorizontal="true" />
 
             <Button
-                    android:layout_margin="16dp"
                     android:id="@+id/show_advanced_button"
-                    android:layout_below="@id/fee_value_view"
-                    android:text="@string/create_tx_show_advanced_options"
                     style="@style/MaterialButtonStyle"
                     android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/fee_value_view"
                     android:layout_centerHorizontal="true"
-                    android:layout_height="wrap_content"/>
-            <TextView
-                    android:layout_below="@id/amount_container"
-                    android:text="@string/create_tx_fee"
-                    android:id="@+id/fee_label"
-                    style="@style/section_header"/>
+                    android:layout_margin="16dp"
+                    android:text="@string/create_tx_show_advanced_options" />
 
-            <LinearLayout android:layout_width="wrap_content"
-                          android:layout_height="match_parent"
-                          android:paddingLeft="16dp"
-                          android:visibility="gone"
-                          android:layout_below="@id/fee_value_view"
-                          android:id="@+id/gas_price_input_container">
+            <TextView
+                    android:id="@+id/fee_label"
+                    style="@style/section_header"
+                    android:layout_below="@id/amount_container"
+                    android:text="@string/create_tx_fee" />
+
+            <LinearLayout
+                    android:id="@+id/gas_price_input_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_below="@id/fee_value_view"
+                    android:paddingLeft="16dp"
+                    android:visibility="gone">
+
                 <com.google.android.material.textfield.TextInputLayout
-                        android:hint="@string/create_tx_gas_price"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:hint="@string/create_tx_gas_price">
+
                     <androidx.appcompat.widget.AppCompatEditText
-                            android:minWidth="128dp"
                             android:id="@+id/gas_price_input"
-                            android:inputType="number|numberDecimal"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content"
+                            android:inputType="number|numberDecimal"
+                            android:minWidth="128dp" />
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <androidx.appcompat.widget.AppCompatImageView
-                        style="@style/button"
-                        app:srcCompat="@drawable/ic_local_gas_station_black_24dp"
                         android:id="@+id/gas_station_image"
-                        android:layout_gravity="center_vertical"/>
+                        style="@style/button"
+                        android:layout_gravity="center_vertical"
+                        app:srcCompat="@drawable/ic_local_gas_station_black_24dp" />
             </LinearLayout>
+
             <com.google.android.material.textfield.TextInputLayout
-                    android:paddingLeft="16dp"
-                    android:layout_below="@id/gas_price_input_container"
                     android:id="@+id/gas_limit_input_container"
-                    android:hint="@string/create_tx_gas_limit"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/gas_price_input_container"
+                    android:hint="@string/create_tx_gas_limit"
+                    android:paddingLeft="16dp"
+                    android:visibility="gone">
+
                 <androidx.appcompat.widget.AppCompatEditText
-                        android:minWidth="128dp"
                         android:id="@+id/gas_limit_input"
-                        android:inputType="number|numberDecimal"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:inputType="number|numberDecimal"
+                        android:minWidth="128dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <TextView
+                    android:id="@+id/nonce_title"
+                    style="@style/section_header"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/nonce"
-                    android:visibility="gone"
-                    android:id="@+id/nonce_title"
                     android:layout_below="@id/gas_limit_input_container"
-                    style="@style/section_header"/>
+                    android:text="@string/nonce"
+                    android:visibility="gone" />
 
             <com.google.android.material.textfield.TextInputLayout
-                    android:paddingLeft="16dp"
-                    android:layout_below="@id/nonce_title"
                     android:id="@+id/nonce_input_container"
-                    android:hint="@string/create_tx_nonce"
-                    android:visibility="gone"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/nonce_title"
+                    android:hint="@string/create_tx_nonce"
+                    android:paddingLeft="16dp"
+                    android:visibility="gone">
+
                 <androidx.appcompat.widget.AppCompatEditText
-                        android:minWidth="128dp"
                         android:id="@+id/nonce_input"
-                        android:inputType="number"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"/>
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:minWidth="128dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -215,23 +231,23 @@
     <com.dmitrymalkovich.android.ProgressFloatingActionButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:layout_gravity="bottom|right">
+            android:layout_gravity="bottom|right"
+            android:layout_margin="16dp">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:id="@+id/fab"
                 style="@style/FABStyle"
-                android:id="@+id/fab"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
         <ProgressBar
-                style="@style/Widget.AppCompat.ProgressBar"
                 android:id="@+id/fab_progress_bar"
-                android:visibility="invisible"
+                style="@style/Widget.AppCompat.ProgressBar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:indeterminateTint="@color/colorPrimary"
                 android:indeterminateTintMode="src_in"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:visibility="invisible" />
 
     </com.dmitrymalkovich.android.ProgressFloatingActionButton>
 

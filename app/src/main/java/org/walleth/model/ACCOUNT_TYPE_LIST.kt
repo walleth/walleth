@@ -80,8 +80,8 @@ val ACCOUNT_TYPE_LIST = listOf(
                 "password protected",
                 "Create Key with password",
                 "Similar to PIN but the keyboard might weaken the security",
-                R.drawable.ic_keyboard_black_24dp,
-                R.drawable.ic_keyboard_black_24dp,
+                R.drawable.ic_keyboard,
+                R.drawable.ic_keyboard,
                 wrapsKey = true) { activity, _ ->
             activity.startActivityForResult(Intent(activity, RequestPasswordActivity::class.java), REQUEST_CODE_ENTER_PASSWORD)
         }

@@ -7,7 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import org.kethereum.model.Address
 
-suspend fun AddressBookDAO.resolveNameWithFallback(address: Address) = byAddress(address)?.name ?: address.hex
+suspend fun AddressBookDAO.resolveNameWithFallback(address: Address, fallback: String = address.hex) = byAddress(address)?.name ?: fallback
 
 @Dao
 interface AddressBookDAO {

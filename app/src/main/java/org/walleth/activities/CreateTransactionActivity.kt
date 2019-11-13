@@ -7,6 +7,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
+import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
@@ -20,8 +24,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.contract.abi.types.convertStringToABIType
+import org.kethereum.eip137.ENSName
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
+import org.kethereum.ens.ADDRESS_NOT_FOUND
+import org.kethereum.erc55.hasValidERC55ChecksumOrNoChecksum
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.parseERC681
@@ -46,15 +53,13 @@ import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.accounts.AccountPickActivity
-import org.walleth.nfc.startNFCSigningActivity
-import org.walleth.trezor.TREZOR_REQUEST_CODE
-import org.walleth.trezor.startTrezorActivity
 import org.walleth.data.*
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getSpec
 import org.walleth.data.addressbook.resolveNameWithFallback
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
+import org.walleth.data.ens.ENSProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
@@ -67,8 +72,11 @@ import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.khex.toNoPrefixHexString
 import org.walleth.model.ACCOUNT_TYPE_MAP
+import org.walleth.nfc.startNFCSigningActivity
 import org.walleth.qrscan.startScanActivityForResult
 import org.walleth.startup.StartupActivity
+import org.walleth.trezor.TREZOR_REQUEST_CODE
+import org.walleth.trezor.startTrezorActivity
 import org.walleth.ui.chainIDAlert
 import org.walleth.ui.valueview.ValueViewController
 import org.walleth.util.hasText
@@ -79,6 +87,8 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 import java.math.BigInteger
 import java.math.BigInteger.*
 import java.util.*
+
+
 
 class CreateTransactionActivity : BaseSubActivity() {
 
@@ -93,6 +103,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val settings: Settings by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
     private val rpcProvider: RPCProvider by inject()
+    private val ensProvider: ENSProvider by inject()
 
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
@@ -103,6 +114,8 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentShowCase: MaterialShowcaseView? = null
 
     private var currentAccount: AddressBookEntry? = null
+
+    private val ensMap = mutableMapOf<String, String>()
 
     private val amountController by lazy {
         ValueViewController(amount_value, exchangeRateProvider, settings)
@@ -262,6 +275,50 @@ class CreateTransactionActivity : BaseSubActivity() {
             nonce_input_container.visibility = View.VISIBLE
         }
 
+        from_address_enter_button.setOnClickListener {
+            val editText = EditText(this)
+            val container = FrameLayout(this)
+            val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+            params.setMargins(16.toDp(),0,16.toDp(),0)
+            editText.layoutParams = params
+            container.addView(editText)
+
+            AlertDialog.Builder(this)
+                    .setTitle("Enter HEX or ENS address")
+                    .setView(container)
+                    .setPositiveButton(android.R.string.ok) { dialog, _ ->
+                        dialog.cancel()
+                        when {
+                            editText.text.endsWith(".eth") -> lifecycleScope.launch {
+
+                                val address = withContext(lifecycleScope.coroutineContext + Dispatchers.IO) {
+                                    ensProvider.get()?.getAddress(ENSName(editText.text.toString()))
+                                }
+                                if (address == null || address == ADDRESS_NOT_FOUND) {
+                                    alert("could not resolve ENS address for ${editText.text}")
+                                } else {
+                                    ensMap[address.toString()] = editText.text.toString()
+                                    setToFromURL(address.toString(), fromUser = true)
+                                }
+                            }
+                            editText.text.startsWith("0x") -> {
+                                val address = Address(editText.text.toString())
+                                if (!address.isValid()) {
+                                    alert("Address is not valid")
+                                } else if (!address.hasValidERC55ChecksumOrNoChecksum()) {
+                                    alert("Address has invalid ERC55 checksum")
+                                } else {
+                                    setToFromURL(address.toString(), fromUser = true)
+                                }
+                            }
+                            else -> alert("Please enter either an ENS address (ending with .eth) or a HEX address (starting with 0x)")
+                        }
+
+                    }
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .show()
+        }
+
         Transformations.switchMap(currentAddressProvider) { address ->
             appDatabase.transactions.getNonceForAddressLive(address, chainInfoProvider.getCurrent()!!.chainId)
         }.observe(this, Observer {
@@ -355,7 +412,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun onFabClick() {
-        if (to_address.text.isEmpty() || currentToAddress == null) {
+        if (to_address.text?.isEmpty() == true || currentToAddress == null) {
 
             currentShowCase = MaterialShowcaseView.Builder(this)
                     .setTarget(address_list_button)
@@ -536,8 +593,9 @@ class CreateTransactionActivity : BaseSubActivity() {
                                 }
 
                                 currentToAddress = localERC681.getToAddress()?.apply {
-                                    to_address.text = this.hex
-                                    to_address.text = appDatabase.addressBook.resolveNameWithFallback(this)
+                                    to_address.text = appDatabase.addressBook.resolveNameWithFallback(this, ensMap[hex]?.let {
+                                        "$it($hex)"
+                                    } ?: hex)
                                 }
 
 
@@ -596,7 +654,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
             } else {
                 currentToAddress = null
-                to_address.text = getString(R.string.no_address_selected)
+                to_address.setText(R.string.no_address_selected)
                 if (fromUser || lastWarningURI != uri) {
                     lastWarningURI = uri
                     if (uri.isEthereumURLString()) {

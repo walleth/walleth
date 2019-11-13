@@ -30,7 +30,6 @@ import org.koin.dsl.module
 import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
-import org.walleth.nfc.NFCCredentialStore
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.contracts.FourByteDirectoryImpl
 import org.walleth.core.TransactionNotificationService
@@ -42,6 +41,8 @@ import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
+import org.walleth.data.ens.ENSProvider
+import org.walleth.data.ens.ENSProviderImpl
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.ChainInfoProvider
@@ -53,6 +54,7 @@ import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.migrations.ChainAddingAndRecreatingMigration
+import org.walleth.nfc.NFCCredentialStore
 import org.walleth.startup.StartupViewModel
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.util.jsonadapter.BigIntegerJSONAdapter
@@ -80,7 +82,8 @@ open class App : MultiDexApplication() {
         single { keyStore as KeyStore }
         single { KotprefSettings as Settings }
         single { CurrentTokenProvider(get()) }
-        single { RPCProviderImpl(get(), get()) as RPCProvider }
+        single { RPCProviderImpl(get(), get(), get()) as RPCProvider }
+        single { ENSProviderImpl(get()) as ENSProvider }
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
                     .addMigrations(

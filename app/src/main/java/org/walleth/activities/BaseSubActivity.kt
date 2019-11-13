@@ -2,6 +2,8 @@ package org.walleth.activities
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.MenuItem
 import androidx.annotation.LayoutRes
 import kotlinx.android.synthetic.main.activity_base_w_actionbar.*
@@ -33,4 +35,7 @@ open class BaseSubActivity : WallethActivity() {
         }
         else -> super.onOptionsItemSelected(item)
     }
+
+    protected fun Int.toDp(displayMetrics: DisplayMetrics = resources.displayMetrics) = toFloat().toDp(displayMetrics).toInt()
+    private fun Float.toDp(displayMetrics: DisplayMetrics = resources.displayMetrics) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, displayMetrics)
 }

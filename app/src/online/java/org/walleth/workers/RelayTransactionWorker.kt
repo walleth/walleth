@@ -64,8 +64,8 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
                     val oldHash = transaction.hash
                     transaction.setHash(if (!newHash.startsWith("0x")) "0x$newHash" else newHash)
 
-                    transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "relayed via ${rpc.baseURL}"
-                    transaction.transactionState.relayed = rpc.baseURL
+                    transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "relayed"
+                    transaction.transactionState.relayed = "via RPC"
 
                     appDatabase.transactions.deleteByHash(oldHash)
                     appDatabase.transactions.upsert(transaction)
