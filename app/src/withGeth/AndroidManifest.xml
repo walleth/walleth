@@ -3,7 +3,7 @@
 
     <application>
         <provider
-                android:authorities="org.walleth.GethInitContentProvider"
+                android:authorities="${applicationId}.providers.GethInitContentProvider"
                 android:exported="false"
                 android:enabled="true"
                 android:name="org.walleth.geth.GethInitContentProvider" />
