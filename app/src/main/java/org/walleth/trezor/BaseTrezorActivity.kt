@@ -17,9 +17,9 @@ import kotlinx.android.synthetic.main.password_input.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
+import org.komputing.kbip44.BIP44
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert

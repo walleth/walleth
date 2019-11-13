@@ -3,13 +3,13 @@ package org.walleth.trezor
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AlertDialog
 import android.widget.RadioButton
+import androidx.appcompat.app.AlertDialog
 import com.google.protobuf.GeneratedMessageV3
 import com.google.protobuf.Message
 import kotlinx.android.synthetic.main.hd_derivation_select.view.*
-import org.kethereum.bip44.BIP44
 import org.kethereum.model.Address
+import org.komputing.kbip44.BIP44
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert

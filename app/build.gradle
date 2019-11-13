@@ -141,7 +141,6 @@ dependencies {
     implementation "com.github.komputing.kethereum:bip32:$kethereum_version"
     implementation "com.github.komputing.kethereum:bip39:$kethereum_version"
     implementation "com.github.komputing.kethereum:bip39_wordlist_en:$kethereum_version"
-    implementation "com.github.komputing.kethereum:bip44:$kethereum_version"
     implementation "com.github.komputing.kethereum:blockscout:$kethereum_version"
     implementation "com.github.komputing.kethereum:ens:$kethereum_version"
     implementation "com.github.komputing.kethereum:erc55:$kethereum_version"
@@ -160,6 +159,8 @@ dependencies {
     implementation "com.github.komputing.kethereum:wallet:$kethereum_version"
     implementation "com.github.komputing.kethereum:contract_abi_types:$kethereum_version"
     implementation "com.github.komputing.kethereum:keystore:$kethereum_version"
+
+    implementation "com.github.komputing:kbip44:0.1"
 
     implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
 

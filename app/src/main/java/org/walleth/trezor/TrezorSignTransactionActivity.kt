@@ -10,12 +10,12 @@ import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.kethereum.bip44.BIP44
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.koin.android.ext.android.inject
+import org.komputing.kbip44.BIP44
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string

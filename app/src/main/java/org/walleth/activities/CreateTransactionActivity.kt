@@ -27,7 +27,9 @@ import org.kethereum.contract.abi.types.convertStringToABIType
 import org.kethereum.eip137.ENSName
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
-import org.kethereum.ens.ADDRESS_NOT_FOUND
+import org.kethereum.ens.ENS_ADDRESS_NOT_FOUND
+import org.kethereum.ens.ENS_ADDRESS_NOT_FOUND
+import org.kethereum.ens.isENSDomain
 import org.kethereum.erc55.hasValidERC55ChecksumOrNoChecksum
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
@@ -288,17 +290,21 @@ class CreateTransactionActivity : BaseSubActivity() {
                     .setView(container)
                     .setPositiveButton(android.R.string.ok) { dialog, _ ->
                         dialog.cancel()
+                        val ensName = ENSName(editText.text.toString())
                         when {
-                            editText.text.endsWith(".eth") -> lifecycleScope.launch {
+                            ensName.isENSDomain() -> {
 
-                                val address = withContext(lifecycleScope.coroutineContext + Dispatchers.IO) {
-                                    ensProvider.get()?.getAddress(ENSName(editText.text.toString()))
-                                }
-                                if (address == null || address == ADDRESS_NOT_FOUND) {
-                                    alert("could not resolve ENS address for ${editText.text}")
-                                } else {
-                                    ensMap[address.toString()] = editText.text.toString()
-                                    setToFromURL(address.toString(), fromUser = true)
+                                lifecycleScope.launch {
+
+                                    val address = withContext(lifecycleScope.coroutineContext + Dispatchers.IO) {
+                                        ensProvider.get()?.getAddress(ensName)
+                                    }
+                                    if (address == null || address == ENS_ADDRESS_NOT_FOUND) {
+                                        alert("could not resolve ENS address for ${editText.text}")
+                                    } else {
+                                        ensMap[address.toString()] = editText.text.toString()
+                                        setToFromURL(address.toString(), fromUser = true)
+                                    }
                                 }
                             }
                             editText.text.startsWith("0x") -> {
