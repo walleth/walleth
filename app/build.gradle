@@ -139,6 +139,7 @@ dependencies {
     implementation "com.github.komputing.kethereum:bip39_wordlist_en:$kethereum_version"
     implementation "com.github.komputing.kethereum:blockscout:$kethereum_version"
     implementation "com.github.komputing.kethereum:ens:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc20:$kethereum_version"
     implementation "com.github.komputing.kethereum:erc55:$kethereum_version"
     implementation "com.github.komputing.kethereum:eip137:$kethereum_version"
     implementation "com.github.komputing.kethereum:eip155:$kethereum_version"

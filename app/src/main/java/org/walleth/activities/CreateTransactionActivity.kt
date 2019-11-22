@@ -42,6 +42,7 @@ import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
 import org.koin.android.ext.android.inject
+import org.komputing.kethereum.erc20.ERC20TransactionGenerator
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -79,6 +80,7 @@ import org.walleth.util.question
 import org.walleth.util.security.getPasswordForAccountType
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
+import java.lang.System.currentTimeMillis
 import java.math.BigInteger
 import java.math.BigInteger.*
 import java.util.*
@@ -512,18 +514,18 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         val localERC681 = currentERC681
 
-        val transaction = (if (currentTokenProvider.getCurrent().isRootToken()) createTransactionWithDefaults(
-                value = amountController.getValueOrZero(),
+        val value = amountController.getValueOrZero()
+
+        val txProto = if (currentTokenProvider.getCurrent().isRootToken()) createTransactionWithDefaults(
+                value = value,
                 to = currentToAddress!!,
                 from = currentAddressProvider.getCurrentNeverNull()
-        ) else createTransactionWithDefaults(
-                creationEpochSecond = System.currentTimeMillis() / 1000,
-                value = ZERO,
-                to = currentTokenProvider.getCurrent().address,
-                from = currentAddressProvider.getCurrentNeverNull(),
-                input = createTokenTransferTransactionInput(currentToAddress!!, amountController.getValueOrZero())
-        )).copy(chain = chainInfoProvider.getCurrentChainId().value, creationEpochSecond = System.currentTimeMillis() / 1000)
+        ) else ERC20TransactionGenerator(currentTokenProvider.getCurrent().address).transfer(currentToAddress!!, value)
 
+        val transaction = txProto.copy(
+                chain = chainInfoProvider.getCurrentChainId().value,
+                creationEpochSecond = currentTimeMillis() / 1000
+        )
 
         if (currentTokenProvider.getCurrent().isRootToken() && localERC681.function != null) {
             transaction.input = localERC681.toTransactionInput()
