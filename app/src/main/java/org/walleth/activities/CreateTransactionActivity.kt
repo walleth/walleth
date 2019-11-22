@@ -23,17 +23,13 @@ import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import org.kethereum.contract.abi.types.convertStringToABIType
 import org.kethereum.eip137.ENSName
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
 import org.kethereum.ens.ENS_ADDRESS_NOT_FOUND
-import org.kethereum.ens.ENS_ADDRESS_NOT_FOUND
-import org.kethereum.ens.isENSDomain
+import org.kethereum.ens.isPotentialENSDomain
 import org.kethereum.erc55.hasValidERC55ChecksumOrNoChecksum
-import org.kethereum.erc681.ERC681
-import org.kethereum.erc681.generateURL
-import org.kethereum.erc681.parseERC681
+import org.kethereum.erc681.*
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.extensions.hexToBigInteger
 import org.kethereum.extensions.maybeHexToBigInteger
@@ -41,8 +37,6 @@ import org.kethereum.extensions.toHexStringZeroPadded
 import org.kethereum.functions.*
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.keystore.api.KeyStore
-import org.kethereum.methodsignatures.model.TextMethodSignature
-import org.kethereum.methodsignatures.toHexSignature
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
@@ -72,7 +66,6 @@ import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
-import org.walleth.khex.toNoPrefixHexString
 import org.walleth.model.ACCOUNT_TYPE_MAP
 import org.walleth.nfc.startNFCSigningActivity
 import org.walleth.qrscan.startScanActivityForResult
@@ -89,7 +82,6 @@ import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 import java.math.BigInteger
 import java.math.BigInteger.*
 import java.util.*
-
 
 
 class CreateTransactionActivity : BaseSubActivity() {
@@ -281,7 +273,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             val editText = EditText(this)
             val container = FrameLayout(this)
             val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
-            params.setMargins(16.toDp(),0,16.toDp(),0)
+            params.setMargins(16.toDp(), 0, 16.toDp(), 0)
             editText.layoutParams = params
             container.addView(editText)
 
@@ -292,7 +284,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                         dialog.cancel()
                         val ensName = ENSName(editText.text.toString())
                         when {
-                            ensName.isENSDomain() -> {
+                            ensName.isPotentialENSDomain() -> {
 
                                 lifecycleScope.launch {
 
@@ -534,15 +526,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
 
         if (currentTokenProvider.getCurrent().isRootToken() && localERC681.function != null) {
-            val parameterSignature = localERC681.functionParams.joinToString(",") { it.first }
-            val functionSignature = TextMethodSignature(localERC681.function + "($parameterSignature)")
-
-            val parameterContent = localERC681.functionParams.joinToString("") {
-                convertStringToABIType(it.first).apply {
-                    parseValueFromString(it.second)
-                }.toBytes().toNoPrefixHexString()
-            }
-            transaction.input = (functionSignature.toHexSignature().hex + parameterContent).hexToByteArray()
+            transaction.input = localERC681.toTransactionInput()
         }
 
         transaction.nonce = nonce_input.asBigInitOrNull()
@@ -690,59 +674,19 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun checkFunctionParameters(localERC681: ERC681): Boolean {
-        val functionToByteList = localERC681.functionParams.map {
-
-            val type = try {
-                convertStringToABIType(it.first)
-            } catch (e: IllegalArgumentException) {
-                null
-            }
-
-            val bytes = try {
-                type?.parseValueFromString(it.second)
-                type?.toBytes()
-            } catch (e: NotImplementedError) {
-                null
-            } catch (e: IllegalArgumentException) {
-                null
-            }
-
-
-            type to bytes
+        var errorString = localERC681.findIllegalParamType()?.let {
+            getString(R.string.warning_invalid_param_type, it.first, it.second)
         }
 
-
-        val indexOfFirstInvalidParam: Int = functionToByteList.indexOfFirst { it.first == null }
-
-        if (indexOfFirstInvalidParam >= 0) {
-            val type = localERC681.functionParams[indexOfFirstInvalidParam].first
-            alert(getString(R.string.warning_invalid_param, indexOfFirstInvalidParam.toString(), type)) {
-                finish()
-            }
-            return false
+        errorString = errorString ?: localERC681.findIllegalParamValue()?.let {
+            getString(R.string.warning_invalid_parameter_value, it.second, it.first)
         }
 
-        val indexOfFirstDynamicType = functionToByteList.indexOfFirst { it.first?.isDynamic() == true }
-        if (indexOfFirstDynamicType >= 0) {
-            val type = localERC681.functionParams[indexOfFirstDynamicType].first
-            alert(getString(R.string.warning_dynamic_length_params_unsupported, indexOfFirstDynamicType.toString(), type)) {
-                finish()
-            }
-            return false
+        errorString?.also {
+            alert(it) { finish() }
         }
 
-        val indexOfFirsInvalidParameter = functionToByteList.indexOfFirst { it.second == null }
-        if (indexOfFirsInvalidParameter >= 0) {
-            val parameter = localERC681.functionParams[indexOfFirsInvalidParameter]
-            val type = parameter.first
-            val value = parameter.second
-            alert(getString(R.string.warning_problem_with_parameter, indexOfFirsInvalidParameter.toString(), type, value)) {
-                finish()
-            }
-            return false
-        }
-
-        return true
+        return errorString != null
     }
 
     private fun storeDefaultGasPriceAndFinish() {

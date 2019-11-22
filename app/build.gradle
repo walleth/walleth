@@ -153,7 +153,7 @@ dependencies {
     implementation "com.github.komputing.kethereum:rlp:$kethereum_version"
     implementation "com.github.komputing.kethereum:rpc:$kethereum_version"
     implementation "com.github.komputing.kethereum:wallet:$kethereum_version"
-    implementation "com.github.komputing.kethereum:contract_abi_types:$kethereum_version"
+    implementation "com.github.komputing.kethereum:types:$kethereum_version"
     implementation "com.github.komputing.kethereum:keystore:$kethereum_version"
 
     implementation "com.github.komputing:kbip44:0.1"

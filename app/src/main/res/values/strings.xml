@@ -179,9 +179,8 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="network_subtitle">Networks</string>
     <string name="network_details">network details</string>
     <string name="network_stats">network stats</string>
-    <string name="warning_dynamic_length_params_unsupported">Dynamic length parameters are currently not supported (parameter %1$s - %2$s)</string>
-    <string name="warning_problem_with_parameter">Problem with parameter (parameter %1$s - %2$s = %3$s)</string>
-    <string name="warning_invalid_param">Invalid parameter detected (parameter %1$s - %2$s)</string>
+    <string name="warning_invalid_parameter_value">Parameter value %1$s is not valid for type %2$s</string>
+    <string name="warning_invalid_param_type">Invalid parameter type detected (%1$s = %2$s)</string>
     <string name="info_activity_subtitle">Version %s</string>
     <string name="please_enter_your_pin">Please enter your PIN</string>
     <string name="please_confirm_your_pin">Please confirm your PIN</string>

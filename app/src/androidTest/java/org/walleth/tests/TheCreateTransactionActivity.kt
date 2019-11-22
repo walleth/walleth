@@ -113,7 +113,7 @@ class TheCreateTransactionActivity {
     fun showsAlertWheInvalidParameterIsUsed() {
         rule.launchActivity(Intent.getIntentOld("$urlBase/foo?yo=lo"))
 
-        Espresso.onView(withText(rule.activity.getString(R.string.warning_invalid_param, 0, "yo"))).check(matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(rule.activity.getString(R.string.warning_invalid_param_type, 0, "yo"))).check(matches(ViewMatchers.isDisplayed()))
 
     }
 
@@ -143,7 +143,7 @@ class TheCreateTransactionActivity {
     fun showsWarningWhenParameterTypeIsUnsignedButValueIsSigned() {
         rule.launchActivity(Intent.getIntentOld("$urlBase/otherFunction?uint8=-23"))
 
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_problem_with_parameter, 0, "uint8", "-23")))
+        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_invalid_parameter_value, 0, "uint8", "-23")))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
     }
