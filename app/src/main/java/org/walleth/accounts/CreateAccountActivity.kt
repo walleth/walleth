@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
+import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_account_create.*
 import kotlinx.coroutines.Dispatchers
@@ -27,14 +28,14 @@ import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.activities.BaseSubActivity
-import org.walleth.trezor.getAddressResult
-import org.walleth.trezor.hasAddressResult
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.toJSON
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.model.ACCOUNT_TYPE_MAP
+import org.walleth.trezor.getAddressResult
+import org.walleth.trezor.hasAddressResult
 import org.walleth.util.hasText
 
 fun Context.startCreateAccountActivity(hex: String) {
@@ -85,10 +86,15 @@ class CreateAccountActivity : BaseSubActivity() {
 
         }
 
+        nameInput.addTextChangedListener {
+            nameInput.error = null
+        }
+
         fab.setOnClickListener {
             if (!isCreatingAccount) {
                 if (!nameInput.hasText()) {
-                    alert(title = R.string.alert_problem_title, message = R.string.please_enter_name)
+                    nameInput.error = getString(R.string.please_enter_name)
+                    nameInput.requestFocus()
                     return@setOnClickListener
                 }
                 val importKey = currentSpec.initPayload?.let {
