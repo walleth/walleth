@@ -20,7 +20,6 @@ import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.data.AppDatabase
-import org.walleth.data.config.Settings
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.tokens.Token
 import org.walleth.ui.TokenListAdapter
@@ -33,7 +32,6 @@ class SelectTokenActivity : BaseSubActivity() {
 
     private val chainInfoProvider: ChainInfoProvider by inject()
     private val appDatabase: AppDatabase by inject()
-    private val settings: Settings by inject()
 
     private var showDelete = false
 

@@ -20,13 +20,12 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.accounts.AccountPickActivity
 import org.walleth.accounts.startCreateAccountActivity
-import org.walleth.walletconnect.WalletConnectConnectionActivity
 import org.walleth.data.REQUEST_CODE_CREATE_TX
 import org.walleth.data.REQUEST_CODE_SELECT_TO_ADDRESS
 import org.walleth.data.REQUEST_CODE_SIGN_TX
-import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.isTokenTransfer
+import org.walleth.walletconnect.WalletConnectConnectionActivity
 import java.math.BigInteger.ZERO
 
 fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentHandlerActivity::class.java).apply {
@@ -39,7 +38,6 @@ class IntentHandlerActivity : WallethActivity() {
 
     private val currentAddressProvider: CurrentAddressProvider by inject()
     private val keyStore: KeyStore by inject()
-    val settings: Settings by inject()
     private var oldFilterAddressesKeyOnly = false
 
     override fun onCreate(savedInstanceState: Bundle?) {

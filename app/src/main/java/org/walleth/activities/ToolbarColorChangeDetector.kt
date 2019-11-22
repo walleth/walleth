@@ -5,9 +5,9 @@ import org.koin.core.inject
 import org.walleth.data.config.Settings
 
 interface ToolbarColorChangeDetector {
-    val settings: Settings
+    val wallethSettings: Settings
     var lastToolbarColor: Long
-    fun calcToolbarColorCombination() = settings.toolbarBackgroundColor.toLong() + settings.toolbarForegroundColor
+    fun calcToolbarColorCombination() = wallethSettings.toolbarBackgroundColor.toLong() + wallethSettings.toolbarForegroundColor
 
     fun didToolbarColorChange() = (lastToolbarColor != calcToolbarColorCombination()).also {
         lastToolbarColor = calcToolbarColorCombination()
@@ -16,6 +16,6 @@ interface ToolbarColorChangeDetector {
 }
 
 class DefaultToolbarChangeDetector : ToolbarColorChangeDetector, KoinComponent {
-    override val settings: Settings by inject()
+    override val wallethSettings: Settings by inject()
     override var lastToolbarColor: Long = calcToolbarColorCombination()
 }

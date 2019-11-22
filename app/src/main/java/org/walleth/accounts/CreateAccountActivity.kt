@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.MenuItem
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_account_create.*
 import kotlinx.coroutines.Dispatchers
@@ -13,6 +12,8 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.crypto.createEthereumKeyPair
 import org.kethereum.crypto.toAddress
+import org.kethereum.eip137.ENSName
+import org.kethereum.ens.isPotentialENSDomain
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.erc681.parseERC681
 import org.kethereum.erc831.isEthereumURLString
@@ -23,7 +24,6 @@ import org.kethereum.model.ECKeyPair
 import org.kethereum.model.PrivateKey
 import org.kethereum.model.PublicKey
 import org.koin.android.ext.android.inject
-import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -32,6 +32,7 @@ import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.toJSON
+import org.walleth.data.ens.ENSProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.model.ACCOUNT_TYPE_MAP
 import org.walleth.trezor.getAddressResult
@@ -49,6 +50,7 @@ class CreateAccountActivity : BaseSubActivity() {
     private val keyStore: KeyStore by inject()
     private val appDatabase: AppDatabase by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
+    private val ensProvider: ENSProvider by inject()
 
     private var currentSpec: AccountKeySpec = AccountKeySpec(ACCOUNT_TYPE_NONE)
     private var currentAddress: Address? = null
@@ -78,20 +80,8 @@ class CreateAccountActivity : BaseSubActivity() {
             startActivityForResult(getSelectTypeIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
         }
 
-        input_address.doAfterEdit {
-            val candidate = Address(it.toString())
-            if (candidate.isValid()) {
-                setAddressFromExternalApplyingChecksum(candidate)
-            }
-
-        }
-
-        nameInput.addTextChangedListener {
-            nameInput.error = null
-        }
-
         fab.setOnClickListener {
-            if (!isCreatingAccount) {
+            if (!isCreatingAccount) { // prevent problems by multi-clicking on FAB
                 if (!nameInput.hasText()) {
                     nameInput.error = getString(R.string.please_enter_name)
                     nameInput.requestFocus()
@@ -117,12 +107,41 @@ class CreateAccountActivity : BaseSubActivity() {
 
                         createAccountAndFinish(key.toAddress(), currentSpec.copy(pwd = null))
                     }
-                    ACCOUNT_TYPE_NFC, ACCOUNT_TYPE_TREZOR, ACCOUNT_TYPE_WATCH_ONLY -> {
+                    ACCOUNT_TYPE_NFC, ACCOUNT_TYPE_TREZOR -> {
                         if (currentAddress == null) {
-                            alert("Invalid address")
+                            alert("This should not happen - please drop a mail to walleth@walleth.org and let us know when this happened")
                         } else {
                             createAccountAndFinish(currentAddress!!, currentSpec)
                         }
+                    }
+
+                    ACCOUNT_TYPE_WATCH_ONLY -> {
+
+                        val potentialENSName = ENSName(input_address.text.toString())
+                        if (potentialENSName.isPotentialENSDomain()) {
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                val address = ensProvider.get()?.getAddress(potentialENSName)
+                                if (address != null) {
+                                    createAccountAndFinish(address, currentSpec)
+                                } else {
+                                    lifecycleScope.launch(Dispatchers.Main) {
+                                        alert("Cannot find this ENS address")
+                                    }
+                                }
+
+                            }
+
+                        } else {
+
+                            val candidate = Address(input_address.text.toString())
+                            if (candidate.isValid()) {
+                                createAccountAndFinish(candidate, currentSpec)
+                            } else {
+                                input_address.error = getString(R.string.title_invalid_address_alert)
+                                input_address.requestFocus()
+                            }
+                        }
+
                     }
                 }
             }

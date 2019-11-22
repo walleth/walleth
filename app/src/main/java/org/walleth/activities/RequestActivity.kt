@@ -13,7 +13,6 @@ import org.koin.android.ext.android.inject
 import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
-import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
@@ -31,7 +30,6 @@ class RequestActivity : BaseSubActivity() {
     private val currentTokenProvider: CurrentTokenProvider by inject()
     private val chainInfoProvider: ChainInfoProvider by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
-    private val settings: Settings by inject()
 
     private var valueInputController: ValueViewController? = null
 

@@ -55,7 +55,6 @@ import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.addressbook.getSpec
 import org.walleth.data.addressbook.resolveNameWithFallback
 import org.walleth.data.balances.Balance
-import org.walleth.data.config.Settings
 import org.walleth.data.ens.ENSProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.ChainInfoProvider
@@ -96,7 +95,6 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val currentTokenProvider: CurrentTokenProvider by inject()
     private val keyStore: KeyStore by inject()
     private val appDatabase: AppDatabase by inject()
-    private val settings: Settings by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
     private val rpcProvider: RPCProvider by inject()
     private val ensProvider: ENSProvider by inject()

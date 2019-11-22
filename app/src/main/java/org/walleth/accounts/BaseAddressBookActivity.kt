@@ -23,7 +23,6 @@ import org.walleth.R
 import org.walleth.activities.BaseSubActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.config.Settings
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.ui.AddressAdapter
 
@@ -31,7 +30,6 @@ abstract class BaseAddressBookActivity : BaseSubActivity() {
 
     val keyStore: KeyStore by inject()
     val appDatabase: AppDatabase by inject()
-    val settings: Settings by inject()
     val currentAddressProvider: CurrentAddressProvider by inject()
 
     val adapter by lazy {

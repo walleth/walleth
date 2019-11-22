@@ -7,11 +7,9 @@ import android.os.Bundle
 import com.madrapps.pikolo.listeners.SimpleColorSelectionListener
 import kotlinx.android.synthetic.main.activity_setup_toolbar.*
 import kotlinx.android.synthetic.main.toolbar.*
-import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.activities.ColorPickMode.Background
 import org.walleth.activities.ColorPickMode.Foreground
-import org.walleth.data.config.Settings
 
 enum class ColorPickMode {
     Foreground, Background
@@ -19,7 +17,6 @@ enum class ColorPickMode {
 
 class ToolbarSetupActivity : BaseSubActivity() {
 
-    val settings: Settings by inject()
     var currentMode = Foreground
 
     override fun onCreate(savedInstanceState: Bundle?) {

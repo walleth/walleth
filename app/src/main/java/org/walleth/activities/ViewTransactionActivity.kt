@@ -30,7 +30,6 @@ import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameWithFallback
 import org.walleth.data.blockexplorer.BlockExplorerProvider
-import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
@@ -52,7 +51,6 @@ class ViewTransactionActivity : BaseSubActivity() {
     private val blockExplorerProvider: BlockExplorerProvider by inject()
     private val chainInfoProvider: ChainInfoProvider by inject()
     private val exchangeRateProvider: ExchangeRateProvider by inject()
-    private val settings: Settings by inject()
 
     private var txEntity: TransactionEntity? = null
     private val fourByteDirectory: FourByteDirectory by inject()
