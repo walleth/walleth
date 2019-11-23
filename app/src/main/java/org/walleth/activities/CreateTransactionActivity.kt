@@ -40,7 +40,7 @@ import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
-import org.kethereum.model.createTransactionWithDefaults
+import org.kethereum.model.createEmptyTransaction
 import org.koin.android.ext.android.inject
 import org.komputing.kethereum.erc20.ERC20TransactionGenerator
 import org.ligi.kaxt.doAfterEdit
@@ -514,24 +514,25 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         val value = amountController.getValueOrZero()
 
-        val txProto = if (currentTokenProvider.getCurrent().isRootToken()) createTransactionWithDefaults(
+        val txProto = if (currentTokenProvider.getCurrent().isRootToken()) createEmptyTransaction().copy(
                 value = value,
-                to = currentToAddress!!,
-                from = currentAddressProvider.getCurrentNeverNull()
-        ) else ERC20TransactionGenerator(currentTokenProvider.getCurrent().address).transfer(currentToAddress!!, value)
+                to = currentToAddress!!
+        ) else ERC20TransactionGenerator(currentTokenProvider.getCurrent().address).transfer(currentToAddress!!, value).copy(
+                value = ZERO
+        )
 
         val transaction = txProto.copy(
                 chain = chainInfoProvider.getCurrentChainId().value,
-                creationEpochSecond = currentTimeMillis() / 1000
+                from = currentAddressProvider.getCurrentNeverNull(),
+                creationEpochSecond = currentTimeMillis() / 1000,
+                nonce = nonce_input.asBigInitOrNull(),
+                gasPrice = gas_price_input.asBigInitOrNull(),
+                gasLimit = gas_limit_input.asBigInitOrNull()
         )
 
         if (currentTokenProvider.getCurrent().isRootToken() && localERC681.function != null) {
             transaction.input = localERC681.toTransactionInput()
         }
-
-        transaction.nonce = nonce_input.asBigInitOrNull()
-        transaction.gasPrice = gas_price_input.asBigInitOrNull()
-        transaction.gasLimit = gas_limit_input.asBigInitOrNull()
 
         return transaction
     }
