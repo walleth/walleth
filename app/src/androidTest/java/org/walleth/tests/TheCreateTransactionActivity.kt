@@ -65,8 +65,8 @@ class TheCreateTransactionActivity {
         val chainDefinition = TestApp.chainInfoProvider.getCurrent()
         rule.launchActivity()
 
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.create_transaction_on_network_subtitle, chainDefinition?.name)))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(rule.activity.getString(R.string.create_transaction_on_network_subtitle, chainDefinition?.name)))
+                .check(matches(ViewMatchers.isDisplayed()))
         rule.screenShot("chain_name_in_subtitle")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
     }
@@ -76,7 +76,7 @@ class TheCreateTransactionActivity {
         rule.launchActivity()
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
 
-        Espresso.onView(ViewMatchers.withText(R.string.create_tx_err)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(R.string.create_tx_err)).check(matches(ViewMatchers.isDisplayed()))
 
         rule.screenShot("address_empty")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
@@ -87,9 +87,9 @@ class TheCreateTransactionActivity {
         val chainIdForTransaction = 0
         rule.launchActivity(Intent.getIntentOld("$urlBase@" + chainIdForTransaction))
 
-        Espresso.onView(ViewMatchers.withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(R.string.alert_network_unsupported_title)).check(matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
+                .check(matches(ViewMatchers.isDisplayed()))
 
         rule.screenShot("chainId_not_valid")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
@@ -100,8 +100,8 @@ class TheCreateTransactionActivity {
         val chainIdForTransaction = TestApp.chainInfoProvider.getCurrent()!!.chainId
         rule.launchActivity(Intent.getIntentOld("$urlBase@" + chainIdForTransaction))
 
-        Espresso.onView(ViewMatchers.withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.doesNotExist())
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
+        Espresso.onView(withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.doesNotExist())
+        Espresso.onView(withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
                 .check(ViewAssertions.doesNotExist())
 
         rule.screenShot("please_change_chain")
@@ -143,17 +143,8 @@ class TheCreateTransactionActivity {
     fun showsWarningWhenParameterTypeIsUnsignedButValueIsSigned() {
         rule.launchActivity(Intent.getIntentOld("$urlBase/otherFunction?uint8=-23"))
 
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_invalid_parameter_value, 0, "uint8", "-23")))
-                .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
-    }
-
-
-    @Test
-    fun showsAlertWhenDynamicParameterIsUsed() {
-        rule.launchActivity(Intent.getIntentOld("$urlBase/foo?string=bar"))
-
-        Espresso.onView(ViewMatchers.withText(rule.activity.getString(R.string.warning_dynamic_length_params_unsupported, 0, "string"))).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(rule.activity.getString(R.string.warning_invalid_parameter_value, -23, "uint8")))
+                .check(matches(ViewMatchers.isDisplayed()))
 
     }
 
@@ -214,9 +205,9 @@ class TheCreateTransactionActivity {
 
         val allTransactionsForToken = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(testToken.address))
         Truth.assertThat(allTransactionsForToken).hasSize(1)
-        Truth.assertThat(allTransactionsForToken.get(0).transaction.isTokenTransfer()).isTrue()
-        Truth.assertThat(allTransactionsForToken.get(0).transaction.getTokenTransferTo()).isEqualTo(toAddress)
-        Truth.assertThat(allTransactionsForToken.get(0).transaction.getTokenTransferValue()).isEqualTo(BigInteger.TEN)
+        Truth.assertThat(allTransactionsForToken[0].transaction.isTokenTransfer()).isTrue()
+        Truth.assertThat(allTransactionsForToken[0].transaction.getTokenTransferTo()).isEqualTo(toAddress)
+        Truth.assertThat(allTransactionsForToken[0].transaction.getTokenTransferValue()).isEqualTo(BigInteger.TEN)
     }
 
     @Test
@@ -253,7 +244,7 @@ class TheCreateTransactionActivity {
 
         rule.launchActivity(Intent.getIntentOld(uri))
 
-        Espresso.onView(ViewMatchers.withText(R.string.unknown_token)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(R.string.unknown_token)).check(matches(ViewMatchers.isDisplayed()))
 
         rule.screenShot("unknown_token")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
@@ -275,7 +266,7 @@ class TheCreateTransactionActivity {
 
             Espresso.onView(ViewMatchers.withId(R.id.menu_scan)).perform(click())
 
-            Espresso.onView(ViewMatchers.withText(testToken.symbol)).check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            Espresso.onView(withText(testToken.symbol)).check(matches(ViewMatchers.isDisplayed()))
 
         }
     }
