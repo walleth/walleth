@@ -1,7 +1,10 @@
 package org.walleth.dataprovider
 
 import android.content.Intent
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.Observer
+import androidx.lifecycle.OnLifecycleEvent
 import androidx.work.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
@@ -26,12 +29,13 @@ import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
 import org.walleth.khex.hexToByteArray
+import org.walleth.tmp.LifecycleServiceWorkaround
 import org.walleth.workers.RelayTransactionWorker
 import java.io.IOException
 import java.math.BigInteger
 import java.util.concurrent.TimeUnit
 
-class DataProvidingService : LifecycleService() {
+class DataProvidingService : LifecycleServiceWorkaround() {
 
     private val okHttpClient: OkHttpClient by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
@@ -67,7 +71,7 @@ class DataProvidingService : LifecycleService() {
         }
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
         currentAddressProvider.observe(this, ResettingObserver())
