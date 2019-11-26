@@ -138,9 +138,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         when (requestCode) {
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
-                    if (data?.hasExtra("TXHASH") == true) {
-                        currentTxHash = data.getStringExtra("TXHASH")
-                    }
+                    currentTxHash = data?.getStringExtra("TXHASH")
                     storeDefaultGasPriceAndFinish()
                 }
             }
@@ -161,8 +159,6 @@ class CreateTransactionActivity : BaseSubActivity() {
                 }
             }
         }
-
-
     }
 
     private fun String.toERC681() = if (startsWith("0x")) ERC681(address = this) else parseERC681(this)
@@ -321,7 +317,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             appDatabase.transactions.getNonceForAddressLive(address, chainInfoProvider.getCurrent()!!.chainId)
         }.observe(this, Observer {
 
-            if (intent.getStringExtra("nonce") == null) {
+            if (nonce_input.text?.isBlank() != false) {
                 val nonceBigInt = if (it != null && it.isNotEmpty()) {
                     it.max()!! + ONE
                 } else {
