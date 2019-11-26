@@ -42,7 +42,17 @@ import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
 import java.math.BigInteger
 
-val testToken = Token("Test", "TEST", Address("0x01"), 15, TestApp.chainInfoProvider.getCurrent()!!.chainId, true, false, false, 1)
+val testToken = Token(
+        "Test",
+        "TEST",
+        Address("0x01"),
+        15,
+        TestApp.chainInfoProvider.getCurrent()!!.chainId,
+        softDeleted = true,
+        starred = false,
+        fromUser = false,
+        order = 1
+)
 val eth = TestApp.chainInfoProvider.getCurrent()!!.getRootToken()
 
 class TheCreateTransactionActivity {
@@ -113,7 +123,7 @@ class TheCreateTransactionActivity {
     fun showsAlertWheInvalidParameterIsUsed() {
         rule.launchActivity(Intent.getIntentOld("$urlBase/foo?yo=lo"))
 
-        Espresso.onView(withText(rule.activity.getString(R.string.warning_invalid_param_type, 0, "yo"))).check(matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(rule.activity.getString(R.string.warning_invalid_param_type, "yo", "lo"))).check(matches(ViewMatchers.isDisplayed()))
 
     }
 

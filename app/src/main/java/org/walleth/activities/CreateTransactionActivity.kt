@@ -687,7 +687,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             alert(it) { finish() }
         }
 
-        return errorString != null
+        return errorString == null
     }
 
     private fun storeDefaultGasPriceAndFinish() {
