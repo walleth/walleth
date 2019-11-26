@@ -13,8 +13,6 @@ import org.kethereum.model.ChainId
 import org.kethereum.model.createTransactionWithDefaults
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
-import org.walleth.activities.ViewTransactionActivity
-import org.walleth.activities.getTransactionActivityIntentForHash
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
@@ -24,6 +22,8 @@ import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 import org.walleth.testdata.Room77
 import org.walleth.testdata.ShapeShift
 import org.walleth.testdata.addTestAddresses
+import org.walleth.transactions.ViewTransactionActivity
+import org.walleth.transactions.getTransactionActivityIntentForHash
 import java.math.BigInteger
 
 class TheTransactionActivity {

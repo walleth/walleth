@@ -20,11 +20,10 @@ import org.kethereum.keystore.api.KeyStore
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
-import org.walleth.activities.BaseSubActivity
+import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.ui.AddressAdapter
 
 abstract class BaseAddressBookActivity : BaseSubActivity() {
 

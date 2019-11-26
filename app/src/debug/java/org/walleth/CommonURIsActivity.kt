@@ -3,7 +3,7 @@ package org.walleth
 import android.os.Bundle
 import android.view.View
 import org.ligi.kaxt.startActivityFromURL
-import org.walleth.activities.WallethActivity
+import org.walleth.base_activities.WallethActivity
 
 class CommonURIsActivity : WallethActivity() {
 

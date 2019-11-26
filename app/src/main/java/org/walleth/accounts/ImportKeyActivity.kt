@@ -28,12 +28,11 @@ import org.kethereum.wallet.loadKeysFromWalletJsonString
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.BaseSubActivity
-import org.walleth.activities.ImportAsActivity
+import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.khex.hexToByteArray
-import org.walleth.qrscan.startScanActivityForResult
+import org.walleth.qr.scan.startScanActivityForResult
 import java.io.FileNotFoundException
 
 enum class KeyType {

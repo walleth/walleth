@@ -17,7 +17,7 @@
         <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="@string/package_name"
-                android:targetClass="org.walleth.activities.ToolbarSetupActivity"/>
+                android:targetClass="org.walleth.toolbar.ToolbarSetupActivity"/>
     </Preference>
 
     <Preference
@@ -27,7 +27,7 @@
         <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="@string/package_name"
-                android:targetClass="org.walleth.activities.SelectTokenActivity"/>
+                android:targetClass="org.walleth.tokens.SelectTokenActivity"/>
     </Preference>
 
     <Preference
@@ -37,7 +37,7 @@
         <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="@string/package_name"
-                android:targetClass="org.walleth.activities.SelectReferenceActivity"/>
+                android:targetClass="org.walleth.preferences.reference.SelectReferenceActivity"/>
     </Preference>
 
     <CheckBoxPreference

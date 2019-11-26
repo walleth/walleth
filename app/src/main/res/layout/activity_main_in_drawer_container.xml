@@ -29,7 +29,7 @@
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <fragment
-            android:name="org.walleth.ui.WalletNavigationFragment"
+            android:name="org.walleth.navigation.WalletNavigationFragment"
             android:id="@+id/navigationView"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"

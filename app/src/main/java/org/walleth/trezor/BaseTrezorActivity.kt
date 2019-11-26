@@ -24,12 +24,12 @@ import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.BaseSubActivity
-import org.walleth.trezor.BaseTrezorActivity.STATES.*
+import org.walleth.base_activities.BaseSubActivity
+import org.walleth.credentials.KEY_MAP_NUM_PAD
+import org.walleth.credentials.showPINDialog
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.ui.KEY_MAP_NUM_PAD
-import org.walleth.ui.showPINDialog
+import org.walleth.trezor.BaseTrezorActivity.STATES.*
 
 
 abstract class BaseTrezorActivity : BaseSubActivity() {

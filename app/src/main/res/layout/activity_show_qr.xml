@@ -9,7 +9,7 @@
         android:orientation="vertical"
         android:padding="16dp"
         android:animateLayoutChanges="true"
-        tools:context="org.walleth.activities.ViewTransactionActivity">
+        tools:context="org.walleth.base_activities.ViewTransactionActivity">
 
     <ProgressBar
             android:visibility="gone"

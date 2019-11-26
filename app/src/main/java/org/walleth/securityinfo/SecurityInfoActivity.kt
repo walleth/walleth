@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_security_info.*
 import kotlinx.android.synthetic.main.activity_security_item.view.*
 import org.ligi.compat.HtmlCompat
 import org.walleth.R
-import org.walleth.activities.BaseSubActivity
+import org.walleth.base_activities.BaseSubActivity
 import org.walleth.securityinfo.ProblemLevel.*
 import org.walleth.util.security.isDeviceLockScreenProtected
 

@@ -7,7 +7,7 @@ import kotlinx.android.synthetic.main.activity_nfc_enter_credentials.*
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.BaseSubActivity
+import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.EXTRA_KEY_NFC_CREDENTIALS
 
 class NFCEnterCredentialsActivity : BaseSubActivity() {

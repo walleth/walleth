@@ -25,15 +25,15 @@
             android:supportsRtl="true"
             android:theme="@style/AppTheme">
 
-        <service android:name="org.walleth.core.TransactionNotificationService"/>
+        <service android:name="org.walleth.notifications.TransactionNotificationService"/>
 
-        <activity android:name="org.walleth.qrscan.QRScanActivity"/>
+        <activity android:name="org.walleth.qr.scan.QRScanActivity"/>
 
-        <activity android:name="org.walleth.activities.SwitchChainActivity"/>
-        <activity android:name="org.walleth.activities.RequestActivity"/>
-        <activity android:name=".activities.QRCodeActivity"/>
-        <activity android:name="org.walleth.activities.InfoActivity"/>
-        <activity android:name="org.walleth.activities.DebugWallethActivity"/>
+        <activity android:name="org.walleth.chains.SwitchChainActivity"/>
+        <activity android:name="org.walleth.request.RequestActivity"/>
+        <activity android:name="org.walleth.qr.show.ShowQRCodeActivity"/>
+        <activity android:name="org.walleth.info.WallETHInfoActivity"/>
+        <activity android:name="org.walleth.debug.DebugWallethActivity"/>
 
         <activity android:name="org.walleth.trezor.TrezorSignTransactionActivity"/>
         <activity android:name="org.walleth.trezor.TrezorGetAddressActivity"/>
@@ -44,22 +44,23 @@
         <activity android:name="org.walleth.walletconnect.WalletConnectConnectionActivity"/>
         <activity android:name="org.walleth.walletconnect.WalletConnectErrorActivity"/>
 
-        <activity android:name="org.walleth.activities.ExportKeyActivity"/>
-        <activity android:name="org.walleth.activities.EditAccountActivity"/>
-        <activity android:name="org.walleth.activities.SelectReferenceActivity"/>
-        <activity android:name="org.walleth.activities.ParitySignerQRActivity"/>
-        <activity android:name="org.walleth.activities.SignTextActivity"/>
-        <activity android:name="org.walleth.activities.SelectTokenActivity"/>
-        <activity android:name="org.walleth.activities.CreateTokenDefinitionActivity"/>
+        <activity android:name="org.walleth.accounts.ExportKeyActivity"/>
+        <activity android:name="org.walleth.accounts.EditAccountActivity"/>
+        <activity android:name="org.walleth.preferences.reference.SelectReferenceActivity"/>
+        <activity android:name="org.walleth.sign.ParitySignerQRActivity"/>
+        <activity android:name="org.walleth.sign.SignTextActivity"/>
+        <activity android:name="org.walleth.tokens.SelectTokenActivity"/>
+        <activity android:name="org.walleth.tokens.CreateTokenDefinitionActivity"/>
         <activity android:name="org.walleth.securityinfo.SecurityInfoActivity"/>
 
-        <activity android:name="org.walleth.activities.PreferenceActivity"/>
-        <activity android:name="org.walleth.activities.ViewTransactionActivity"/>
-        <activity android:name="org.walleth.activities.CreateTransactionActivity"/>
+        <activity android:name="org.walleth.preferences.PreferenceActivity"/>
 
-        <activity android:name="org.walleth.activities.ToolbarSetupActivity"/>
+        <activity android:name="org.walleth.transactions.CreateTransactionActivity"/>
+        <activity android:name="org.walleth.transactions.ViewTransactionActivity"/>
 
-        <activity android:name="org.walleth.activities.IntentHandlerActivity">
+        <activity android:name="org.walleth.toolbar.ToolbarSetupActivity"/>
+
+        <activity android:name="org.walleth.intents.IntentHandlerActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
 
@@ -78,12 +79,10 @@
                         android:scheme="wc"/>
             </intent-filter>
         </activity>
-        <activity android:name="org.walleth.activities.MainActivity">
-
-        </activity>
+        <activity android:name="org.walleth.overview.OverviewActivity"/>
 
         <activity
-                android:name=".activities.OpenSourceLicenseDisplayActivity">
+                android:name=".info.OpenSourceLicenseInfoActivity">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT"/>
                 <action android:name="android.intent.action.VIEW"/>
@@ -91,7 +90,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="org.walleth.activities.OfflineTransactionActivity"
+        <activity android:name="org.walleth.transactions.OfflineTransactionActivity"
                   android:windowSoftInputMode="adjustResize"/>
 
         <activity android:name="org.walleth.accounts.CreateAccountActivity"/>
@@ -120,11 +119,11 @@
                       android:pathPrefix="/android.com:pkg"/>
             </intent-filter>
         </activity>
-        <activity android:name=".activities.RequestPINActivity"/>
-        <activity android:name=".activities.RequestPasswordActivity"
+        <activity android:name="org.walleth.credentials.RequestPINActivity"/>
+        <activity android:name="org.walleth.credentials.RequestPasswordActivity"
                   android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".activities.ImportAsActivity"/>
-        <activity android:name=".qrscan.QRScanActivityAndProcessActivity"/>
+        <activity android:name=".accounts.ImportAsActivity"/>
+        <activity android:name=".qr.scan.QRScanActivityAndProcessActivity"/>
         <activity android:name="org.walleth.nfc.NFCSignTextActivity" />
 
     </application>

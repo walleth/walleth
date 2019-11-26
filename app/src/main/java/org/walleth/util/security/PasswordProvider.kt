@@ -2,8 +2,8 @@ package org.walleth.util.security
 
 import androidx.fragment.app.FragmentActivity
 import org.walleth.R
-import org.walleth.activities.getPassword
-import org.walleth.activities.showAccountPinDialog
+import org.walleth.credentials.getPassword
+import org.walleth.credentials.showAccountPinDialog
 import org.walleth.data.ACCOUNT_TYPE_BURNER
 import org.walleth.data.ACCOUNT_TYPE_PASSWORD_PROTECTED
 import org.walleth.data.ACCOUNT_TYPE_PIN_PROTECTED

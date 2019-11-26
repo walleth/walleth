@@ -7,13 +7,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_account_type_select.*
 import org.koin.android.ext.android.inject
 import org.walleth.R
-import org.walleth.activities.BaseSubActivity
+import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.model.ACCOUNT_TYPE_LIST
-import org.walleth.qrscan.QRScanActivityAndProcessActivity
-import org.walleth.ui.AccountTypeAdapter
+import org.walleth.qr.scan.QRScanActivityAndProcessActivity
 
 open class NewAccountTypeSelectActivity : BaseSubActivity() {
 
@@ -32,7 +30,7 @@ open class NewAccountTypeSelectActivity : BaseSubActivity() {
         recycler.adapter = AccountTypeAdapter(ACCOUNT_TYPE_LIST, AccountKeySpec(ACCOUNT_TYPE_NONE))
 
         fab.setOnClickListener {
-            startActivityForResult(Intent(this,QRScanActivityAndProcessActivity::class.java), REQUEST_CODE_SCAN_QR)
+            startActivityForResult(Intent(this, QRScanActivityAndProcessActivity::class.java), REQUEST_CODE_SCAN_QR)
         }
     }
 

@@ -5,7 +5,7 @@ import android.nfc.NfcAdapter.getDefaultAdapter
 import android.os.Bundle
 import org.koin.android.ext.android.inject
 import org.walleth.R
-import org.walleth.activities.BaseSubActivity
+import org.walleth.base_activities.BaseSubActivity
 import org.walleth.khartwarewallet.KHardwareManager
 import org.walleth.khartwarewallet.enableKhardwareReader
 

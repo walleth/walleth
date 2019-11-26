@@ -5,13 +5,13 @@
             android:layout_height="match_parent"
             android:padding="16dp"
             android:animateLayoutChanges="true"
-            tools:context="org.walleth.activities.RequestActivity">
+            tools:context="org.walleth.base_activities.RequestActivity">
     <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="16dp"
             android:animateLayoutChanges="true"
-            tools:context="org.walleth.activities.RequestActivity">
+            tools:context="org.walleth.base_activities.RequestActivity">
 
         <TextView
                 android:id="@+id/welcome_text"
@@ -40,7 +40,7 @@
                 android:layout_below="@+id/receive_qrcode"
                 android:id="@+id/add_value_checkbox"/>
 
-        <org.walleth.ui.valueview.ValueView
+        <org.walleth.valueview.ValueView
                 android:layout_width="wrap_content"
                 android:layout_below="@+id/add_value_checkbox"
                 android:id="@+id/value_input"

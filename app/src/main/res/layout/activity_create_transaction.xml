@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:focusableInTouchMode="true"
-        tools:context="org.walleth.activities.CreateTransactionActivity">
+        tools:context="org.walleth.base_activities.CreateTransactionActivity">
 
     <ScrollView
             android:layout_width="match_parent"
@@ -111,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/amount_label">
 
-                <org.walleth.ui.valueview.ValueView
+                <org.walleth.valueview.ValueView
                         android:id="@+id/amount_value"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -130,7 +130,7 @@
             </LinearLayout>
 
 
-            <org.walleth.ui.valueview.ValueViewSmall
+            <org.walleth.valueview.ValueViewSmall
                     android:id="@+id/fee_value_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

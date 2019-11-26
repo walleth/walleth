@@ -3,14 +3,14 @@ package org.walleth.tests
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskIntentRule
-import org.walleth.activities.OpenSourceLicenseDisplayActivity
+import org.walleth.info.OpenSourceLicenseInfoActivity
 
 
 class TheOpenSourceLicenses {
 
 
         @get:Rule
-        var rule = TruleskIntentRule(OpenSourceLicenseDisplayActivity::class.java)
+        var rule = TruleskIntentRule(OpenSourceLicenseInfoActivity::class.java)
 
         @Test
         fun rejectsCriticallyLongAddress() {

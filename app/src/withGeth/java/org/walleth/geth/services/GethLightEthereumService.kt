@@ -21,7 +21,6 @@ import org.kethereum.functions.encodeRLP
 import org.koin.android.ext.android.inject
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
-import org.walleth.activities.MainActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
@@ -32,6 +31,7 @@ import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.geth.toGethAddr
+import org.walleth.overview.OverviewActivity
 import java.io.File
 import java.math.BigInteger
 import org.ethereum.geth.Context as EthereumContext
@@ -86,7 +86,7 @@ class GethLightEthereumService : LifecycleService() {
 
                 async(Dispatchers.Main) {
                     val pendingStopIntent = PendingIntent.getService(baseContext, 0, gethStopIntent(), 0)
-                    val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, MainActivity::class.java), 0)
+                    val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, OverviewActivity::class.java), 0)
 
                     if (Build.VERSION.SDK_INT > 25) {
                         setNotificationChannel()

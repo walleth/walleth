@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 import com.chibatching.kotpref.KotprefModel
 import org.walleth.R
 import org.walleth.data.DEFAULT_GAS_PRICE
-import org.walleth.functions.asBigDecimal
+import org.walleth.util.asBigDecimal
 import java.math.BigInteger
 import java.security.SecureRandom
 

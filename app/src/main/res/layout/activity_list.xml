@@ -7,7 +7,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:id="@+id/coordinator"
-        tools:context="org.walleth.activities.MainActivity">
+        tools:context="org.walleth.base_activities.OverviewActivity">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/swipe_refresh_layout"

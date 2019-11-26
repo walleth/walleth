@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="16dp"
-        tools:context="org.walleth.activities.MainActivity">
+        tools:context="org.walleth.base_activities.OverviewActivity">
 
     <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"

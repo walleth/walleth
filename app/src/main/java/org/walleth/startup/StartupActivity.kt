@@ -11,10 +11,10 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.accounts.CreateAccountActivity
-import org.walleth.activities.MainActivity
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.REQUEST_CODE_CREATE_ACCOUNT
 import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.overview.OverviewActivity
 import org.walleth.startup.StartupStatus.*
 
 class StartupActivity : AppCompatActivity() {
@@ -31,7 +31,7 @@ class StartupActivity : AppCompatActivity() {
                     startActivityForResult(Intent(this, CreateAccountActivity::class.java), REQUEST_CODE_CREATE_ACCOUNT)
                 }
                 is HasChainAndAddress -> {
-                    startActivityFromClass(MainActivity::class.java)
+                    startActivityFromClass(OverviewActivity::class.java)
                     finish()
                 }
                 is Timeout -> {
@@ -48,7 +48,7 @@ class StartupActivity : AppCompatActivity() {
             when (requestCode) {
                 REQUEST_CODE_CREATE_ACCOUNT -> {
                     currentAddressProvider.setCurrent(Address(data.getStringExtra(EXTRA_KEY_ADDRESS)))
-                    startActivityFromClass(MainActivity::class.java)
+                    startActivityFromClass(OverviewActivity::class.java)
                     finish()
                 }
                 else -> super.onActivityResult(requestCode, resultCode, data)

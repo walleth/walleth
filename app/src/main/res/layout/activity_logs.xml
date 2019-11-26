@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:padding="16dp"
         android:orientation="vertical"
-        tools:context="org.walleth.activities.InfoActivity">
+        tools:context="org.walleth.base_activities.InfoActivity">
 
     <androidx.appcompat.widget.SwitchCompat
             android:id="@+id/golog_switch"

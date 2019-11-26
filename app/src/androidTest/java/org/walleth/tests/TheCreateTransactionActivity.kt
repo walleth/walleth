@@ -24,7 +24,6 @@ import org.kethereum.functions.isTokenTransfer
 import org.kethereum.model.Address
 import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
-import org.walleth.activities.CreateTransactionActivity
 import org.walleth.data.ACCOUNT_TYPE_BURNER
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.AddressBookEntry
@@ -34,12 +33,13 @@ import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.TokenTransfer
 import org.walleth.data.tokens.getRootToken
 import org.walleth.data.tokens.toERC681
-import org.walleth.functions.decimalsAsMultiplicator
+import org.walleth.util.decimalsAsMultiplicator
 import org.walleth.infrastructure.TestApp
 import org.walleth.infrastructure.setCurrentToken
-import org.walleth.qrscan.QRScanActivity
+import org.walleth.qr.scan.QRScanActivity
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
+import org.walleth.transactions.CreateTransactionActivity
 import java.math.BigInteger
 
 val testToken = Token(

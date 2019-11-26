@@ -23,7 +23,7 @@
             android:layout_height="wrap_content">
 
 
-        <org.walleth.ui.valueview.ValueViewSmall
+        <org.walleth.valueview.ValueViewSmall
                 android:id="@+id/difference"
                 app:showPrecise="false"
                 android:layout_gravity="center_horizontal"

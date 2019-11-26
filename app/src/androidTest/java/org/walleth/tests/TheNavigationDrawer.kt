@@ -13,14 +13,14 @@ import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.mockito.Mockito.`when`
 import org.walleth.R
-import org.walleth.activities.MainActivity
 import org.walleth.data.addressbook.AddressBookEntry
 import org.walleth.infrastructure.TestApp
+import org.walleth.overview.OverviewActivity
 
 class TheNavigationDrawer {
 
     @get:Rule
-    var rule = TruleskActivityRule(MainActivity::class.java, false)
+    var rule = TruleskActivityRule(OverviewActivity::class.java, false)
 
     @Test
     fun navigationDrawerIsUsuallyNotShown() {

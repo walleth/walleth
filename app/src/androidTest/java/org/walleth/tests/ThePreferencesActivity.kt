@@ -11,8 +11,9 @@ import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
-import org.walleth.activities.PreferenceActivity
-import org.walleth.activities.SelectReferenceActivity
+import org.walleth.preferences.PreferenceActivity
+import org.walleth.preferences.reference.SelectReferenceActivity
+import org.walleth.tokens.SelectTokenActivity
 
 
 class ThePreferencesActivity {
@@ -33,6 +34,16 @@ class ThePreferencesActivity {
         onView(withText(R.string.select_fiat_reference)).perform(click())
 
         intended(hasComponent(SelectReferenceActivity::class.java.name))
+
+    }
+
+
+    @Test
+    fun whenClickOnTokenSelectWeGetToTokenSelect() {
+
+        onView(withText(R.string.select_token)).perform(click())
+
+        intended(hasComponent(SelectTokenActivity::class.java.name))
 
     }
 }

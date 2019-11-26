@@ -3,7 +3,7 @@ package org.walleth.tests
 import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
-import org.walleth.activities.ExportKeyActivity
+import org.walleth.accounts.ExportKeyActivity
 
 class TheExportKeyActivity {
 

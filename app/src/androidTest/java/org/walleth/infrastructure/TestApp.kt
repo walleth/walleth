@@ -30,12 +30,12 @@ import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.kethereum.model.ContractFunction
+import org.walleth.overview.TransactionListViewModel
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
 import org.walleth.util.jsonadapter.BigIntegerJSONAdapter
-import org.walleth.viewmodels.TransactionListViewModel
-import org.walleth.viewmodels.WalletConnectViewModel
+import org.walleth.walletconnect.WalletConnectViewModel
 
 private fun <T> any(): T {
     Mockito.any<T>()
@@ -74,7 +74,7 @@ class TestApp : App() {
             mock(OkHttpClient::class.java)
         }
 
-        viewModel { WalletConnectViewModel(this@TestApp, get(), get(),get()) }
+        viewModel { WalletConnectViewModel(this@TestApp, get(), get(), get()) }
         viewModel { TransactionListViewModel(this@TestApp, get(), get(), get()) }
     }
 

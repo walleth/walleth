@@ -12,8 +12,8 @@ import org.junit.Test
 import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.App
 import org.walleth.R
-import org.walleth.activities.IntentHandlerActivity
-import org.walleth.activities.getEthereumViewIntent
+import org.walleth.intents.IntentHandlerActivity
+import org.walleth.intents.getEthereumViewIntent
 
 
 class TheIntentHandlerActivity {

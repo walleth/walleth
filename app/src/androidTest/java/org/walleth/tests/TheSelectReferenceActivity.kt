@@ -11,8 +11,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
-import org.walleth.activities.SelectReferenceActivity
 import org.walleth.infrastructure.TestApp
+import org.walleth.preferences.reference.SelectReferenceActivity
 
 class TheSelectReferenceActivity {
 

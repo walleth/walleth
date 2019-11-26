@@ -1,8 +1,8 @@
 import com.google.common.truth.Truth.assertThat
 import data.testToken
 import org.junit.Test
-import org.walleth.functions.decimalsInZeroes
-import org.walleth.functions.toValueString
+import org.walleth.util.decimalsInZeroes
+import org.walleth.util.toValueString
 import java.math.BigDecimal
 
 class TheFormatting {

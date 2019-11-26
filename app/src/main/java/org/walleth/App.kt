@@ -32,7 +32,6 @@ import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
 import org.walleth.contracts.FourByteDirectory
 import org.walleth.contracts.FourByteDirectoryImpl
-import org.walleth.core.TransactionNotificationService
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.allPrePopulationAddresses
@@ -55,11 +54,12 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.migrations.ChainAddingAndRecreatingMigration
 import org.walleth.nfc.NFCCredentialStore
+import org.walleth.notifications.TransactionNotificationService
+import org.walleth.overview.TransactionListViewModel
 import org.walleth.startup.StartupViewModel
 import org.walleth.util.DelegatingSocketFactory
 import org.walleth.util.jsonadapter.BigIntegerJSONAdapter
-import org.walleth.viewmodels.TransactionListViewModel
-import org.walleth.viewmodels.WalletConnectViewModel
+import org.walleth.walletconnect.WalletConnectViewModel
 import java.io.File
 import java.net.Socket
 import java.security.Security
