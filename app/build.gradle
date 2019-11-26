@@ -237,7 +237,7 @@ dependencies {
 
     androidTestImplementation "org.mockito:mockito-core:$mockito_version"
 
-    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.25.0'
+    androidTestImplementation 'com.linkedin.dexmaker:dexmaker-mockito:2.25.1'
 
 
     androidTestImplementation 'androidx.test.espresso:espresso-intents:3.2.0'
