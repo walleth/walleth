@@ -274,6 +274,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             val params = LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             params.setMargins(16.toDp(), 0, 16.toDp(), 0)
             editText.layoutParams = params
+            editText.isSingleLine = true
             container.addView(editText)
 
             AlertDialog.Builder(this)
