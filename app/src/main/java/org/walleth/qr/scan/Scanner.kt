@@ -5,6 +5,7 @@ import com.google.zxing.PlanarYUVLuminanceSource
 import com.google.zxing.ReaderException
 import com.google.zxing.common.HybridBinarizer
 import com.google.zxing.qrcode.QRCodeReader
+import kotlin.math.min
 
 class Scanner(private val videographer: Videographer) {
     fun scan() {
@@ -15,7 +16,7 @@ class Scanner(private val videographer: Videographer) {
         val centerX = width / 2
         val centerY = height / 2
 
-        var size = Math.min(width, height)
+        var size = min(width, height)
         size = (size.toDouble() * ReticleView.FRAME_SCALE).toInt()
 
         val halfSize = size / 2
