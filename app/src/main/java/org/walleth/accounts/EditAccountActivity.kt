@@ -16,7 +16,7 @@ import org.walleth.R
 import org.walleth.base_activities.AddressReceivingActivity
 import org.walleth.base_activities.startAddressReceivingActivity
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addresses.AddressBookEntry
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.util.copyToClipboard
 

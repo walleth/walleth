@@ -2,7 +2,7 @@ package org.walleth.data.blockexplorer
 
 import android.content.Context
 import org.ligi.kaxtui.alert
-import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.kethereum.blockscout.BlockScoutBlockExplorer
 import org.walleth.kethereum.blockscout.getBlockScoutBlockExplorer
 

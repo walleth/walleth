@@ -1,4 +1,4 @@
-package org.walleth.data.addressbook
+package org.walleth.data.addresses
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao

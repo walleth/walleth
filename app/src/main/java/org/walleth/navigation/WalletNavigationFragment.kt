@@ -16,8 +16,8 @@ import org.walleth.accounts.SwitchAccountActivity
 import org.walleth.chains.SwitchChainActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.debug.DebugWallethActivity
 import org.walleth.preferences.PreferenceActivity
 import org.walleth.securityinfo.SecurityInfoActivity

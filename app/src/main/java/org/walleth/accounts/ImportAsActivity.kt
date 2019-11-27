@@ -8,7 +8,7 @@ import kotlinx.android.synthetic.main.activity_account_type_select.*
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
-import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addresses.AccountKeySpec
 
 class ImportAsActivity : BaseSubActivity() {
 

@@ -9,8 +9,8 @@ import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
-import org.walleth.data.addressbook.AccountKeySpec
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.AccountKeySpec
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.qr.scan.QRScanActivityAndProcessActivity
 
 open class NewAccountTypeSelectActivity : BaseSubActivity() {

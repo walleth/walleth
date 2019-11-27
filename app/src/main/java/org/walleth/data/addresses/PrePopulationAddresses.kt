@@ -1,4 +1,4 @@
-package org.walleth.data.addressbook
+package org.walleth.data.addresses
 
 import org.kethereum.model.Address
 

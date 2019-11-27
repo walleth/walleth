@@ -1,4 +1,4 @@
-package org.walleth.data.networks
+package org.walleth.data.addresses
 
 import androidx.lifecycle.MutableLiveData
 import org.kethereum.model.Address

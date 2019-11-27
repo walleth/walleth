@@ -26,8 +26,8 @@ import org.walleth.base_activities.BaseSubActivity
 import org.walleth.chains.SwitchChainActivity
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.REQUEST_CODE_SELECT_TO_ADDRESS
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.khex.clean0xPrefix
 import org.walleth.sign.SignTextActivity
 import org.walleth.transactions.CreateTransactionActivity

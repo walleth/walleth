@@ -16,7 +16,7 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.AppDatabase
-import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.tokens.Token
 import org.walleth.qr.scan.startScanActivityForResult
 

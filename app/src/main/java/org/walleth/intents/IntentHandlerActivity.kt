@@ -24,7 +24,7 @@ import org.walleth.base_activities.WallethActivity
 import org.walleth.data.REQUEST_CODE_CREATE_TX
 import org.walleth.data.REQUEST_CODE_SELECT_TO_ADDRESS
 import org.walleth.data.REQUEST_CODE_SIGN_TX
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.tokens.isTokenTransfer
 import org.walleth.sign.SignTextActivity
 import org.walleth.transactions.CreateTransactionActivity

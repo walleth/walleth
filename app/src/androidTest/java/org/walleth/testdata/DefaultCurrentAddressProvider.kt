@@ -4,7 +4,7 @@ import org.kethereum.crypto.createEthereumKeyPair
 import org.kethereum.crypto.toAddress
 import org.walleth.data.DEFAULT_PASSWORD
 import org.walleth.data.config.Settings
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 
 val DEFAULT_TEST_KEY = createEthereumKeyPair()
 val DEFAULT_TEST_KEY2 = createEthereumKeyPair()

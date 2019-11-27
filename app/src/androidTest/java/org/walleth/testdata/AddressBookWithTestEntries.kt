@@ -5,8 +5,8 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import org.kethereum.model.Address
-import org.walleth.data.addressbook.AddressBookDAO
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addresses.AddressBookDAO
+import org.walleth.data.addresses.AddressBookEntry
 
 val Room77 = Address("0x19205A3A3b2A69De6Dbf7f01ED13B2108B2c43e8")
 val ShapeShift = Address("0x79205A3A3b2A69De6Dbf7f01ED13B2108B2c43e5")

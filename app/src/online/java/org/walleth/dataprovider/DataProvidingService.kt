@@ -21,8 +21,8 @@ import org.walleth.data.KEY_TX_HASH
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.chaininfo.ChainInfo
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken

@@ -19,8 +19,8 @@ import org.komputing.kbip44.BIP44
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string
-import org.walleth.data.addressbook.getTrezorDerivationPath
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.getTrezorDerivationPath
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel

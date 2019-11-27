@@ -15,9 +15,9 @@ import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.getFaucetURL
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
+import org.walleth.chains.getFaucetURL
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.util.setQRCode

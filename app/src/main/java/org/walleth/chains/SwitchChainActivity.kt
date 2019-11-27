@@ -21,8 +21,6 @@ import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.deSerialize
 import javax.net.ssl.SSLException
 
 open class SwitchChainActivity : BaseSubActivity() {

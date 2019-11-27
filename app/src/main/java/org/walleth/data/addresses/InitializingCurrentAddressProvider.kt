@@ -1,4 +1,4 @@
-package org.walleth.data.networks
+package org.walleth.data.addresses
 
 import org.kethereum.model.Address
 import org.walleth.data.config.Settings

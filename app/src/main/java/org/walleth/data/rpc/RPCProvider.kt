@@ -8,7 +8,7 @@ import org.kethereum.rpc.EthereumRPC
 import org.kethereum.rpc.HttpTransport
 import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
-import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.util.getRPCEndpoint
 
 interface RPCProvider {

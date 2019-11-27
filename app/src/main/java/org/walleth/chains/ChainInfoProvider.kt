@@ -1,4 +1,4 @@
-package org.walleth.data.networks
+package org.walleth.chains
 
 import android.content.res.AssetManager
 import androidx.lifecycle.MutableLiveData

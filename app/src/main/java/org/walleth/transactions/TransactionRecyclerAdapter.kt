@@ -8,7 +8,7 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.transactions.TransactionEntity
 
 enum class TransactionAdapterDirection {

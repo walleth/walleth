@@ -3,7 +3,7 @@ package org.walleth.tests.database
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.runBlocking
 import org.junit.Test
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addresses.AddressBookEntry
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3

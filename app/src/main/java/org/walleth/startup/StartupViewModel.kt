@@ -5,8 +5,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 
 class StartupViewModel(private val currentAddressProvider: CurrentAddressProvider,
                        private val currentChainInfoProvider: ChainInfoProvider) : ViewModel() {

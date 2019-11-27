@@ -16,7 +16,7 @@ import org.threeten.bp.LocalDateTime
 import org.threeten.bp.ZoneOffset
 import org.walleth.R
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addresses.AddressBookEntry
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.transactions.getTransactionActivityIntentForHash
 

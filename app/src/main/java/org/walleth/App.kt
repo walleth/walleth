@@ -33,9 +33,9 @@ import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
 import org.walleth.data.*
-import org.walleth.data.addressbook.AccountKeySpec
-import org.walleth.data.addressbook.allPrePopulationAddresses
-import org.walleth.data.addressbook.toJSON
+import org.walleth.data.addresses.AccountKeySpec
+import org.walleth.data.addresses.allPrePopulationAddresses
+import org.walleth.data.addresses.toJSON
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.config.KotprefSettings
@@ -44,9 +44,9 @@ import org.walleth.data.ens.ENSProvider
 import org.walleth.data.ens.ENSProviderImpl
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.InitializingCurrentAddressProvider
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
+import org.walleth.data.addresses.InitializingCurrentAddressProvider
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.rpc.RPCProviderImpl
 import org.walleth.data.syncprogress.SyncProgressProvider

@@ -29,11 +29,11 @@ import org.walleth.R
 import org.walleth.accounts.startCreateAccountActivity
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.resolveNameWithFallback
+import org.walleth.data.addresses.resolveNameWithFallback
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.khex.toHexString

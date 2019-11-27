@@ -18,8 +18,8 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
-import org.walleth.data.addressbook.getSpec
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.getSpec
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.khex.hexToByteArray
 import org.walleth.khex.toHexString
 import org.walleth.nfc.getNFCSignTextIntent

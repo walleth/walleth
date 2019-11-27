@@ -13,7 +13,7 @@ import org.kethereum.crypto.toAddress
 import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
 import org.walleth.data.*
-import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addresses.AccountKeySpec
 import org.walleth.khartwarewallet.KHardwareChannel
 
 @Parcelize

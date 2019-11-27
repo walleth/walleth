@@ -22,8 +22,8 @@ import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.AddressBookEntry
+import org.walleth.data.addresses.CurrentAddressProvider
 
 abstract class BaseAddressBookActivity : BaseSubActivity() {
 

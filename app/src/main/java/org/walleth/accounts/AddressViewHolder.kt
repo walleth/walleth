@@ -15,8 +15,8 @@ import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.base_activities.startAddressReceivingActivity
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.addressbook.getSpec
+import org.walleth.data.addresses.AddressBookEntry
+import org.walleth.data.addresses.getSpec
 
 class AddressViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 

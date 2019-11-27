@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import org.kethereum.keystore.api.KeyStore
 import org.walleth.R
 import org.walleth.data.AppDatabase
-import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.addressbook.faucet
+import org.walleth.data.addresses.AddressBookEntry
+import org.walleth.data.addresses.faucet
 
 class AddressAdapter(val keyStore: KeyStore,
                      val onClickAction: (entry: AddressBookEntry) -> Unit,

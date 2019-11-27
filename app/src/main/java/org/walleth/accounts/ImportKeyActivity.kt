@@ -30,7 +30,7 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
-import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addresses.AccountKeySpec
 import org.walleth.khex.hexToByteArray
 import org.walleth.qr.scan.startScanActivityForResult
 import java.io.FileNotFoundException

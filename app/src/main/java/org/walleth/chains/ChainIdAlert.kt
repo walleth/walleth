@@ -9,7 +9,6 @@ import org.kethereum.model.ChainId
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.AppDatabase
-import org.walleth.data.networks.ChainInfoProvider
 
 
 // TODO - handle cancellation of dialog

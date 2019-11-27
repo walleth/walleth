@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 
 private const val INTENT_KEY_ADDRESS = "ADDRESS"
 

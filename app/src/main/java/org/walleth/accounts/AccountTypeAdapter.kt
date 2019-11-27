@@ -4,7 +4,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import org.walleth.R
-import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addresses.AccountKeySpec
 
 class AccountTypeAdapter(val list: List<AccountType>,
                          private val inSpec: AccountKeySpec) : RecyclerView.Adapter<AccountTypeViewHolder>() {

@@ -6,7 +6,7 @@ import kotlinx.android.synthetic.main.item_network_definition.view.*
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.walleth.data.chaininfo.ChainInfo
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.tokens.prepareFaucetButton
 
 class ChainInfoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView), KoinComponent {

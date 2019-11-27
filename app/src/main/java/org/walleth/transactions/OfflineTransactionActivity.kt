@@ -31,8 +31,8 @@ import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.chains.chainIDAlert
 import org.walleth.data.AppDatabase
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.khex.clean0xPrefix

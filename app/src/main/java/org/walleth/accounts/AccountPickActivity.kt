@@ -5,7 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import org.walleth.R
 import org.walleth.data.EXTRA_KEY_ADDRESS
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addresses.AddressBookEntry
 
 open class AccountPickActivity : BaseAddressBookActivity() {
 

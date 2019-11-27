@@ -9,7 +9,7 @@ import org.walleth.R
 import org.walleth.credentials.RequestPINActivity
 import org.walleth.credentials.RequestPasswordActivity
 import org.walleth.data.*
-import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addresses.AccountKeySpec
 import org.walleth.nfc.NFCGetAddressActivity
 import org.walleth.trezor.TrezorGetAddressActivity
 

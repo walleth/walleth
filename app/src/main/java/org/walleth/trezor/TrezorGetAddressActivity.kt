@@ -18,7 +18,7 @@ import org.walleth.data.ACCOUNT_TYPE_TREZOR
 import org.walleth.data.DEFAULT_ETHEREUM_BIP44_PATH
 import org.walleth.data.EXTRA_KEY_ACCOUNTSPEC
 import org.walleth.data.EXTRA_KEY_ADDRESS
-import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addresses.AccountKeySpec
 import org.walleth.kethereum.android.TransactionParcel
 
 fun Intent?.hasAddressResult() = this?.hasExtra(EXTRA_KEY_ADDRESS) == true

@@ -4,7 +4,7 @@ import android.app.Activity
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import kotlinx.android.synthetic.main.item_account_type.view.*
-import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addresses.AccountKeySpec
 
 class AccountTypeViewHolder(itemView: View, val inSpec: AccountKeySpec) : RecyclerView.ViewHolder(itemView) {
     fun bind(item: AccountType) {

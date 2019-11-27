@@ -10,8 +10,8 @@ import androidx.paging.PagedList
 import org.kethereum.model.AddressOnChain
 import org.ligi.kaxt.livedata.CombinatorMediatorLiveData
 import org.walleth.data.AppDatabase
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionEntity
 
 class TransactionListViewModel(app: Application,

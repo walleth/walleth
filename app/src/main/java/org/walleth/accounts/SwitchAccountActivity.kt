@@ -2,7 +2,7 @@ package org.walleth.accounts
 
 import android.os.Bundle
 import org.walleth.R
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addresses.AddressBookEntry
 
 class SwitchAccountActivity : BaseAddressBookActivity() {
 

@@ -28,7 +28,7 @@ import org.walleth.base_activities.BaseSubActivity
 import org.walleth.credentials.KEY_MAP_NUM_PAD
 import org.walleth.credentials.showPINDialog
 import org.walleth.data.AppDatabase
-import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.trezor.BaseTrezorActivity.STATES.*
 
 

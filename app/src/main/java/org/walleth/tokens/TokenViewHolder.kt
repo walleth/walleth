@@ -16,10 +16,10 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
-import org.walleth.data.networks.getFaucetURL
-import org.walleth.data.networks.hasFaucetWithAddressSupport
+import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.addresses.CurrentAddressProvider
+import org.walleth.chains.getFaucetURL
+import org.walleth.chains.hasFaucetWithAddressSupport
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.isRootToken

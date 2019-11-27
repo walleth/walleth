@@ -13,7 +13,7 @@ import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.mockito.Mockito.`when`
 import org.walleth.R
-import org.walleth.data.addressbook.AddressBookEntry
+import org.walleth.data.addresses.AddressBookEntry
 import org.walleth.infrastructure.TestApp
 import org.walleth.overview.OverviewActivity
 

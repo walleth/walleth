@@ -5,7 +5,7 @@ import kotlinx.android.synthetic.main.activity_parity_signer_qr.*
 import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.util.setQRCode
 
 

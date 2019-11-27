@@ -1,4 +1,4 @@
-package org.walleth.data.addressbook
+package org.walleth.data.addresses
 
 import android.os.Parcelable
 import androidx.room.ColumnInfo

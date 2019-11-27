@@ -13,7 +13,7 @@ import org.ligi.kaxtui.alert
 import org.walleth.accounts.CreateAccountActivity
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.REQUEST_CODE_CREATE_ACCOUNT
-import org.walleth.data.networks.CurrentAddressProvider
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.overview.OverviewActivity
 import org.walleth.startup.StartupStatus.*
 

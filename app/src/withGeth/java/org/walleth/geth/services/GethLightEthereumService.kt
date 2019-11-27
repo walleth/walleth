@@ -21,11 +21,11 @@ import org.kethereum.functions.encodeRLP
 import org.koin.android.ext.android.inject
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
-import org.walleth.data.networks.ChainInfoProvider
-import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.getRootToken

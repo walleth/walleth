@@ -25,9 +25,9 @@ import org.kethereum.model.Address
 import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R
 import org.walleth.data.ACCOUNT_TYPE_BURNER
-import org.walleth.data.addressbook.AccountKeySpec
-import org.walleth.data.addressbook.AddressBookEntry
-import org.walleth.data.addressbook.toJSON
+import org.walleth.data.addresses.AccountKeySpec
+import org.walleth.data.addresses.AddressBookEntry
+import org.walleth.data.addresses.toJSON
 import org.walleth.data.balances.Balance
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.TokenTransfer

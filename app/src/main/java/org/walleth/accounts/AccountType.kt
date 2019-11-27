@@ -2,7 +2,7 @@ package org.walleth.accounts
 
 import android.app.Activity
 import androidx.annotation.DrawableRes
-import org.walleth.data.addressbook.AccountKeySpec
+import org.walleth.data.addresses.AccountKeySpec
 
 data class AccountType(
         val accountType: String?,

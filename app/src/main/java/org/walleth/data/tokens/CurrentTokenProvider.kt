@@ -1,7 +1,7 @@
 package org.walleth.data.tokens
 
 import androidx.lifecycle.MediatorLiveData
-import org.walleth.data.networks.ChainInfoProvider
+import org.walleth.chains.ChainInfoProvider
 
 open class CurrentTokenProvider(val chainInfoProvider: ChainInfoProvider) : MediatorLiveData<Token>() {
 
