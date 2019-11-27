@@ -15,7 +15,7 @@ open class ValueView(context: Context, attrs: AttributeSet) : LinearLayout(conte
 
     open val layoutRes = R.layout.value
     val showsPrecise: Boolean
-    val allowEdit: Boolean
+    private val allowEdit: Boolean
 
     init {
         // extract the showPrecise value
