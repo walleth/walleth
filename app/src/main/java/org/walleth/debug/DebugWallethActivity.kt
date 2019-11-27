@@ -14,6 +14,7 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import java.io.IOException
+import kotlin.math.max
 
 class DebugWallethActivity : BaseSubActivity() {
 
@@ -80,7 +81,7 @@ class DebugWallethActivity : BaseSubActivity() {
             } catch (e: TransactionTooLargeException) {
                 alert("Log too long - we need to shorten it") {
                     val textLength = log_text.text.length
-                    val shortened = log_text.text.substring(Math.max(log_text.text.length - 4096, 0), textLength)
+                    val shortened = log_text.text.substring(max(log_text.text.length - 4096, 0), textLength)
                     sendLog(shortened)
                 }
             }
