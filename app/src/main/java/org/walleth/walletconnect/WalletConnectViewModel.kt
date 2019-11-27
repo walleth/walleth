@@ -13,10 +13,10 @@ import org.walletconnect.impls.OkHttpTransport
 import org.walletconnect.impls.WCSession
 import org.walletconnect.impls.WCSessionStore
 
-class WalletConnectViewModel(val app: Application,
-                             val moshi: Moshi,
-                             val okHttpClient: OkHttpClient,
-                             val sessionStore: WCSessionStore) : AndroidViewModel(app) {
+class WalletConnectViewModel(app: Application,
+                             private val moshi: Moshi,
+                             private val okHttpClient: OkHttpClient,
+                             private val sessionStore: WCSessionStore) : AndroidViewModel(app) {
 
     var session: WCSession? = null
     var uri: String? = null
