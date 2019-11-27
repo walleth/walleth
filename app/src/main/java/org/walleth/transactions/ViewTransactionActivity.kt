@@ -21,13 +21,13 @@ import org.kethereum.functions.encodeRLP
 import org.kethereum.functions.getTokenTransferTo
 import org.kethereum.functions.getTokenTransferValue
 import org.kethereum.functions.isTokenTransfer
+import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
 import org.walleth.accounts.startCreateAccountActivity
 import org.walleth.base_activities.BaseSubActivity
-import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.addressbook.resolveNameWithFallback
 import org.walleth.data.blockexplorer.BlockExplorerProvider
@@ -36,9 +36,9 @@ import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
-import org.walleth.util.setQRCode
 import org.walleth.khex.toHexString
 import org.walleth.qr.show.getQRCodeIntent
+import org.walleth.util.setQRCode
 import org.walleth.valueview.ValueViewController
 
 private const val HASH_KEY = "TXHASH"
@@ -55,7 +55,7 @@ class ViewTransactionActivity : BaseSubActivity() {
     private val exchangeRateProvider: ExchangeRateProvider by inject()
 
     private var txEntity: TransactionEntity? = null
-    private val fourByteDirectory: FourByteDirectory by inject()
+    private val fourByteDirectory: CachedOnlineMethodSignatureRepository by inject()
 
     private val amountViewModel by lazy {
         ValueViewController(value_view, exchangeRateProvider, settings)
@@ -199,28 +199,23 @@ class ViewTransactionActivity : BaseSubActivity() {
                 }
                 details.text = message
 
-                transaction.input.let {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        val signatures = if (it.size >= 4) {
-                            withContext(Dispatchers.Default) {
-                                fourByteDirectory.getSignaturesFor(it.toList().subList(0, 4).toHexString())
-                            }
-                        } else null
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val signatures = withContext(Dispatchers.Default) {
+                        fourByteDirectory.getSignaturesFor(transaction)
+                    }.toList()
+                    val hasFunction = transaction.input.size > 3
 
-                        val hasFunction = it.isNotEmpty()
+                    function_call_label.setVisibility(hasFunction)
+                    function_call.setVisibility(hasFunction)
 
-                        function_call_label.setVisibility(hasFunction)
-                        function_call.setVisibility(hasFunction)
-
-                        function_call.text = if (signatures?.isNotEmpty() == true) {
-                            function_call_label.setText(R.string.function_call)
-                            signatures.joinToString(
-                                    separator = " ${getString(R.string.or)}\n", transform = { sig -> sig.textSignature ?: sig.hexSignature })
-                        } else {
-                            function_call_label.setText(R.string.function_data)
-                            transaction.input.toHexString()
-                        }
+                    function_call.text = if (signatures.isNotEmpty()) {
+                        function_call_label.setText(R.string.function_call)
+                        signatures.joinToString(separator = " ${getString(R.string.or)}\n", transform = { it.signature })
+                    } else {
+                        function_call_label.setText(R.string.function_data)
+                        transaction.input.toHexString()
                     }
+
                 }
             }
         })

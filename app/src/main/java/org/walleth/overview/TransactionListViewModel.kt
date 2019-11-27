@@ -7,12 +7,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import org.kethereum.model.AddressOnChain
 import org.ligi.kaxt.livedata.CombinatorMediatorLiveData
 import org.walleth.data.AppDatabase
 import org.walleth.data.networks.ChainInfoProvider
 import org.walleth.data.networks.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionEntity
-import org.walleth.kethereum.model.AddressOnChain
 
 class TransactionListViewModel(app: Application,
                                appDatabase: AppDatabase,

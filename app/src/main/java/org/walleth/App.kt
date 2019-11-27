@@ -21,6 +21,8 @@ import okhttp3.OkHttpClient
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.kethereum.keystore.api.InitializingFileKeyStore
 import org.kethereum.keystore.api.KeyStore
+import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
+import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepositoryImpl
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -30,8 +32,6 @@ import org.koin.dsl.module
 import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
-import org.walleth.contracts.FourByteDirectory
-import org.walleth.contracts.FourByteDirectoryImpl
 import org.walleth.data.*
 import org.walleth.data.addressbook.AccountKeySpec
 import org.walleth.data.addressbook.allPrePopulationAddresses
@@ -99,7 +99,11 @@ open class App : MultiDexApplication() {
         single {
             InitializingCurrentAddressProvider(settings = get()) as CurrentAddressProvider
         }
-        single { FourByteDirectoryImpl(get(), applicationContext) as FourByteDirectory }
+        single {
+            CachedOnlineMethodSignatureRepositoryImpl(get(), File(cacheDir, "funsignatures").apply {
+                mkdirs()
+            }) as CachedOnlineMethodSignatureRepository
+        }
 
         single {
             FileWCSessionStore(File(this@App.filesDir, "walletConnectSessions.json").apply {

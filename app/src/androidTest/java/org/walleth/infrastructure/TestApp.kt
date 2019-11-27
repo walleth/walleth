@@ -10,6 +10,8 @@ import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.kethereum.DEFAULT_GAS_PRICE
 import org.kethereum.keystore.api.KeyStore
+import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
+import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.rpc.EthereumRPC
 import org.kethereum.rpc.model.StringResultResponse
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -19,7 +21,6 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.walletconnect.impls.WCSessionStore
 import org.walleth.App
-import org.walleth.contracts.FourByteDirectory
 import org.walleth.data.AppDatabase
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
@@ -29,7 +30,6 @@ import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.kethereum.model.ContractFunction
 import org.walleth.overview.TransactionListViewModel
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
@@ -111,11 +111,11 @@ class TestApp : App() {
 
         val contractFunctionTextSignature1 = "aFunctionCall1(address)"
         val contractFunctionTextSignature2 = "aFunctionCall2(address)"
-        val testFourByteDirectory = mock(FourByteDirectory::class.java).apply {
+        val testFourByteDirectory = mock(CachedOnlineMethodSignatureRepository::class.java).apply {
             `when`(getSignaturesFor(any())).then { invocation ->
                 listOf(
-                        ContractFunction(invocation.arguments[0] as String, textSignature = contractFunctionTextSignature1),
-                        ContractFunction(invocation.arguments[0] as String, textSignature = contractFunctionTextSignature2)
+                        TextMethodSignature(contractFunctionTextSignature1),
+                        TextMethodSignature(contractFunctionTextSignature2)
                 )
             }
         }
