@@ -9,7 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <org.walleth.ui.ReticleView
+    <org.walleth.qr.scan.ReticleView
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
