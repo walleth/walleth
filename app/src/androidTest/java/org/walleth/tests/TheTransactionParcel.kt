@@ -10,9 +10,10 @@ import org.kethereum.model.createTransactionWithDefaults
 import org.walleth.kethereum.android.TransactionParcel
 import java.math.BigInteger
 
+private val DEFAULT_NONCE = BigInteger("42")
+
 class TheTransactionParcel {
 
-    val DEFAULT_NONCE = BigInteger("42")
     private fun createTx() = createTransactionWithDefaults(
             from = Address("0xab"),
             to = Address("0xcd"),

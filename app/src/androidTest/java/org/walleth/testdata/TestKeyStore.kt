@@ -7,7 +7,7 @@ import org.kethereum.model.ECKeyPair
 
 class TestKeyStore : KeyStore {
 
-    val addresses = mutableMapOf<Address, ECKeyPair>()
+    private val addresses = mutableMapOf<Address, ECKeyPair>()
 
     override fun addKey(key: ECKeyPair, password: String, light: Boolean): Address? {
 

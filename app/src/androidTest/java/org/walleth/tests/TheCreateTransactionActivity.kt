@@ -33,13 +33,13 @@ import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.TokenTransfer
 import org.walleth.data.tokens.getRootToken
 import org.walleth.data.tokens.toERC681
-import org.walleth.util.decimalsAsMultiplicator
 import org.walleth.infrastructure.TestApp
 import org.walleth.infrastructure.setCurrentToken
 import org.walleth.qr.scan.QRScanActivity
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
 import org.walleth.transactions.CreateTransactionActivity
+import org.walleth.util.decimalsAsMultiplicator
 import java.math.BigInteger
 
 val testToken = Token(
@@ -84,7 +84,7 @@ class TheCreateTransactionActivity {
     @Test
     fun rejectsEmptyAddress() {
         rule.launchActivity()
-        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
 
         Espresso.onView(withText(R.string.create_tx_err)).check(matches(ViewMatchers.isDisplayed()))
 
@@ -95,7 +95,7 @@ class TheCreateTransactionActivity {
     @Test
     fun rejectsUnknownChainId() {
         val chainIdForTransaction = 0
-        rule.launchActivity(Intent.getIntentOld("$urlBase@" + chainIdForTransaction))
+        rule.launchActivity(Intent.getIntentOld("$urlBase@$chainIdForTransaction"))
 
         Espresso.onView(withText(R.string.alert_network_unsupported_title)).check(matches(ViewMatchers.isDisplayed()))
         Espresso.onView(withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
@@ -108,7 +108,7 @@ class TheCreateTransactionActivity {
     @Test
     fun acceptsDifferentChainId() {
         val chainIdForTransaction = TestApp.chainInfoProvider.getCurrent()!!.chainId
-        rule.launchActivity(Intent.getIntentOld("$urlBase@" + chainIdForTransaction))
+        rule.launchActivity(Intent.getIntentOld("$urlBase@$chainIdForTransaction"))
 
         Espresso.onView(withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.doesNotExist())
         Espresso.onView(withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
@@ -172,12 +172,12 @@ class TheCreateTransactionActivity {
 
         rule.launchActivity(Intent.getIntentOld("$urlBase?value=1"))
 
-        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
 
         val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(Address(testAddress)))
         Truth.assertThat(allTransactionsForAddress).hasSize(1)
-        Truth.assertThat(allTransactionsForAddress.get(0).transaction.to?.hex).isEqualTo(testAddress)
-        Truth.assertThat(allTransactionsForAddress.get(0).transaction.value).isEqualTo(BigInteger("1"))
+        Truth.assertThat(allTransactionsForAddress[0].transaction.to?.hex).isEqualTo(testAddress)
+        Truth.assertThat(allTransactionsForAddress[0].transaction.value).isEqualTo(BigInteger("1"))
 
     }
 
@@ -191,8 +191,8 @@ class TheCreateTransactionActivity {
 
         val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(Address(testAddress)))
         Truth.assertThat(allTransactionsForAddress).hasSize(1)
-        Truth.assertThat(allTransactionsForAddress.get(0).transaction.to?.hex).isEqualTo(testAddress)
-        Truth.assertThat(allTransactionsForAddress.get(0).transaction.value).isEqualTo(BigInteger("1"))
+        Truth.assertThat(allTransactionsForAddress[0].transaction.to?.hex).isEqualTo(testAddress)
+        Truth.assertThat(allTransactionsForAddress[0].transaction.value).isEqualTo(BigInteger("1"))
 
     }
 
@@ -208,7 +208,7 @@ class TheCreateTransactionActivity {
         TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
         rule.launchActivity(Intent.getIntentOld(uri))
-        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
 
         val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(toAddress))
         Truth.assertThat(allTransactionsForAddress).hasSize(0)
@@ -233,16 +233,16 @@ class TheCreateTransactionActivity {
 
 
         rule.launchActivity(Intent.getIntentOld(uri))
-        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), ViewActions.click())
+        Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
 
         val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(toAddress))
         Truth.assertThat(allTransactionsForAddress).hasSize(0)
 
         val allTransactionsForToken = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(testToken.address))
         Truth.assertThat(allTransactionsForToken).hasSize(1)
-        Truth.assertThat(allTransactionsForToken.get(0).transaction.isTokenTransfer()).isTrue()
-        Truth.assertThat(allTransactionsForToken.get(0).transaction.getTokenTransferTo()).isEqualTo(toAddress)
-        Truth.assertThat(allTransactionsForToken.get(0).transaction.getTokenTransferValue()).isEqualTo(BigInteger.TEN)
+        Truth.assertThat(allTransactionsForToken[0].transaction.isTokenTransfer()).isTrue()
+        Truth.assertThat(allTransactionsForToken[0].transaction.getTokenTransferTo()).isEqualTo(toAddress)
+        Truth.assertThat(allTransactionsForToken[0].transaction.getTokenTransferValue()).isEqualTo(BigInteger.TEN)
     }
 
     @Test

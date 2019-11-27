@@ -6,7 +6,7 @@ import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.matcher.ViewMatchers.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
@@ -43,10 +43,10 @@ class TheNavigationDrawer {
     fun testNameIsDisplayedCorrectly() {
         `when`(TestApp.mySettings.onboardingDone).thenReturn(true)
 
-        GlobalScope.async(Dispatchers.Main) {
-            async(Dispatchers.Default) {
+        GlobalScope.launch(Dispatchers.Main) {
+            launch(Dispatchers.Default) {
                 TestApp.testDatabase.addressBook.upsert(AddressBookEntry(name = "espresso ligi", address = TestApp.currentAddressProvider.getCurrentNeverNull()))
-            }.await()
+            }
         }
 
         rule.launchActivity()

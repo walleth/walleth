@@ -1,7 +1,6 @@
 package org.walleth.tests
 
 import androidx.test.core.app.ApplicationProvider
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
@@ -29,14 +28,14 @@ class TheIntentHandlerActivity {
     @Test
     fun handlesInvalidScannedStrings() {
         launchWithURL("The invalid string")
-        Espresso.onView(withText(R.string.create_tx_error_invalid_url_title)).check(matches(isDisplayed()))
+        onView(withText(R.string.create_tx_error_invalid_url_title)).check(matches(isDisplayed()))
         Truth.assertThat(rule.activity.isFinishing).isFalse()
     }
 
     @Test
     fun handlesAddressesWithValue() {
         launchWithURL("ethereum:0xdeadbeef?value=100000000000000")
-        Espresso.onView(allOf(withId(R.id.current_eth), isDescendantOfA(withId(R.id.amount_value))))
+        onView(allOf(withId(R.id.current_eth), isDescendantOfA(withId(R.id.amount_value))))
                 .check(matches(withText("0.0001")))
     }
 

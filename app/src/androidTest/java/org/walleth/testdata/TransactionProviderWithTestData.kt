@@ -14,7 +14,7 @@ import java.math.BigInteger
 
 fun TransactionDAO.loadTestData(toChain: ChainId) {
     deleteAll()
-    upsert(kotlin.collections.listOf(
+    upsert(listOf(
             create(value = BigInteger("420000000000000000"), from = DEFAULT_TEST_ADDRESS, to = Room77, creationEpochSecond = LocalDateTime.now().minusHours(3).toEpochSecond(), txHash = "0x0000001", chain = toChain),
             create(value = BigInteger("500000000000000000"), from = DEFAULT_TEST_ADDRESS, to = ΞBay, creationEpochSecond = LocalDateTime.now().minusHours(5).toEpochSecond(), txHash = "0x0000002", chain = toChain),
             create(value = BigInteger("5000000000000000000"), from = ShapeShift, to = DEFAULT_TEST_ADDRESS, creationEpochSecond = LocalDateTime.now().minusHours(23).toEpochSecond(), txHash = "0x0000003", chain = toChain),

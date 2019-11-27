@@ -21,11 +21,11 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.walletconnect.impls.WCSessionStore
 import org.walleth.App
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.chains.ChainInfoProvider
-import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
@@ -86,12 +86,12 @@ class TestApp : App() {
     }
 
     companion object {
-        val RPCMock = mock(EthereumRPC::class.java).apply {
+        val RPCMock: EthereumRPC = mock(EthereumRPC::class.java).apply {
             `when`(estimateGas(any())).thenReturn(StringResultResponse("0x00"))
         }
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
         val keyStore = TestKeyStore()
-        val mySettings = mock(Settings::class.java).apply {
+        val mySettings: Settings = mock(Settings::class.java).apply {
             `when`(currentFiat).thenReturn("EUR")
             `when`(getNightMode()).thenReturn(MODE_NIGHT_YES)
             `when`(onboardingDone).thenReturn(true)
@@ -109,10 +109,10 @@ class TestApp : App() {
             CurrentTokenProvider(chainInfoProvider)
         }
 
-        val contractFunctionTextSignature1 = "aFunctionCall1(address)"
-        val contractFunctionTextSignature2 = "aFunctionCall2(address)"
-        val testFourByteDirectory = mock(CachedOnlineMethodSignatureRepository::class.java).apply {
-            `when`(getSignaturesFor(any())).then { invocation ->
+        const val contractFunctionTextSignature1 = "aFunctionCall1(address)"
+        const val contractFunctionTextSignature2 = "aFunctionCall2(address)"
+        val testFourByteDirectory: CachedOnlineMethodSignatureRepository = mock(CachedOnlineMethodSignatureRepository::class.java).apply {
+            `when`(getSignaturesFor(any())).then {
                 listOf(
                         TextMethodSignature(contractFunctionTextSignature1),
                         TextMethodSignature(contractFunctionTextSignature2)

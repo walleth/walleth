@@ -8,10 +8,10 @@ import org.walleth.data.balances.upsertIfNewerBlock
 import java.math.BigInteger
 import java.math.BigInteger.ZERO
 
-class TheBalanceProvider : AbstractDatabaseTest() {
+val SOME_TOKEN_ADDRESS = Address("0x124")
+val TEST_CHAIN: BigInteger = BigInteger.valueOf(4L)
 
-    val SOME_TOKEN_ADDRESS = Address("0x124")
-    val TEST_CHAIN = BigInteger.valueOf(4L)
+class TheBalanceProvider : AbstractDatabaseTest() {
 
     @Test
     fun unknownAddressHasNullBalance() {

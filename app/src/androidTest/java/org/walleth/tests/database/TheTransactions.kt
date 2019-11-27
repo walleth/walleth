@@ -12,7 +12,7 @@ import java.math.BigInteger
 
 class TheTransactions : AbstractDatabaseTest() {
 
-    val chain = ChainId(42)
+    private val chain = ChainId(42)
 
     @Test
     fun weCanInsertOne() {

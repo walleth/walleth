@@ -29,7 +29,7 @@ import java.math.BigInteger.ZERO
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TheOverviewActivity {
 
-    val currentNetwork = TestApp.chainInfoProvider.getCurrent()
+    private val currentNetwork = TestApp.chainInfoProvider.getCurrent()
 
     @get:Rule
     var rule = TruleskActivityRule(OverviewActivity::class.java, false)

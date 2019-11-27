@@ -9,19 +9,19 @@ import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import java.math.BigInteger
 import java.math.BigInteger.ONE
 
-class TheTokens : AbstractDatabaseTest() {
+private val CHAIN1 = ONE
+private val CHAIN2 = BigInteger.valueOf(2L)
+private val DEFAULT_TOKEN = Token(name = "foo",
+        symbol = "foo",
+        decimals = 1,
+        address = DEFAULT_TEST_ADDRESS,
+        chain = CHAIN1,
+        fromUser = false,
+        softDeleted = false,
+        starred = false,
+        order = 0)
 
-    val CHAIN1 = ONE
-    val CHAIN2 = BigInteger.valueOf(2L)
-    val DEFAULT_TOKEN = Token(name = "foo",
-            symbol = "foo",
-            decimals = 1,
-            address = DEFAULT_TEST_ADDRESS,
-            chain = CHAIN1,
-            fromUser = false,
-            softDeleted = false,
-            starred = false,
-            order = 0)
+class TheTokens : AbstractDatabaseTest() {
 
     @Test
     fun isEmptyInitially(): Unit = runBlocking {
