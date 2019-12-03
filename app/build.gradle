@@ -192,7 +192,7 @@ dependencies {
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
 
     // Do not update to 3.4.0 - breaks old devices: https://github.com/walleth/walleth/issues/382
-    implementation 'com.google.zxing:core:3.4.0'
+    implementation 'com.google.zxing:core:3.3.3'
 
     implementation "io.coil-kt:coil:0.7.0"
     implementation 'com.jakewharton:process-phoenix:2.0.0'
