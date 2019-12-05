@@ -25,13 +25,14 @@ import org.kethereum.crypto.toECKeyPair
 import org.kethereum.extensions.toHexString
 import org.kethereum.model.PrivateKey
 import org.kethereum.wallet.loadKeysFromWalletJsonString
+import org.komputing.khex.extensions.hexToByteArray
+import org.komputing.khex.model.HexString
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
-import org.walleth.khex.hexToByteArray
 import org.walleth.qr.scan.startScanActivityForResult
 import java.io.FileNotFoundException
 
@@ -120,7 +121,7 @@ open class ImportKeyActivity : BaseSubActivity() {
                         mnemonicWords.toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
 
                     }
-                    else -> PrivateKey(content.hexToByteArray()).toECKeyPair()
+                    else -> PrivateKey(HexString(content).hexToByteArray()).toECKeyPair()
                 }
 
             }

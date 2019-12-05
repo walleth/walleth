@@ -98,16 +98,14 @@ android {
         }
     }
 
-    packagingOptions {
-        exclude 'META-INF/main.kotlin_module'
-    }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
     packagingOptions {
+        exclude 'META-INF/main.kotlin_module'
+        pickFirst 'META-INF/extensions.kotlin_module'
         pickFirst 'META-INF/kotlinx-io.kotlin_module'
         pickFirst 'META-INF/atomicfu.kotlin_module'
         pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'

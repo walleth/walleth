@@ -2,7 +2,7 @@ package org.walleth.nfc
 
 import android.content.Context
 import im.status.keycard.applet.Pairing
-import org.walleth.khex.toNoPrefixHexString
+import org.komputing.khex.extensions.toNoPrefixHexString
 import java.io.File
 
 class NFCCredentialStore(context: Context) {

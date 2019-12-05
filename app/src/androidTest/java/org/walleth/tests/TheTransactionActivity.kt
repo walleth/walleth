@@ -12,13 +12,14 @@ import org.junit.Rule
 import org.junit.Test
 import org.kethereum.model.ChainId
 import org.kethereum.model.createTransactionWithDefaults
+import org.komputing.khex.extensions.hexToByteArray
+import org.komputing.khex.model.HexString
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
 import org.walleth.data.ETH_IN_WEI
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.infrastructure.TestApp
-import org.walleth.khex.hexToByteArray
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS
 import org.walleth.testdata.Room77
 import org.walleth.testdata.ShapeShift
@@ -80,7 +81,7 @@ class TheTransactionActivity {
     @Test
     fun showsTheCorrectMethodSignature() {
         val transaction = DEFAULT_TX.copy(from = ShapeShift, to = DEFAULT_TEST_ADDRESS,
-                input = "0xdeafbeef000000000000000000000000f44f28b5ca7808b9ad782c759ab8efb041de64d2".hexToByteArray())
+                input = HexString("0xdeafbeef000000000000000000000000f44f28b5ca7808b9ad782c759ab8efb041de64d2").hexToByteArray())
 
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.addressBook.addTestAddresses()

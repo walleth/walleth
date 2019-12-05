@@ -14,14 +14,15 @@ import org.kethereum.eip191.signWithEIP191PersonalSign
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
+import org.komputing.khex.extensions.hexToByteArray
+import org.komputing.khex.extensions.toHexString
+import org.komputing.khex.model.HexString
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
-import org.walleth.data.addresses.getSpec
 import org.walleth.data.addresses.CurrentAddressProvider
-import org.walleth.khex.hexToByteArray
-import org.walleth.khex.toHexString
+import org.walleth.data.addresses.getSpec
 import org.walleth.nfc.getNFCSignTextIntent
 import org.walleth.util.security.getPasswordForAccountType
 
@@ -33,7 +34,7 @@ class SignTextActivity : BaseSubActivity() {
     private val currentAddress by lazy { currentAddressProvider.getCurrentNeverNull() }
     private val appDatabase: AppDatabase by inject()
 
-    private val text by lazy { intent.getStringExtra(Intent.EXTRA_TEXT).hexToByteArray() }
+    private val text by lazy { HexString(intent.getStringExtra(Intent.EXTRA_TEXT)).hexToByteArray() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

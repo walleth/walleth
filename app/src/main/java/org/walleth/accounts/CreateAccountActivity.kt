@@ -24,6 +24,7 @@ import org.kethereum.model.ECKeyPair
 import org.kethereum.model.PrivateKey
 import org.kethereum.model.PublicKey
 import org.koin.android.ext.android.inject
+import org.komputing.khex.model.HexString
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
@@ -31,9 +32,9 @@ import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
 import org.walleth.data.addresses.AddressBookEntry
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.addresses.toJSON
 import org.walleth.data.ens.ENSProvider
-import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.trezor.getAddressResult
 import org.walleth.trezor.hasAddressResult
 import org.walleth.util.hasText
@@ -88,7 +89,9 @@ class CreateAccountActivity : BaseSubActivity() {
                 }
                 val importKey = currentSpec.initPayload?.let {
                     val split = it.split("/")
-                    ECKeyPair(PrivateKey(split.first()), PublicKey(split.last()))
+                    val privateKey = PrivateKey(HexString(split.first()))
+                    val publicKey = PublicKey(HexString(split.last()))
+                    ECKeyPair(privateKey, publicKey)
                 }
                 when (currentSpec.type) {
 

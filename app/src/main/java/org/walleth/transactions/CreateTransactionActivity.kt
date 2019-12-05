@@ -31,7 +31,6 @@ import org.kethereum.ens.isPotentialENSDomain
 import org.kethereum.erc55.hasValidERC55ChecksumOrNoChecksum
 import org.kethereum.erc681.*
 import org.kethereum.erc831.isEthereumURLString
-import org.kethereum.extensions.hexToBigInteger
 import org.kethereum.extensions.maybeHexToBigInteger
 import org.kethereum.extensions.toHexStringZeroPadded
 import org.kethereum.functions.*
@@ -43,6 +42,9 @@ import org.kethereum.model.Transaction
 import org.kethereum.model.createEmptyTransaction
 import org.koin.android.ext.android.inject
 import org.komputing.kethereum.erc20.ERC20TransactionGenerator
+import org.komputing.khex.extensions.hexToByteArray
+import org.komputing.khex.extensions.toHexString
+import org.komputing.khex.model.HexString
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
@@ -52,23 +54,21 @@ import org.walleth.R
 import org.walleth.accounts.ACCOUNT_TYPE_MAP
 import org.walleth.accounts.AccountPickActivity
 import org.walleth.base_activities.BaseSubActivity
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.chains.chainIDAlert
 import org.walleth.data.*
 import org.walleth.data.addresses.AddressBookEntry
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.addresses.getSpec
 import org.walleth.data.addresses.resolveNameWithFallback
 import org.walleth.data.balances.Balance
 import org.walleth.data.ens.ENSProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.chains.ChainInfoProvider
-import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.tokens.*
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
-import org.walleth.khex.hexToByteArray
-import org.walleth.khex.toHexString
 import org.walleth.nfc.startNFCSigningActivity
 import org.walleth.qr.scan.startScanActivityForResult
 import org.walleth.sign.ParitySignerQRActivity
@@ -76,10 +76,10 @@ import org.walleth.startup.StartupActivity
 import org.walleth.tokens.SelectTokenActivity
 import org.walleth.trezor.TREZOR_REQUEST_CODE
 import org.walleth.trezor.startTrezorActivity
-import org.walleth.valueview.ValueViewController
 import org.walleth.util.hasText
 import org.walleth.util.question
 import org.walleth.util.security.getPasswordForAccountType
+import org.walleth.valueview.ValueViewController
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 import java.lang.System.currentTimeMillis
@@ -209,13 +209,13 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
         gas_price_input.setText(when {
-            gasPriceFromStringExtra != null -> gasPriceFromStringExtra.maybeHexToBigInteger().toString()
+            gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger().toString()
             currentERC681.gas != null -> currentERC681.gas.toString()
             else -> settings.getGasPriceFor(chainInfoProvider.getCurrent()!!.chainId).toString()
         })
 
         intent.getStringExtra("data")?.let {
-            val data = it.hexToByteArray()
+            val data = HexString(it).hexToByteArray()
 
             if (data.toList().startsWith(tokenTransferSignature)) {
                 currentERC681.function = "transfer"
@@ -379,19 +379,21 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun estimateGasLimit() {
-        lifecycleScope.launch(Dispatchers.Default) {
+        lifecycleScope.launch {
             if (currentToAddress != null) { // we at least need a to address to create a transaction
                 val rpc = rpcProvider.get()
 
-                val result = rpc?.estimateGas(createTransaction().copy(gasLimit = null))
-
-                lifecycleScope.launch(Dispatchers.Main) {
-
-                    if (result?.error != null || result?.result == null) {
-                        var message = "You might want to set it manually."
-                        result?.error?.message?.let {
-                            message = "This was the reason: $it\n$message"
-                        }
+                try {
+                    val result = withContext(Dispatchers.Default) {
+                        rpc?.estimateGas(createTransaction().copy(gasLimit = null)) ?: throw NullPointerException()
+                    }
+                    gas_limit_input.setText(result.toString())
+                } catch (e: Exception) {
+                    var message = "You might want to set it manually."
+                    e.message?.let {
+                        message = "This was the reason: $it\n$message"
+                    }
+                    lifecycleScope.launch(Dispatchers.Main) {
                         AlertDialog.Builder(this@CreateTransactionActivity)
                                 .setTitle("Cannot estimate gasLimit")
                                 .setMessage(message)
@@ -399,12 +401,9 @@ class CreateTransactionActivity : BaseSubActivity() {
                                 .setNeutralButton("Retry") { _, _ -> estimateGasLimit() }
                                 .show()
                         show_advanced_button.performClick()
-                    } else {
-                        result.result.hexToBigInteger().let {
-                            gas_limit_input.setText(it.toString())
-                        }
                     }
                 }
+
             }
         }
     }
@@ -580,7 +579,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                             lifecycleScope.launch {
 
                                 intent.getStringExtra("nonce")?.let {
-                                    nonce_input.setText(it.maybeHexToBigInteger().toString())
+                                    nonce_input.setText(HexString(it).maybeHexToBigInteger().toString())
                                 }
 
                                 currentToAddress = localERC681.getToAddress()?.apply {

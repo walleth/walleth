@@ -16,15 +16,15 @@ import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.koin.android.ext.android.inject
 import org.komputing.kbip44.BIP44
+import org.komputing.khex.extensions.toHexString
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.R.string
-import org.walleth.data.addresses.getTrezorDerivationPath
 import org.walleth.data.addresses.CurrentAddressProvider
+import org.walleth.data.addresses.getTrezorDerivationPath
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
-import org.walleth.khex.toHexString
 import java.math.BigInteger
 
 const val TREZOR_REQUEST_CODE = 7688

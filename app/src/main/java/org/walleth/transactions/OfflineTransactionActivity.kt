@@ -16,6 +16,7 @@ import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.extractFrom
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
+import org.kethereum.extensions.hexToBigInteger
 import org.kethereum.extensions.toHexString
 import org.kethereum.functions.rlp.*
 import org.kethereum.functions.toTransaction
@@ -25,25 +26,25 @@ import org.kethereum.model.ChainId
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
 import org.koin.android.ext.android.inject
+import org.komputing.khex.extensions.clean0xPrefix
+import org.komputing.khex.extensions.hexToByteArray
+import org.komputing.khex.extensions.toHexString
+import org.komputing.khex.model.HexString
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.chains.chainIDAlert
 import org.walleth.data.AppDatabase
-import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
-import org.walleth.khex.clean0xPrefix
-import org.walleth.khex.hexToByteArray
-import org.walleth.khex.toHexString
 import org.walleth.qr.scan.startScanActivityForResult
 import org.walleth.sign.ParitySignerQRActivity
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
 import org.walleth.util.isUnsignedTransactionJSON
-import java.math.BigInteger
 
 private const val KEY_CONTENT = "KEY_OFFLINE_TX_CONTENT"
 
@@ -90,7 +91,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                 val json = JSONObject(content)
 
                 try {
-                    val transactionRLP = json.getString("signedTransactionRLP").hexToByteArray()
+                    val transactionRLP = HexString(json.getString("signedTransactionRLP")).hexToByteArray()
                     val txRLP = transactionRLP.decodeRLP() as? RLPList
                             ?: throw IllegalArgumentException("RLP not a list")
                     require(txRLP.element.size == 9) { "RLP list has the wrong size ${txRLP.element.size} != 9" }
@@ -121,7 +122,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
         val json = JSONObject(content)
 
         val dataJSON = json.getJSONObject("data")
-        val rlp = dataJSON.getString("rlp").hexToByteArray().decodeRLP()
+        val rlp = HexString(dataJSON.getString("rlp")).hexToByteArray().decodeRLP()
         if (rlp is RLPList) {
             if (rlp.element.size != 9) {
                 alert("Invalid RLP list - has size " + rlp.element.size + " should have 9")
@@ -138,7 +139,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                     alert("could not decode transaction")
                 } else {
                     handleUnsignedTransaction(
-                            from = "0x" + dataJSON.getString("account").clean0xPrefix(),
+                            from = "0x" + HexString(dataJSON.getString("account")).clean0xPrefix().string,
                             to = transaction.to!!.hex,
                             data = transaction.input.toHexString(),
                             value = transaction.value!!.toHexString(),
@@ -182,7 +183,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                                           parityFlow: Boolean) {
 
         val currentAccount = currentAddressProvider.getCurrentNeverNull().hex
-        if (from.clean0xPrefix().toLowerCase() != currentAccount.clean0xPrefix().toLowerCase()) {
+        if (HexString(from).clean0xPrefix().string.toLowerCase() != HexString(currentAccount).clean0xPrefix().string.toLowerCase()) {
             alert("The from field of the transaction ($from) does not match your current account ($currentAccount)")
             return
         }
@@ -194,8 +195,8 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
         val url = ERC681(scheme = "ethereum",
                 address = to,
-                value = BigInteger(value.clean0xPrefix(), 16),
-                gas = BigInteger(gasLimit.clean0xPrefix(), 16),
+                value = HexString(value).hexToBigInteger(),
+                gas = HexString(gasLimit).hexToBigInteger(),
                 chainId = chainId
         ).generateURL()
 
@@ -212,7 +213,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
     private fun executeForRLP() {
 
         try {
-            val transactionRLP = transaction_to_relay_hex.text.toString().hexToByteArray()
+            val transactionRLP = HexString(transaction_to_relay_hex.text.toString()).hexToByteArray()
 
             val rlp = transactionRLP.decodeRLP()
 

@@ -11,14 +11,13 @@ import org.kethereum.crypto.toAddress
 import org.kethereum.functions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.koin.android.ext.android.inject
+import org.komputing.khex.extensions.toHexString
 import org.walleth.data.AppDatabase
 import org.walleth.data.REQUEST_CODE_NFC
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khartwarewallet.KHardwareChannel
-import org.walleth.khex.toHexString
-
 
 private const val KEY_TRANSACTION = "TX"
 

@@ -10,29 +10,29 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
+import org.kethereum.extensions.toHexString
 import org.kethereum.model.Address
-import org.kethereum.model.Transaction
+import org.kethereum.rpc.EthereumRPCException
 import org.koin.android.ext.android.inject
+import org.komputing.kethereum.erc20.ERC20RPCConnector
 import org.ligi.kaxt.livedata.nonNull
 import org.ligi.kaxt.livedata.observe
 import org.ligi.tracedroid.logging.Log
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.chaininfo.ChainInfo
-import org.walleth.chains.ChainInfoProvider
-import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
-import org.walleth.khex.hexToByteArray
 import org.walleth.tmp.LifecycleServiceWorkaround
 import org.walleth.workers.RelayTransactionWorker
 import java.io.IOException
-import java.math.BigInteger
 import java.util.concurrent.TimeUnit
 
 class DataProvidingService : LifecycleServiceWorkaround() {
@@ -145,32 +145,31 @@ class DataProvidingService : LifecycleServiceWorkaround() {
             rpc == null -> Log.e("no RPC found")
             else -> {
 
-                val blockNumberString = rpc.blockNumber()?.result
-                val blockNumber = blockNumberString?.replace("0x", "")?.toLongOrNull(16)
+                val blockNumber = rpc.blockNumber()
                 if (blockNumber != null) {
-                    val balance = if (currentToken.isRootToken()) {
-                        rpc.getBalance(address, blockNumberString)
-                    } else {
-                        val input = ("0x70a08231" + "0".repeat(24) + address.cleanHex).hexToByteArray()
-                        val tx = Transaction().copy(to = currentToken.address, input = input, gasLimit = null, gasPrice = null)
-                        rpc.call(tx, blockNumberString)
-                    }
+                    val blockNumberAsHex = blockNumber.toHexString()
 
-                    if (balance?.error == null && balance?.result != null) {
-                        try {
-
+                    try {
+                        val balance = if (currentToken.isRootToken()) {
+                            rpc.getBalance(address, blockNumberAsHex)
+                        } else {
+                            ERC20RPCConnector(currentToken.address, rpc).balanceOf(address)
+                        }
+                        if (balance!=null) {
                             appDatabase.balances.upsertIfNewerBlock(
                                     Balance(address = address,
-                                            block = blockNumber,
-                                            balance = BigInteger(balance.result.replace("0x", ""), 16),
+                                            block = blockNumber.toLong(),
+                                            balance = balance,
                                             tokenAddress = currentToken.address,
                                             chain = currentChainId
                                     )
                             )
-                        } catch (e: NumberFormatException) {
-                            Log.i("could not parse number ${balance.result}")
                         }
+
+                    } catch (rpcException: EthereumRPCException) {
+
                     }
+
                 }
             }
         }

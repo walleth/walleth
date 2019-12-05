@@ -10,9 +10,9 @@ import org.kethereum.crypto.toAddress
 import org.kethereum.crypto.toHex
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
+import org.komputing.khex.extensions.hexToByteArray
+import org.komputing.khex.model.HexString
 import org.walleth.khartwarewallet.KHardwareChannel
-import org.walleth.khex.hexToByteArray
-
 
 private const val KEY_TEXT = "TEXT"
 private const val KEY_ADDRESS = "ADDRESS"
@@ -51,7 +51,7 @@ class NFCSignTextActivity : NFCBaseActivityWithPINHandling() {
             setText("signing")
 
 
-            val signed = signWithEIP191PersonalSign(textToSign.hexToByteArray()) {
+            val signed = signWithEIP191PersonalSign(HexString(textToSign).hexToByteArray()) {
                 channel.signByteArray(it)
             }
 

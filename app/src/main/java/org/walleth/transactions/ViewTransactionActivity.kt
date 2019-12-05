@@ -23,6 +23,7 @@ import org.kethereum.functions.getTokenTransferValue
 import org.kethereum.functions.isTokenTransfer
 import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
 import org.koin.android.ext.android.inject
+import org.komputing.khex.extensions.toHexString
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.walleth.R
@@ -36,7 +37,6 @@ import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
-import org.walleth.khex.toHexString
 import org.walleth.qr.show.getQRCodeIntent
 import org.walleth.util.setQRCode
 import org.walleth.valueview.ValueViewController

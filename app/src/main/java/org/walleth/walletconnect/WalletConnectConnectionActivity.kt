@@ -12,9 +12,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
+import org.kethereum.extensions.hexToBigInteger
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import org.komputing.khex.model.HexString
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walletconnect.Session
@@ -23,15 +25,13 @@ import org.walletconnect.Session.Status.Closed
 import org.walleth.R
 import org.walleth.accounts.AccountPickActivity
 import org.walleth.base_activities.BaseSubActivity
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.chains.SwitchChainActivity
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.REQUEST_CODE_SELECT_TO_ADDRESS
-import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.addresses.CurrentAddressProvider
-import org.walleth.khex.clean0xPrefix
 import org.walleth.sign.SignTextActivity
 import org.walleth.transactions.CreateTransactionActivity
-import java.math.BigInteger
 
 fun Context.getWalletConnectIntent(data: Uri) = Intent(this, WalletConnectConnectionActivity::class.java).apply {
     setData(data)
@@ -79,8 +79,8 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                         lifecycleScope.launch(Dispatchers.Main) {
                             val url = ERC681(scheme = "ethereum",
                                     address = call.to,
-                                    value = BigInteger(call.value.clean0xPrefix(), 16),
-                                    gas = call.gasLimit?.let { BigInteger(it.clean0xPrefix(), 16) }
+                                    value = HexString(call.value).hexToBigInteger(),
+                                    gas = call.gasLimit?.let { HexString(it).hexToBigInteger() }
                             ).generateURL()
 
 

@@ -8,12 +8,13 @@ import org.kethereum.model.Address
 import org.kethereum.model.ChainId
 import org.kethereum.model.Transaction
 import org.kethereum.model.createTransactionWithDefaults
+import org.komputing.khex.model.HexString
 import java.math.BigInteger
 
 class TransactionParcel(val transaction: Transaction) : Parcelable {
 
     constructor(parcel: Parcel) : this(createTransactionWithDefaults(
-            chain = ChainId(parcel.readString()!!.hexToBigInteger()),
+            chain = ChainId(HexString(parcel.readString()!!).hexToBigInteger()),
             value = BigInteger(parcel.readString()),
             from = Address(parcel.readString()!!),
             txHash = parcel.readValue(null) as String?,

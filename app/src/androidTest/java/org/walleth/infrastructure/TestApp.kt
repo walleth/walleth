@@ -13,7 +13,6 @@ import org.kethereum.keystore.api.KeyStore
 import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
 import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.rpc.EthereumRPC
-import org.kethereum.rpc.model.StringResultResponse
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
 import org.mockito.Mockito
@@ -36,6 +35,7 @@ import org.walleth.testdata.FixedValueExchangeProvider
 import org.walleth.testdata.TestKeyStore
 import org.walleth.util.jsonadapter.BigIntegerJSONAdapter
 import org.walleth.walletconnect.WalletConnectViewModel
+import java.math.BigInteger.ZERO
 
 private fun <T> any(): T {
     Mockito.any<T>()
@@ -87,7 +87,7 @@ class TestApp : App() {
 
     companion object {
         val RPCMock: EthereumRPC = mock(EthereumRPC::class.java).apply {
-            `when`(estimateGas(any())).thenReturn(StringResultResponse("0x00"))
+            `when`(estimateGas(any())).thenReturn(ZERO)
         }
         val fixedValueExchangeProvider = FixedValueExchangeProvider()
         val keyStore = TestKeyStore()
