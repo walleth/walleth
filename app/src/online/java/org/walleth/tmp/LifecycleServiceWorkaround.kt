@@ -30,7 +30,7 @@ open class LifecycleServiceWorkaround : Service(), LifecycleOwner {
     }
 
     @CallSuper
-    override fun onStart(intent: Intent, startId: Int) {
+    override fun onStart(intent: Intent?, startId: Int) {
         mDispatcher.onServicePreSuperOnStart()
         super.onStart(intent, startId)
     }
