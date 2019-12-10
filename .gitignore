@@ -8,3 +8,7 @@
 /captures
 .externalNativeBuild
 *.output
+.idea/
+
+# Keystore file data for signing config
+keystore.properties

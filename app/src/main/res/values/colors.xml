@@ -3,6 +3,8 @@
     <color name="colorPrimary">#C99D66</color>
     <color name="colorPrimaryDark">#3C3C3D</color>
     <color name="colorAccent">#388E3C</color>
+    <color name="rampGreen">#5ABD8A</color>
+    <color name="white">#FFFFFF</color>
 
     <color name="onAccent">@android:color/black</color>
 

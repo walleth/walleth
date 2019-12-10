@@ -6,6 +6,8 @@
 
     <uses-permission android:name="android.permission.CAMERA"/>
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <uses-permission android:name="android.permission.NFC"/>
 
     <uses-feature android:name="android.hardware.nfc" android:required="false"/>
@@ -125,6 +127,32 @@
         <activity android:name=".accounts.ImportAsActivity"/>
         <activity android:name=".qr.scan.QRScanActivityAndProcessActivity"/>
         <activity android:name="org.walleth.nfc.NFCSignTextActivity" />
+
+        <activity
+            android:name="network.ramp.instantsdk.ui.bank.BankActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/RampInstant.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="walleth"
+                    android:scheme="rampnetwork" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="network.ramp.instantsdk.ui.rampinstant.RampInstantActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenLayout|uiMode|screenSize|smallestScreenSize"
+            android:launchMode="singleTask"
+            android:theme="@style/RampInstant.NoActionBar"
+            android:windowSoftInputMode="adjustResize">
+
+        </activity>
 
     </application>
 

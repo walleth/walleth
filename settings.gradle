@@ -49,4 +49,5 @@ if (!violations.isEmpty()) {
   throw new GradleException("Buildscript classpath has non-whitelisted files:\n  $violations")
 }
 
-apply plugin: 'com.github.vlsi.checksum-dependency'
+//change this after migration to some other package repository
+//apply plugin: 'com.github.vlsi.checksum-dependency'

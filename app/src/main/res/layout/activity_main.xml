@@ -99,4 +99,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
+    <Button
+        android:id="@+id/rampInstantButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="start|bottom"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_button"
+        android:backgroundTint="@color/green"
+        android:text="@string/start_ramp_instant"
+        android:textColor="@color/white" />
 </merge>

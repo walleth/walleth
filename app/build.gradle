@@ -15,7 +15,7 @@ android {
     defaultConfig {
         applicationId "org.walleth"
 
-        minSdkVersion 15
+        minSdkVersion 24
         targetSdkVersion 29
 
         versionCode 472
@@ -230,6 +230,8 @@ dependencies {
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
+
+    implementation 'com.github.RampNetwork:ramp-instant-sdk-android:v0.4.4-gson-instead-moshi2'
 
     androidTestImplementation "com.google.truth:truth:$truth"
 

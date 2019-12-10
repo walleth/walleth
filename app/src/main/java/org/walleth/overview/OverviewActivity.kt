@@ -8,6 +8,7 @@ import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.INVISIBLE
@@ -19,6 +20,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.toolbar.*
+import network.ramp.instantsdk.facade.RampInstantSDK
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.toERC681
@@ -32,12 +34,12 @@ import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.WallethActivity
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.chains.ChainInfoProvider
-import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.info.WallETHInfoActivity
@@ -50,8 +52,8 @@ import org.walleth.transactions.CreateTransactionActivity
 import org.walleth.transactions.TransactionAdapterDirection.INCOMING
 import org.walleth.transactions.TransactionAdapterDirection.OUTGOING
 import org.walleth.transactions.TransactionRecyclerAdapter
-import org.walleth.valueview.ValueViewController
 import org.walleth.util.copyToClipboard
+import org.walleth.valueview.ValueViewController
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -136,6 +138,25 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         fab.setOnClickListener {
             startActivityFromClass(QRScanActivityAndProcessActivity::class.java)
         }
+
+        rampInstantButton.setOnClickListener {
+            val rampInstantSDK = RampInstantSDK(
+                    this,
+                    swapAsset = "eth",
+                    swapAmount = "",
+                    userAddress = settings.accountAddress ?: "",
+                    hostLogoUrl = "https%3A%2F%2Fcdn-images-1.medium.com%2Fmax%2F2600%2F1*nqtMwugX7TtpcS-5c3lRjw.png",
+                    hostAppName = "Walleth",
+                    appId = "walleth",
+                    webhookStatusUrl = "",
+                    url = "https://ri-widget-dev.firebaseapp.com"
+            )
+            rampInstantSDK.on { event ->
+                Log.d("Widget Event", event.type)
+            }
+            rampInstantSDK.show()
+        }
+
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
