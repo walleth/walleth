@@ -63,6 +63,7 @@
     <trusted-key id='6e02af115075d251' group='javax.xml.bind' />
     <trusted-key id='efe8086f9e93774e' group='junit' />
     <trusted-key id='86e02c5a42196ca8' group='log4j' />
+    <trusted-key id='7999befba1039e8b' group='net.bytebuddy' />
     <trusted-key id='bb2914c1fa0811c3' group='net.bytebuddy' />
     <trusted-key id='0da8a5ec02d11ead' group='net.sf.jopt-simple' />
     <trusted-key id='be096e29edb8d141' group='net.sf.proguard' />
