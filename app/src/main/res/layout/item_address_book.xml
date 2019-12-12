@@ -34,16 +34,12 @@
             <androidx.appcompat.widget.AppCompatImageView
                     style="@style/button"
                     tools:src="@drawable/ic_star_border_24dp"
-                    android:id="@+id/address_starred"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:id="@+id/address_starred"/>
 
             <androidx.appcompat.widget.AppCompatImageView
                     style="@style/button"
                     android:id="@+id/edit_account"
-                    app:srcCompat="@drawable/ic_editor_mode_edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    app:srcCompat="@drawable/ic_editor_mode_edit"/>
 
         </LinearLayout>
         <LinearLayout

@@ -8,4 +8,10 @@
         android:title="@string/refresh"
         app:showAsAction="ifRoom"
         />
+
+    <item
+            android:title="@string/undelete_all"
+            android:id="@+id/menu_undelete"
+            app:showAsAction="never" />
+
 </menu>

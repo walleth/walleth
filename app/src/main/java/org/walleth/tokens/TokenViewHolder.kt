@@ -10,16 +10,15 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import org.koin.core.KoinComponent
 import org.koin.core.inject
-import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.data.AppDatabase
-import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.chains.ChainInfoProvider
-import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.chains.getFaucetURL
 import org.walleth.chains.hasFaucetWithAddressSupport
+import org.walleth.data.AppDatabase
+import org.walleth.data.addresses.CurrentAddressProvider
+import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.isRootToken
@@ -79,11 +78,11 @@ class TokenViewHolder(itemView: View, val activity: Activity) : RecyclerView.Vie
 fun AppCompatImageView.prepareFaucetButton(chainInfo: ChainInfo?,
                                            currentAddressProvider: CurrentAddressProvider,
                                            postAction: () -> Unit = {}) {
-    if (chainInfo?.faucets?.isNotEmpty() == true) {
+    visibility = if (chainInfo?.faucets?.isNotEmpty() == true) {
         setImageResource(if (chainInfo.hasFaucetWithAddressSupport()) R.drawable.ic_flash_on_black_24dp else R.drawable.ic_redeem_black_24dp)
-        setVisibility(true)
+        View.VISIBLE
     } else {
-        setVisibility(false)
+        View.INVISIBLE
     }
 
     setOnClickListener {

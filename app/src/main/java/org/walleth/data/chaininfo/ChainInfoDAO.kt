@@ -10,7 +10,10 @@ import java.math.BigInteger
 interface ChainInfoDAO {
 
     @Query("SELECT * FROM chains ORDER by `order` DESC")
-    fun getAll(): List<ChainInfo>
+    suspend fun getAll(): List<ChainInfo>
+
+    @Query("UPDATE chains SET softDeleted=0")
+    suspend fun unDeleteAll()
 
     @Query("SELECT * FROM chains WHERE chainId = :chain")
     suspend fun getByChainId(chain: BigInteger): ChainInfo?

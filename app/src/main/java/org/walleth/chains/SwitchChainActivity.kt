@@ -4,7 +4,12 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.ItemTouchHelper.LEFT
+import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.coroutines.Dispatchers
@@ -18,11 +23,28 @@ import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
+import org.walleth.chains.ChainInfoViewAction.*
 import org.walleth.data.AppDatabase
+import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.util.question
 import javax.net.ssl.SSLException
 
 open class SwitchChainActivity : BaseSubActivity() {
+
+    fun ChainInfo.changeDeleteState(state: Boolean) {
+        val changedChainInfo = apply { softDeleted = state }
+        lifecycleScope.launch(Dispatchers.Main) {
+            withContext(Dispatchers.Default) {
+                appDatabase.chainInfo.upsert(changedChainInfo)
+                if (state) {
+                    Snackbar.make(coordinator, "Deleted Chain " + changedChainInfo.name, Snackbar.LENGTH_INDEFINITE)
+                            .setAction(getString(R.string.undo)) { changeDeleteState(false) }
+                            .show()
+                }
+                refreshAdapter()
+            }
+        }
+    }
 
     val chainInfoProvider: ChainInfoProvider by inject()
     val appDatabase: AppDatabase by inject()
@@ -43,8 +65,22 @@ open class SwitchChainActivity : BaseSubActivity() {
         }
 
         swipe_refresh_layout.setOnRefreshListener {
-            refresh()
+            downloadNewChains()
         }
+
+        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
+
+            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
+
+            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
+                chainAdapter.displayList[viewHolder.adapterPosition].changeDeleteState(true)
+            }
+        }
+
+        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
+        itemTouchHelper.attachToRecyclerView(recycler_view)
+
+        recycler_view.adapter = chainAdapter
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -52,17 +88,26 @@ open class SwitchChainActivity : BaseSubActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_refresh -> lifecycleScope.launch(Dispatchers.Main) {
-                refresh()
+    override fun onPrepareOptionsMenu(menu: Menu): Boolean {
+        val anySoftDeletedExists = chainAdapter.list.any { it.softDeleted }
+        menu.findItem(R.id.menu_undelete).isVisible = anySoftDeletedExists
+        return super.onPrepareOptionsMenu(menu)
+    }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        lifecycleScope.launch(Dispatchers.Main) {
+            when (item.itemId) {
+                R.id.menu_refresh -> downloadNewChains()
+                R.id.menu_undelete -> {
+                    appDatabase.chainInfo.unDeleteAll()
+                    refreshAdapter()
+                }
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
-    private fun refresh() {
+    private fun downloadNewChains() {
         swipe_refresh_layout.isRefreshing = true
         lifecycleScope.launch(Dispatchers.IO) {
             try {
@@ -77,10 +122,10 @@ open class SwitchChainActivity : BaseSubActivity() {
                         newList == null -> handleRefreshError("cannot load chains")
                         newList.isEmpty() -> handleRefreshError("no new chains found")
                         else -> {
-                            question(configurator = { setMessage("Really Import ${newList.size} Elements?")  }, action = {
+                            question(configurator = { setMessage("Really Import ${newList.size} Elements?") }, action = {
                                 lifecycleScope.launch(Dispatchers.Main) {
                                     appDatabase.chainInfo.upsert(newList)
-                                    setAdapter()
+                                    refreshAdapter()
                                 }
                             })
                             swipe_refresh_layout.isRefreshing = false
@@ -104,29 +149,31 @@ open class SwitchChainActivity : BaseSubActivity() {
 
     override fun onResume() {
         super.onResume()
-        lifecycleScope.launch(Dispatchers.Main) {
-            setAdapter()
+        refreshAdapter()
+    }
+
+    private fun refreshAdapter() = lifecycleScope.launch(Dispatchers.Main) {
+        chainAdapter.filter(appDatabase.chainInfo.getAll(), false)
+        invalidateOptionsMenu()
+    }
+
+    private val chainAdapter: ChainAdapter by lazy {
+        ChainAdapter { chainInfo, action ->
+
+            when (action) {
+                CLICK -> {
+                    chainInfoProvider.setCurrent(chainInfo)
+                    finish()
+                }
+                EDIT -> startEditChainActivity(chainInfo)
+                INFO -> startActivityFromURL(chainInfo.infoURL)
+                DELETE -> {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        chainInfo.changeDeleteState(true)
+                    }
+                }
+            }
         }
+
     }
-
-    private suspend fun setAdapter() {
-        recycler_view.adapter = withContext(Dispatchers.Default) { getAdapter() }
-    }
-
-    private fun getAdapter() = ChainAdapter(appDatabase.chainInfo.getAll()) { chainInfo, action ->
-
-        when (action) {
-            ChainInfoViewAction.CLICK -> {
-                chainInfoProvider.setCurrent(chainInfo)
-                finish()
-            }
-            ChainInfoViewAction.EDIT -> {
-                startEditChainActivity(chainInfo)
-            }
-            ChainInfoViewAction.INFO -> {
-                startActivityFromURL(chainInfo.infoURL)
-            }
-        }
-    }
-
 }

@@ -32,10 +32,9 @@ import org.koin.dsl.module
 import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.*
-import org.walleth.data.addresses.AccountKeySpec
-import org.walleth.data.addresses.allPrePopulationAddresses
-import org.walleth.data.addresses.toJSON
+import org.walleth.data.addresses.*
 import org.walleth.data.blockexplorer.BlockExplorerProvider
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.config.KotprefSettings
@@ -44,9 +43,6 @@ import org.walleth.data.ens.ENSProvider
 import org.walleth.data.ens.ENSProviderImpl
 import org.walleth.data.exchangerate.CryptoCompareExchangeProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.chains.ChainInfoProvider
-import org.walleth.data.addresses.CurrentAddressProvider
-import org.walleth.data.addresses.InitializingCurrentAddressProvider
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.rpc.RPCProviderImpl
 import org.walleth.data.syncprogress.SyncProgressProvider
@@ -185,9 +181,19 @@ open class App : MultiDexApplication() {
 
         chainInfoProvider.observeForever(initialChainObserver)
 
-        if (settings.dataVersion < 1) {
-            settings.dataVersion = 1
-            GlobalScope.launch(Dispatchers.Default) {
+        GlobalScope.launch(Dispatchers.Default) {
+            if (settings.dataVersion < 3) {
+                val all = appDatabase.chainInfo.getAll()
+                var currentMin = all.filter { it.order != null }.minBy { it.order!! }?.order?:0
+                all.forEach {
+                    if (it.order == null) {
+                        it.order = currentMin
+                    }
+                    currentMin -= 10
+                }
+                appDatabase.chainInfo.upsert(all)
+            }
+            if (settings.dataVersion < 1) {
                 appDatabase.addressBook.all().forEach {
                     if (it.keySpec == null || it.keySpec?.isBlank() == true) {
                         val type = if (keyStore.hasKeyForForAddress(it.address)) ACCOUNT_TYPE_BURNER else ACCOUNT_TYPE_WATCH_ONLY
@@ -200,6 +206,9 @@ open class App : MultiDexApplication() {
                 }
             }
         }
+
+        settings.dataVersion = 2
+
     }
 
     open fun executeCodeWeWillIgnoreInTests() {
