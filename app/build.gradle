@@ -218,7 +218,7 @@ dependencies {
 
     implementation 'androidx.lifecycle:lifecycle-extensions:2.1.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.1.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-rc02'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.2.0-rc03'
 
     // Kotlin + coroutines
     implementation 'androidx.work:work-runtime-ktx:2.2.0'
