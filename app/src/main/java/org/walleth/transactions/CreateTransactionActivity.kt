@@ -180,7 +180,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
 
         chainInfoProvider.observe(this, Observer {
-            supportActionBar?.subtitle = getString(R.string.create_transaction_on_network_subtitle, it.name)
+            supportActionBar?.subtitle = getString(R.string.create_transaction_on_chain_subtitle, it.name)
         })
 
         currentTokenProvider.observe(this, Observer {

@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">WallΞTH</string>
-    <string name="welcome">Welcome,\n\n there was no account for you yet - so one was created. Note - this one is not secured with any password for easy use - so only use it as a hot walleth for a few beverages. Also be aware that this alpha operates currently on the rinkeby network only.</string>
     <string name="request_transaction_subtitle">Request Transaction</string>
     <string name="edit_account_subtitle">Edit Account</string>
     <string name="switch_account_subtitle">Switch Account</string>
@@ -45,7 +44,7 @@ You can request test-ether for %1$s <a href="%2$s">from this faucet.</a>
     </string>
 
     <string name="no_faucet"><![CDATA[
-Unfortunately there is no faucet for the main network. So if you want to try out things - better use some test network..
+Unfortunately there is no faucet for this chain. So if you want to try out things - better use some test chain like görli..
 ]]>
     </string>
     <array name="day_night">
@@ -126,7 +125,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="input_not_valid_title">Problem with input</string>
     <string name="input_not_valid_message">Input not valid. Reason: %s</string>
     <string name="no_address_selected">no address selected</string>
-    <string name="create_transaction_on_network_subtitle">Transfer on %s</string>
+    <string name="create_transaction_on_chain_subtitle">Transfer on %s</string>
     <string name="create_tx_error_address_must_be_specified">address must be specified</string>
     <string name="create_tx_error_amount_must_be_specified">amount must be specified</string>
     <string name="create_tx_error_not_enough_funds">Not enough funds for this transaction with the given amount plus fee</string>
@@ -175,8 +174,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="scan">Scan</string>
     <string name="scan_disabled">Scan disabled</string>
     <string name="chains_subtitle">Chains</string>
-    <string name="network_details">network details</string>
-    <string name="network_stats">network stats</string>
+    <string name="chain_details">chain details</string>
     <string name="warning_invalid_parameter_value">Parameter value %1$s is not valid for type %2$s</string>
     <string name="warning_invalid_param_type">Invalid parameter type detected (%1$s = %2$s)</string>
     <string name="info_activity_subtitle">Version %s</string>
@@ -221,8 +219,8 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="security_info">Security Information</string>
     <string name="click_for_details">Click for details</string>
     <string name="activity_subtitle_oss_license">OSS licenses information</string>
-    <string name="alert_network_unsupported_title">Network invalid</string>
-    <string name="alert_network_unsupported_message">WallETH is not supporting network with chainId %d</string>
+    <string name="alert_chain_unsupported_title">Chain invalid</string>
+    <string name="alert_chain_unsupported_message">WallETH is not supporting chain with chainId %d</string>
     <string name="wallet_connect">Wallet Connect</string>
     <string name="nonce">Nonce</string>
     <string name="walletconnect_waiting_for_app">Waiting for interaction with %s</string>

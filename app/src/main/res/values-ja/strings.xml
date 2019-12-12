@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">WALLΞTH</string>
-    <string name="welcome">ようこそ、\n\n まだアカウントがないようです - 1 つ作成しました。 注意 - このアカウントは簡単に利用できるようにパスワードがないため安全ではありません - そのため熱い飲み物が冷めない間 walleth を試すだけにご利用ください。</string>
     <string name="request_transaction_subtitle">トランザクションのリクエスト</string>
     <string name="edit_account_subtitle">アカウントを編集</string>
     <string name="switch_account_subtitle">アカウントの切り替え</string>

@@ -28,8 +28,8 @@ fun Context.chainIDAlert(chainInfoProvider: ChainInfoProvider,
             GlobalScope.launch(Dispatchers.Main) {
                 if (networkToSwitchTo == null) {
                     alert(
-                            message = getString(R.string.alert_network_unsupported_message, chainId.value),
-                            title = getString(R.string.alert_network_unsupported_title),
+                            message = getString(R.string.alert_chain_unsupported_message, chainId.value),
+                            title = getString(R.string.alert_chain_unsupported_title),
                             onOK = {
                                 continuationWithWrongChainId()
                             }

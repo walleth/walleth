@@ -44,7 +44,7 @@
                     style="@style/button"
                     android:layout_width="@android:dimen/app_icon_size"
                     android:layout_height="@android:dimen/app_icon_size"
-                    android:contentDescription="@string/network_details"
+                    android:contentDescription="@string/chain_details"
                     app:srcCompat="@drawable/ic_action_info_outline"/>
 
             <androidx.appcompat.widget.AppCompatImageView

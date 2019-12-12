@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">WALLΞTH</string>
-    <string name="welcome">Bienvenido,\n\n no había cuenta para ti aún - entonces te hemos creado una. Nota - esta cuenta no esta asegurada por ningúna contraseña para facilitar su uso - entonces solo la debes usar como una billetera caliente para algunas bebidas.</string>
     <string name="request_transaction_subtitle">Solicitar Transacción</string>
     <string name="edit_account_subtitle">Editar cuenta</string>
     <string name="switch_account_subtitle">Cambiar cuenta</string>

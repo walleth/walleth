@@ -75,7 +75,7 @@ class TheCreateTransactionActivity {
         val chainDefinition = TestApp.chainInfoProvider.getCurrent()
         rule.launchActivity()
 
-        Espresso.onView(withText(rule.activity.getString(R.string.create_transaction_on_network_subtitle, chainDefinition?.name)))
+        Espresso.onView(withText(rule.activity.getString(R.string.create_transaction_on_chain_subtitle, chainDefinition?.name)))
                 .check(matches(ViewMatchers.isDisplayed()))
         rule.screenShot("chain_name_in_subtitle")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
@@ -97,8 +97,8 @@ class TheCreateTransactionActivity {
         val chainIdForTransaction = 0
         rule.launchActivity(Intent.getIntentOld("$urlBase@$chainIdForTransaction"))
 
-        Espresso.onView(withText(R.string.alert_network_unsupported_title)).check(matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
+        Espresso.onView(withText(R.string.alert_chain_unsupported_title)).check(matches(ViewMatchers.isDisplayed()))
+        Espresso.onView(withText(rule.activity.getString(R.string.alert_chain_unsupported_message, chainIdForTransaction)))
                 .check(matches(ViewMatchers.isDisplayed()))
 
         rule.screenShot("chainId_not_valid")
@@ -110,8 +110,8 @@ class TheCreateTransactionActivity {
         val chainIdForTransaction = TestApp.chainInfoProvider.getCurrent()!!.chainId
         rule.launchActivity(Intent.getIntentOld("$urlBase@$chainIdForTransaction"))
 
-        Espresso.onView(withText(R.string.alert_network_unsupported_title)).check(ViewAssertions.doesNotExist())
-        Espresso.onView(withText(rule.activity.getString(R.string.alert_network_unsupported_message, chainIdForTransaction)))
+        Espresso.onView(withText(R.string.alert_chain_unsupported_title)).check(ViewAssertions.doesNotExist())
+        Espresso.onView(withText(rule.activity.getString(R.string.alert_chain_unsupported_message, chainIdForTransaction)))
                 .check(ViewAssertions.doesNotExist())
 
         rule.screenShot("please_change_chain")
