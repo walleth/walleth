@@ -13,11 +13,11 @@ import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.accounts.EditAccountActivity
 import org.walleth.accounts.SwitchAccountActivity
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.chains.SwitchChainActivity
 import org.walleth.data.AppDatabase
-import org.walleth.data.config.Settings
-import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.addresses.CurrentAddressProvider
+import org.walleth.data.config.Settings
 import org.walleth.debug.DebugWallethActivity
 import org.walleth.preferences.PreferenceActivity
 import org.walleth.securityinfo.SecurityInfoActivity
@@ -59,7 +59,7 @@ class WalletNavigationFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         val idToClassMap = mapOf(
-                R.id.menu_switch_network to SwitchChainActivity::class,
+                R.id.menu_switch_chain to SwitchChainActivity::class,
                 R.id.menu_debug to DebugWallethActivity::class,
                 R.id.menu_accounts to SwitchAccountActivity::class,
                 R.id.menu_offline_transaction to OfflineTransactionActivity::class,
@@ -93,7 +93,7 @@ class WalletNavigationFragment : Fragment() {
 
         chainInfoProvider.observe(this, Observer {
             val networkName = chainInfoProvider.value?.name
-            navigationView.menu.findItem(R.id.menu_switch_network).title = "Network: $networkName (switch)"
+            navigationView.menu.findItem(R.id.menu_switch_chain).title = "Chain: $networkName"
         })
 
     }

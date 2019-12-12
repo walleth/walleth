@@ -50,10 +50,10 @@ class ChainInfoProvider(val settings: Settings,
         }
     }
 
-    private fun getInitial(): ChainInfo = appDatabase.chainInfo.getByChainId(settings.chain.toBigInteger())
+    private suspend fun getInitial(): ChainInfo = appDatabase.chainInfo.getByChainId(settings.chain.toBigInteger())
             ?: appDatabase.chainInfo.getByChainId(BigInteger.valueOf(5L))
             ?: appDatabase.chainInfo.getAll().firstOrNull()
-            ?: appDatabase.chainInfo.upsert(assetManager.loadInitChains(moshi)).let {
+            ?: appDatabase.chainInfo.insertIfDoesNotExist(assetManager.loadInitChains(moshi)).let {
                 getInitial()
             }
 

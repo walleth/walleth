@@ -1,7 +1,7 @@
 package org.walleth.workers
 
 import android.content.Context
-import androidx.work.Worker
+import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import okhttp3.OkHttpClient
 import org.kethereum.functions.encodeRLP
@@ -18,13 +18,13 @@ import org.walleth.data.transactions.setHash
 import org.walleth.util.getRPCEndpoint
 
 class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters)
-    : Worker(appContext, workerParams), KoinComponent {
+    : CoroutineWorker(appContext, workerParams), KoinComponent {
 
 
     private val okHttpClient: OkHttpClient by inject()
     private val appDatabase: AppDatabase by inject()
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
 
         val txHash = inputData.getString(KEY_TX_HASH)
         val transaction: TransactionEntity? = txHash?.let { appDatabase.transactions.getByHash(it) }

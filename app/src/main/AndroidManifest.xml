@@ -122,9 +122,10 @@
         <activity android:name="org.walleth.credentials.RequestPINActivity"/>
         <activity android:name="org.walleth.credentials.RequestPasswordActivity"
                   android:windowSoftInputMode="adjustResize"/>
-        <activity android:name=".accounts.ImportAsActivity"/>
-        <activity android:name=".qr.scan.QRScanActivityAndProcessActivity"/>
+        <activity android:name="org.walleth.accounts.ImportAsActivity"/>
+        <activity android:name="org.walleth.qr.scan.QRScanActivityAndProcessActivity"/>
         <activity android:name="org.walleth.nfc.NFCSignTextActivity" />
+        <activity android:name="org.walleth.chains.EditChainActivity" />
 
     </application>
 

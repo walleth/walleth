@@ -13,11 +13,11 @@ interface ChainInfoDAO {
     fun getAll(): List<ChainInfo>
 
     @Query("SELECT * FROM chains WHERE chainId = :chain")
-    fun getByChainId(chain: BigInteger): ChainInfo?
+    suspend fun getByChainId(chain: BigInteger): ChainInfo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(entry: ChainInfo)
+    suspend fun insertIfDoesNotExist(entry: ChainInfo)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun upsert(entry: List<ChainInfo>)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertIfDoesNotExist(entry: List<ChainInfo>)
 }

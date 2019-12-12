@@ -1,12 +1,9 @@
 package org.walleth.dataprovider
 
 import android.content.Intent
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.Observer
-import androidx.lifecycle.OnLifecycleEvent
+import androidx.lifecycle.*
 import androidx.work.*
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
@@ -79,7 +76,7 @@ class DataProvidingService : LifecycleServiceWorkaround() {
 
         lifecycle.addObserver(TimingModifyingLifecycleObserver())
 
-        GlobalScope.launch {
+        lifecycleScope.launch(Dispatchers.IO) {
 
             while (true) {
                 last_run = System.currentTimeMillis()
@@ -135,7 +132,7 @@ class DataProvidingService : LifecycleServiceWorkaround() {
         blockScoutApi.queryTransactions(address.hex, chain)
     }
 
-    private fun queryRPCForBalance(address: Address) {
+    private suspend fun queryRPCForBalance(address: Address) {
 
         val currentToken = tokenProvider.getCurrent()
         val currentChainId = chainInfoProvider.getCurrent()?.chainId

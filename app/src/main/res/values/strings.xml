@@ -98,7 +98,6 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="saf_activity_not_found_problem">No App found to handle ACTION_OPEN_DOCUMENT - please report this as a problem to your phone-/ROM-provider</string>
     <string name="transaction_to_use_hint">Transaction to use</string>
     <string name="no_funds_after_fee">No funds left with the given fee</string>
-    <string name="nav_drawer_switch_network">Switch network</string>
     <string name="nav_drawer_edit_account">Edit account</string>
     <string name="nav_drawer_accounts">Accounts</string>
     <string name="nav_drawer_keys">Keys</string>
@@ -161,7 +160,6 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="select_reference_activity_select_reference">Select reference</string>
     <string name="select_reference_activity_add_reference">Add Reference</string>
     <string name="select_token_activity_select_token">Select token</string>
-    <string name="switch_network_activity_adding_not_yet_supported">adding new networks not yet implemented</string>
     <string name="keys_only">Keys only</string>
     <string name="precise_amount_alert_title">Precise amount</string>
     <string name="create_token_activity_subtitle">Create Token</string>
@@ -176,7 +174,7 @@ Unfortunately there is no faucet for the main network. So if you want to try out
     <string name="transact_disabled">Transact disabled</string>
     <string name="scan">Scan</string>
     <string name="scan_disabled">Scan disabled</string>
-    <string name="network_subtitle">Networks</string>
+    <string name="chains_subtitle">Chains</string>
     <string name="network_details">network details</string>
     <string name="network_stats">network stats</string>
     <string name="warning_invalid_parameter_value">Parameter value %1$s is not valid for type %2$s</string>

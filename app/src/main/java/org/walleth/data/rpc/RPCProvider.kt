@@ -6,14 +6,14 @@ import org.kethereum.rpc.BaseEthereumRPC
 import org.kethereum.rpc.ConsoleLoggingTransportWrapper
 import org.kethereum.rpc.EthereumRPC
 import org.kethereum.rpc.HttpTransport
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
-import org.walleth.chains.ChainInfoProvider
 import org.walleth.util.getRPCEndpoint
 
 interface RPCProvider {
-    fun get(): EthereumRPC?
-    fun getForChain(chainId: ChainId): EthereumRPC?
+    suspend fun get(): EthereumRPC?
+    suspend fun getForChain(chainId: ChainId): EthereumRPC?
 }
 
 class RPCProviderImpl(var network: ChainInfoProvider,
@@ -24,8 +24,8 @@ class RPCProviderImpl(var network: ChainInfoProvider,
         BaseEthereumRPC(ConsoleLoggingTransportWrapper(HttpTransport(it, okHttpClient)))
     }
 
-    override fun getForChain(chainId: ChainId) = appDatabase.chainInfo.getByChainId(chainId.value)?.get()
+    override suspend fun getForChain(chainId: ChainId) = appDatabase.chainInfo.getByChainId(chainId.value)?.get()
 
-    override fun get(): EthereumRPC? = network.getCurrent()?.get()
+    override suspend fun get(): EthereumRPC? = network.getCurrent()?.get()
 
 }

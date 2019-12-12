@@ -2,8 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:id="@+id/menu_switch_network"
-            android:title="@string/nav_drawer_switch_network"
+            android:id="@+id/menu_switch_chain"
+            android:title=""
             android:icon="@drawable/ic_flag_network"/>
 
     <item

@@ -7,6 +7,7 @@ import com.squareup.moshi.Moshi
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.kethereum.DEFAULT_GAS_PRICE
 import org.kethereum.keystore.api.KeyStore
@@ -62,7 +63,9 @@ class TestApp : App() {
         single { testFourByteDirectory }
         single {
             mock(RPCProvider::class.java).apply {
-                `when`(get()).thenReturn(RPCMock)
+                runBlocking {
+                    `when`(get()).thenReturn(RPCMock)
+                }
             }
         }
 

@@ -7,8 +7,7 @@ import org.walleth.R
 import org.walleth.data.chaininfo.ChainInfo
 
 class ChainAdapter(val list: List<ChainInfo>,
-                   private val onClickAction: (entry: ChainInfo) -> Unit,
-                   private val onInfoClick: (entry: ChainInfo) -> Unit) : RecyclerView.Adapter<ChainInfoViewHolder>() {
+                   private val onAction: (entry: ChainInfo, action: ChainInfoViewAction) -> Unit) : RecyclerView.Adapter<ChainInfoViewHolder>() {
 
     override fun getItemCount() = list.size
 
@@ -18,7 +17,7 @@ class ChainAdapter(val list: List<ChainInfo>,
     }
 
     override fun onBindViewHolder(holder: ChainInfoViewHolder, position: Int) {
-        holder.bind(list[position], onClickAction, onInfoClick)
+        holder.bind(list[position], onAction)
     }
 
 }
