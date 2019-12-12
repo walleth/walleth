@@ -18,17 +18,17 @@
 
     <item
             android:id="@+id/menu_offline_transaction"
-            android:title="Offline Transaction"
+            android:title="@string/offline_transaction"
             android:icon="@drawable/ic_enhanced_encryption_black_24dp"/>
 
     <item
             android:id="@+id/menu_debug"
-            android:title="Debug"
+            android:title="@string/debug"
             android:icon="@drawable/ic_adb_black_24dp"/>
 
     <item
             android:id="@+id/menu_security"
-            android:title="Security Information"
+            android:title="@string/security_information"
             android:icon="@drawable/ic_security_black_24dp"/>
 
 </menu>
