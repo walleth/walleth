@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -20,6 +19,7 @@ import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.AppDatabase
+import org.walleth.util.question
 import javax.net.ssl.SSLException
 
 open class SwitchChainActivity : BaseSubActivity() {
@@ -67,16 +67,28 @@ open class SwitchChainActivity : BaseSubActivity() {
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val request = Request.Builder().url("https://chainid.network/chains_mini.json")
-                okHttpClient.newCall(request.build()).execute().body()?.string()?.let { json ->
+                val list = okHttpClient.newCall(request.build()).execute().body()?.string()?.let { json ->
                     moshi.deSerialize(json)
-                }?.let { list ->
-                    appDatabase.chainInfo.insertIfDoesNotExist(list)
                 }
-                delay(1000)
+                val newList = list?.filter { appDatabase.chainInfo.getByChainId(it.chainId) == null }
                 lifecycleScope.launch(Dispatchers.Main) {
-                    setAdapter()
-                    swipe_refresh_layout.isRefreshing = false
+
+                    when {
+                        newList == null -> handleRefreshError("cannot load chains")
+                        newList.isEmpty() -> handleRefreshError("no new chains found")
+                        else -> {
+                            question(configurator = { setMessage("Really Import ${newList.size} Elements?")  }, action = {
+                                lifecycleScope.launch(Dispatchers.Main) {
+                                    appDatabase.chainInfo.upsert(newList)
+                                    setAdapter()
+                                }
+                            })
+                            swipe_refresh_layout.isRefreshing = false
+                        }
+                    }
+
                 }
+
             } catch (e: SSLException) {
                 handleRefreshError("SSLError - cannot load chains. Setting your time can help in some cases.")
             } catch (e: Throwable) {
@@ -85,11 +97,9 @@ open class SwitchChainActivity : BaseSubActivity() {
         }
     }
 
-    private fun handleRefreshError(message: String) {
-        lifecycleScope.launch(Dispatchers.Main) {
-            swipe_refresh_layout.isRefreshing = false
-            alert(message)
-        }
+    private fun handleRefreshError(message: String) = lifecycleScope.launch(Dispatchers.Main) {
+        swipe_refresh_layout.isRefreshing = false
+        alert(message)
     }
 
     override fun onResume() {
@@ -105,7 +115,7 @@ open class SwitchChainActivity : BaseSubActivity() {
 
     private fun getAdapter() = ChainAdapter(appDatabase.chainInfo.getAll()) { chainInfo, action ->
 
-        when(action) {
+        when (action) {
             ChainInfoViewAction.CLICK -> {
                 chainInfoProvider.setCurrent(chainInfo)
                 finish()

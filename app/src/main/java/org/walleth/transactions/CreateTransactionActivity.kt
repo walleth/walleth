@@ -438,9 +438,15 @@ class CreateTransactionActivity : BaseSubActivity() {
             alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
         } else {
             if (currentTokenProvider.getCurrent().isRootToken() && currentERC681.function == null && amountController.getValueOrZero() == ZERO) {
-                question(R.string.create_tx_zero_amount, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> prepareTransaction() })
+                question(configurator = {
+                    setMessage(R.string.create_tx_zero_amount)
+                    setTitle(R.string.alert_problem_title)
+                }, action = { prepareTransaction() })
             } else if (!currentTokenProvider.getCurrent().isRootToken() && amountController.getValueOrZero() > currentBalanceSafely()) {
-                question(R.string.create_tx_negative_token_balance, R.string.alert_problem_title, DialogInterface.OnClickListener { _, _ -> prepareTransaction() })
+                question(configurator = {
+                    setMessage(R.string.create_tx_negative_token_balance)
+                    setTitle(R.string.alert_problem_title)
+                }, action = { prepareTransaction() })
             } else {
                 prepareTransaction()
             }

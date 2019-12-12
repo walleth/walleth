@@ -16,8 +16,8 @@ interface ChainInfoDAO {
     suspend fun getByChainId(chain: BigInteger): ChainInfo?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertIfDoesNotExist(entry: ChainInfo)
+    suspend fun upsert(entry: ChainInfo)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
-    suspend fun insertIfDoesNotExist(entry: List<ChainInfo>)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun upsert(entry: List<ChainInfo>)
 }

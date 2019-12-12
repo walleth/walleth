@@ -1,15 +1,13 @@
 package org.walleth.util
 
 import android.content.Context
-import android.content.DialogInterface
 import androidx.appcompat.app.AlertDialog
 import org.walleth.R
 
-fun Context.question(msg: Int, title: Int, onOkClickListener: DialogInterface.OnClickListener) {
+fun Context.question(configurator: AlertDialog.Builder.(builder: AlertDialog.Builder) -> Unit, action: () -> Unit) {
     AlertDialog.Builder(this)
-            .setMessage(msg)
-            .setTitle(title)
-            .setPositiveButton(android.R.string.ok, onOkClickListener)
+            .apply { configurator(this) }
+            .setPositiveButton(android.R.string.ok) { _, _ -> action.invoke() }
             .setNegativeButton(R.string.no) { dialog, _ -> dialog.dismiss() }
             .show()
 }

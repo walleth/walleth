@@ -98,7 +98,7 @@ open class EditChainActivity : BaseSubActivity() {
 
 
             else -> {
-                appDatabase.chainInfo.insertIfDoesNotExist(ChainInfo(
+                appDatabase.chainInfo.upsert(ChainInfo(
                         name = name,
                         chainId = BigInteger(chainId),
                         networkId = newChainNetworkId.text?.toString()?.toLongOrNull()?:chainId.toLong(),
