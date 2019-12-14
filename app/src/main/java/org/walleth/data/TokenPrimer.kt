@@ -45,7 +45,7 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
                                 decimals = Integer.parseInt(it.getString("decimals")),
                                 address = Address(address),
                                 starred = false,
-                                softDeleted = false,
+                                deleted = false,
                                 fromUser = false,
                                 chain = chainInfo.chainId,
                                 order = mapToOrder(address)

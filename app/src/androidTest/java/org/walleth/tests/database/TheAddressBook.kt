@@ -11,12 +11,12 @@ import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
 class TheAddressBook : AbstractDatabaseTest() {
 
     @Test
-    fun isEmptyInitially() {
+    fun isEmptyInitially() = runBlocking {
         assertThat(database.addressBook.all().size).isEqualTo(0)
     }
 
     @Test
-    fun weCanInsertTwo() {
+    fun weCanInsertTwo() = runBlocking {
         database.addressBook.upsert(AddressBookEntry(DEFAULT_TEST_ADDRESS, "nameprobe"))
         database.addressBook.upsert(AddressBookEntry(DEFAULT_TEST_ADDRESS2, "2nameprobe2"))
         assertThat(database.addressBook.all().size).isEqualTo(2)
@@ -39,13 +39,14 @@ class TheAddressBook : AbstractDatabaseTest() {
 
 
     @Test
-    fun findsWhereNotificationIsWanted() {
+    fun findsWhereNotificationIsWanted() = runBlocking {
         database.addressBook.upsert(AddressBookEntry(DEFAULT_TEST_ADDRESS, "notificationNotWanted1", isNotificationWanted = false))
         val entry = AddressBookEntry(DEFAULT_TEST_ADDRESS2, "notificationWanted", isNotificationWanted = true)
         database.addressBook.upsert(entry)
         database.addressBook.upsert(AddressBookEntry(DEFAULT_TEST_ADDRESS3, "notificationNotWanted2", isNotificationWanted = false))
 
         assertThat(database.addressBook.allThatWantNotifications()).containsExactly(entry)
+        return@runBlocking
     }
 
 

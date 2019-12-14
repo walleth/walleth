@@ -21,7 +21,7 @@
                 android:orientation="vertical">
 
             <androidx.appcompat.widget.AppCompatImageView
-                    android:id="@+id/info_indicator"
+                    android:id="@+id/info_button"
                     style="@style/button"
                     android:layout_width="@android:dimen/app_icon_size"
                     android:layout_height="@android:dimen/app_icon_size"
@@ -50,7 +50,7 @@
 
             <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/delete"
-                    app:srcCompat="@drawable/ic_delete_black_24dp"
+                    app:srcCompat="@drawable/ic_delete_24dp"
                     style="@style/button"
                     android:layout_width="@android:dimen/app_icon_size"
                     android:layout_height="@android:dimen/app_icon_size" />
@@ -64,7 +64,7 @@
                 android:padding="@dimen/rythm2">
 
             <TextView
-                    android:id="@+id/network_title"
+                    android:id="@+id/chain_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"

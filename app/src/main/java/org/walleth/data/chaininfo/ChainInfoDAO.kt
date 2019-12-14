@@ -13,7 +13,10 @@ interface ChainInfoDAO {
     suspend fun getAll(): List<ChainInfo>
 
     @Query("UPDATE chains SET softDeleted=0")
-    suspend fun unDeleteAll()
+    suspend fun undeleteAll()
+
+    @Query("DELETE FROM chains where softDeleted = 1")
+    suspend fun deleteAllSoftDeleted()
 
     @Query("SELECT * FROM chains WHERE chainId = :chain")
     suspend fun getByChainId(chain: BigInteger): ChainInfo?

@@ -15,8 +15,8 @@ import org.koin.android.ext.android.inject
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
-import org.walleth.data.AppDatabase
 import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.AppDatabase
 import org.walleth.data.tokens.Token
 import org.walleth.qr.scan.startScanActivityForResult
 
@@ -57,7 +57,7 @@ class CreateTokenDefinitionActivity : BaseSubActivity() {
                                     address = Address(newTokenAddress),
                                     decimals = newDecimals,
                                     chain = networkDefinition.chainId,
-                                    softDeleted = false,
+                                    deleted = false,
                                     starred = true,
                                     fromUser = true,
                                     order = 0

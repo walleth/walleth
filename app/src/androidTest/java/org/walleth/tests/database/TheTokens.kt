@@ -17,7 +17,7 @@ private val DEFAULT_TOKEN = Token(name = "foo",
         address = DEFAULT_TEST_ADDRESS,
         chain = CHAIN1,
         fromUser = false,
-        softDeleted = false,
+        deleted = false,
         starred = false,
         order = 0)
 

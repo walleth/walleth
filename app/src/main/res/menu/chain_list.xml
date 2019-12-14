@@ -1,17 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/menu_refresh"
-        android:icon="@drawable/ic_file_download_black_24dp"
-        android:title="@string/refresh"
-        app:showAsAction="ifRoom"
-        />
+            android:id="@+id/menu_refresh"
+            android:icon="@drawable/ic_file_download_black_24dp"
+            android:title="@string/refresh"
+            app:showAsAction="ifRoom" />
 
     <item
-            android:title="@string/undelete_all"
-            android:id="@+id/menu_undelete"
-            app:showAsAction="never" />
+            android:icon="@drawable/ic_filter_list_black_24dp"
+            android:title="@string/menu_filter"
+            app:showAsAction="ifRoom|withText">
+        <menu>
+            <item
+                    android:id="@+id/menu_has_fast_faucet"
+                    android:checkable="true"
+                    android:icon="@drawable/ic_flash_on_black_24dp"
+                    android:title="Has faucet with address fill"
+                    app:iconTint="@color/fgColor" />
+
+            <item
+                    android:id="@+id/menu_has_faucet"
+                    android:checkable="true"
+                    android:icon="@drawable/ic_redeem_black_24dp"
+                    android:title="Has normal faucet"
+                    app:iconTint="@color/fgColor" />
+        </menu>
+    </item>
 
 </menu>

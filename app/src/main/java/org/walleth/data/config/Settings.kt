@@ -23,6 +23,10 @@ interface Settings {
     var filterAddressesStared: Boolean
     var filterAddressesKeyOnly: Boolean
 
+
+    var filterFaucet: Boolean
+    var filterFastFaucet: Boolean
+
     var toolbarBackgroundColor: Int
     var toolbarForegroundColor: Int
 

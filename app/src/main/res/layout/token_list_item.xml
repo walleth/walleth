@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_main"
@@ -11,47 +10,43 @@
 
 
     <RelativeLayout
-            android:padding="8dp"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:padding="8dp">
 
         <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/token_starred_button"
                 style="@style/button"
-                tools:src="@drawable/ic_star_border_24dp"
-                android:id="@+id/token_starred"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                tools:src="@drawable/ic_star_border_24dp" />
 
         <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/delete_button"
                 style="@style/button"
-                tools:src="@drawable/ic_redeem_black_24dp"
-                android:layout_below="@id/token_starred"
-                android:id="@+id/faucet"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_below="@id/token_starred_button"
+                app:srcCompat="@drawable/ic_delete_24dp" />
 
         <TextView
-                android:paddingLeft="8dp"
+                android:id="@+id/token_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/token_name"
-                android:layout_toRightOf="@id/token_starred"
+                android:layout_toRightOf="@id/token_starred_button"
+                android:paddingLeft="8dp"
 
                 android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"
                 app:fontFamily="sans-serif"
-                tools:text="Etheraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"/>
+                tools:text="Etheraaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa" />
 
         <TextView
-                android:paddingLeft="8dp"
+                android:id="@+id/token_chain"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/token_chain"
-                android:layout_toRightOf="@id/token_starred"
                 android:layout_below="@id/token_name"
-                app:fontFamily="sans-serif"
                 android:layout_alignParentRight="true"
-                tools:text="18"/>
+                android:layout_toRightOf="@id/token_starred_button"
+                android:paddingLeft="8dp"
+                app:fontFamily="sans-serif"
+                tools:text="18" />
 
 
     </RelativeLayout>

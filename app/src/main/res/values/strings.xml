@@ -235,8 +235,8 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="preferences_activity_subtitle">Preferences</string>
     <string name="create_tx_err">You must specify a receiver.\nTry this list selection.</string>
     <string name="actionbar_subtitle_qr_code">QR Code</string>
-    <string name="delete_forever">delete forever</string>
-    <string name="permanent_accounts_delete_confirmation">Do you really want to permanently delete the soft deleted accounts? There is no way back!</string>
+    <string name="delete_forever">Delete forever</string>
+    <string name="permanent_delete_question">Do you want to empty the trash? This means permanently delete all items. There is no way back!</string>
     <string name="delete">delete</string>
     <string name="are_you_sure">Are you sure?</string>
     <string name="menu_filter">Filter</string>

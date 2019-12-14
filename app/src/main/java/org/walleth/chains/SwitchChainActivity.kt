@@ -4,17 +4,13 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ItemTouchHelper.LEFT
-import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import com.squareup.moshi.Moshi
+import com.tingyik90.snackprogressbar.SnackProgressBar
+import com.tingyik90.snackprogressbar.SnackProgressBarManager
 import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.item_network_definition.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.koin.android.ext.android.inject
@@ -22,93 +18,79 @@ import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.base_activities.BaseSubActivity
-import org.walleth.chains.ChainInfoViewAction.*
-import org.walleth.data.AppDatabase
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.chaininfo.ChainInfo
+import org.walleth.enhancedlist.BaseEnhancedListActivity
+import org.walleth.enhancedlist.EnhancedListAdapter
+import org.walleth.enhancedlist.EnhancedListInterface
 import org.walleth.util.question
 import javax.net.ssl.SSLException
 
-open class SwitchChainActivity : BaseSubActivity() {
+open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
 
-    fun ChainInfo.changeDeleteState(state: Boolean) {
-        val changedChainInfo = apply { softDeleted = state }
-        lifecycleScope.launch(Dispatchers.Main) {
-            withContext(Dispatchers.Default) {
-                appDatabase.chainInfo.upsert(changedChainInfo)
-                if (state) {
-                    Snackbar.make(coordinator, "Deleted Chain " + changedChainInfo.name, Snackbar.LENGTH_INDEFINITE)
-                            .setAction(getString(R.string.undo)) { changeDeleteState(false) }
-                            .show()
-                }
-                refreshAdapter()
-            }
+    private val snackProgressBarManager by lazy { SnackProgressBarManager(coordinator, lifecycleOwner = this) }
+
+    override val enhancedList by lazy {
+        object : EnhancedListInterface<ChainInfo> {
+            override suspend fun getAll() = appDatabase.chainInfo.getAll()
+            override fun compare(t1: ChainInfo, t2: ChainInfo) = t1.chainId == t2.chainId
+            override suspend fun upsert(item: ChainInfo) = appDatabase.chainInfo.upsert(item)
+
+            override suspend fun undeleteAll() = appDatabase.chainInfo.undeleteAll()
+            override suspend fun deleteAllSoftDeleted() = appDatabase.chainInfo.deleteAllSoftDeleted()
+            override fun filter(item: ChainInfo) = (!settings.filterFastFaucet || item.hasFaucetWithAddressSupport())
+                    && (!settings.filterFaucet || (item.faucets.isNotEmpty() && !item.hasFaucetWithAddressSupport()))
+                    && checkForSearchTerm(item.name, item.nativeCurrency.symbol, item.nativeCurrency.name)
         }
     }
 
+
     val chainInfoProvider: ChainInfoProvider by inject()
-    val appDatabase: AppDatabase by inject()
     private val okHttpClient: OkHttpClient by inject()
     private val moshi: Moshi by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list)
-
         supportActionBar?.subtitle = getString(R.string.chains_subtitle)
-
-        recycler_view.layoutManager = LinearLayoutManager(this)
 
         fab.setOnClickListener {
             startActivityFromClass(EditChainActivity::class)
         }
 
-        swipe_refresh_layout.setOnRefreshListener {
-            downloadNewChains()
-        }
-
-        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
-
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                chainAdapter.displayList[viewHolder.adapterPosition].changeDeleteState(true)
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(recycler_view)
-
-        recycler_view.adapter = chainAdapter
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.chain_list, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        val anySoftDeletedExists = chainAdapter.list.any { it.softDeleted }
-        menu.findItem(R.id.menu_undelete).isVisible = anySoftDeletedExists
+        menu.findItem(R.id.menu_has_fast_faucet).isChecked = settings.filterFastFaucet
+        menu.findItem(R.id.menu_has_faucet).isChecked = settings.filterFaucet
         return super.onPrepareOptionsMenu(menu)
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        lifecycleScope.launch(Dispatchers.Main) {
-            when (item.itemId) {
-                R.id.menu_refresh -> downloadNewChains()
-                R.id.menu_undelete -> {
-                    appDatabase.chainInfo.unDeleteAll()
-                    refreshAdapter()
-                }
+    override fun onOptionsItemSelected(item: MenuItem) = super.onOptionsItemSelected(item).also {
+        when (item.itemId) {
+            R.id.menu_refresh -> downloadNewChains()
+
+            R.id.menu_has_fast_faucet -> item.filterToggle {
+                settings.filterFastFaucet = it
+                if (it) settings.filterFaucet = !it
+            }
+            R.id.menu_has_faucet -> item.filterToggle {
+                settings.filterFaucet = it
+                if (it) settings.filterFastFaucet = !it
             }
         }
-        return super.onOptionsItemSelected(item)
     }
 
     private fun downloadNewChains() {
-        swipe_refresh_layout.isRefreshing = true
+        val pb = SnackProgressBar(SnackProgressBar.TYPE_CIRCULAR, "Downloading chain definitions")
+                .setIsIndeterminate(true)
+
+        snackProgressBarManager.show(pb, SnackProgressBarManager.LENGTH_INDEFINITE)
         lifecycleScope.launch(Dispatchers.IO) {
             try {
                 val request = Request.Builder().url("https://chainid.network/chains_mini.json")
@@ -128,11 +110,12 @@ open class SwitchChainActivity : BaseSubActivity() {
                                     refreshAdapter()
                                 }
                             })
-                            swipe_refresh_layout.isRefreshing = false
+
                         }
                     }
 
                 }
+                snackProgressBarManager.dismissAll()
 
             } catch (e: SSLException) {
                 handleRefreshError("SSLError - cannot load chains. Setting your time can help in some cases.")
@@ -143,37 +126,32 @@ open class SwitchChainActivity : BaseSubActivity() {
     }
 
     private fun handleRefreshError(message: String) = lifecycleScope.launch(Dispatchers.Main) {
-        swipe_refresh_layout.isRefreshing = false
         alert(message)
     }
 
-    override fun onResume() {
-        super.onResume()
-        refreshAdapter()
-    }
-
-    private fun refreshAdapter() = lifecycleScope.launch(Dispatchers.Main) {
-        chainAdapter.filter(appDatabase.chainInfo.getAll(), false)
-        invalidateOptionsMenu()
-    }
-
-    private val chainAdapter: ChainAdapter by lazy {
-        ChainAdapter { chainInfo, action ->
-
-            when (action) {
-                CLICK -> {
-                    chainInfoProvider.setCurrent(chainInfo)
-                    finish()
-                }
-                EDIT -> startEditChainActivity(chainInfo)
-                INFO -> startActivityFromURL(chainInfo.infoURL)
-                DELETE -> {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        chainInfo.changeDeleteState(true)
+    override val adapter: EnhancedListAdapter<ChainInfo> by lazy {
+        EnhancedListAdapter<ChainInfo>(
+                layout = R.layout.item_network_definition,
+                bind = { chainInfo, view ->
+                    view.setOnClickListener {
+                        chainInfoProvider.setCurrent(chainInfo)
+                        finish()
                     }
-                }
-            }
-        }
+                    val currentAddressProvider: CurrentAddressProvider by inject()
+                    view.faucet_indicator.prepareFaucetButton(chainInfo, currentAddressProvider, postAction = {
+                        view.performClick()
+                    })
+                    view.delete.setOnClickListener {
+                        view.deleteWithAnimation(chainInfo)
+                    }
+                    view.edit_button.setOnClickListener {
+                        startEditChainActivity(chainInfo)
+                    }
+                    view.info_button.setOnClickListener {
+                        startActivityFromURL(chainInfo.infoURL)
+                    }
+                    view.chain_title.text = chainInfo.name
+                })
 
     }
 }

@@ -3,92 +3,37 @@ package org.walleth.tokens
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
-import androidx.appcompat.widget.SearchView
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProviders
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.ItemTouchHelper
-import androidx.recyclerview.widget.ItemTouchHelper.LEFT
-import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_list_stars.*
+import kotlinx.android.synthetic.main.activity_list.*
+import kotlinx.android.synthetic.main.token_list_item.view.*
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
+import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.base_activities.BaseSubActivity
-import org.walleth.data.AppDatabase
 import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.AppDatabase
+import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.Token
+import org.walleth.enhancedlist.BaseEnhancedListActivity
+import org.walleth.enhancedlist.EnhancedListAdapter
+import org.walleth.enhancedlist.EnhancedListInterface
 
-class TokenActivityViewModel : ViewModel() {
-    var searchTerm: String = ""
-}
-
-class SelectTokenActivity : BaseSubActivity() {
+class SelectTokenActivity : BaseEnhancedListActivity<Token>() {
 
     private val chainInfoProvider: ChainInfoProvider by inject()
-    private val appDatabase: AppDatabase by inject()
-
-    private var showDelete = false
-
-    private val viewModel by lazy {
-        ViewModelProviders.of(this).get(TokenActivityViewModel::class.java)
-    }
-
-    private val tokenListAdapter by lazy {
-        TokenListAdapter(this).apply {
-            recycler_view.adapter = this
-        }
-    }
+    private val currentTokenProvider: CurrentTokenProvider by inject()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list_stars)
-
         supportActionBar?.subtitle = getString(R.string.select_token_activity_select_token)
-
-        recycler_view.layoutManager = LinearLayoutManager(this)
 
         fab.setOnClickListener {
             startActivityFromClass(CreateTokenDefinitionActivity::class)
         }
 
-        appDatabase.tokens.allLive().observe(this, Observer { allTokens ->
-
-            if (allTokens != null) {
-                updateFilter()
-                tokenListAdapter.updateTokenList(allTokens)
-                showDelete = allTokens.any { it.softDeleted }
-            }
-            invalidateOptionsMenu()
-        })
-
-        val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
-
-            override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder) = false
-
-            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, swipeDir: Int) {
-                val currentToken = tokenListAdapter.sortedList.get(viewHolder.adapterPosition)
-                fun changeDeleteState(state: Boolean) {
-                    lifecycleScope.launch {
-                        upsert(appDatabase, currentToken.copy(softDeleted = state))
-                    }
-                }
-                changeDeleteState(true)
-                val snackMessage = getString(R.string.deleted_token_snack, currentToken.symbol)
-                Snackbar.make(coordinator, snackMessage, Snackbar.LENGTH_INDEFINITE)
-                        .setAction(getString(R.string.undo)) { changeDeleteState(false) }
-                        .show()
-            }
-        }
-
-        val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(recycler_view)
     }
 
     suspend fun upsert(appDatabase: AppDatabase, token: Token) {
@@ -97,63 +42,16 @@ class SelectTokenActivity : BaseSubActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_tokenlist, menu)
-
-
-        val searchItem = menu.findItem(R.id.action_search)
-        val searchView = searchItem.actionView as SearchView
-
-        val lastTerm = viewModel.searchTerm
-        if (!lastTerm.isBlank()) {
-            searchItem.expandActionView()
-        }
-
-        searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-            override fun onMenuItemActionExpand(p0: MenuItem?) = true
-
-            override fun onMenuItemActionCollapse(p0: MenuItem?) = true.also {
-                viewModel.searchTerm = ""
-            }
-
-        })
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextChange(searchTerm: String) = true.also {
-
-                if (!searchTerm.isBlank()) {
-                    viewModel.searchTerm = searchTerm
-                }
-                updateFilter()
-            }
-
-            override fun onQueryTextSubmit(query: String?) = false
-        })
-        searchView.setQuery(lastTerm, true)
-
         return super.onCreateOptionsMenu(menu)
     }
 
-    fun updateFilter() {
-        tokenListAdapter.filter(viewModel.searchTerm, settings.showOnlyStaredTokens,
-                if (settings.showOnlyTokensOnCurrentNetwork) {
-                    chainInfoProvider.getCurrentChainId()
-                } else {
-                    null
-                })
-    }
-
-
     override fun onPrepareOptionsMenu(menu: Menu): Boolean {
-        menu.findItem(R.id.menu_undelete).isVisible = showDelete
         menu.findItem(R.id.menu_stared_only).isChecked = settings.showOnlyStaredTokens
         menu.findItem(R.id.menu_current_network_only).isChecked = settings.showOnlyTokensOnCurrentNetwork
         return super.onPrepareOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.menu_undelete -> true.also {
-            lifecycleScope.launch {
-                appDatabase.tokens.showAll()
-            }
-        }
         R.id.menu_stared_only -> item.filterToggle {
             settings.showOnlyStaredTokens = it
         }
@@ -164,9 +62,66 @@ class SelectTokenActivity : BaseSubActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    private fun MenuItem.filterToggle(updater: (value: Boolean) -> Unit) = true.also {
-        isChecked = !isChecked
-        updater(isChecked)
-        updateFilter()
+    override val enhancedList by lazy {
+        object : EnhancedListInterface<Token> {
+            override suspend fun undeleteAll() = appDatabase.tokens.unDeleteAll()
+            override suspend fun getAll() = appDatabase.tokens.all()
+            override fun compare(t1: Token, t2: Token) = t1.address == t2.address
+            override suspend fun upsert(item: Token) = appDatabase.tokens.upsert(item)
+            override suspend fun deleteAllSoftDeleted() {
+                lifecycleScope.launch(Dispatchers.Default) {
+                    appDatabase.tokens.deleteAllSoftDeleted()
+                }
+            }
+
+            override fun filter(item: Token) = (!settings.showOnlyStaredTokens || item.starred)
+                    && (!settings.showOnlyTokensOnCurrentNetwork || item.chain == chainInfoProvider.getCurrentChainId().value)
+                    && checkForSearchTerm(item.name, item.symbol)
+        }
+    }
+
+    override val adapter: EnhancedListAdapter<Token> by lazy {
+        EnhancedListAdapter<Token>(
+                layout = R.layout.token_list_item,
+                bind = { entry, view ->
+
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        val chainInfo = appDatabase.chainInfo.getByChainId(entry.chain)
+                        view.token_chain.text = "Chain: " + chainInfo?.name
+
+                        view.token_name.text = "${entry.name}(${entry.symbol})"
+                        view.delete_button.setOnClickListener {
+                            view.deleteWithAnimation(entry)
+                        }
+
+                        view.token_starred_button.setImageResource(
+                                if (entry.starred) {
+                                    R.drawable.ic_star_24dp
+                                } else {
+                                    R.drawable.ic_star_border_24dp
+                                }
+                        )
+
+                        view.token_starred_button.setOnClickListener {
+                            lifecycleScope.launch {
+                                val updatedEntry = entry.copy(starred = !entry.starred)
+                                appDatabase.tokens.upsert(updatedEntry)
+                                refreshAdapter()
+                            }
+                        }
+
+                        view.setOnClickListener {
+                            if (chainInfo == null) {
+                                alert("Chain for this token not found")
+                            } else {
+                                currentTokenProvider.setCurrent(entry)
+                                chainInfoProvider.setCurrent(chainInfo)
+                                finish()
+                            }                        }
+                    }
+
+                }
+        )
+
     }
 }

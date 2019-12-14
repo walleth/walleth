@@ -1,6 +1,5 @@
 package org.walleth.data.tokens
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -10,14 +9,14 @@ import org.kethereum.model.Address
 @Dao
 interface TokenDAO {
 
-    @Query("SELECT * FROM tokens")
+    @Query("SELECT * FROM tokens ORDER BY \"order\" DESC ,\"chain\",\"symbol\"")
     suspend fun all(): List<Token>
 
-    @Query("SELECT * FROM tokens ORDER BY \"order\" DESC ,\"chain\",\"symbol\"")
-    fun allLive(): LiveData<List<Token>>
-
     @Query("UPDATE tokens SET softDeleted=0")
-    suspend fun showAll()
+    suspend fun unDeleteAll()
+
+    @Query("DELETE FROM addressbook where deleted = 1")
+    suspend fun deleteAllSoftDeleted()
 
     @Query("SELECT * FROM tokens WHERE address = :address COLLATE NOCASE")
     suspend fun forAddress(address: Address): Token?

@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 import com.squareup.moshi.Moshi
 import kotlinx.android.parcel.Parcelize
 import org.kethereum.model.Address
+import org.walleth.enhancedlist.ListItem
 import org.walleth.data.ACCOUNT_TYPE_TREZOR
 
 @Parcelize
@@ -36,12 +37,12 @@ fun AddressBookEntry?.isAccountType(accountType: String) = getSpec()?.type == ac
 
 
 @Entity(tableName = "addressbook")
-data class AddressBookEntry(
+data class AddressBookEntry (
 
         @PrimaryKey
         var address: Address,
 
-        var name: String,
+        override var name: String,
 
         var note: String? = null,
 
@@ -53,9 +54,9 @@ data class AddressBookEntry(
 
         var starred: Boolean = false,
 
-        var deleted: Boolean = false,
+        override var deleted: Boolean = false,
 
         var fromUser: Boolean = false,
 
         var order: Int = 0
-)
+) : ListItem

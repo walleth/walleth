@@ -48,7 +48,7 @@ val testToken = Token(
         Address("0x01"),
         15,
         TestApp.chainInfoProvider.getCurrent()!!.chainId,
-        softDeleted = true,
+        deleted = true,
         starred = false,
         fromUser = false,
         order = 1
@@ -64,7 +64,7 @@ class TheCreateTransactionActivity {
     private val urlBase = "ethereum:$testAddress"
 
     @Before
-    fun setup() {
+    fun setup() = runBlocking {
         TestApp.testDatabase.transactions.deleteAll()
         val addressBookEntry = AddressBookEntry(TestApp.currentAddressProvider.getCurrent()!!, keySpec = AccountKeySpec(ACCOUNT_TYPE_BURNER).toJSON(), name = "testing")
         TestApp.testDatabase.addressBook.upsert(addressBookEntry)
