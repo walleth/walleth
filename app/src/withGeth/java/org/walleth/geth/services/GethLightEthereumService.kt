@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.Dispatchers
@@ -32,6 +31,7 @@ import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.geth.toGethAddr
 import org.walleth.overview.OverviewActivity
+import org.walleth.tmp.LifecycleServiceWorkaround
 import java.io.File
 import java.math.BigInteger
 import org.ethereum.geth.Context as EthereumContext
@@ -39,7 +39,7 @@ import org.ethereum.geth.Context as EthereumContext
 private const val NOTIFICATION_ID = 101
 private const val NOTIFICATION_CHANNEL_ID = "geth"
 
-class GethLightEthereumService : LifecycleService() {
+class GethLightEthereumService : LifecycleServiceWorkaround() {
 
     companion object {
         const val STOP_SERVICE_ACTION = "STOPSERVICE"
@@ -64,9 +64,9 @@ class GethLightEthereumService : LifecycleService() {
 
     private var shouldRestart = false
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
-        if (intent.action == STOP_SERVICE_ACTION) {
+        if (intent?.action == STOP_SERVICE_ACTION) {
             shouldRun = false
             return START_NOT_STICKY
         }

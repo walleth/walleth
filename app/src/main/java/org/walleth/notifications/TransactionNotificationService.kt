@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
-import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import org.kethereum.model.Address
@@ -18,9 +17,10 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.AddressBookEntry
 import org.walleth.data.transactions.TransactionEntity
+import org.walleth.tmp.LifecycleServiceWorkaround
 import org.walleth.transactions.getTransactionActivityIntentForHash
 
-class TransactionNotificationService : LifecycleService() {
+class TransactionNotificationService : LifecycleServiceWorkaround() {
 
     private val appDatabase: AppDatabase by inject()
 
@@ -29,7 +29,7 @@ class TransactionNotificationService : LifecycleService() {
     private var addressesToNotify: List<Address> = emptyList()
     private val alreadyNotified: MutableSet<String> = mutableSetOf()
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
         val allTransactionsToNotifyObserver = Observer<List<TransactionEntity>> { txList ->
