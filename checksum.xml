@@ -2406,35 +2406,68 @@
     <dependency group='com.squareup.leakcanary' module='leakcanary-android-core' version='2.0' extension='aar'>
       <sha512>393BAB45539704F828B9C7B56EA0B426AA97F1CACDBEC6A64413F5D5AD41D3AA2A4A8D27C111E1378AFB17D2F97AB6965ADE2451D61BA83352163DC43DDDF389</sha512>
     </dependency>
+    <dependency group='com.squareup.leakcanary' module='leakcanary-android-core' version='2.1' extension='aar'>
+      <sha512>5DF7D5A189F42E5880423AF152A13BE407D1968554F8E1AC5B28E367D39949CD0B2CCD6363DE901D671BA3416DE9F1EF574A8CDA9245548A43B458ED94C759CA</sha512>
+    </dependency>
     <dependency group='com.squareup.leakcanary' module='leakcanary-android' version='2.0' extension='aar'>
       <sha512>6A8E563B3FAF5653E79B8A187AA15B1E233777F1BE5351D4A42CE28AF5DDA6FB7333A43593A67FD1360A1867B227B1B279AA7C74CFD5B957BE2D09CB9F7625A0</sha512>
+    </dependency>
+    <dependency group='com.squareup.leakcanary' module='leakcanary-android' version='2.1' extension='aar'>
+      <sha512>57BE52E2AFC6E7C3B5D5BDDBE06FCABA042676D86D61BB13DB6D4081FCCA53A88AF604385A6CD908C4BA193FDB9366EDDE3C8803A6DB0ED345FC69E9720BFC9F</sha512>
     </dependency>
     <dependency group='com.squareup.leakcanary' module='leakcanary-object-watcher-android-androidx' version='2.0' extension='aar'>
       <sha512>927F46F3C7875F9E17A7DCB893DEBF12D99E7029C433444CE4282302C4ADA74710B7BDD89C92B72FB922B22B56B482C17DC328DB23183EFB705A45CB08F40DBE</sha512>
     </dependency>
+    <dependency group='com.squareup.leakcanary' module='leakcanary-object-watcher-android-androidx' version='2.1' extension='aar'>
+      <sha512>D551179C0B05EEFBCA9E1A57BE609201EE02CA61B793A69E6A2255A545B9C2E6F912076559E65F11308A5CFE07ABFD7E6813BADC33B06D995370A323A3194DF5</sha512>
+    </dependency>
     <dependency group='com.squareup.leakcanary' module='leakcanary-object-watcher-android-support-fragments' version='2.0' extension='aar'>
       <sha512>ED59E38E78F02A15608F5F2D7BB093FDEC696B73A9C5D2A8FD182AC22FD65E39CD2B8A92E7DEAC8D9C4D365A73CDBD08BE387F797A606733810EFDAF32F6DF2</sha512>
+    </dependency>
+    <dependency group='com.squareup.leakcanary' module='leakcanary-object-watcher-android-support-fragments' version='2.1' extension='aar'>
+      <sha512>6101D88265966FB6D6E28283C67C4B3F0F559E54AB4B6F967CE0D455D9D8AEBC416FDF33787410296888172352CC1A276CDC6A5388437590DC0D4DB353AB29B</sha512>
     </dependency>
     <dependency group='com.squareup.leakcanary' module='leakcanary-object-watcher-android' version='2.0' extension='aar'>
       <sha512>62A13D521C94F4AB583381E950371D44BC7F260497C8DCDAFC98784A564A652E0F59C6D89504045C2144C50E1C69ED1458764B7C4C99D2BD7774884CEFE16EF</sha512>
     </dependency>
+    <dependency group='com.squareup.leakcanary' module='leakcanary-object-watcher-android' version='2.1' extension='aar'>
+      <sha512>1D65592A2580DCF7F4F8465B2091A5299B6DC33BD2E160937D3706B1659E7712E4379622AFCDEB245A95EE78D0B05E0C7F7018CE9BE5AB9CBAA8A2D598656562</sha512>
+    </dependency>
     <dependency group='com.squareup.leakcanary' module='leakcanary-object-watcher' version='2.0'>
       <sha512>6901E7152C48C2B3CEB8850BB4E530DD001704F9CD3240F1A2DE3B98925DBD739EF464EC7E1C420EBF67D86FA92C657DBA2584006E561B63229E5E662663E0AC</sha512>
+    </dependency>
+    <dependency group='com.squareup.leakcanary' module='leakcanary-object-watcher' version='2.1'>
+      <sha512>A9A44E80AF2FD6E148249FFEDF4D534E8ADB059FF685D06BA7C5F19F18FE42001466F53EFFE4D014DE611E9FCE58F4F1C4F2C86152DFB0128491E517CDF91DA4</sha512>
     </dependency>
     <dependency group='com.squareup.leakcanary' module='shark-android' version='2.0'>
       <sha512>4F0614B8E56CA2356EBF4F36D68C6F1724C74D7057CD3C9E370FDE67F0B8819B9E461A864390C06E3B053A610544C46C89D16FCCCDC8AD1B6AA71F179F634BF3</sha512>
     </dependency>
+    <dependency group='com.squareup.leakcanary' module='shark-android' version='2.1'>
+      <sha512>4D93F526B7BD498FAB40435F777063868FB04C57650FFD50ADC7A67D4C0A4D36081BDFA2535F64485F91BC86ECE776FD6EB67972855D5EECEB7085C53F624510</sha512>
+    </dependency>
     <dependency group='com.squareup.leakcanary' module='shark-graph' version='2.0'>
       <sha512>BDA9714859B5A39EA801818AB6FD38CA7C3825E5E6C79D3304A90F828A0DE1580739428420E58F00088D6E1677696DB15FC8394F123F1E867A8D4A04C7CFE518</sha512>
+    </dependency>
+    <dependency group='com.squareup.leakcanary' module='shark-graph' version='2.1'>
+      <sha512>861B622D38F6DE7DCD96EBC912E76EB30C1D6768F370AE72E2171CAFB06C0FAA953D7D7FE615336B635C55C048791FD2ED4B1296F9A18ED7ADD0B2F4D9D1D813</sha512>
     </dependency>
     <dependency group='com.squareup.leakcanary' module='shark-hprof' version='2.0'>
       <sha512>B6F5093ABD7AF213A6ECB92151C93923211CC896A7D6ADCDE924E45649A3E95884B08418DCF7B87FB0A925CF92211693E8F1C8AD7D0313FCEB73763CA48DD8AF</sha512>
     </dependency>
+    <dependency group='com.squareup.leakcanary' module='shark-hprof' version='2.1'>
+      <sha512>40D6479DF9227077DA55DEA2FBBCE7A52F62FBC458AFBA75A246CFF6D0F0B2D2A6C8C2AF6BD07E34FBC1B5066BA359E8EF51C16C4078A719F6CA188BF76E6F7E</sha512>
+    </dependency>
     <dependency group='com.squareup.leakcanary' module='shark-log' version='2.0'>
       <sha512>8CFBABA56BB64B82AB2C675F7D3919B603101E52606F78A98FAE04F984952427C9C5DD695B2E56AABE03FD44CFEF0CF98F7AD87CC6C0D694FB4D375DD4CAA71A</sha512>
     </dependency>
+    <dependency group='com.squareup.leakcanary' module='shark-log' version='2.1'>
+      <sha512>CFB7A58557E29DB192893477260E189CBC6C0FA2CA8400EBA181AF5EFA020D9B7D132678723D3008ABD2F6AD1FDA62CE69F434E05CFA498850C7004697FE78E9</sha512>
+    </dependency>
     <dependency group='com.squareup.leakcanary' module='shark' version='2.0'>
       <sha512>C999C3C50417DD5BD00D292D185820796D9B33CACF770792826925530793CED8E5ED8A3D8FECAF90C0DE5EC899BB6198FE79166F0ECE7692EB53C8F59599E6B3</sha512>
+    </dependency>
+    <dependency group='com.squareup.leakcanary' module='shark' version='2.1'>
+      <sha512>2FB466FDBAA7A2A0C70F1C0A2EEDCC3F45DF89D565FEF2D73E531CC7DA236BA1C7252BAC38273D0E977F14834912F1BF209DA59D1F55929D519B36BBC367816E</sha512>
     </dependency>
     <dependency group='com.squareup.okio' module='okio' version='2.4.0'>
       <sha512>B71EA794C27F2608244EB73D4AD1E3EFF9F5AE801515C1FB8E540613A8A805415834B74AB73D5C9CC0C8D262A5AAF280A80C0F16C687CB2C969EADD9E7AC32BB</sha512>
