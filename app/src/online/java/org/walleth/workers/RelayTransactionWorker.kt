@@ -5,7 +5,6 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import okhttp3.OkHttpClient
 import org.kethereum.functions.encodeRLP
-import org.kethereum.rpc.EthereumRPCException
 import org.kethereum.rpc.HttpEthereumRPC
 import org.koin.core.KoinComponent
 import org.koin.core.inject
@@ -48,23 +47,17 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
             val result = rpc.sendRawTransaction(transaction.transaction.encodeRLP(transaction.signatureData).toHexString())
 
             return if (result != null) {
-                val oldHash = transaction.hash
                 transaction.setHash(if (!result.startsWith("0x")) "0x$result" else result)
 
                 transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "relayed"
-                transaction.transactionState.relayed = "via RPC"
-
-                appDatabase.transactions.deleteByHash(oldHash)
-                appDatabase.transactions.upsert(transaction)
-                transaction.setError(null)
-                Result.success()
+                markSuccess(transaction)
             } else {
                 transaction.setError("Could not (yet) relay transaction")
                 Result.retry()
             }
-        } catch (e: EthereumRPCException) {
-            return if (e.message == "Transaction with the same hash was already imported.") {
-                Result.success()
+        } catch (e: Exception) {
+            return if (e.message == "Transaction with the same hash was already imported." || e.message?.startsWith("known transaction") == true) {
+                markSuccess(transaction)
             } else {
                 transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "ERROR: ${e.message}\n"
 
@@ -74,6 +67,14 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
                 Result.failure()
             }
         }
+    }
+
+    private fun markSuccess(transaction: TransactionEntity): Result {
+        transaction.transactionState.relayed = "via RPC"
+
+        appDatabase.transactions.upsert(transaction)
+        transaction.setError(null)
+        return Result.success()
     }
 
     private fun TransactionEntity.setError(message: String?) {

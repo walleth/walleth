@@ -88,8 +88,8 @@ class BlockScoutAPI(private val appDatabase: AppDatabase,
             replace("https://", "http://") // :-( https://github.com/walleth/walleth/issues/134 )
         }
         val urlString = "$baseURL/api?$requestString"
-        val url = Request.Builder().url(urlString).build()
-        val newCall: Call = okHttpClient.newCall(url)
+        val request = Request.Builder().url(urlString).build()
+        val newCall: Call = okHttpClient.newCall(request)
 
         try {
             val resultString = newCall.execute().body().use { it?.string() }

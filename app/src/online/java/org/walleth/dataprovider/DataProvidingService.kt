@@ -111,7 +111,7 @@ class DataProvidingService : LifecycleServiceWorkaround() {
 
     private fun relayTransactionsIfNeeded() {
         appDatabase.transactions.getAllToRelayLive().nonNull().observe(this) { transactionList ->
-            transactionList.filter { it.transactionState.isPending }.forEach { sendTransaction(it) }
+            transactionList.forEach { sendTransaction(it) }
         }
     }
 
