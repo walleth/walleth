@@ -165,6 +165,8 @@ class DataProvidingService : LifecycleServiceWorkaround() {
 
                     } catch (rpcException: EthereumRPCException) {
 
+                    } catch (iae: IllegalArgumentException) {
+                        Log.e("error when getting balance", iae)
                     }
 
                 }
