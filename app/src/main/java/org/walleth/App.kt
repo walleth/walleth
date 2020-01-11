@@ -32,6 +32,7 @@ import org.koin.dsl.module
 import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
+import org.walleth.activities.findChainsWithTincubethSupportAndStore
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.*
 import org.walleth.data.addresses.*
@@ -176,38 +177,40 @@ open class App : MultiDexApplication() {
                     currentTokenProvider.setCurrent(rootToken)
                     chainInfoProvider.removeObserver(this)
                 }
+
+                GlobalScope.launch(Dispatchers.Default) {
+                    if (settings.dataVersion < 4) {
+                        findChainsWithTincubethSupportAndStore(appDatabase)
+                    }
+                    if (settings.dataVersion < 3) {
+                        val all = appDatabase.chainInfo.getAll()
+                        var currentMin = all.filter { it.order != null }.minBy { it.order!! }?.order?:0
+                        all.forEach {
+                            if (it.order == null) {
+                                it.order = currentMin
+                            }
+                            currentMin -= 10
+                        }
+                        appDatabase.chainInfo.upsert(all)
+                    }
+                    if (settings.dataVersion < 1) {
+                        appDatabase.addressBook.all().forEach {
+                            if (it.keySpec == null || it.keySpec?.isBlank() == true) {
+                                val type = if (keyStore.hasKeyForForAddress(it.address)) ACCOUNT_TYPE_BURNER else ACCOUNT_TYPE_WATCH_ONLY
+                                it.keySpec = AccountKeySpec(type).toJSON()
+                                appDatabase.addressBook.upsert(it)
+                            } else if (it.keySpec?.startsWith("m") == true) {
+                                it.keySpec = AccountKeySpec(ACCOUNT_TYPE_TREZOR, derivationPath = it.keySpec).toJSON()
+                                appDatabase.addressBook.upsert(it)
+                            }
+                        }
+                    }
+                    settings.dataVersion = 4
+                }
             }
         }
 
         chainInfoProvider.observeForever(initialChainObserver)
-
-        GlobalScope.launch(Dispatchers.Default) {
-            if (settings.dataVersion < 3) {
-                val all = appDatabase.chainInfo.getAll()
-                var currentMin = all.filter { it.order != null }.minBy { it.order!! }?.order?:0
-                all.forEach {
-                    if (it.order == null) {
-                        it.order = currentMin
-                    }
-                    currentMin -= 10
-                }
-                appDatabase.chainInfo.upsert(all)
-            }
-            if (settings.dataVersion < 1) {
-                appDatabase.addressBook.all().forEach {
-                    if (it.keySpec == null || it.keySpec?.isBlank() == true) {
-                        val type = if (keyStore.hasKeyForForAddress(it.address)) ACCOUNT_TYPE_BURNER else ACCOUNT_TYPE_WATCH_ONLY
-                        it.keySpec = AccountKeySpec(type).toJSON()
-                        appDatabase.addressBook.upsert(it)
-                    } else if (it.keySpec?.startsWith("m") == true) {
-                        it.keySpec = AccountKeySpec(ACCOUNT_TYPE_TREZOR, derivationPath = it.keySpec).toJSON()
-                        appDatabase.addressBook.upsert(it)
-                    }
-                }
-            }
-        }
-
-        settings.dataVersion = 2
 
     }
 

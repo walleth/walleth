@@ -5,16 +5,16 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import okhttp3.OkHttpClient
 import org.kethereum.functions.encodeRLP
-import org.kethereum.rpc.HttpEthereumRPC
+import org.kethereum.model.ChainId
 import org.koin.core.KoinComponent
 import org.koin.core.inject
 import org.komputing.khex.extensions.toHexString
 import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
+import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.setHash
-import org.walleth.util.getRPCEndpoint
 
 class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters)
     : CoroutineWorker(appContext, workerParams), KoinComponent {
@@ -22,6 +22,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
 
     private val okHttpClient: OkHttpClient by inject()
     private val appDatabase: AppDatabase by inject()
+    private val rpcProvider: RPCProvider by inject()
 
     override suspend fun doWork(): Result {
 
@@ -34,14 +35,13 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
         }
 
         val chain = transaction.transaction.chain
-        val baseURL = chain?.let { appDatabase.chainInfo.getByChainId(it)?.getRPCEndpoint() }
 
-        if (baseURL == null) {
-            transaction.setError("RPC url not found for chain $chain")
+        val rpc = chain?.let { rpcProvider.getForChain(ChainId(it)) }
+
+        if (rpc == null) {
+            transaction.setError("RPC not found for chain $chain")
             return Result.failure()
         }
-
-        val rpc = HttpEthereumRPC(baseURL, okHttpClient)
 
         try {
             val result = rpc.sendRawTransaction(transaction.transaction.encodeRLP(transaction.signatureData).toHexString())

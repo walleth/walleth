@@ -23,6 +23,7 @@ object KotprefSettings : KotprefModel(), Settings {
     override var filterAddressesKeyOnly by booleanPref(default = false)
     override var filterFaucet  by booleanPref(default = false)
     override var filterFastFaucet by booleanPref(default = false)
+    override var filterTincubeth by booleanPref(default = false)
 
     override var chain by longPref(5L)
     override var accountAddress by nullableStringPref(null)

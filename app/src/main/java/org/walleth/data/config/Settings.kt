@@ -26,6 +26,7 @@ interface Settings {
 
     var filterFaucet: Boolean
     var filterFastFaucet: Boolean
+    var filterTincubeth: Boolean
 
     var toolbarBackgroundColor: Int
     var toolbarForegroundColor: Int
