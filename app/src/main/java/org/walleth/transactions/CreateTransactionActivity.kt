@@ -23,6 +23,7 @@ import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.bouncycastle.math.ec.ECConstants.TWO
 import org.kethereum.eip137.ENSName
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
@@ -387,7 +388,11 @@ class CreateTransactionActivity : BaseSubActivity() {
                     val result = withContext(Dispatchers.Default) {
                         rpc?.estimateGas(createTransaction().copy(gasLimit = null)) ?: throw NullPointerException()
                     }
-                    gas_limit_input.setText(result.toString())
+                    if (result != valueOf(21000)) {
+                        gas_limit_input.setText(result.multiply(TWO).toString())
+                    } else {
+                        gas_limit_input.setText(result.toString())
+                    }
                 } catch (e: Exception) {
                     var message = "You might want to set it manually."
                     e.message?.let {
