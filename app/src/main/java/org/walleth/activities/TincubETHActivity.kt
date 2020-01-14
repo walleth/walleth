@@ -5,14 +5,11 @@ import android.widget.SeekBar
 import in3.IN3
 import kotlinx.android.synthetic.main.activity_in3.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.model.ChainId
 import org.kethereum.rpc.BaseEthereumRPC
 import org.kethereum.rpc.RPCTransport
 import org.koin.android.ext.android.inject
-import org.ligi.kaxtui.alert
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
@@ -59,17 +56,6 @@ class TincubETHActivity : BaseSubActivity() {
 
         supportActionBar?.subtitle = "TinCubETH preferences"
 
-        scan_chains.setOnClickListener {
-            GlobalScope.launch(Dispatchers.IO) {
-
-                val newChains = findChainsWithTincubethSupportAndStore(appDatabase)
-
-                GlobalScope.launch(Dispatchers.Main) {
-                    alert("found " + newChains.size + " chains " + newChains.map { it.chainId } + " with tincubed support.")
-                }
-            }
-
-        }
         security_seek.max = 29
         security_seek.setOnSeekBarChangeListener(
                 object : SeekBar.OnSeekBarChangeListener {

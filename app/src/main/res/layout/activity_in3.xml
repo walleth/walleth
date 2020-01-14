@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:padding="16dp"
         android:orientation="vertical"
-        tools:context="org.walleth.activities.InfoActivity">
+        tools:context="org.walleth.activities.TincubETHActivity">
 
 
     <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content">
@@ -25,13 +25,21 @@
                     android:layout_gravity="center"
                     app:srcCompat="@drawable/ic_tincubeth_logo"           />
 
-
-            <com.google.android.material.button.MaterialButton
-                    android:id="@+id/scan_chains"
-                    style="@style/MaterialButtonStyle"
+            <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="scan for chains with TincubETH support"/>
+                android:orientation="horizontal">
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="8dp"
+                    app:srcCompat="@drawable/ic_warning_orange_24dp"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WARNING - Tincubeth support is experimental!\nFor the time being assume the lowest security and privacy like when you would use INFURA"/>
+
+            </LinearLayout>
 
             <TextView
                     android:text="Security"
