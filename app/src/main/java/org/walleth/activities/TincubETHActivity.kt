@@ -57,48 +57,36 @@ class TincubETHActivity : BaseSubActivity() {
         supportActionBar?.subtitle = "TinCubETH preferences"
 
         security_seek.max = 29
-        security_seek.setOnSeekBarChangeListener(
-                object : SeekBar.OnSeekBarChangeListener {
-                    override fun onStartTrackingTouch(p0: SeekBar?) {
-                    }
+        val listener = object : SeekBar.OnSeekBarChangeListener {
+            override fun onStartTrackingTouch(p0: SeekBar?) {}
 
-                    override fun onStopTrackingTouch(p0: SeekBar?) {
-                    }
+            override fun onStopTrackingTouch(p0: SeekBar?) {}
 
-                    override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                        security_details_text.text = when (p1 / 10) {
-                            0 -> "-> Not secure but cheap and fast"
-                            1 -> "-> More secure but also more expensive and slower"
-                            2 -> "-> Most secure but also most expensive and slow"
-                            else -> TODO()
-                        }
-                    }
-
-                })
+            override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
+                refresh()
+            }
+        }
+        security_seek.setOnSeekBarChangeListener(listener)
 
         privacy_seek.max = 29
-        privacy_seek.setOnSeekBarChangeListener(
-                object : SeekBar.OnSeekBarChangeListener {
-                    override fun onStartTrackingTouch(p0: SeekBar?) {
-                    }
-
-                    override fun onStopTrackingTouch(p0: SeekBar?) {
-                    }
-
-                    override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
-                        privacy_details_text.text = when (p1 / 10) {
-                            0 -> "-> Not private but cheap and fast"
-                            1 -> "-> More private but also more expensive and slower"
-                            2 -> "-> Most private but also most expensive and slow"
-                            else -> TODO()
-                        }
-                    }
-
-                })
-
+        privacy_seek.setOnSeekBarChangeListener(listener)
+        refresh()
     }
 
-
+    fun refresh() {
+        security_details_text.text = when (security_seek.progress / 10) {
+            0 -> "-> Weak security but cheaper and faster"
+            1 -> "-> Better security but also more expensive and slower"
+            2 -> "-> Maximum security but also most expensive and slow"
+            else -> TODO()
+        }
+        privacy_details_text.text = when (privacy_seek.progress / 10) {
+            0 -> "-> Weak privacy but faster and cheaper"
+            1 -> "-> Better privacy but also more expensive and slower"
+            2 -> "-> Maximum privacy but also most expensive and slow"
+            else -> TODO()
+        }
+    }
 }
 
 suspend fun findChainsWithTincubethSupportAndStore(appDatabase: AppDatabase, in3: IN3RPC = IN3RPC()): List<ChainInfo> {
