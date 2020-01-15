@@ -1,5 +1,6 @@
 package org.walleth.activities
 
+import android.content.Context
 import android.os.Bundle
 import android.widget.SeekBar
 import in3.IN3
@@ -19,8 +20,8 @@ import org.walleth.data.rpc.KEY_IN3_RPC
 import org.walleth.util.hasTincubethSupport
 
 
-class IN3Transport : RPCTransport {
-    private val in3 by lazy { IN3() }
+class IN3Transport(val context: Context) : RPCTransport {
+    private val in3 by lazy { IN3(context) }
 
     fun setChain(chainId: ChainId) {
         in3.chainId = chainId.value.toLong()
@@ -38,7 +39,7 @@ class IN3Transport : RPCTransport {
     }
 }
 
-class IN3RPC(chainId: ChainId? = null, val transport: IN3Transport = IN3Transport()) : BaseEthereumRPC(transport) {
+class IN3RPC(context: Context, chainId: ChainId? = null, val transport: IN3Transport = IN3Transport(context)) : BaseEthereumRPC(transport) {
     init {
         chainId?.let { transport.setChain(it) }
     }
@@ -89,7 +90,7 @@ class TincubETHActivity : BaseSubActivity() {
     }
 }
 
-suspend fun findChainsWithTincubethSupportAndStore(appDatabase: AppDatabase, in3: IN3RPC = IN3RPC()): List<ChainInfo> {
+suspend fun findChainsWithTincubethSupportAndStore(context: Context, appDatabase: AppDatabase, in3: IN3RPC = IN3RPC(context)): List<ChainInfo> {
     val res = findTincubethChains(appDatabase, in3)
     res.forEach {
         if (!it.hasTincubethSupport()) {

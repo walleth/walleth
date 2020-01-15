@@ -79,7 +79,7 @@ open class App : MultiDexApplication() {
         single { keyStore as KeyStore }
         single { KotprefSettings as Settings }
         single { CurrentTokenProvider(get()) }
-        single { RPCProviderImpl(get(), get(), get()) as RPCProvider }
+        single { RPCProviderImpl(this@App, get(), get(), get()) as RPCProvider }
         single { ENSProviderImpl(get()) as ENSProvider }
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
@@ -180,11 +180,11 @@ open class App : MultiDexApplication() {
 
                 GlobalScope.launch(Dispatchers.Default) {
                     if (settings.dataVersion < 4) {
-                        findChainsWithTincubethSupportAndStore(appDatabase)
+                        findChainsWithTincubethSupportAndStore(this@App, appDatabase)
                     }
                     if (settings.dataVersion < 3) {
                         val all = appDatabase.chainInfo.getAll()
-                        var currentMin = all.filter { it.order != null }.minBy { it.order!! }?.order?:0
+                        var currentMin = all.filter { it.order != null }.minBy { it.order!! }?.order ?: 0
                         all.forEach {
                             if (it.order == null) {
                                 it.order = currentMin

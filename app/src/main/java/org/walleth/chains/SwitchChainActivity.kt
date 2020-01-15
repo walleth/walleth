@@ -114,7 +114,7 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
                             question(configurator = { setMessage("Really Import ${newList.size} Elements?") }, action = {
                                 lifecycleScope.launch(Dispatchers.Main) {
                                     appDatabase.chainInfo.upsert(newList)
-                                    findChainsWithTincubethSupportAndStore(appDatabase)
+                                    findChainsWithTincubethSupportAndStore(this@SwitchChainActivity,appDatabase)
                                     refreshAdapter()
                                 }
                             })

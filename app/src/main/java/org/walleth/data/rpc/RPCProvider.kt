@@ -1,5 +1,6 @@
 package org.walleth.data.rpc
 
+import android.content.Context
 import okhttp3.OkHttpClient
 import org.kethereum.model.ChainId
 import org.kethereum.rpc.BaseEthereumRPC
@@ -19,14 +20,15 @@ interface RPCProvider {
     suspend fun getForChain(chainId: ChainId): EthereumRPC?
 }
 
-class RPCProviderImpl(var network: ChainInfoProvider,
+class RPCProviderImpl(val context: Context,
+                      var network: ChainInfoProvider,
                       var appDatabase: AppDatabase,
                       var okHttpClient: OkHttpClient) : RPCProvider {
 
     private fun ChainInfo.get(): BaseEthereumRPC? {
 
         return if (rpc.contains(KEY_IN3_RPC)) {
-            IN3RPC(ChainId(chainId))
+            IN3RPC(context, ChainId(chainId))
         } else getRPCEndpoint()?.let {
             BaseEthereumRPC(ConsoleLoggingTransportWrapper(HttpTransport(it, okHttpClient)))
         }
