@@ -130,7 +130,7 @@ dependencies {
 
     withGethImplementation "org.ethereum:geth:1.8.8"
 
-    implementation 'androidx.paging:paging-runtime:2.1.0'
+    implementation 'androidx.paging:paging-runtime:2.1.1'
 
     implementation "com.github.komputing.kethereum:functions:$kethereum_version"
     implementation "com.github.komputing.kethereum:model:$kethereum_version"
