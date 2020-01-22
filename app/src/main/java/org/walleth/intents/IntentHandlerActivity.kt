@@ -99,8 +99,8 @@ class IntentHandlerActivity : WallethActivity() {
     }
 
 
-    private fun process681(erC681: ERC681) {
-        if (erC681.address == null || erC681.isTokenTransfer() || erC681.value != null && erC681.value != ZERO) {
+    private fun process681(erc681: ERC681) {
+        if (erc681.function != null || erc681.address == null || erc681.isTokenTransfer() || erc681.value != null && erc681.value != ZERO) {
             startActivityForResult(Intent(this, CreateTransactionActivity::class.java).apply {
                 data = intent.data
             }, REQUEST_CODE_CREATE_TX)
@@ -110,7 +110,7 @@ class IntentHandlerActivity : WallethActivity() {
                     .setItems(R.array.scan_hex_choices) { _, which ->
                         when (which) {
                             0 -> {
-                                startCreateAccountActivity(erC681.address!!)
+                                startCreateAccountActivity(erc681.address!!)
                                 finish()
                             }
                             1 -> {
