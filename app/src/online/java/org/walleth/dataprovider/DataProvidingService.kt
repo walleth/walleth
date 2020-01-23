@@ -141,12 +141,12 @@ class DataProvidingService : LifecycleServiceWorkaround() {
             currentChainId == null -> Log.e("no current chain is null")
             rpc == null -> Log.e("no RPC found")
             else -> {
+                try {
+                    val blockNumber = rpc.blockNumber()
+                    if (blockNumber != null) {
+                        val blockNumberAsHex = blockNumber.toHexString()
 
-                val blockNumber = rpc.blockNumber()
-                if (blockNumber != null) {
-                    val blockNumberAsHex = blockNumber.toHexString()
 
-                    try {
                         val balance = if (currentToken.isRootToken()) {
                             rpc.getBalance(address, blockNumberAsHex)
                         } else {
@@ -162,13 +162,11 @@ class DataProvidingService : LifecycleServiceWorkaround() {
                                     )
                             )
                         }
-
-                    } catch (rpcException: EthereumRPCException) {
-
-                    } catch (iae: IllegalArgumentException) {
-                        Log.e("error when getting balance", iae)
                     }
+                } catch (rpcException: EthereumRPCException) {
 
+                } catch (iae: IllegalArgumentException) {
+                    Log.e("error when getting balance", iae)
                 }
             }
         }
