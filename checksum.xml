@@ -103,6 +103,9 @@
     <dependency group='androidx.activity' module='activity' version='1.0.0' extension='aar'>
       <sha512>172D4C7BED3C5D646BBE807E5FBE45FC619DF2F80D0E01DC1BA01AD308DC4CDE46F03A4C954FD08AA9E932CFB53A06E7EA05A198BBBE71D410841D37C067FDCE</sha512>
     </dependency>
+    <dependency group='androidx.activity' module='activity' version='1.1.0' extension='aar'>
+      <sha512>2AC33A29F8739D32D1880DBD1B5F87A5A8E18105B55DA9AFD714C0AB1D666AAD6621322291388B938BB56E15E3F5066CFF255DC4026BAA46111D93CA9CE2EE12</sha512>
+    </dependency>
     <dependency group='androidx.annotation' module='annotation' version='1.0.0'>
       <sha512>4B96C79E3DC883713E2BED7E6C39767672B965B99791671DA5DB3C82A45295A9DD84B6E61BB27137D1837D2595C0D2AE36B5B448F156990462C49D305639CC5C</sha512>
     </dependency>
@@ -223,6 +226,9 @@
     <dependency group='androidx.fragment' module='fragment' version='1.1.0' extension='aar'>
       <sha512>325C1AA063FDB5FE7249EFB10B10A6F3D7E83E2ABD67F26D6181A9365523AA3B4325BB7637FE6910BB26615FDB95A2231CD1759F73E34D937E67986C79E18CA7</sha512>
     </dependency>
+    <dependency group='androidx.fragment' module='fragment' version='1.2.0' extension='aar'>
+      <sha512>F6EAA6E881E0F7218B9A45BBA7FE50CCF7525415D75AF3315BEC09ECAE863BD4CF77E1DE8B0EC325B14224D3E3754CE60E1C87CFF8F75AAB432AAD7A92308338</sha512>
+    </dependency>
     <dependency group='androidx.interpolator' module='interpolator' version='1.0.0' extension='aar'>
       <sha512>DE3FEF5EACD68CA5E263BB32D795427630796B6CF219926F7633FF88F8C5BE34BD6A767666B3342518F69A0BD371D7C69265312193F41877A8DFB72840201A3F</sha512>
     </dependency>
@@ -243,6 +249,9 @@
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-common' version='2.1.0'>
       <sha512>85C075BBAC011B107CF45F03469293B37B6ABF83C7F269C80194B6746B93B4CADC499AAB8970B69052F61863A33D0E77D141ECC1851938E7ECBD101D0C1B3255</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-common' version='2.2.0'>
+      <sha512>C69EDA78BE9AEB0C3A91A736EB2FC9AC3F51382BCAC769284728A2102B25CDC3A36EE30B342937C81F837CD8059B5D1458AB8EB616F8FA7A70AD9ABA6444533B</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-common' version='2.2.0-beta01'>
       <sha512>C69EDA78BE9AEB0C3A91A736EB2FC9AC3F51382BCAC769284728A2102B25CDC3A36EE30B342937C81F837CD8059B5D1458AB8EB616F8FA7A70AD9ABA6444533B</sha512>
@@ -265,11 +274,17 @@
     <dependency group='androidx.lifecycle' module='lifecycle-extensions' version='2.1.0' extension='aar'>
       <sha512>8E467AF24D0DB7B9A3E519D5A649145B454FFAF8D958C2938A18DCD1D7ACD409BF9DDFD3FB682A4FC39716B3680E320158EF537171506561C3582A8D3CEDA0E8</sha512>
     </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-extensions' version='2.2.0' extension='aar'>
+      <sha512>D64A5F837533F7168FFA0C6854F47EE955486E1214FC3F1011EED856F46D62B72FB50A96962EE8F7E182371BE84197E1F149CA7E65E543DF129484B7132E388A</sha512>
+    </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-livedata-core' version='2.0.0' extension='aar'>
       <sha512>A7056B9C6632C1731E2D07B3C8A7D59D636F1F9D39FB50185CD96C6554AD6C0BC80C85CA45EBD702B0DC3A34ADCBFBBDE42E9F6BC407019E4AC94667D71D3638</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-livedata-core' version='2.1.0' extension='aar'>
       <sha512>43C07CC1623387A805EF1C59832D5AE6126B3B41868ADB56E3AF85D31F14FFB5CA56C7899FF341F557DCB1046D787CCE1379D7C519500191F95FE80283DB0798</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-livedata-core' version='2.2.0' extension='aar'>
+      <sha512>97E98574AE01DE21481C7DD3062EDCF456EE4BA71BBE432740D31A4431AFE4FCEF8336F4F54CA4271BFDF624245094AD82C59D7DDB321A10F4DBACAEE8392271</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-livedata' version='2.0.0' extension='aar'>
       <sha512>233B93711639737B48D585EAE9D1F6C3AE02CF5C5AB0A41E7ABA259281376EF7E3D634301C8872516217797211E6407A5B85292FFCA23089A43800CF8429E093</sha512>
@@ -277,11 +292,17 @@
     <dependency group='androidx.lifecycle' module='lifecycle-livedata' version='2.1.0' extension='aar'>
       <sha512>AA0CCDF6B396C1CF651CB44EA4A36792D47720F40BD70830506EE1CBADC6304FE3AC2BA984169C3C5FA4116A46900566087E74ECAB48FF73F93AE18714B45409</sha512>
     </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-livedata' version='2.2.0' extension='aar'>
+      <sha512>C08BB04B8BE6422C735F694E96BD7DA1C527EB5C7E0562C312E08F4CCF7958082DD6CF465FA10221E8F09C0CACEE09D50D07D3FD9B0FC371A7C7211950C4CF69</sha512>
+    </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-process' version='2.0.0' extension='aar'>
       <sha512>D4DC052A2292D078BCFFF70EF58DC20348F4453EBBB7203EDFBF35AB8DB282C6317CC22CA790712AB8C4C78E223D1D3E92235BFA45A85BD575700C8146EE9647</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-process' version='2.1.0' extension='aar'>
       <sha512>83C9335C51B5C71B1BD2BB6B4E32CBA96C97B22184D38FBDDF178838CFA4CDEDC5F190D2C3B4C69B25E0CDB7F8B268654A3B33AA66D2680EC54D9B71F1929D7</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-process' version='2.2.0' extension='aar'>
+      <sha512>EE6B892DB3BCEBC948D1B17738BA7E830A6B7EFEF9846907BC5AAB4AEB5718AD3BACE30E9273F9BE1F9263108FAD2D26BC47BD97FAA1B081A8675BC104F4D9C9</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-runtime-ktx' version='2.2.0-beta01' extension='aar'>
       <sha512>C83B77CC5F61DAAEE765A0CBEDBEA4667B0E2CCE5F37601496859A2E4E7896A2B698AE61513059418358B7C2719C55057230CC14F4E48E77029271CD3BB7C8B5</sha512>
@@ -294,6 +315,9 @@
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-runtime-ktx' version='2.2.0-rc03' extension='aar'>
       <sha512>6173761A78B1E6AF10624D74C6EE3E2B1FCFBF04B8267CD363BDE4A577CBB89834AF60DED803FE8D0EE8AF606523F6DFAFC4CE5433C90DD56B6844CD82E79F10</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-runtime-ktx' version='2.2.0' extension='aar'>
+      <sha512>5C71A2222774A9884389D49CB64DA912120DAD7A1CFF701A5FB1054ABDB0AEAEF24A8A2566517460C614E3ADABAF068046E2A0EDDB060C727337C4E04DEDBEE0</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-runtime' version='2.0.0' extension='aar'>
       <sha512>AA399364B7A91FB6BA571695F9432C648305C552C053D9DE3A41411D6F90AD36FC59BA2887A47F9FD3C9FB8AD078237F7FB0DD1D34FBB5EBC68D025CDA152C19</sha512>
@@ -313,17 +337,29 @@
     <dependency group='androidx.lifecycle' module='lifecycle-runtime' version='2.2.0-rc03' extension='aar'>
       <sha512>50902AC07E7DAF05C3C12EB5DE04C2DD4F6BFE2B33AEB7F01D14FAB30F87D169AC6778122A3E3C526A1F77BDD79548BCBCE3885A5D96B90FC921F22EBD72B4A3</sha512>
     </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-runtime' version='2.2.0' extension='aar'>
+      <sha512>8EC98981AF2CC9EE91B1F744ECABFF9BC44100F3DBC184895D9E43C10A1F3A9B193ADFA309D977E0069DA5E6644C02EFEC9ECBDB040D0D81B09CEC0E16809F61</sha512>
+    </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-service' version='2.0.0' extension='aar'>
       <sha512>3FBCDDC3D552CA4EBFE2F81C1F721F304D7524B1006253CBFC39A31E184BFA831DE1B22488E3BD2750AA9EFD5F6397D8F43AECBE2A3C30743894980A701EA7AD</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-service' version='2.1.0' extension='aar'>
       <sha512>190433FC3A578CAAFCAA093C45541C3DA6B85BFF0516B0FB5513C5587D135EC2FAA23FFB152456D24492B9A5061FFA56457DFF9A9070CCFF0FFB11DFCD478</sha512>
     </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-service' version='2.2.0' extension='aar'>
+      <sha512>5B9BFCB9B2FCC163411BD7DD60627CDB850F1446C44589A2A651B2B3F52A666F4386DACF7DB77217DFF6183AD8908812AA4F95D456053EDBD18088177CE90543</sha512>
+    </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-viewmodel-ktx' version='2.1.0-beta01' extension='aar'>
       <sha512>EFCA90A49C0F04C7D319BFE1EA612C63A6E3B5323F5F9C1B3D375928FA32851E51373095EBB24F954B390D4D2BFB3AE5DFFDEC6C4751FC890A85C881D4FE0121</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-viewmodel-ktx' version='2.1.0' extension='aar'>
       <sha512>63929A21702B68CE17246CF488EF87898AB411A98B056EDE428BBB46BC428C07BDA624FA1C5E20E51B904C045930C4EBE7FC64435BFEF5136336E65E68879200</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-viewmodel-ktx' version='2.2.0' extension='aar'>
+      <sha512>D7875F290DFCCD68E714F8CD1EB8626A7A372D6E70C469A703E7313869F3D4537000C6CF901FF5FAB634F8A39712FC7C3CDAF41B18C361D2AA7542B05FD64C12</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-viewmodel-savedstate' version='1.0.0' extension='aar'>
+      <sha512>8FBCAC2192049AA6DFBC28259E55F7D4328ACB55C3586507E83F48C511B787C301DA82365C2DEA1DABBC326444CDCD3C852C017A0D48B7292093BB7754A68327</sha512>
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-viewmodel' version='2.0.0' extension='aar'>
       <sha512>82CE8692E69330D65E9773751F3941B74996C539002FE7D2ADD94CE2154BB320B71370E8A23CD7FFD612FAAA77BEAFAD3D7B6A58F1ED84B6D0FC0A6D298B1941</sha512>
@@ -333,6 +369,9 @@
     </dependency>
     <dependency group='androidx.lifecycle' module='lifecycle-viewmodel' version='2.1.0' extension='aar'>
       <sha512>1F57C1C11C122BCD302B63B2713B682D06D167682C75062ADFDE9BCDEC68B5F411D30B4D5421B116C02F7B3BBF36A6B793C995D358D716CD2A07E1B38BAA9D09</sha512>
+    </dependency>
+    <dependency group='androidx.lifecycle' module='lifecycle-viewmodel' version='2.2.0' extension='aar'>
+      <sha512>27AD2AFD40D3E89E1191315CEC1D35DD7E15D35B30D1140EADFF5D76F504D0569714F883A6B765E914EE568BED17082ECB538DE923B25DD3090F3A35A622956D</sha512>
     </dependency>
     <dependency group='androidx.loader' module='loader' version='1.0.0' extension='aar'>
       <sha512>DDE64673772F75349905251E8914BE29836A267317B22E123017429D7BEA3DABA579950D9D646FCF214126455FB0072EF4EAD872E250115025B50D042A28EFF6</sha512>
