@@ -154,6 +154,7 @@ dependencies {
     implementation "com.github.komputing.kethereum:etherscan:$kethereum_version"
     implementation "com.github.komputing.kethereum:rlp:$kethereum_version"
     implementation "com.github.komputing.kethereum:rpc:$kethereum_version"
+    implementation "com.github.komputing.kethereum:rpc_min3:$kethereum_version"
     implementation "com.github.komputing.kethereum:wallet:$kethereum_version"
     implementation "com.github.komputing.kethereum:types:$kethereum_version"
     implementation "com.github.komputing.kethereum:keystore:$kethereum_version"
@@ -230,8 +231,6 @@ dependencies {
 
     implementation "androidx.room:room-runtime:$room_version"
     implementation "androidx.room:room-ktx:$room_version"
-
-    implementation "com.github.tincubeth:android:0.0.5"
 
     kapt "androidx.room:room-compiler:$room_version"
 

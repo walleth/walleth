@@ -3,13 +3,9 @@ package org.walleth.activities
 import android.content.Context
 import android.os.Bundle
 import android.widget.SeekBar
-import in3.IN3
 import kotlinx.android.synthetic.main.activity_in3.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import org.kethereum.model.ChainId
-import org.kethereum.rpc.BaseEthereumRPC
-import org.kethereum.rpc.RPCTransport
 import org.koin.android.ext.android.inject
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R
@@ -18,33 +14,8 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.rpc.KEY_IN3_RPC
 import org.walleth.util.hasTincubethSupport
-
-
-class IN3Transport(val context: Context) : RPCTransport {
-    private val in3 by lazy { IN3(context) }
-
-    fun setChain(chainId: ChainId) {
-        in3.chainId = chainId.value.toLong()
-    }
-
-    override fun call(payload: String): String? = try {
-        in3.send(payload).let { result ->
-            when {
-                result.startsWith("0x") -> """{"result":"$result"}"""
-                else -> """{"result":$result}"""
-            }
-        }
-    } catch (e: Exception) {
-        null
-    }
-}
-
-class IN3RPC(context: Context, chainId: ChainId? = null, val transport: IN3Transport = IN3Transport(context)) : BaseEthereumRPC(transport) {
-    init {
-        chainId?.let { transport.setChain(it) }
-    }
-}
-
+import java.math.BigDecimal.ONE
+import java.math.BigInteger
 
 class TincubETHActivity : BaseSubActivity() {
 
@@ -90,8 +61,8 @@ class TincubETHActivity : BaseSubActivity() {
     }
 }
 
-suspend fun findChainsWithTincubethSupportAndStore(context: Context, appDatabase: AppDatabase, in3: IN3RPC = IN3RPC(context)): List<ChainInfo> {
-    val res = findTincubethChains(appDatabase, in3)
+suspend fun findChainsWithTincubethSupportAndStore(context: Context, appDatabase: AppDatabase): List<ChainInfo> {
+    val res = findTincubethChains(appDatabase)
     res.forEach {
         if (!it.hasTincubethSupport()) {
             appDatabase.chainInfo.upsert(it.copy(rpc = it.rpc + KEY_IN3_RPC))
@@ -100,18 +71,9 @@ suspend fun findChainsWithTincubethSupportAndStore(context: Context, appDatabase
     return res
 }
 
-private suspend fun findTincubethChains(appDatabase: AppDatabase, in3: IN3RPC) = withContext(Dispatchers.IO) {
+private suspend fun findTincubethChains(appDatabase: AppDatabase) = withContext(Dispatchers.IO) {
     val res = appDatabase.chainInfo.getAll().filter {
-        try {
-
-            in3.transport.setChain(ChainId(it.chainId))
-            in3.clientVersion() != null
-        } catch (e: Exception) {
-            // unfortunately it is that generic if a chain does not exist " java.lang.Exception: E"
-            e.printStackTrace()
-            false
-        }
-
+        it.chainId == ONE || it.chainId == BigInteger.valueOf(5L)
     }
     Log.i("TincubethLog " + res.size + " / " + appDatabase.chainInfo.getAll().size)
     res

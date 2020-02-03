@@ -7,11 +7,15 @@ import org.kethereum.rpc.BaseEthereumRPC
 import org.kethereum.rpc.ConsoleLoggingTransportWrapper
 import org.kethereum.rpc.EthereumRPC
 import org.kethereum.rpc.HttpTransport
-import org.walleth.activities.IN3RPC
+import org.kethereum.rpc.min3.GOERLI_BOOTNODES
+import org.kethereum.rpc.min3.MAINNET_BOOTNODES
+import org.kethereum.rpc.min3.MIN3RPC
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.util.getRPCEndpoint
+import java.math.BigInteger
+import java.math.BigInteger.ONE
 
 const val KEY_IN3_RPC = "in3"
 
@@ -27,8 +31,13 @@ class RPCProviderImpl(val context: Context,
 
     private fun ChainInfo.get(): BaseEthereumRPC? {
 
-        return if (rpc.contains(KEY_IN3_RPC)) {
-            IN3RPC(context, ChainId(chainId))
+        return if (rpc.contains(KEY_IN3_RPC) && (chainId == ONE || chainId == BigInteger.valueOf(5))) {
+            val bootNodes = when (chainId) {
+                ONE -> MAINNET_BOOTNODES
+                BigInteger.valueOf(5L) -> GOERLI_BOOTNODES
+                else -> throw(IllegalArgumentException("Invalid chainId for IN3 - this MUST NOT happen"))
+            }
+            MIN3RPC(bootNodes)
         } else getRPCEndpoint()?.let {
             BaseEthereumRPC(ConsoleLoggingTransportWrapper(HttpTransport(it, okHttpClient)))
         }
