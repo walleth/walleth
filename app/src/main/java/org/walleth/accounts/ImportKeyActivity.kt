@@ -30,6 +30,7 @@ import org.komputing.khex.model.HexString
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walleth.R
+import org.walleth.accounts.KeyType.*
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
@@ -61,20 +62,17 @@ open class ImportKeyActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_import_key)
 
-        var type = KeyType.WORDLIST.toString()
+        var type = WORDLIST.toString()
         intent.getParcelableExtra<AccountKeySpec>(EXTRA_KEY_ACCOUNTSPEC)?.let { spec ->
 
             spec.initPayload?.split(SERIALISATION_DELIMITER)?.let { params ->
                 key_content.setText(params.last())
                 type = params.first()
-
-
             }
-
         }
 
-        type_wordlist_select.isChecked = KeyType.valueOf(type) == KeyType.WORDLIST
-        type_json_select.isChecked = KeyType.valueOf(type) == KeyType.JSON
+        type_wordlist_select.isChecked = valueOf(type) == WORDLIST
+        type_json_select.isChecked = valueOf(type) == JSON
         type_ecdsa_select.isChecked = !type_json_select.isChecked && !type_wordlist_select.isChecked
 
         key_type_select.setOnCheckedChangeListener { _, _ ->
@@ -97,6 +95,7 @@ open class ImportKeyActivity : BaseSubActivity() {
         } else {
             R.string.key_input_key_hint
         })
+        key_container.isCounterEnabled = type_ecdsa_select.isChecked
     }
 
     private fun doImport() = lifecycleScope.launch(Dispatchers.Main) {
@@ -105,43 +104,56 @@ open class ImportKeyActivity : BaseSubActivity() {
         }
         importing = true
 
-        fab_progress_bar.visibility = View.VISIBLE
-        try {
+        val content = key_content.text.toString()
 
-            val importKey = withContext(Dispatchers.Default) {
-                val content = key_content.text.toString()
-                when {
-                    type_json_select.isChecked ->
-                        content.loadKeysFromWalletJsonString(password.text.toString())
-                    type_wordlist_select.isChecked -> {
-                        val mnemonicWords = dirtyPhraseToMnemonicWords(content)
-                        if (!mnemonicWords.validate(WORDLIST_ENGLISH)) {
-                            throw IllegalArgumentException("Mnemonic phrase not valid")
-                        }
-                        mnemonicWords.toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
-
-                    }
-                    else -> PrivateKey(HexString(content).hexToByteArray()).toECKeyPair()
-                }
-
-            }
-
-            if (importKey != null) {
-                val initPayload = importKey.privateKey.key.toHexString() + "/" + importKey.publicKey.key.toHexString()
-                val spec = AccountKeySpec(ACCOUNT_TYPE_IMPORT, initPayload = initPayload)
-
-                val intent = Intent(this@ImportKeyActivity, ImportAsActivity::class.java).putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
-                startActivityForResult(intent, REQUEST_CODE_IMPORT_AS)
-            } else {
-                AlertDialog.Builder(this@ImportKeyActivity).setMessage("Could not import key")
-                        .setTitle(getString(R.string.dialog_title_error)).show()
-            }
-
-        } catch (e: Exception) {
-            AlertDialog.Builder(this@ImportKeyActivity).setMessage(e.message)
-                    .setTitle(getString(R.string.dialog_title_error)).show()
+        val currentKeyType: KeyType = when {
+            type_json_select.isChecked -> JSON
+            type_ecdsa_select.isChecked -> ECDSA
+            type_wordlist_select.isChecked -> WORDLIST
+            else -> throw IllegalStateException("KeyType selection invalid") // should never happen
         }
 
+        if (currentKeyType == ECDSA && content.removePrefix("0x").length != 64) {
+            alert( title = getString(R.string.key_length_error),
+                    message = "The length of the ECDSA Key MUST be 64 characters (32 bytes) - but currently is ${content.length} characters")
+        } else {
+
+            fab_progress_bar.visibility = View.VISIBLE
+            try {
+
+                val importKey = withContext(Dispatchers.Default) {
+
+                    when (currentKeyType) {
+                        JSON -> content.loadKeysFromWalletJsonString(password.text.toString())
+                        WORDLIST -> {
+                            val mnemonicWords = dirtyPhraseToMnemonicWords(content)
+                            if (!mnemonicWords.validate(WORDLIST_ENGLISH)) {
+                                throw IllegalArgumentException("Mnemonic phrase not valid")
+                            }
+                            mnemonicWords.toKey(DEFAULT_ETHEREUM_BIP44_PATH).keyPair
+
+                        }
+                        ECDSA -> PrivateKey(HexString(content).hexToByteArray()).toECKeyPair()
+                    }
+
+                }
+
+                if (importKey != null) {
+                    val initPayload = importKey.privateKey.key.toHexString() + "/" + importKey.publicKey.key.toHexString()
+                    val spec = AccountKeySpec(ACCOUNT_TYPE_IMPORT, initPayload = initPayload)
+
+                    val intent = Intent(this@ImportKeyActivity, ImportAsActivity::class.java).putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
+                    startActivityForResult(intent, REQUEST_CODE_IMPORT_AS)
+                } else {
+                    AlertDialog.Builder(this@ImportKeyActivity).setMessage("Could not import key")
+                            .setTitle(getString(R.string.dialog_title_error)).show()
+                }
+
+            } catch (e: Exception) {
+                AlertDialog.Builder(this@ImportKeyActivity).setMessage(e.message)
+                        .setTitle(getString(R.string.dialog_title_error)).show()
+            }
+        }
         fab_progress_bar.visibility = View.INVISIBLE
         importing = false
     }

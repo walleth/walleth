@@ -264,5 +264,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="offline_transaction">Offline Transaction</string>
     <string name="debug">Debug</string>
     <string name="security_information">Security Information</string>
+    <string name="key_length_error">Key length error</string>
+    <string name="import_as_subtitle">Import as</string>
 
 </resources>

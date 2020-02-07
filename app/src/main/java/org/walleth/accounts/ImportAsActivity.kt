@@ -21,7 +21,7 @@ class ImportAsActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_account_type_select)
 
-        supportActionBar?.subtitle = "Import as"
+        supportActionBar?.subtitle = getString(R.string.import_as_subtitle)
 
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = AccountTypeAdapter(ACCOUNT_TYPE_LIST.filter { it.wrapsKey }, inSpec)
