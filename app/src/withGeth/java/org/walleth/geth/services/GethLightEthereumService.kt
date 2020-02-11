@@ -16,7 +16,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.ethereum.geth.*
-import org.kethereum.functions.encodeRLP
+import org.kethereum.extensions.transactions.encodeRLP
 import org.koin.android.ext.android.inject
 import org.ligi.tracedroid.logging.Log
 import org.walleth.R

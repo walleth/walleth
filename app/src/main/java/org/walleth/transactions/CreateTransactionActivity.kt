@@ -24,17 +24,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.bouncycastle.math.ec.ECConstants.TWO
-import org.kethereum.eip137.ENSName
+import org.kethereum.eip137.model.ENSName
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
 import org.kethereum.ens.ENS_ADDRESS_NOT_FOUND
 import org.kethereum.ens.isPotentialENSDomain
 import org.kethereum.erc55.hasValidERC55ChecksumOrNoChecksum
+import org.kethereum.erc55.isValid
 import org.kethereum.erc681.*
 import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.extensions.maybeHexToBigInteger
+import org.kethereum.extensions.startsWith
 import org.kethereum.extensions.toHexStringZeroPadded
-import org.kethereum.functions.*
+import org.kethereum.extensions.transactions.encodeRLP
+import org.kethereum.extensions.transactions.getTokenTransferTo
+import org.kethereum.extensions.transactions.getTokenTransferValue
+import org.kethereum.extensions.transactions.tokenTransferSignature
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
@@ -218,7 +223,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         intent.getStringExtra("data")?.let {
             val data = HexString(it).hexToByteArray()
 
-            if (data.toList().startsWith(tokenTransferSignature)) {
+            if (data.toList().startsWith(prefix = tokenTransferSignature)) {
                 currentERC681.function = "transfer"
 
                 val tmpTX = Transaction().apply {

@@ -12,12 +12,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.crypto.createEthereumKeyPair
 import org.kethereum.crypto.toAddress
-import org.kethereum.eip137.ENSName
+import org.kethereum.eip137.model.ENSName
 import org.kethereum.ens.isPotentialENSDomain
+import org.kethereum.erc55.isValid
 import org.kethereum.erc55.withERC55Checksum
 import org.kethereum.erc681.parseERC681
 import org.kethereum.erc831.isEthereumURLString
-import org.kethereum.functions.isValid
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
 import org.kethereum.model.ECKeyPair

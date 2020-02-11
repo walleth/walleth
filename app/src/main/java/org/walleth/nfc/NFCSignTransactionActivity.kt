@@ -8,7 +8,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.crypto.toAddress
-import org.kethereum.functions.encodeRLP
+import org.kethereum.extensions.transactions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.koin.android.ext.android.inject
 import org.komputing.khex.extensions.toHexString

@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONException
 import org.json.JSONObject
-import org.kethereum.functions.getTokenRelevantTo
+import org.kethereum.extensions.transactions.getTokenRelevantTo
 import org.kethereum.model.ChainId
 import org.kethereum.rpc.EthereumRPC
 import org.ligi.kaxt.letIf

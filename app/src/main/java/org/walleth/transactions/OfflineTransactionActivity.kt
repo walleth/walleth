@@ -18,13 +18,13 @@ import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.extensions.hexToBigInteger
 import org.kethereum.extensions.toHexString
-import org.kethereum.functions.rlp.*
-import org.kethereum.functions.toTransaction
-import org.kethereum.functions.toTransactionSignatureData
+import org.kethereum.extensions.transactions.toTransaction
+import org.kethereum.extensions.transactions.toTransactionSignatureData
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.ChainId
 import org.kethereum.model.SignatureData
 import org.kethereum.model.Transaction
+import org.kethereum.rlp.*
 import org.koin.android.ext.android.inject
 import org.komputing.khex.extensions.clean0xPrefix
 import org.komputing.khex.extensions.hexToByteArray

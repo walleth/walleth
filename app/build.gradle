@@ -132,7 +132,6 @@ dependencies {
 
     implementation 'androidx.paging:paging-runtime:2.1.1'
 
-    implementation "com.github.komputing.kethereum:functions:$kethereum_version"
     implementation "com.github.komputing.kethereum:model:$kethereum_version"
     implementation "com.github.komputing.kethereum:crypto:$kethereum_version"
     implementation "com.github.komputing.kethereum:bip32:$kethereum_version"
@@ -148,7 +147,8 @@ dependencies {
     implementation "com.github.komputing.kethereum:erc681:$kethereum_version"
     implementation "com.github.komputing.kethereum:erc831:$kethereum_version"
     implementation "com.github.komputing.kethereum:erc1328:$kethereum_version"
-    implementation "com.github.komputing.kethereum:extensions:$kethereum_version"
+    implementation "com.github.komputing.kethereum:extensions_kotlin:$kethereum_version"
+    implementation "com.github.komputing.kethereum:extensions_transactions:$kethereum_version"
     implementation "com.github.komputing.kethereum:keccak_shortcut:$kethereum_version"
     implementation "com.github.komputing.kethereum:method_signatures:$kethereum_version"
     implementation "com.github.komputing.kethereum:etherscan:$kethereum_version"
@@ -165,7 +165,7 @@ dependencies {
 
     implementation "com.github.komputing:khex:0.6"
 
-    implementation "com.github.walleth:KHardWareWallet:0.9.6"
+    implementation "com.github.walleth:KHardWareWallet:0.9.7"
     implementation 'com.squareup.okio:okio:2.4.0'
 
     implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
