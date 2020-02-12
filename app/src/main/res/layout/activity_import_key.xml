@@ -8,7 +8,7 @@
         android:layout_height="match_parent"
         android:padding="16dp"
         android:animateLayoutChanges="true"
-        tools:context="org.walleth.accounts.ImportKeyActivity">
+        tools:context=".accounts.ImportKeyActivity">
 
     <ScrollView
             android:layout_width="match_parent"

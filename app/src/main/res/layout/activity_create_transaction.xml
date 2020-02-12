@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:focusableInTouchMode="true"
-        tools:context="org.walleth.base_activities.CreateTransactionActivity">
+        tools:context=".transactions.CreateTransactionActivity">
 
     <ScrollView
             android:layout_width="match_parent"

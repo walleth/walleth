@@ -6,10 +6,8 @@
         android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:padding="@dimen/rythm2"
-        tools:context="org.walleth.base_activities.OverviewActivity">
-
+        tools:context="org.walleth.overview.OverviewActivity">
 
     <LinearLayout
             android:orientation="vertical"

@@ -21,7 +21,7 @@
         </com.google.android.material.appbar.AppBarLayout>
 
 
-        <include layout="@layout/activity_main"
+        <include layout="@layout/activity_overview"
                  app:layout_behavior="@string/appbar_scrolling_view_behavior"
                  android:layout_width="match_parent"
                  android:layout_height="match_parent"/>

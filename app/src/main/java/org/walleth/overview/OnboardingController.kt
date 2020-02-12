@@ -1,7 +1,7 @@
 package org.walleth.overview
 
 import android.app.Activity
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_overview.*
 import org.ligi.tracedroid.TraceDroid
 import org.ligi.tracedroid.sending.TraceDroidEmailSender
 import org.walleth.R
