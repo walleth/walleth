@@ -27,12 +27,11 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
-import org.walleth.tmp.LifecycleServiceWorkaround
 import org.walleth.workers.RelayTransactionWorker
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
-class DataProvidingService : LifecycleServiceWorkaround() {
+class DataProvidingService : LifecycleService() {
 
     private val okHttpClient: OkHttpClient by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()

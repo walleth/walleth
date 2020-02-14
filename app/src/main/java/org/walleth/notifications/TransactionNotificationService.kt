@@ -7,6 +7,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import androidx.core.app.NotificationCompat
+import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import org.kethereum.model.Address
@@ -17,10 +18,9 @@ import org.walleth.R
 import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.AddressBookEntry
 import org.walleth.data.transactions.TransactionEntity
-import org.walleth.tmp.LifecycleServiceWorkaround
 import org.walleth.transactions.getTransactionActivityIntentForHash
 
-class TransactionNotificationService : LifecycleServiceWorkaround() {
+class TransactionNotificationService : LifecycleService() {
 
     private val appDatabase: AppDatabase by inject()
 
