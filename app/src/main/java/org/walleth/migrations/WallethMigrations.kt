@@ -3,6 +3,13 @@ package org.walleth.migrations
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+class TransactionExtendingMigration : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE transactions ADD COLUMN blockNumber BLOB")
+        database.execSQL("ALTER TABLE transactions ADD COLUMN blockHash TEXT")
+    }
+}
+
 class ChainAddingAndRecreatingMigration(startVersion: Int) : RecreatingMigration(startVersion) {
     override fun migrate(database: SupportSQLiteDatabase) {
         super.migrate(database)

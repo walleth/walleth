@@ -18,9 +18,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.kethereum.erc681.generateURL
-import org.kethereum.functions.getTokenTransferTo
-import org.kethereum.functions.getTokenTransferValue
-import org.kethereum.functions.isTokenTransfer
+import org.kethereum.extensions.transactions.getTokenTransferTo
+import org.kethereum.extensions.transactions.getTokenTransferValue
+import org.kethereum.extensions.transactions.isTokenTransfer
 import org.kethereum.model.Address
 import org.ligi.trulesk.TruleskIntentRule
 import org.walleth.R

@@ -1,0 +1,435 @@
+{
+  "formatVersion": 1,
+  "database": {
+    "version": 6,
+    "identityHash": "a244fb624ae001006aa7e629b0ec8438",
+    "entities": [
+      {
+        "tableName": "addressbook",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`address` TEXT NOT NULL, `name` TEXT NOT NULL, `note` TEXT, `is_notification_wanted` INTEGER NOT NULL, `trezor_derivation_path` TEXT, `starred` INTEGER NOT NULL, `deleted` INTEGER NOT NULL, `fromUser` INTEGER NOT NULL, `order` INTEGER NOT NULL, PRIMARY KEY(`address`))",
+        "fields": [
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "note",
+            "columnName": "note",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "isNotificationWanted",
+            "columnName": "is_notification_wanted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "keySpec",
+            "columnName": "trezor_derivation_path",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "starred",
+            "columnName": "starred",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "deleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromUser",
+            "columnName": "fromUser",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "address"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "balances",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`address` TEXT NOT NULL, `tokenAddress` TEXT NOT NULL, `chain` BLOB NOT NULL, `block` INTEGER NOT NULL, `balance` BLOB NOT NULL, PRIMARY KEY(`address`, `chain`, `tokenAddress`))",
+        "fields": [
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "tokenAddress",
+            "columnName": "tokenAddress",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chain",
+            "columnName": "chain",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "block",
+            "columnName": "block",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "balance",
+            "columnName": "balance",
+            "affinity": "BLOB",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "address",
+            "chain",
+            "tokenAddress"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "chains",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `chainId` BLOB NOT NULL, `networkId` INTEGER NOT NULL, `shortName` TEXT NOT NULL, `rpc` TEXT NOT NULL, `faucets` TEXT NOT NULL, `infoURL` TEXT NOT NULL, `order` INTEGER, `starred` INTEGER NOT NULL, `softDeleted` INTEGER NOT NULL, `token_symbol` TEXT NOT NULL, `token_name` TEXT NOT NULL, `token_decimals` INTEGER NOT NULL, PRIMARY KEY(`chainId`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chainId",
+            "columnName": "chainId",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "networkId",
+            "columnName": "networkId",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "shortName",
+            "columnName": "shortName",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "rpc",
+            "columnName": "rpc",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "faucets",
+            "columnName": "faucets",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "infoURL",
+            "columnName": "infoURL",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "starred",
+            "columnName": "starred",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "softDeleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nativeCurrency.symbol",
+            "columnName": "token_symbol",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nativeCurrency.name",
+            "columnName": "token_name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "nativeCurrency.decimals",
+            "columnName": "token_decimals",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "chainId"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "tokens",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`name` TEXT NOT NULL, `symbol` TEXT NOT NULL, `address` TEXT NOT NULL, `decimals` INTEGER NOT NULL, `chain` BLOB NOT NULL, `softDeleted` INTEGER NOT NULL, `starred` INTEGER NOT NULL, `fromUser` INTEGER NOT NULL, `order` INTEGER NOT NULL, PRIMARY KEY(`address`, `chain`))",
+        "fields": [
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "symbol",
+            "columnName": "symbol",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "address",
+            "columnName": "address",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "decimals",
+            "columnName": "decimals",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "chain",
+            "columnName": "chain",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "deleted",
+            "columnName": "softDeleted",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "starred",
+            "columnName": "starred",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "fromUser",
+            "columnName": "fromUser",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "order",
+            "columnName": "order",
+            "affinity": "INTEGER",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "address",
+            "chain"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      },
+      {
+        "tableName": "transactions",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`hash` TEXT NOT NULL, `extraIncomingAffectedAddress` TEXT, `chain` BLOB, `creationEpochSecond` INTEGER, `from` TEXT, `gasLimit` BLOB, `gasPrice` BLOB, `input` BLOB NOT NULL, `nonce` BLOB, `to` TEXT, `txHash` TEXT, `value` BLOB, `blockHash` TEXT, `blockNumber` BLOB, `r` BLOB, `s` BLOB, `v` BLOB, `needsSigningConfirmation` INTEGER NOT NULL, `relayed` TEXT NOT NULL, `eventLog` TEXT, `isPending` INTEGER NOT NULL, `error` TEXT, PRIMARY KEY(`hash`))",
+        "fields": [
+          {
+            "fieldPath": "hash",
+            "columnName": "hash",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "extraIncomingAffectedAddress",
+            "columnName": "extraIncomingAffectedAddress",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.chain",
+            "columnName": "chain",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.creationEpochSecond",
+            "columnName": "creationEpochSecond",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.from",
+            "columnName": "from",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.gasLimit",
+            "columnName": "gasLimit",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.gasPrice",
+            "columnName": "gasPrice",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.input",
+            "columnName": "input",
+            "affinity": "BLOB",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transaction.nonce",
+            "columnName": "nonce",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.to",
+            "columnName": "to",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.txHash",
+            "columnName": "txHash",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.value",
+            "columnName": "value",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.blockHash",
+            "columnName": "blockHash",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transaction.blockNumber",
+            "columnName": "blockNumber",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "signatureData.r",
+            "columnName": "r",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "signatureData.s",
+            "columnName": "s",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "signatureData.v",
+            "columnName": "v",
+            "affinity": "BLOB",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transactionState.needsSigningConfirmation",
+            "columnName": "needsSigningConfirmation",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionState.relayed",
+            "columnName": "relayed",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionState.eventLog",
+            "columnName": "eventLog",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "transactionState.isPending",
+            "columnName": "isPending",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "transactionState.error",
+            "columnName": "error",
+            "affinity": "TEXT",
+            "notNull": false
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "hash"
+          ],
+          "autoGenerate": false
+        },
+        "indices": [],
+        "foreignKeys": []
+      }
+    ],
+    "views": [],
+    "setupQueries": [
+      "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'a244fb624ae001006aa7e629b0ec8438')"
+    ]
+  }
+}

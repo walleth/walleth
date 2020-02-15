@@ -90,6 +90,7 @@ class DataProvidingService : LifecycleService() {
                             }
 
                             queryRPCForBalance(address)
+                            queryRPCForTransactions()
                         } catch (ioe: IOException) {
                             Log.i("problem fetching data - are we online? ", ioe)
                         }
@@ -106,6 +107,19 @@ class DataProvidingService : LifecycleService() {
 
         relayTransactionsIfNeeded()
         return START_STICKY
+    }
+
+    private suspend fun queryRPCForTransactions() {
+
+        appDatabase.transactions.getAllPending().forEach { localTx ->
+            val rpc = rpcProvider.get()
+            val tx = rpc?.getTransactionByHash(localTx.hash)
+            if (tx?.transaction?.blockNumber != null) {
+                localTx.transactionState.isPending = false
+                appDatabase.transactions.upsert(localTx)
+            }
+            localTx.hash
+        }
     }
 
     private fun relayTransactionsIfNeeded() {

@@ -55,6 +55,9 @@ interface TransactionDAO {
     @Query("SELECT * from transactions WHERE r IS NOT NULL AND relayed=\"\" AND isPending=1")
     fun getAllToRelayLive(): LiveData<List<TransactionEntity>>
 
+    @Query("SELECT * from transactions WHERE isPending=1")
+    suspend fun getAllPending(): List<TransactionEntity>
+
     @Query("SELECT * from transactions WHERE hash = :hash COLLATE NOCASE")
     fun getByHash(hash: String): TransactionEntity?
 

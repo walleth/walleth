@@ -14,7 +14,7 @@ import org.walleth.data.tokens.TokenDAO;
 import org.walleth.data.transactions.TransactionDAO;
 import org.walleth.data.transactions.TransactionEntity;
 
-@Database(entities = {AddressBookEntry.class, Balance.class, ChainInfo.class, Token.class, TransactionEntity.class}, version = 5)
+@Database(entities = {AddressBookEntry.class, Balance.class, ChainInfo.class, Token.class, TransactionEntity.class}, version = 6)
 @TypeConverters({RoomTypeConverters.class})
 public abstract class AppDatabase extends RoomDatabase {
 
