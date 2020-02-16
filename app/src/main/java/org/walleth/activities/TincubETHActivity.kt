@@ -7,14 +7,12 @@ import kotlinx.android.synthetic.main.activity_in3.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
-import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.rpc.KEY_IN3_RPC
 import org.walleth.util.hasTincubethSupport
-import java.math.BigDecimal.ONE
 import java.math.BigInteger
 
 class TincubETHActivity : BaseSubActivity() {
@@ -73,8 +71,7 @@ suspend fun findChainsWithTincubethSupportAndStore(context: Context, appDatabase
 
 private suspend fun findTincubethChains(appDatabase: AppDatabase) = withContext(Dispatchers.IO) {
     val res = appDatabase.chainInfo.getAll().filter {
-        it.chainId == ONE || it.chainId == BigInteger.valueOf(5L)
+        it.chainId == BigInteger.ONE || it.chainId == BigInteger.valueOf(5L)
     }
-    Log.i("TincubethLog " + res.size + " / " + appDatabase.chainInfo.getAll().size)
     res
 }
