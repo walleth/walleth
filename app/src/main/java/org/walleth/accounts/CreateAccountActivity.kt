@@ -83,9 +83,13 @@ class CreateAccountActivity : BaseSubActivity() {
         fab.setOnClickListener {
             if (!isCreatingAccount) { // prevent problems by multi-clicking on FAB
                 if (!nameInput.hasText()) {
-                    nameInput.error = getString(R.string.please_enter_name)
-                    nameInput.requestFocus()
-                    return@setOnClickListener
+                    if (currentSpec.type != ACCOUNT_TYPE_BURNER) {
+                        nameInput.error = getString(R.string.please_enter_name)
+                        nameInput.requestFocus()
+                        return@setOnClickListener
+                    } else {
+                        nameInput.setText(R.string.burner_label)
+                    }
                 }
                 val importKey = currentSpec.initPayload?.let {
                     val split = it.split("/")
