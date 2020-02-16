@@ -91,7 +91,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
         super.onResume()
 
         lifecycleScope.launch {
-            appDatabase.addressBook.byAddress(currentAddressProvider.getCurrentNeverNull())?.getTrezorDerivationPath()?.let { trezorDerivationPath ->
+            currentBIP44 = appDatabase.addressBook.byAddress(currentAddressProvider.getCurrentNeverNull())?.getTrezorDerivationPath()?.let { trezorDerivationPath ->
                 BIP44(trezorDerivationPath)
             } ?: throw IllegalArgumentException("Starting TREZOR Activity without derivation path")
 
