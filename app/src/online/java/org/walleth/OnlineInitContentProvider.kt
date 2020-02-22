@@ -4,10 +4,9 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.lifecycle.ProcessLifecycleOwner
+import androidx.lifecycle.*
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.walleth.dataprovider.DataProvidingService
 
 class OnlineInitContentProvider : ContentProvider(), LifecycleObserver {
@@ -18,12 +17,18 @@ class OnlineInitContentProvider : ContentProvider(), LifecycleObserver {
     }
 
     private fun tryStartService() {
-        try {
-            context?.startService(Intent(context, DataProvidingService::class.java))
-            ProcessLifecycleOwner.get().lifecycle.removeObserver(this)
-        } catch (ise: IllegalStateException) {
-            // happens on android 8+ when app is not in foreground
-            ProcessLifecycleOwner.get().lifecycle.addObserver(this)
+        val lifecycle = ProcessLifecycleOwner.get().lifecycle
+        lifecycle.coroutineScope.launch {
+            while (!App.isInitialized) {
+                delay(500)
+            }
+            try {
+                context?.startService(Intent(context, DataProvidingService::class.java))
+                lifecycle.removeObserver(this@OnlineInitContentProvider)
+            } catch (ise: IllegalStateException) {
+                // happens on android 8+ when app is not in foreground
+                lifecycle.addObserver(this@OnlineInitContentProvider)
+            }
         }
     }
 

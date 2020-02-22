@@ -66,6 +66,8 @@ import javax.net.SocketFactory
 
 open class App : MultiDexApplication() {
 
+    private var isInitialized = false
+
     private val koinModule = module {
         single { Moshi.Builder().add(BigIntegerJSONAdapter()).build() }
     }
@@ -209,6 +211,8 @@ open class App : MultiDexApplication() {
                     }
                     settings.dataVersion = 4
                 }
+
+                isInitialized = true
             }
         }
 
@@ -224,6 +228,7 @@ open class App : MultiDexApplication() {
     }
 
     companion object {
+        var isInitialized = false
         val postInitCallbacks = mutableListOf<() -> Unit>()
         val extraPreferences = mutableListOf<Pair<@XmlRes Int, (preferenceScreen: PreferenceScreen) -> Unit>>()
 

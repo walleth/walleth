@@ -20,4 +20,6 @@ open class CurrentTokenProvider(val chainInfoProvider: ChainInfoProvider) : Medi
     }
 
     fun getCurrent() = value!!
+
+    fun isInitialized() = value != null
 }
