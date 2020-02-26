@@ -10,7 +10,6 @@ import org.walleth.R
 import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.util.asBigDecimal
 import java.math.BigInteger
-import java.security.SecureRandom
 
 object KotprefSettings : KotprefModel(), Settings {
 
@@ -21,7 +20,7 @@ object KotprefSettings : KotprefModel(), Settings {
 
     override var filterAddressesStared by booleanPref(default = false)
     override var filterAddressesKeyOnly by booleanPref(default = false)
-    override var filterFaucet  by booleanPref(default = false)
+    override var filterFaucet by booleanPref(default = false)
     override var filterFastFaucet by booleanPref(default = false)
     override var filterTincubeth by booleanPref(default = false)
 
@@ -41,19 +40,6 @@ object KotprefSettings : KotprefModel(), Settings {
 
     private val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
-    }
-
-    private fun createRandomUsername() = context.getString(R.string.default_stats_username) + " " + BigInteger(130, SecureRandom()).toString(32).substring(0, 5)
-
-    override fun getStatsName(): String {
-        val key = context.getString(R.string.key_prefs_stats_username)
-        val string = sharedPreferences.getString(key, null)
-        if (string != null) {
-            return string
-        }
-        val newName = createRandomUsername()
-        sharedPreferences.edit().putString(key, newName).apply()
-        return newName
     }
 
     override fun isLightClientWanted() = sharedPreferences.getBoolean(context.getString(R.string.key_prefs_start_light), false)

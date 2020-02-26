@@ -35,7 +35,6 @@ interface Settings {
 
     fun isLightClientWanted(): Boolean
     fun getNightMode(): Int
-    fun getStatsName(): String
 
     fun registerListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
     fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener)
