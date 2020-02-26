@@ -21,7 +21,8 @@
               android:textAlignment="center"
               app:fontFamily="sans-serif"
               android:textAppearance="?android:attr/textAppearanceLarge"
-              android:id="@+id/status_text"/>
+              android:id="@+id/status_text"
+              android:gravity="center_horizontal" />
 
     <com.google.android.material.button.MaterialButton
             android:layout_width="wrap_content"
