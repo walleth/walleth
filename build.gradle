@@ -6,7 +6,7 @@ buildscript {
         kethereum_version = '0.81.2'
         multidex_version = '1.0.3'
         arch_version = '1.1.1'
-        room_version = '2.2.3'
+        room_version = '2.2.4'
         mockito_version = '3.3.0'
         truth = '1.0.1'
         kodein_version = '5.1.1'
