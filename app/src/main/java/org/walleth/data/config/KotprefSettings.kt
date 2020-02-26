@@ -2,9 +2,9 @@ package org.walleth.data.config
 
 import android.content.SharedPreferences
 import android.graphics.Color
-import android.preference.PreferenceManager
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.chibatching.kotpref.KotprefModel
 import org.walleth.R
 import org.walleth.data.DEFAULT_GAS_PRICE
@@ -39,7 +39,9 @@ object KotprefSettings : KotprefModel(), Settings {
 
     override var showDebug by booleanPref(default = false)
 
-    private val sharedPreferences by lazy { PreferenceManager.getDefaultSharedPreferences(context) }
+    private val sharedPreferences by lazy {
+        PreferenceManager.getDefaultSharedPreferences(context)
+    }
 
     private fun createRandomUsername() = context.getString(R.string.default_stats_username) + " " + BigInteger(130, SecureRandom()).toString(32).substring(0, 5)
 
