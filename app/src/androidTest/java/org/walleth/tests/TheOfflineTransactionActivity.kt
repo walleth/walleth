@@ -2,7 +2,7 @@ package org.walleth.tests
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.google.common.truth.Truth.assertThat
@@ -35,7 +35,7 @@ class TheOfflineTransactionActivity {
 
         rule.launchActivity()
 
-        onView(withId(R.id.transaction_to_relay_hex)).perform(typeText("x"))
+        onView(withId(R.id.transaction_to_relay_hex)).perform(replaceText("x"))
 
         onView(withId(R.id.fab)).perform(click())
 
@@ -51,7 +51,7 @@ class TheOfflineTransactionActivity {
 
         rule.launchActivity()
 
-        onView(withId(R.id.transaction_to_relay_hex)).perform(typeText(SIGNED_TX))
+        onView(withId(R.id.transaction_to_relay_hex)).perform(replaceText(SIGNED_TX))
 
         onView(withId(R.id.fab)).perform(click())
 

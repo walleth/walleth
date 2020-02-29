@@ -3,7 +3,7 @@ package org.walleth.tests
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.GONE
@@ -35,7 +35,7 @@ class TheRequestActivity {
 
         onView(withId(R.id.value_input)).check(matches(isDisplayed()))
 
-        onView(withId(R.id.current_eth)).perform(typeText("0.42"))
+        onView(withId(R.id.current_eth)).perform(replaceText("0.42"))
 
         Espresso.closeSoftKeyboard()
 

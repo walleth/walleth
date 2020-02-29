@@ -3,7 +3,7 @@ package org.walleth.tests
 import androidx.test.espresso.Espresso.closeSoftKeyboard
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.google.common.truth.Truth.assertThat
@@ -46,7 +46,7 @@ class TheSelectReferenceActivity {
 
         closeSoftKeyboard()
 
-        onView(withId(R.id.reference_text)).perform(typeText("TST"))
+        onView(withId(R.id.reference_text)).perform(replaceText("TST"))
         onView(withText(android.R.string.ok)).perform(click())
 
         assertThat(TestApp.fixedValueExchangeProvider.getAvailableFiatInfoMap().keys).contains("TST")

@@ -2,7 +2,7 @@ package org.walleth.tests
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import org.hamcrest.Matchers.not
@@ -49,7 +49,7 @@ class TheImportActivity {
     @Test
     fun rejectsTooShortHexForECDSA() {
         onView(withId(R.id.type_ecdsa_select)).perform(click())
-        onView(withId(R.id.key_content)).perform(typeText("aa"))
+        onView(withId(R.id.key_content)).perform(replaceText("aa"))
         onView(withId(R.id.fab)).perform(click())
 
         onView(withText(R.string.key_length_error)).check(matches(isDisplayed()))
@@ -58,7 +58,7 @@ class TheImportActivity {
     @Test
     fun rejectsTooLongtHexForECDSA() {
         onView(withId(R.id.type_ecdsa_select)).perform(click())
-        onView(withId(R.id.key_content)).perform(typeText("b".repeat(70)))
+        onView(withId(R.id.key_content)).perform(replaceText("b".repeat(70)))
         onView(withId(R.id.fab)).perform(click())
 
         onView(withText(R.string.key_length_error)).check(matches(isDisplayed()))
@@ -67,7 +67,7 @@ class TheImportActivity {
     @Test
     fun rejectsInvalidHexForECDSA() {
         onView(withId(R.id.type_ecdsa_select)).perform(click())
-        onView(withId(R.id.key_content)).perform(typeText("nopenopenopenopenopenopenopenopenopenopenopenopenopenopenopenope"))
+        onView(withId(R.id.key_content)).perform(replaceText("nopenopenopenopenopenopenopenopenopenopenopenopenopenopenopenope"))
         onView(withId(R.id.fab)).perform(click())
 
         onView(withText(R.string.dialog_title_error)).check(matches(isDisplayed()))
@@ -76,7 +76,7 @@ class TheImportActivity {
     @Test
     fun acceptsCorrectECDSA() {
         onView(withId(R.id.type_ecdsa_select)).perform(click())
-        onView(withId(R.id.key_content)).perform(typeText("a".repeat(64)))
+        onView(withId(R.id.key_content)).perform(replaceText("a".repeat(64)))
         onView(withId(R.id.fab)).perform(click())
 
         onView(withText(R.string.import_as_subtitle)).check(matches(isDisplayed()))
