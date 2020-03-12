@@ -1,5 +1,6 @@
 include ':app'
 
+rootProject.name = 'WallETH'
 // See https://github.com/vlsi/vlsi-release-plugins
 // It is a  plugin that verifies checksums of all the resolved files (plugins, dependencies, ...)
 buildscript {
