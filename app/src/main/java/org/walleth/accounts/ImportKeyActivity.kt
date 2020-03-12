@@ -114,7 +114,7 @@ open class ImportKeyActivity : BaseSubActivity() {
         }
 
         if (currentKeyType == ECDSA && content.removePrefix("0x").length != 64) {
-            alert( title = getString(R.string.key_length_error),
+            alert(title = getString(R.string.key_length_error),
                     message = "The length of the ECDSA Key MUST be 64 characters (32 bytes) - but currently is ${content.length} characters")
         } else {
 
@@ -150,12 +150,21 @@ open class ImportKeyActivity : BaseSubActivity() {
                 }
 
             } catch (e: Exception) {
-                AlertDialog.Builder(this@ImportKeyActivity).setMessage(e.message)
-                        .setTitle(getString(R.string.dialog_title_error)).show()
+                displayError(e.message?:"Could not decrypt key")
+            } catch (oom: OutOfMemoryError) {
+                displayError("Cannot decrypt this key with the RAM available on this device.")
             }
         }
         fab_progress_bar.visibility = View.INVISIBLE
         importing = false
+    }
+
+    private fun displayError(msg: String) {
+        AlertDialog.Builder(this@ImportKeyActivity)
+                .setMessage(msg)
+                .setTitle(getString(R.string.dialog_title_error))
+                .setPositiveButton(android.R.string.ok, null)
+                .show()
     }
 
 
