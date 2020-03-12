@@ -55,11 +55,13 @@ android {
 
         noGeth {
             dimension "geth"
+            isDefault = true
         }
 
         forFDroid {
             dimension "store"
             buildConfigField 'String', 'STORE', '"fdroid"'
+            isDefault = true
         }
 
         forAmazon {
@@ -74,6 +76,7 @@ android {
 
         online {
             dimension "connectivity"
+            isDefault = true
         }
 
         offline {
