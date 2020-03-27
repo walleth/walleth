@@ -83,7 +83,18 @@ val ACCOUNT_TYPE_LIST = listOf(
                 R.drawable.ic_keyboard,
                 wrapsKey = true) { activity, _ ->
             activity.startActivityForResult(Intent(activity, RequestPasswordActivity::class.java), REQUEST_CODE_ENTER_PASSWORD)
+        },
+        AccountType(
+                ACCOUNT_TYPE_KEEPKEY,
+                "KeepKey",
+                "Connect KeepKey",
+                "Hardware wallet that was sold very cheap at some point. Provides some security.",
+                R.drawable.ic_shapeshift_logo_vector,
+                R.drawable.ic_shapeshift_logo_vector
+        ) { activity, _ ->
+            activity.startActivityForResult(Intent(activity, TrezorGetAddressActivity::class.java), REQUEST_CODE_IMPORT)
         }
+
 )
 
 private fun Activity.finishWithType(inSpec: AccountKeySpec, type: String) {

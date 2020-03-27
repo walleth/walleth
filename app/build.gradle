@@ -171,8 +171,8 @@ dependencies {
 
     implementation "com.github.komputing:khex:0.6"
 
-    implementation "com.github.walleth:KHardWareWallet:0.9.7"
-    implementation 'com.squareup.okio:okio:2.4.0'
+    implementation "com.github.walleth:KHardWareWallet:0.9.8"
+    implementation 'com.squareup.okio:okio:2.5.0'
 
     implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
 
@@ -190,12 +190,6 @@ dependencies {
     implementation 'com.github.ligi:thirdpartylicensedisplay:1.0'
 
     implementation 'com.github.ligi:tsnackbar:android_x_fork_1.0'
-
-    implementation('com.github.ligi:trezor-android:only_library_for_ethereum_tag_core210') {
-        exclude group: 'com.android.support'
-    }
-
-    implementation 'com.google.protobuf:protobuf-java:3.9.1'
 
     implementation 'com.github.kenglxn.QRGen:android:2.6.0'
 

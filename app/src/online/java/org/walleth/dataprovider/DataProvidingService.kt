@@ -124,7 +124,8 @@ class DataProvidingService : LifecycleService() {
 
     private fun relayTransactionsIfNeeded() {
         appDatabase.transactions.getAllToRelayLive().nonNull().observe(this) { transactionList ->
-            transactionList.forEach { sendTransaction(it) }
+            val alltorelay = transactionList.filter { it.transactionState.error == null }
+            alltorelay.forEach { sendTransaction(it) }
         }
     }
 
@@ -135,10 +136,11 @@ class DataProvidingService : LifecycleService() {
                         BackoffPolicy.LINEAR,
                         OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
                         TimeUnit.MILLISECONDS)
+                .addTag("relay")
                 .setInputData(workDataOf(KEY_TX_HASH to transaction.hash))
                 .build()
 
-        WorkManager.getInstance(this).enqueue(uploadWorkRequest)
+        WorkManager.getInstance(this).enqueueUniqueWork(transaction.hash, ExistingWorkPolicy.REPLACE, uploadWorkRequest)
     }
 
     private suspend fun tryFetchFromBlockscout(address: Address, chain: ChainInfo) {

@@ -217,7 +217,9 @@ class CreateTransactionActivity : BaseSubActivity() {
         gas_price_input.setText(when {
             gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger().toString()
             currentERC681.gas != null -> currentERC681.gas.toString()
-            else -> settings.getGasPriceFor(chainInfoProvider.getCurrent()!!.chainId).toString()
+            else -> chainInfoProvider.getCurrent()?.chainId?.let {
+                settings.getGasPriceFor(it).toString()
+            }
         })
 
         intent.getStringExtra("data")?.let {

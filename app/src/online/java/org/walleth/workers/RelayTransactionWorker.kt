@@ -3,7 +3,6 @@ package org.walleth.workers
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import okhttp3.OkHttpClient
 import org.kethereum.extensions.transactions.encodeRLP
 import org.kethereum.model.ChainId
 import org.koin.core.KoinComponent
@@ -20,7 +19,6 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
     : CoroutineWorker(appContext, workerParams), KoinComponent {
 
 
-    private val okHttpClient: OkHttpClient by inject()
     private val appDatabase: AppDatabase by inject()
     private val rpcProvider: RPCProvider by inject()
 
@@ -62,7 +60,6 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
                 transaction.transactionState.eventLog = transaction.transactionState.eventLog ?: "" + "ERROR: ${e.message}\n"
 
                 transaction.setError(e.message)
-                appDatabase.transactions.upsert(transaction)
 
                 Result.failure()
             }
@@ -72,7 +69,6 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
     private fun markSuccess(transaction: TransactionEntity): Result {
         transaction.transactionState.relayed = "via RPC"
 
-        appDatabase.transactions.upsert(transaction)
         transaction.setError(null)
         return Result.success()
     }
