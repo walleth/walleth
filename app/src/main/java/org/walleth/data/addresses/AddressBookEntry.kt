@@ -16,7 +16,8 @@ data class AccountKeySpec(
         val derivationPath: String? = null,
         val source: String? = null,
         val pwd: String? = null,
-        val initPayload: String? = null
+        val initPayload: String? = null,
+        val name: String? = null
 ) : Parcelable
 
 private val specAdapter = Moshi.Builder().build().adapter(AccountKeySpec::class.java)
@@ -34,7 +35,6 @@ fun AddressBookEntry.getTrezorDerivationPath(): String? {
 
 fun AddressBookEntry.getNFCDerivationPath() = getSpec()?.derivationPath
 fun AddressBookEntry?.isAccountType(accountType: String) = getSpec()?.type == accountType
-
 
 @Entity(tableName = "addressbook")
 data class AddressBookEntry (

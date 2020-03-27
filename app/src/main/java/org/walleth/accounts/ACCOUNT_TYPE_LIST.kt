@@ -11,6 +11,7 @@ import org.walleth.credentials.RequestPasswordActivity
 import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
 import org.walleth.nfc.NFCGetAddressActivity
+import org.walleth.trezor.KEY_KEEPKEY_MODE
 import org.walleth.trezor.TrezorGetAddressActivity
 
 
@@ -83,7 +84,18 @@ val ACCOUNT_TYPE_LIST = listOf(
                 R.drawable.ic_keyboard,
                 wrapsKey = true) { activity, _ ->
             activity.startActivityForResult(Intent(activity, RequestPasswordActivity::class.java), REQUEST_CODE_ENTER_PASSWORD)
+        },
+        AccountType(
+                ACCOUNT_TYPE_KEEPKEY,
+                "KeepKey",
+                "Connect KeepKey",
+                "Hardware wallet that was sold very cheap at some point. Provides some security.",
+                R.drawable.keepkey_icon_black,
+                R.drawable.keepkey_icon_black
+        ) { activity, _ ->
+            activity.startActivityForResult(Intent(activity, TrezorGetAddressActivity::class.java).putExtra(KEY_KEEPKEY_MODE, true), REQUEST_CODE_IMPORT)
         }
+
 )
 
 private fun Activity.finishWithType(inSpec: AccountKeySpec, type: String) {

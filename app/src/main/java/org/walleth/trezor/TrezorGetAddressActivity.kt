@@ -5,19 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.RadioButton
 import androidx.appcompat.app.AlertDialog
-import com.google.protobuf.GeneratedMessageV3
-import com.google.protobuf.Message
+import com.squareup.wire.Message
 import kotlinx.android.synthetic.main.hd_derivation_select.view.*
 import org.kethereum.model.Address
 import org.komputing.kbip44.BIP44
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
+import org.ligi.tracedroid.logging.Log
 import org.walleth.R
-import org.walleth.data.ACCOUNT_TYPE_TREZOR
-import org.walleth.data.DEFAULT_ETHEREUM_BIP44_PATH
-import org.walleth.data.EXTRA_KEY_ACCOUNTSPEC
-import org.walleth.data.EXTRA_KEY_ADDRESS
+import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
 import org.walleth.kethereum.android.TransactionParcel
 
@@ -25,8 +22,6 @@ fun Intent?.hasAddressResult() = this?.hasExtra(EXTRA_KEY_ADDRESS) == true
 fun Intent?.getAddressResult() = this?.getStringExtra(EXTRA_KEY_ADDRESS)
 
 class TrezorGetAddressActivity : BaseTrezorActivity() {
-
-    val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX").transaction }
 
     private var isDerivationDialogShown = false
     private val initialBIP44 = BIP44(DEFAULT_ETHEREUM_BIP44_PATH)
@@ -51,15 +46,11 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
         super.onCreate(savedInstanceState)
         currentBIP44 = initialBIP44
         supportActionBar?.subtitle = getString(R.string.activity_subtitle_get_trezor_address)
+        connectAndExecute()
     }
 
-    override fun onResume() {
-        super.onResume()
-        handler.post(mainRunnable)
-    }
-
-    override fun handleExtraMessage(res: Message?) = Unit // we ony care for addresses
-    override fun getTaskSpecificMessage(): GeneratedMessageV3? = null // and have no specific task
+    override fun handleExtraMessage(res: Message<*, *>?) = Unit // we ony care for addresses
+    override fun getTaskSpecificMessage(): Message<*, *>? = null // and have no specific task
 
     private fun showDerivationDialog() {
 
@@ -108,7 +99,11 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
                     } else {
                         val resultIntent = Intent()
                         resultIntent.putExtra(EXTRA_KEY_ADDRESS, currentAddress!!.hex)
-                        resultIntent.putExtra(EXTRA_KEY_ACCOUNTSPEC, AccountKeySpec(ACCOUNT_TYPE_TREZOR, derivationPath = currentBIP44.toString()))
+                        resultIntent.putExtra(EXTRA_KEY_ACCOUNTSPEC, AccountKeySpec(
+                                type = getAccountType(),
+                                derivationPath = currentBIP44.toString(),
+                                name = currentDeviceName
+                        ))
                         setResult(Activity.RESULT_OK, resultIntent)
                         finish()
                     }
@@ -119,5 +114,6 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
                 .show()
     }
 
+    private fun getAccountType() = if (isKeepKeyDevice) ACCOUNT_TYPE_KEEPKEY else ACCOUNT_TYPE_TREZOR
 
 }

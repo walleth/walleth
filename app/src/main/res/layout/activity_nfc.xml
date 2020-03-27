@@ -8,7 +8,7 @@
         tools:context=".nfc.BaseNFCActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/trezor_connect_indicator"
+            android:id="@+id/device_connect_indicator"
             app:srcCompat="@drawable/ic_nfc_colorcontrolnormal"
             android:layout_centerInParent="true"
             android:layout_width="128dp"
@@ -17,7 +17,7 @@
     <TextView
             android:id="@+id/nfc_status_text"
             android:text="Please bring the NFC tag close to your phone."
-            android:layout_below="@id/trezor_connect_indicator"
+            android:layout_below="@id/device_connect_indicator"
             android:layout_centerHorizontal="true"
             app:fontFamily="sans-serif"
             android:textSize="18dp"

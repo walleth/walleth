@@ -105,8 +105,12 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="nav_drawer_preferences">Preferences</string>
     <string name="nonce_invalid">we need a nonce</string>
     <string name="connect_trezor_message"><![CDATA[Connect your TREZOR.<br/>If you have none: <a href=\"https://trezor.io/?a=walleth.org\">get one</a>]]></string>
+    <string name="connect_keepkey_message">Connect your KeepKey</string>
+    <string name="interact_keepkey_message">Please follow the instructions on your KeepKey</string>
+    <string name="interact_trezor_message">Please follow the instructions on your TREZOR</string>
     <string name="activity_subtitle_get_trezor_address">Get TREZOR Address</string>
     <string name="activity_subtitle_sign_with_trezor">Sign with TREZOR</string>
+    <string name="activity_subtitle_sign_with_keepkey">Sign with KeepKey</string>
     <string name="signed_rlp_header_text">Signed RLP</string>
     <string name="unsigned_rlp_header_text">Scan this with the device that has the key:</string>
     <string name="snackbar_after_address_copy">Address copied to clipboard</string>
@@ -156,6 +160,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="settings_please_wait">Please wait</string>
     <string name="trezor_please_enter_your_passphrase">Please enter your passphrase</string>
     <string name="trezor_reported_different_address">TREZOR reported different source Address. %1$s is not %2$s</string>
+    <string name="keepkey_reported_different_address">KeepKey reported different source Address. %1$s is not %2$s</string>
     <string name="select_reference_activity_select_reference">Select reference</string>
     <string name="select_reference_activity_add_reference">Add Reference</string>
     <string name="select_token_activity_select_token">Select token</string>

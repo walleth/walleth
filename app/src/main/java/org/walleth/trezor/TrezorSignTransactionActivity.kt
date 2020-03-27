@@ -4,21 +4,24 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
-import com.google.protobuf.ByteString
-import com.google.protobuf.Message
-import com.satoshilabs.trezor.lib.protobuf.TrezorMessage
+import com.squareup.wire.Message
+import io.trezor.deviceprotocol.EthereumSignTx
+import io.trezor.deviceprotocol.EthereumSignTxKeepKey
+import io.trezor.deviceprotocol.EthereumTxRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okio.ByteString.Companion.toByteString
 import org.kethereum.extensions.transactions.encodeRLP
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
 import org.koin.android.ext.android.inject
 import org.komputing.kbip44.BIP44
+import org.komputing.khex.extensions.hexToByteArray
 import org.komputing.khex.extensions.toHexString
+import org.komputing.khex.model.HexString
 import org.ligi.kaxtui.alert
-import org.walleth.R
 import org.walleth.R.string
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.addresses.getTrezorDerivationPath
@@ -29,10 +32,19 @@ import java.math.BigInteger
 
 const val TREZOR_REQUEST_CODE = 7688
 
-fun Activity.startTrezorActivity(transactionParcel: TransactionParcel) {
+fun Activity.startTrezorSignTransactionActivity(transactionParcel: TransactionParcel) {
     val trezorIntent = Intent(this, TrezorSignTransactionActivity::class.java).putExtra("TX", transactionParcel)
     startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
 }
+
+fun Activity.startKeepKeySignTransactionActivity(transactionParcel: TransactionParcel) {
+    val trezorIntent = Intent(this, TrezorSignTransactionActivity::class.java).apply {
+        putExtra("TX", transactionParcel)
+        putExtra(KEY_KEEPKEY_MODE, true)
+    }
+    startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
+}
+
 
 class TrezorSignTransactionActivity : BaseTrezorActivity() {
 
@@ -41,7 +53,8 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
 
     override fun handleAddress(address: Address) {
         if (address != transaction.transaction.from) {
-            val message = getString(R.string.trezor_reported_different_address, address, transaction.transaction.from)
+            val messageTemplate = if (isKeepKeyDevice) string.keepkey_reported_different_address else string.trezor_reported_different_address
+            val message = getString(messageTemplate, address, transaction.transaction.from)
             alert(message) {
                 setResult(Activity.RESULT_CANCELED)
                 finish()
@@ -51,27 +64,43 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
         }
     }
 
-    override fun getTaskSpecificMessage() = TrezorMessage.EthereumSignTx.newBuilder()
-            .setTo(transaction.transaction.to!!.hex)
-            .setValue(ByteString.copyFrom(transaction.transaction.value!!.toByteArray().removeLeadingZero()))
-            .setNonce(ByteString.copyFrom(transaction.transaction.nonce!!.toByteArray().removeLeadingZero()))
-            .setGasPrice(ByteString.copyFrom(transaction.transaction.gasPrice!!.toByteArray().removeLeadingZero()))
-            .setGasLimit(ByteString.copyFrom(transaction.transaction.gasLimit!!.toByteArray().removeLeadingZero()))
-            .setChainId(chainInfoProvider.value!!.chainId.toInt())
-            .setDataLength(transaction.transaction.input.size)
-            .setDataInitialChunk(ByteString.copyFrom(transaction.transaction.input))
-            .addAllAddressN(currentBIP44!!.path.map { it.numberWithHardeningFlag })
-            .build()!!
+    private fun ByteArray.toByteString() = toByteString(0, size)
+    override fun getTaskSpecificMessage() = if (isKeepKeyDevice) {
+        EthereumSignTxKeepKey.Builder()
+                //.to(transaction.transaction.to!!.hex)
+                .to(HexString(transaction.transaction.to!!.hex).hexToByteArray().toByteString())
+                .value(transaction.transaction.value!!.toByteArray().removeLeadingZero().toByteString())
+                .nonce(transaction.transaction.nonce!!.toByteArray().removeLeadingZero().toByteString())
+                .gas_price(transaction.transaction.gasPrice!!.toByteArray().removeLeadingZero().toByteString())
+                .gas_limit(transaction.transaction.gasLimit!!.toByteArray().removeLeadingZero().toByteString())
+                .chain_id(chainInfoProvider.value!!.chainId.toInt())
+                .data_length(transaction.transaction.input.size)
+                .data_initial_chunk(transaction.transaction.input.toByteString())
+                .address_n(currentBIP44!!.path.map { it.numberWithHardeningFlag })
+                .build()!!
+    } else {
+        EthereumSignTx.Builder()
+                .to(transaction.transaction.to!!.hex)
+                .value(transaction.transaction.value!!.toByteArray().removeLeadingZero().toByteString())
+                .nonce(transaction.transaction.nonce!!.toByteArray().removeLeadingZero().toByteString())
+                .gas_price(transaction.transaction.gasPrice!!.toByteArray().removeLeadingZero().toByteString())
+                .gas_limit(transaction.transaction.gasLimit!!.toByteArray().removeLeadingZero().toByteString())
+                .chain_id(chainInfoProvider.value!!.chainId.toInt())
+                .data_length(transaction.transaction.input.size)
+                .data_initial_chunk(transaction.transaction.input.toByteString())
+                .address_n(currentBIP44!!.path.map { it.numberWithHardeningFlag })
+                .build()!!
+    }
 
 
-    override fun handleExtraMessage(res: Message?) {
-        if (res is TrezorMessage.EthereumTxRequest) {
+    override fun handleExtraMessage(res: Message<*, *>?) {
+        if (res is EthereumTxRequest) {
 
             val oldHash = transaction.transaction.txHash
             val signatureData = SignatureData(
-                    r = BigInteger(res.signatureR.toByteArray()),
-                    s = BigInteger(res.signatureS.toByteArray()),
-                    v = res.signatureV.toBigInteger()
+                    r = BigInteger(res.signature_r.toByteArray()),
+                    s = BigInteger(res.signature_s.toByteArray()),
+                    v = res.signature_v.toBigInteger()
             )
             transaction.transaction.txHash = transaction.transaction.encodeRLP(signatureData).keccak().toHexString()
             lifecycleScope.launch(Dispatchers.Main) {
@@ -87,21 +116,17 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        supportActionBar?.subtitle = getString(if (isKeepKeyDevice) string.activity_subtitle_sign_with_keepkey else string.activity_subtitle_sign_with_trezor)
 
         lifecycleScope.launch {
             currentBIP44 = appDatabase.addressBook.byAddress(currentAddressProvider.getCurrentNeverNull())?.getTrezorDerivationPath()?.let { trezorDerivationPath ->
                 BIP44(trezorDerivationPath)
             } ?: throw IllegalArgumentException("Starting TREZOR Activity without derivation path")
 
-            handler.post(mainRunnable)
+            connectAndExecute()
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        supportActionBar?.subtitle = getString(string.activity_subtitle_sign_with_trezor)
     }
 
     private fun ByteArray.removeLeadingZero() = if (first() == 0.toByte()) copyOfRange(1, size) else this

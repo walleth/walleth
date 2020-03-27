@@ -66,8 +66,6 @@ import javax.net.SocketFactory
 
 open class App : MultiDexApplication() {
 
-    private var isInitialized = false
-
     private val koinModule = module {
         single { Moshi.Builder().add(BigIntegerJSONAdapter()).build() }
     }

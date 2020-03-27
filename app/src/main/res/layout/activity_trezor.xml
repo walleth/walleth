@@ -8,16 +8,16 @@
         tools:context=".trezor.BaseTrezorActivity">
 
     <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/trezor_connect_indicator"
+            android:id="@+id/device_connect_indicator"
             app:srcCompat="@drawable/trezor_connect"
             android:layout_centerInParent="true"
             android:layout_width="128dp"
             android:layout_height="128dp"/>
 
     <TextView
-            android:id="@+id/trezor_status_text"
+            android:id="@+id/device_status_text"
             android:text="@string/please_connect_your_trezor"
-            android:layout_below="@id/trezor_connect_indicator"
+            android:layout_below="@id/device_connect_indicator"
             android:layout_centerHorizontal="true"
             app:fontFamily="sans-serif"
             android:textSize="18dp"

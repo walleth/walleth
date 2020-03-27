@@ -24,6 +24,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.bouncycastle.math.ec.ECConstants.TWO
+import org.kethereum.DEFAULT_GAS_LIMIT
 import org.kethereum.eip137.model.ENSName
 import org.kethereum.eip155.extractChainID
 import org.kethereum.eip155.signViaEIP155
@@ -81,7 +82,8 @@ import org.walleth.sign.ParitySignerQRActivity
 import org.walleth.startup.StartupActivity
 import org.walleth.tokens.SelectTokenActivity
 import org.walleth.trezor.TREZOR_REQUEST_CODE
-import org.walleth.trezor.startTrezorActivity
+import org.walleth.trezor.startKeepKeySignTransactionActivity
+import org.walleth.trezor.startTrezorSignTransactionActivity
 import org.walleth.util.hasText
 import org.walleth.util.question
 import org.walleth.util.security.getPasswordForAccountType
@@ -217,7 +219,9 @@ class CreateTransactionActivity : BaseSubActivity() {
         gas_price_input.setText(when {
             gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger().toString()
             currentERC681.gas != null -> currentERC681.gas.toString()
-            else -> settings.getGasPriceFor(chainInfoProvider.getCurrent()!!.chainId).toString()
+            else -> chainInfoProvider.getCurrent()?.chainId?.let {
+                settings.getGasPriceFor(it).toString()
+            }
         })
 
         intent.getStringExtra("data")?.let {
@@ -393,7 +397,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                     val result = withContext(Dispatchers.Default) {
                         rpc?.estimateGas(createTransaction().copy(gasLimit = null)) ?: throw NullPointerException()
                     }
-                    if (result != valueOf(21000)) {
+                    if (result != DEFAULT_GAS_LIMIT) {
                         gas_limit_input.setText(result.multiply(TWO).toString())
                     } else {
                         gas_limit_input.setText(result.toString())
@@ -480,7 +484,8 @@ class CreateTransactionActivity : BaseSubActivity() {
                 }
             }
             ACCOUNT_TYPE_NFC -> startNFCSigningActivity(TransactionParcel(createTransaction()))
-            ACCOUNT_TYPE_TREZOR -> startTrezorActivity(TransactionParcel(createTransaction()))
+            ACCOUNT_TYPE_TREZOR -> startTrezorSignTransactionActivity(TransactionParcel(createTransaction()))
+            ACCOUNT_TYPE_KEEPKEY -> startKeepKeySignTransactionActivity(TransactionParcel(createTransaction()))
         }
     }
 

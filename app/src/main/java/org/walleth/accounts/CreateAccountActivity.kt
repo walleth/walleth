@@ -113,7 +113,7 @@ class CreateAccountActivity : BaseSubActivity() {
 
                         createAccountAndFinish(key.toAddress(), currentSpec.copy(pwd = null))
                     }
-                    ACCOUNT_TYPE_NFC, ACCOUNT_TYPE_TREZOR -> {
+                    ACCOUNT_TYPE_NFC, ACCOUNT_TYPE_TREZOR, ACCOUNT_TYPE_KEEPKEY -> {
                         if (currentAddress == null) {
                             alert("This should not happen - please drop a mail to walleth@walleth.org and let us know when this happened")
                         } else {
@@ -199,6 +199,10 @@ class CreateAccountActivity : BaseSubActivity() {
 
         input_address_layout.setVisibility(currentSpec.type == ACCOUNT_TYPE_WATCH_ONLY)
         input_address.setText(currentAddress?.hex)
+
+        currentSpec.name?.let {
+            nameInput.setText(it)
+        }
 
         val accountType = ACCOUNT_TYPE_MAP[currentSpec.type]
         type_image.setImageResource(accountType?.drawable ?: R.drawable.ic_warning_black_24dp)
