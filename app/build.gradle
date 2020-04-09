@@ -258,7 +258,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
     testImplementation "com.google.truth:truth:$truth"
-    testImplementation 'org.threeten:threetenbp:1.4.2'
+    testImplementation 'org.threeten:threetenbp:1.4.3'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.2'
 
