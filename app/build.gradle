@@ -202,8 +202,8 @@ dependencies {
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.2'
     implementation 'com.squareup.okhttp3:okhttp:3.12.1'
 
-    implementation "org.koin:koin-android:2.0.1"
-    implementation "org.koin:koin-androidx-viewmodel:2.0.1"
+    implementation "org.koin:koin-android:2.1.5"
+    implementation "org.koin:koin-androidx-viewmodel:2.1.5"
 
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'com.google.android.material:material:1.0.0'
