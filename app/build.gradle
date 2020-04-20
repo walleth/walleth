@@ -167,7 +167,7 @@ dependencies {
 
     implementation "com.github.komputing:kbip44:0.1"
 
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.64'
+    implementation 'org.bouncycastle:bcprov-jdk15on:1.65'
 
     implementation "com.github.komputing:khex:0.6"
 
