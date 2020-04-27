@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.EditText
@@ -380,7 +379,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                 lifecycleScope.launch(Dispatchers.Main) {
                     val res = currentERC681.resolveFunctionUserDoc(ChainId(chainInfoProvider.getCurrent()?.chainId!!), okHttpClient)
                     Do exhaustive when (res) {
-                        is UserDocResultContractNotFound -> showWarning(WARNING_USERDOC, "Contact MetaData notfound. Please <a href='wallethwarn:contractnotfound||" + currentERC681.address + "'>read here</a> to learn more.")
+                        is UserDocResultContractNotFound -> showWarning(WARNING_USERDOC, "Contact MetaData not found. Please <a href='wallethwarn:contractnotfound||" + currentERC681.address + "'>read here</a> to learn more.")
                         is ResolvedUserDocResult -> setUserDoc(res.userDoc)
                         is ResolveErrorUserDocResult -> showWarning(WARNING_USERDOC, "Cannot resolve Userdoc. " + res.error)
                         is NoMatchingUserDocFound -> showWarning(WARNING_USERDOC, "Userdoc for function not found. Please <a href='wallethwarn:userdocnotfound||" + currentERC681.address + "||" + currentERC681.function + "'>read here</a> to learn more.")
@@ -418,7 +417,9 @@ class CreateTransactionActivity : BaseSubActivity() {
         warnings_text.setVisibility(warningMap.isNotEmpty())
         warning_indicator.setVisibility(warningMap.isNotEmpty())
         warnings_text.movementMethod = LinkMovementMethod.getInstance()
-        val content = warningMap.values.joinToString("<br/>") { "• $it" }
+        val content = warningMap.values.joinToString("<br/>") {
+            if (warningMap.size > 1) "• $it" else it
+        }
         warnings_text.text = HtmlCompat.fromHtml(content)
         warning_label.text = if (warningMap.keys.size == 1) "Waring" else "Warnings"
     }
