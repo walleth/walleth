@@ -3,10 +3,12 @@ package org.walleth.transactions
 import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.view.View.*
 import android.view.ViewGroup
 import android.widget.EditText
@@ -389,6 +391,13 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun setUserDoc(msg: String) {
+        if (settings.isAdvancedFunctionsEnabled()) {
+            from_contract_source_button.visibility = VISIBLE
+            from_contract_source_button.setOnClickListener {
+                val uri = Uri.parse("https://contractrepo.komputing.org/contract/byChainId/${currentERC681.chainId?.value}/${currentERC681.address}/sources/")
+                startActivity(Intent(Intent.ACTION_VIEW, uri))
+            }
+        }
         action_label.visibility = VISIBLE
         action_text.visibility = VISIBLE
         action_text.text = msg

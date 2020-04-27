@@ -53,6 +53,7 @@ object KotprefSettings : KotprefModel(), Settings {
 
 
     override fun isScreenshotsDisabled() = sharedPreferences.getBoolean(context.getString(R.string.key_noscreenshots), false)
+    override fun isAdvancedFunctionsEnabled() = sharedPreferences.getBoolean(context.getString(R.string.key_advanced_functions), false)
 
     override fun registerListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.registerOnSharedPreferenceChangeListener(listener)
     override fun unregisterListener(listener: SharedPreferences.OnSharedPreferenceChangeListener) = preferences.unregisterOnSharedPreferenceChangeListener(listener)

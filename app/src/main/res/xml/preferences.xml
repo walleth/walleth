@@ -46,4 +46,11 @@
             android:title="@string/preferences_no_screenshots_title"
             android:summary="@string/preferences_no_screenshots_summary"/>
 
+    <CheckBoxPreference
+            android:key="@string/key_advanced_functions"
+            app:iconSpaceReserved="false"
+            android:title="@string/preferences_advanced_functions_title"
+            android:summary="@string/preferences_advanced_functions_summary"/>
+
+
 </PreferenceScreen>

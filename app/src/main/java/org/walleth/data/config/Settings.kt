@@ -42,4 +42,5 @@ interface Settings {
     fun getGasPriceFor(chainId: BigInteger): BigInteger
     fun storeGasPriceFor(gasPrice: BigInteger, chainId: BigInteger)
     fun isScreenshotsDisabled(): Boolean
+    fun isAdvancedFunctionsEnabled(): Boolean
 }

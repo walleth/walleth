@@ -67,6 +67,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
 
     <string name="select_fiat_reference">Select (Fiat) Reference</string>
     <string name="preferences_no_screenshots_title">Prevent ScreenShots</string>
+    <string name="preferences_advanced_functions_title">Advanced Functions</string>
     <string name="select_token">Select Token</string>
     <string name="create_account_subtitle">Create Account</string>
     <string name="open_in_blockexplorer">Open in BlockExplorer</string>
@@ -238,6 +239,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="notify_on_transactions">Notify on transactions</string>
     <string name="customize_toolbar">Customize ToolBar</string>
     <string name="preferences_no_screenshots_summary">For privacy and security.</string>
+    <string name="preferences_advanced_functions_summary">Interesting for experienced users - but might confuse beginners.</string>
     <string name="preferences_activity_subtitle">Preferences</string>
     <string name="create_tx_err">You must specify a receiver.\nTry this list selection.</string>
     <string name="actionbar_subtitle_qr_code">QR Code</string>

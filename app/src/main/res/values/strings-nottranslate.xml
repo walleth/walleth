@@ -5,6 +5,7 @@
 
     <string name="key_reference">KEY_REFERENCE</string>
     <string name="key_noscreenshots">KEY_NO_SCREENSHOTS</string>
+    <string name="key_advanced_functions">KEY_ADVANCED_FUNCTIONS</string>
     <string name="key_token">KEY_TOKEN</string>
 
     <string name="default_day_night">auto</string>

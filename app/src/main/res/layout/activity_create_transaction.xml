@@ -103,6 +103,7 @@
                     android:text="@string/create_transaction_receiver_label" />
 
 
+
             <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/address_list_button"
                     style="@style/button"
@@ -118,13 +119,21 @@
                     android:layout_toLeftOf="@id/address_list_button"
                     app:srcCompat="@drawable/ic_keyboard" />
 
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:visibility="gone"
+                    android:id="@+id/from_contract_source_button"
+                    style="@style/button"
+                    android:layout_below="@id/to_label"
+                    android:layout_toLeftOf="@id/from_address_enter_button"
+                    app:srcCompat="@drawable/ic_subject_black_24dp" />
+
             <TextView
                     android:id="@+id/to_address"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/to_label"
                     android:layout_alignParentLeft="true"
-                    android:layout_toLeftOf="@id/from_address_enter_button"
+                    android:layout_toLeftOf="@id/from_contract_source_button"
                     android:ellipsize="middle"
                     android:padding="16dp"
                     android:singleLine="true"
