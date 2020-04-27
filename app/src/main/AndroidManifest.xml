@@ -124,9 +124,16 @@
                   android:windowSoftInputMode="adjustResize"/>
         <activity android:name="org.walleth.accounts.ImportAsActivity"/>
         <activity android:name="org.walleth.qr.scan.QRScanActivityAndProcessActivity"/>
-        <activity android:name="org.walleth.nfc.NFCSignTextActivity" />
-        <activity android:name="org.walleth.chains.EditChainActivity" />
+        <activity android:name="org.walleth.nfc.NFCSignTextActivity"/>
+        <activity android:name="org.walleth.chains.EditChainActivity"/>
         <activity android:name=".activities.TincubETHActivity"/>
+        <activity android:name=".info.WarningActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW"/>
+                <category android:name="android.intent.category.DEFAULT"/>
+                <data android:scheme="wallethwarn"/>
+            </intent-filter>
+        </activity>
 
     </application>
 

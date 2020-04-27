@@ -19,6 +19,56 @@
                 android:padding="16dp">
 
             <TextView
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:id="@+id/warning_label"
+                    style="@style/section_header"
+                    android:text="@string/create_transaction_warning_label" />
+
+
+            <TextView
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_below="@id/warning_label"
+                    android:id="@+id/warnings_text"
+                    android:padding="16dp"
+                    android:layout_toLeftOf="@id/warning_indicator"
+                    android:layout_alignParentLeft="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:id="@+id/warning_indicator"
+                    android:clickable="false"
+                    style="@style/button"
+                    android:layout_below="@id/warning_label"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_warning_orange_24dp" />
+
+
+
+            <TextView
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_below="@id/warnings_text"
+                    android:id="@+id/action_label"
+                    style="@style/section_header"
+                    android:text="@string/create_transaction_action_label" />
+
+            <TextView
+                    android:visibility="gone"
+                    tools:visibility="visible"
+                    android:layout_below="@id/action_label"
+                    android:id="@+id/action_text"
+
+                    android:padding="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+            <TextView
+                    android:layout_below="@id/action_text"
                     android:id="@+id/from_label"
                     style="@style/section_header"
                     android:text="@string/create_transaction_sender_label" />

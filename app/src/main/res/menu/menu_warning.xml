@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+            android:title="@string/share"
+            android:id="@+id/menu_share"
+            android:icon="@drawable/ic_share_24dp"
+            app:showAsAction="ifRoom"
+    />
+    <item
+            android:title="@string/mail"
+            android:id="@+id/menu_mail"
+            android:icon="@drawable/ic_mail_outline_black_24dp"
+            app:showAsAction="ifRoom"
+    />
+
+</menu>

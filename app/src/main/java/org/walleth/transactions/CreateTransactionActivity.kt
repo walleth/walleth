@@ -4,9 +4,10 @@ import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
+import android.view.View.*
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.FrameLayout
@@ -21,8 +22,10 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
 import org.bouncycastle.math.ec.ECConstants.TWO
 import org.kethereum.DEFAULT_GAS_LIMIT
 import org.kethereum.eip137.model.ENSName
@@ -43,20 +46,25 @@ import org.kethereum.extensions.transactions.getTokenTransferValue
 import org.kethereum.extensions.transactions.tokenTransferSignature
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.keystore.api.KeyStore
-import org.kethereum.model.Address
-import org.kethereum.model.SignatureData
-import org.kethereum.model.Transaction
-import org.kethereum.model.createEmptyTransaction
+import org.kethereum.metadata.model.NoMatchingUserDocFound
+import org.kethereum.metadata.model.ResolveErrorUserDocResult
+import org.kethereum.metadata.model.ResolvedUserDocResult
+import org.kethereum.metadata.model.UserDocResultContractNotFound
+import org.kethereum.metadata.resolveFunctionUserDoc
+import org.kethereum.model.*
+import org.kethereum.rpc.EthereumRPCException
 import org.koin.android.ext.android.inject
 import org.komputing.kethereum.erc20.ERC20TransactionGenerator
 import org.komputing.khex.extensions.hexToByteArray
 import org.komputing.khex.extensions.toHexString
 import org.komputing.khex.model.HexString
+import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
+import org.walleth.BuildConfig
 import org.walleth.R
 import org.walleth.accounts.ACCOUNT_TYPE_MAP
 import org.walleth.accounts.AccountPickActivity
@@ -80,6 +88,7 @@ import org.walleth.nfc.startNFCSigningActivity
 import org.walleth.qr.scan.startScanActivityForResult
 import org.walleth.sign.ParitySignerQRActivity
 import org.walleth.startup.StartupActivity
+import org.walleth.tmp.Do
 import org.walleth.tokens.SelectTokenActivity
 import org.walleth.trezor.TREZOR_REQUEST_CODE
 import org.walleth.trezor.startKeepKeySignTransactionActivity
@@ -95,6 +104,8 @@ import java.math.BigInteger
 import java.math.BigInteger.*
 import java.util.*
 
+private const val WARNING_USERDOC = "USERDOCWARN"
+private const val WARNING_GASESTIMATE = "GASWARN"
 
 class CreateTransactionActivity : BaseSubActivity() {
 
@@ -109,6 +120,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val exchangeRateProvider: ExchangeRateProvider by inject()
     private val rpcProvider: RPCProvider by inject()
     private val ensProvider: ENSProvider by inject()
+    private val okHttpClient: OkHttpClient by inject()
 
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
@@ -121,6 +133,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private var currentAccount: AddressBookEntry? = null
 
     private val ensMap = mutableMapOf<String, String>()
+    private val warningMap = mutableMapOf<String, String>()
 
     private val amountController by lazy {
         ValueViewController(amount_value, exchangeRateProvider, settings)
@@ -269,13 +282,13 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
 
         show_advanced_button.setOnClickListener {
-            show_advanced_button.visibility = View.GONE
-            fee_label.visibility = View.VISIBLE
-            fee_value_view.visibility = View.VISIBLE
-            gas_price_input_container.visibility = View.VISIBLE
-            gas_limit_input_container.visibility = View.VISIBLE
-            nonce_title.visibility = View.VISIBLE
-            nonce_input_container.visibility = View.VISIBLE
+            show_advanced_button.visibility = GONE
+            fee_label.visibility = VISIBLE
+            fee_value_view.visibility = VISIBLE
+            gas_price_input_container.visibility = VISIBLE
+            gas_limit_input_container.visibility = VISIBLE
+            nonce_title.visibility = VISIBLE
+            nonce_input_container.visibility = VISIBLE
         }
 
         from_address_enter_button.setOnClickListener {
@@ -360,7 +373,45 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         if (functionVisibility) {
             function_text.text = currentERC681.function + "(" + currentERC681.functionParams?.joinToString(",") { it.second } + ")"
+
+            if (BuildConfig.FLAVOR_connectivity == "online") {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val res = currentERC681.resolveFunctionUserDoc(ChainId(chainInfoProvider.getCurrent()?.chainId!!), okHttpClient)
+                    Do exhaustive when (res) {
+                        is UserDocResultContractNotFound -> showWarning(WARNING_USERDOC, "Contact MetaData notfound. Please <a href='wallethwarn:contractnotfound||" + currentERC681.address + "'>read here</a> to learn more.")
+                        is ResolvedUserDocResult -> setUserDoc(res.userDoc)
+                        is ResolveErrorUserDocResult -> showWarning(WARNING_USERDOC, "Cannot resolve Userdoc. " + res.error)
+                        is NoMatchingUserDocFound -> showWarning(WARNING_USERDOC, "Userdoc for function not found. Please <a href='wallethwarn:userdocnotfound||" + currentERC681.address + "||" + currentERC681.function + "'>read here</a> to learn more.")
+                    }
+                }
+            }
         }
+    }
+
+    private fun setUserDoc(msg: String) {
+        action_label.visibility = VISIBLE
+        action_text.visibility = VISIBLE
+        action_text.text = msg
+    }
+
+    private fun showWarning(key: String, msg: String) {
+        warningMap[key] = msg
+        refreshWarning()
+    }
+
+    private fun clearWarning(key: String) {
+        warningMap.remove(key)
+        refreshWarning()
+    }
+
+    private fun refreshWarning() {
+        warning_label.setVisibility(warningMap.isNotEmpty())
+        warnings_text.setVisibility(warningMap.isNotEmpty())
+        warning_indicator.setVisibility(warningMap.isNotEmpty())
+        warnings_text.movementMethod = LinkMovementMethod.getInstance()
+        val content = warningMap.values.joinToString("<br/>") { "• $it" }
+        warnings_text.text = HtmlCompat.fromHtml(content)
+        warning_label.text = if (warningMap.keys.size == 1) "Waring" else "Warnings"
     }
 
     private fun onCurrentTokenChanged() {
@@ -388,8 +439,9 @@ class CreateTransactionActivity : BaseSubActivity() {
         estimateGasLimit()
     }
 
-    private fun estimateGasLimit() {
+    private fun estimateGasLimit(attempt: Int = 0) {
         lifecycleScope.launch {
+            delay(attempt * attempt * 1000L) // exponential backoff
             if (currentToAddress != null) { // we at least need a to address to create a transaction
                 val rpc = rpcProvider.get()
 
@@ -397,28 +449,32 @@ class CreateTransactionActivity : BaseSubActivity() {
                     val result = withContext(Dispatchers.Default) {
                         rpc?.estimateGas(createTransaction().copy(gasLimit = null)) ?: throw NullPointerException()
                     }
+
                     if (result != DEFAULT_GAS_LIMIT) {
                         gas_limit_input.setText(result.multiply(TWO).toString())
                     } else {
                         gas_limit_input.setText(result.toString())
                     }
+                    clearWarning(WARNING_GASESTIMATE)
                 } catch (e: Exception) {
                     var message = "You might want to set it manually."
                     e.message?.let {
                         message = "This was the reason: $it\n$message"
+                        if (e is EthereumRPCException) {
+                            message += "code:${e.code}"
+                        }
                     }
                     lifecycleScope.launch(Dispatchers.Main) {
-                        AlertDialog.Builder(this@CreateTransactionActivity)
-                                .setTitle("Cannot estimate gasLimit")
-                                .setMessage(message)
-                                .setPositiveButton("OK", null)
-                                .setNeutralButton("Retry") { _, _ -> estimateGasLimit() }
-                                .show()
-                        show_advanced_button.performClick()
+                        if (e.message == "The execution failed due to an exception.") {
+                            showWarning(WARNING_GASESTIMATE, "Executing this transaction to estimate the gas-limit failed due to an exception. You most likely should not execute this transaction on chain.")
+                        } else {
+                            showWarning(WARNING_GASESTIMATE, "Could not yet estimate gas-limit (attempt:  $attempt) - you might want to set it yourself - you can find it in the advanced options.")
+                            estimateGasLimit(attempt + 1)
+                        }
                     }
                 }
-
             }
+
         }
     }
 
@@ -492,7 +548,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private fun startTransaction(password: String?, transaction: Transaction) {
         lifecycleScope.launch(Dispatchers.Main) {
 
-            fab_progress_bar.visibility = View.VISIBLE
+            fab_progress_bar.visibility = VISIBLE
             fab.isEnabled = false
 
             val error: String? = withContext(Dispatchers.Default) {
@@ -517,7 +573,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                 }
             }
 
-            fab_progress_bar.visibility = View.INVISIBLE
+            fab_progress_bar.visibility = INVISIBLE
             fab.isEnabled = true
 
             if (error != null) {

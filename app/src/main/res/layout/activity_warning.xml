@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/activity_main"
+        android:focusableInTouchMode="true"
+
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:orientation="vertical"
+        tools:context=".info.WarningActivity">
+
+    <androidx.appcompat.widget.AppCompatImageView
+            app:srcCompat="@drawable/ic_warning_orange_24dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="48dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"/>
+
+    <ScrollView android:layout_width="match_parent" android:layout_height="wrap_content">
+
+        <TextView
+                android:padding="8dp"
+                android:id="@+id/intro_text"
+                app:fontFamily="sans-serif"
+                android:textSize="16sp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+    </ScrollView>
+
+</LinearLayout>
