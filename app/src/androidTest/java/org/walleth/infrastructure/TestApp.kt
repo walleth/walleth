@@ -11,6 +11,7 @@ import kotlinx.coroutines.runBlocking
 import okhttp3.OkHttpClient
 import org.kethereum.DEFAULT_GAS_PRICE
 import org.kethereum.keystore.api.KeyStore
+import org.kethereum.metadata.repo.model.MetaDataRepo
 import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
 import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.rpc.EthereumRPC
@@ -75,6 +76,10 @@ class TestApp : App() {
 
         single {
             mock(OkHttpClient::class.java)
+        }
+
+        single {
+            mock(MetaDataRepo::class.java)
         }
 
         viewModel { WalletConnectViewModel(this@TestApp, get(), get(), get()) }

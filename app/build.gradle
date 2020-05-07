@@ -137,7 +137,7 @@ dependencies {
 
     implementation "com.github.komputing.kethereum:abi:$kethereum_version"
     implementation "com.github.komputing.kethereum:abi_filter:$kethereum_version"
-     implementation "com.github.komputing.kethereum:model:$kethereum_version"
+    implementation "com.github.komputing.kethereum:model:$kethereum_version"
     implementation "com.github.komputing.kethereum:crypto:$kethereum_version"
     implementation "com.github.komputing.kethereum:bip32:$kethereum_version"
     implementation "com.github.komputing.kethereum:bip39:$kethereum_version"
@@ -168,6 +168,7 @@ dependencies {
     implementation "com.github.komputing.kethereum:keystore:$kethereum_version"
     implementation "com.github.komputing.kethereum:metadata:$kethereum_version"
     implementation "com.github.komputing.kethereum:userdoc:$kethereum_version"
+    implementation "com.github.komputing.kethereum:metadata_repo:$kethereum_version"
 
     implementation "com.github.komputing:kbip44:0.1"
 

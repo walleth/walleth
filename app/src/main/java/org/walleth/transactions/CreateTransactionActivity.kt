@@ -26,7 +26,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
 import org.bouncycastle.math.ec.ECConstants.TWO
 import org.kethereum.DEFAULT_GAS_LIMIT
 import org.kethereum.eip137.model.ENSName
@@ -51,6 +50,8 @@ import org.kethereum.metadata.model.NoMatchingUserDocFound
 import org.kethereum.metadata.model.ResolveErrorUserDocResult
 import org.kethereum.metadata.model.ResolvedUserDocResult
 import org.kethereum.metadata.model.UserDocResultContractNotFound
+import org.kethereum.metadata.repo.model.MetaDataRepo
+import org.kethereum.metadata.repo.model.MetaDataResolveResultOK
 import org.kethereum.metadata.resolveFunctionUserDoc
 import org.kethereum.model.*
 import org.kethereum.rpc.EthereumRPCException
@@ -121,7 +122,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val exchangeRateProvider: ExchangeRateProvider by inject()
     private val rpcProvider: RPCProvider by inject()
     private val ensProvider: ENSProvider by inject()
-    private val okHttpClient: OkHttpClient by inject()
+    private val metaDataRepo: MetaDataRepo by inject()
 
     private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
@@ -161,6 +162,11 @@ class CreateTransactionActivity : BaseSubActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
+            REQUEST_CODE_ADD_ACTION -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    setFromURL(data?.getStringExtra(EXTRA_KEY_ERC681), false)
+                }
+            }
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     currentTxHash = data?.getStringExtra("TXHASH")
@@ -178,15 +184,15 @@ class CreateTransactionActivity : BaseSubActivity() {
             }
             else -> data?.let {
                 if (data.hasExtra(EXTRA_KEY_ADDRESS)) {
-                    setToFromURL(data.getStringExtra(EXTRA_KEY_ADDRESS), fromUser = true)
+                    setFromURL(data.getStringExtra(EXTRA_KEY_ADDRESS), fromUser = true)
                 } else if (data.hasExtra("SCAN_RESULT")) {
-                    setToFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
+                    setFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
                 }
             }
         }
     }
 
-    private fun String.toERC681() = if (startsWith("0x")) ERC681(address = this) else parseERC681(this)
+    private fun String.toERC681() = if (startsWith("0x")) ERC681(address = this, chainId = chainInfoProvider.getCurrent()?.let { ChainId(it.chainId) }) else parseERC681(this)
 
     private fun isParityFlow() = intent.getBooleanExtra("parityFlow", false)
 
@@ -319,7 +325,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                         alert("could not resolve ENS address for ${editText.text}")
                                     } else {
                                         ensMap[address.toString()] = editText.text.toString()
-                                        setToFromURL(address.toString(), fromUser = true)
+                                        setFromURL(address.toString(), fromUser = true)
                                     }
                                 }
                             }
@@ -330,7 +336,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                 } else if (!address.hasValidERC55ChecksumOrNoChecksum()) {
                                     alert("Address has invalid ERC55 checksum")
                                 } else {
-                                    setToFromURL(address.toString(), fromUser = true)
+                                    setFromURL(address.toString(), fromUser = true)
                                 }
                             }
                             else -> alert("Please enter either an ENS address (ending with .eth) or a HEX address (starting with 0x)")
@@ -356,7 +362,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         })
         refreshFee()
-        setToFromURL(currentERC681.generateURL(), false)
+        setFromURL(currentERC681.generateURL(), false)
 
         address_list_button.setOnClickListener {
             val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
@@ -367,36 +373,9 @@ class CreateTransactionActivity : BaseSubActivity() {
             val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_SELECT_FROM_ADDRESS)
         }
-
-        val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
-        function_label.setVisibility(functionVisibility)
-        function_text.setVisibility(functionVisibility)
-
-        if (functionVisibility) {
-            function_text.text = currentERC681.function + "(" + currentERC681.functionParams?.joinToString(",") { it.second } + ")"
-
-            if (BuildConfig.FLAVOR_connectivity == "online") {
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val res = currentERC681.resolveFunctionUserDoc(ChainId(chainInfoProvider.getCurrent()?.chainId!!), okHttpClient)
-                    Do exhaustive when (res) {
-                        is UserDocResultContractNotFound -> showWarning(WARNING_USERDOC, "Contact MetaData not found. Please <a href='wallethwarn:contractnotfound||" + currentERC681.address + "'>read here</a> to learn more.")
-                        is ResolvedUserDocResult -> setUserDoc(res.userDoc)
-                        is ResolveErrorUserDocResult -> showWarning(WARNING_USERDOC, "Cannot resolve Userdoc. " + res.error)
-                        is NoMatchingUserDocFound -> showWarning(WARNING_USERDOC, "Userdoc for function not found. Please <a href='wallethwarn:userdocnotfound||" + currentERC681.address + "||" + currentERC681.function + "'>read here</a> to learn more.")
-                    }
-                }
-            }
-        }
     }
 
     private fun setUserDoc(msg: String) {
-        if (settings.isAdvancedFunctionsEnabled()) {
-            from_contract_source_button.visibility = VISIBLE
-            from_contract_source_button.setOnClickListener {
-                val uri = Uri.parse("https://contractrepo.komputing.org/contract/byChainId/${currentERC681.chainId?.value}/${currentERC681.address}/sources/")
-                startActivity(Intent(Intent.ACTION_VIEW, uri))
-            }
-        }
         action_label.visibility = VISIBLE
         action_text.visibility = VISIBLE
         action_text.text = msg
@@ -421,7 +400,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             if (warningMap.size > 1) "• $it" else it
         }
         warnings_text.text = HtmlCompat.fromHtml(content)
-        warning_label.text = if (warningMap.keys.size == 1) "Waring" else "Warnings"
+        warning_label.setText(if (warningMap.keys.size == 1) R.string.create_transaction_warning_label else R.string.create_transaction_warnings_label)
     }
 
     private fun onCurrentTokenChanged() {
@@ -648,99 +627,156 @@ class CreateTransactionActivity : BaseSubActivity() {
         super.onSaveInstanceState(outState)
     }
 
-    private fun setToFromURL(uri: String?, fromUser: Boolean) {
-        if (uri != null) {
+    private fun setFromURL(uri: String?, fromUser: Boolean) {
+        if (uri == null) return
 
-            val localERC681 = uri.toERC681()
-            currentERC681 = localERC681
+        val localERC681 = uri.toERC681()
+        currentERC681 = localERC681
 
-            if (currentERC681.valid) {
+        if (currentERC681.valid) {
 
-                chainIDAlert(chainInfoProvider,
-                        appDatabase,
-                        localERC681.chainId,
-                        continuationWithWrongChainId = {
-                            finish()
-                        },
-                        continuationWithCorrectOrNullChainId = {
-                            lifecycleScope.launch {
+            chainIDAlert(chainInfoProvider,
+                    appDatabase,
+                    localERC681.chainId,
+                    continuationWithWrongChainId = {
+                        finish()
+                    },
+                    continuationWithCorrectOrNullChainId = {
+                        lifecycleScope.launch {
 
-                                intent.getStringExtra("nonce")?.let {
-                                    nonce_input.setText(HexString(it).maybeHexToBigInteger().toString())
-                                }
+                            val address = currentERC681.address?.let { Address(it) }
+                            val chainId = chainInfoProvider.getCurrent()?.chainId?.let { ChainId(it) }
 
-                                currentToAddress = localERC681.getToAddress()?.apply {
-                                    to_address.text = appDatabase.addressBook.resolveNameWithFallback(this, ensMap[hex]?.let {
-                                        "$it($hex)"
-                                    } ?: hex)
-                                }
+                            if (address != null && chainId != null) {
+                                val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
+                                function_label.setVisibility(functionVisibility)
+                                function_text.setVisibility(functionVisibility)
 
 
-                                if (localERC681.isTokenTransfer()) {
-                                    if (localERC681.address != null) {
-                                        val token = appDatabase.tokens.forAddress(Address(localERC681.address!!))
-                                        if (token != null) {
+                                currentERC681.address?.let { address ->
 
-                                            if (token != currentTokenProvider.getCurrent()) {
-                                                currentTokenProvider.setCurrent(token)
-                                                currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
-                                                onCurrentTokenChanged()
-                                            }
 
-                                            localERC681.getValueForTokenTransfer()?.let {
-                                                amountController.setValue(it, token)
-                                            }
-                                        } else {
-                                            alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
-                                        }
-
-                                    } else {
-                                        alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
-                                    }
-                                } else {
-
-                                    if (localERC681.function != null) {
-                                        if (!checkFunctionParameters(localERC681)) {
-                                            localERC681.function = null
-                                        }
+                                    val metaDataForAddressOnChain =  withContext(Dispatchers.Default) {
+                                        metaDataRepo.getMetaDataForAddressOnChain(Address(address), chainInfoProvider.getCurrentChainId())
                                     }
 
-                                    localERC681.value?.let {
+                                    action_button.setVisibility(metaDataForAddressOnChain is MetaDataResolveResultOK)
 
-                                        if (!currentTokenProvider.getCurrent().isRootToken()) {
-                                            chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
-                                                currentTokenProvider.setCurrent(token)
-                                                currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
-                                                onCurrentTokenChanged()
+                                    if (metaDataForAddressOnChain is MetaDataResolveResultOK) {
+                                        if (settings.isAdvancedFunctionsEnabled()) {
+                                            from_contract_source_button.visibility = VISIBLE
+                                            from_contract_source_button.setOnClickListener {
+                                                val uri = Uri.parse("https://contractrepo.komputing.org/contract/byChainId/${chainInfoProvider.getCurrent()?.chainId}/${currentERC681.address}/sources/")
+                                                startActivity(Intent(Intent.ACTION_VIEW, uri))
                                             }
                                         }
 
-                                        amountController.setValue(it, currentTokenProvider.getCurrent())
+                                        action_label.visibility = VISIBLE
+                                        action_button.setText(if (currentERC681.function == null) R.string.add_action else R.string.change_action)
+                                        action_text.visibility = GONE
+
+                                        action_button.setOnClickListener {
+                                            val noFunctionERC681 = currentERC681.copy(function = null, functionParams = emptyList())
+                                            startActivityForResult(getERC681ActivityIntent(noFunctionERC681, ChangeActionActivity::class), REQUEST_CODE_ADD_ACTION)
+                                        }
+
                                     }
                                 }
 
-                                localERC681.gas?.let {
-                                    show_advanced_button.callOnClick()
-                                    gas_limit_input.setText(it.toString())
-                                }
 
-                                estimateGas()
+                                if (functionVisibility) {
+                                    function_text.text = currentERC681.function + "(" + currentERC681.functionParams?.joinToString(",") { it.second } + ")"
+
+                                    if (BuildConfig.FLAVOR_connectivity == "online") {
+                                        lifecycleScope.launch(Dispatchers.Main) {
+                                            val res = currentERC681.resolveFunctionUserDoc(ChainId(chainInfoProvider.getCurrent()?.chainId!!), metaDataRepo)
+                                            Do exhaustive when (res) {
+                                                is UserDocResultContractNotFound -> showWarning(WARNING_USERDOC, "Contact MetaData not found. Please <a href='wallethwarn:contractnotfound||" + currentERC681.address + "'>read here</a> to learn more.")
+                                                is ResolvedUserDocResult -> setUserDoc(res.userDoc)
+                                                is ResolveErrorUserDocResult -> showWarning(WARNING_USERDOC, "Cannot resolve Userdoc. " + res.error)
+                                                is NoMatchingUserDocFound -> showWarning(WARNING_USERDOC, "Userdoc for function not found. Please <a href='wallethwarn:userdocnotfound||" + currentERC681.address + "||" + currentERC681.function + "'>read here</a> to learn more.")
+                                            }
+                                        }
+                                    }
+                                }
                             }
-                        })
 
 
-            } else {
-                currentToAddress = null
-                to_address.setText(R.string.no_address_selected)
-                if (fromUser || lastWarningURI != uri) {
-                    lastWarningURI = uri
-                    if (uri.isEthereumURLString()) {
-                        alert(getString(R.string.create_tx_error_invalid_url_msg, uri), getString(R.string.create_tx_error_invalid_url_title))
-                    } else {
-                        alert(getString(R.string.create_tx_error_invalid_address, uri))
-                    }
+                            intent.getStringExtra("nonce")?.let {
+                                nonce_input.setText(HexString(it).maybeHexToBigInteger().toString())
+                            }
 
+                            currentToAddress = localERC681.getToAddress()?.apply {
+                                to_address.text = appDatabase.addressBook.resolveNameWithFallback(this, ensMap[hex]?.let {
+                                    "$it($hex)"
+                                } ?: hex)
+                            }
+
+
+                            if (localERC681.isTokenTransfer()) {
+                                if (localERC681.address != null) {
+                                    val token = appDatabase.tokens.forAddress(Address(localERC681.address!!))
+                                    if (token != null) {
+
+                                        if (token != currentTokenProvider.getCurrent()) {
+                                            currentTokenProvider.setCurrent(token)
+                                            currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
+                                            onCurrentTokenChanged()
+                                        }
+
+                                        localERC681.getValueForTokenTransfer()?.let {
+                                            amountController.setValue(it, token)
+                                        }
+                                    } else {
+                                        alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
+                                    }
+
+                                } else {
+                                    alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
+                                }
+                            } else {
+
+                                if (localERC681.function != null) {
+                                    if (!checkFunctionParameters(localERC681)) {
+                                        localERC681.function = null
+                                    }
+                                }
+
+                                localERC681.value?.let {
+
+                                    if (!currentTokenProvider.getCurrent().isRootToken()) {
+                                        chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
+                                            currentTokenProvider.setCurrent(token)
+                                            currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
+                                            onCurrentTokenChanged()
+                                        }
+                                    }
+
+                                    amountController.setValue(it, currentTokenProvider.getCurrent())
+                                }
+                            }
+
+                            localERC681.gas?.let {
+                                show_advanced_button.callOnClick()
+                                gas_limit_input.setText(it.toString())
+                            }
+
+                            estimateGas()
+                        }
+                    })
+
+
+        } else {
+            currentToAddress = null
+            to_address.setText(R.string.no_address_selected)
+            if (fromUser || lastWarningURI != uri) {
+                lastWarningURI = uri
+                if (uri.isEthereumURLString()) {
+                    alert(getString(R.string.create_tx_error_invalid_url_msg, uri), getString(R.string.create_tx_error_invalid_url_title))
+                } else {
+                    alert(getString(R.string.create_tx_error_invalid_address, uri))
                 }
+
             }
         }
     }

@@ -21,6 +21,8 @@ import okhttp3.OkHttpClient
 import org.bouncycastle.jce.provider.BouncyCastleProvider
 import org.kethereum.keystore.api.InitializingFileKeyStore
 import org.kethereum.keystore.api.KeyStore
+import org.kethereum.metadata.repo.MetaDataRepoHttpWithCacheImpl
+import org.kethereum.metadata.repo.model.MetaDataRepo
 import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
 import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepositoryImpl
 import org.koin.android.ext.android.inject
@@ -112,6 +114,10 @@ open class App : MultiDexApplication() {
 
         single {
             NFCCredentialStore(this@App)
+        }
+
+        single {
+            MetaDataRepoHttpWithCacheImpl(cacheDir = File(cacheDir, "metadata").apply { mkdirs() }) as MetaDataRepo
         }
 
         single {

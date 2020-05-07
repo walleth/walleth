@@ -277,6 +277,9 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="burner_label">burner</string>
     <string name="create_transaction_action_label">Action:</string>
     <string name="create_transaction_warning_label">Warning:</string>
+    <string name="create_transaction_warnings_label">Warnings:</string>
     <string name="mail">Mail</string>
+    <string name="add_action">Add Action</string>
+    <string name="change_action">Change Action</string>
 
 </resources>

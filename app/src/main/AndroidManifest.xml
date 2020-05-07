@@ -134,6 +134,9 @@
                 <data android:scheme="wallethwarn"/>
             </intent-filter>
         </activity>
+        <activity android:name=".transactions.ChangeActionParametersActivity" />
+        <activity android:name=".transactions.ChangeActionActivity" />
+        <activity android:name=".transactions.ChangeActionFunctionActivity" />
 
     </application>
 

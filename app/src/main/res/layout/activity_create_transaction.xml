@@ -19,58 +19,71 @@
                 android:padding="16dp">
 
             <TextView
-                    android:visibility="gone"
-                    tools:visibility="visible"
                     android:id="@+id/warning_label"
                     style="@style/section_header"
-                    android:text="@string/create_transaction_warning_label" />
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
 
             <TextView
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:layout_below="@id/warning_label"
                     android:id="@+id/warnings_text"
-                    android:padding="16dp"
-                    android:layout_toLeftOf="@id/warning_indicator"
-                    android:layout_alignParentLeft="true"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/warning_label"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/warning_indicator"
+                    android:padding="16dp"
+                    android:visibility="gone"
+                    tools:visibility="visible" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                    android:visibility="gone"
-                    tools:visibility="visible"
                     android:id="@+id/warning_indicator"
-                    android:clickable="false"
                     style="@style/button"
                     android:layout_below="@id/warning_label"
                     android:layout_alignParentRight="true"
-                    app:srcCompat="@drawable/ic_warning_orange_24dp" />
-
-
-
-            <TextView
+                    android:clickable="false"
                     android:visibility="gone"
-                    tools:visibility="visible"
+                    app:srcCompat="@drawable/ic_warning_orange_24dp"
+                    tools:visibility="visible" />
+
+
+            <LinearLayout
+                    android:id="@+id/action_container"
+                    android:orientation="vertical"
                     android:layout_below="@id/warnings_text"
-                    android:id="@+id/action_label"
-                    style="@style/section_header"
-                    android:text="@string/create_transaction_action_label" />
-
-            <TextView
-                    android:visibility="gone"
-                    tools:visibility="visible"
-                    android:layout_below="@id/action_label"
-                    android:id="@+id/action_text"
-
-                    android:padding="16dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content">
+
+                <TextView
+                        android:id="@+id/action_label"
+                        style="@style/section_header"
+
+                        android:text="@string/create_transaction_action_label"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+                <Button
+                        android:id="@+id/action_button"
+                        style="@style/MaterialButtonStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="16dp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+
+                <TextView
+                        android:id="@+id/action_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:visibility="gone"
+                        tools:visibility="visible" />
+            </LinearLayout>
 
             <TextView
-                    android:layout_below="@id/action_text"
                     android:id="@+id/from_label"
                     style="@style/section_header"
+                    android:layout_below="@id/action_container"
                     android:text="@string/create_transaction_sender_label" />
 
 
@@ -103,7 +116,6 @@
                     android:text="@string/create_transaction_receiver_label" />
 
 
-
             <androidx.appcompat.widget.AppCompatImageView
                     android:id="@+id/address_list_button"
                     style="@style/button"
@@ -120,11 +132,11 @@
                     app:srcCompat="@drawable/ic_keyboard" />
 
             <androidx.appcompat.widget.AppCompatImageView
-                    android:visibility="gone"
                     android:id="@+id/from_contract_source_button"
                     style="@style/button"
                     android:layout_below="@id/to_label"
                     android:layout_toLeftOf="@id/from_address_enter_button"
+                    android:visibility="gone"
                     app:srcCompat="@drawable/ic_subject_black_24dp" />
 
             <TextView
