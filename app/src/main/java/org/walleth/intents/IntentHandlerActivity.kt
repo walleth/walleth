@@ -35,6 +35,8 @@ fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentH
     data = Uri.parse(ethereumString)
 }
 
+internal fun ERC681.shouldStartTransactionActivity() = function != null || address == null || value != null || chainId != null
+
 class IntentHandlerActivity : WallethActivity() {
 
     private var textToSign: String? = null
@@ -98,9 +100,8 @@ class IntentHandlerActivity : WallethActivity() {
         }
     }
 
-
     private fun process681(erc681: ERC681) {
-        if (erc681.function != null || erc681.address == null || erc681.isTokenTransfer() || erc681.value != null && erc681.value != ZERO) {
+        if (erc681.shouldStartTransactionActivity()) {
             startActivityForResult(Intent(this, CreateTransactionActivity::class.java).apply {
                 data = intent.data
             }, REQUEST_CODE_CREATE_TX)
