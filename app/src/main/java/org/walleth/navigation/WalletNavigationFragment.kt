@@ -71,7 +71,7 @@ class WalletNavigationFragment : Fragment() {
 
 
         navigationView.setNavigationItemSelectedListener {
-            view!!.rootView.drawer_layout.closeDrawers()
+            requireView().rootView.drawer_layout.closeDrawers()
             val classToStart = idToClassMap[it.itemId]
             if (classToStart != null) {
                 context?.startActivityFromClass(classToStart)
