@@ -201,7 +201,7 @@ dependencies {
     // Do not update to 3.4.0 - breaks old devices: https://github.com/walleth/walleth/issues/382
     implementation 'com.google.zxing:core:3.3.3'
 
-    implementation "io.coil-kt:coil:0.7.0"
+    implementation "io.coil-kt:coil:0.11.0"
     implementation 'com.jakewharton:process-phoenix:2.0.0'
 
     implementation 'com.jakewharton.threetenabp:threetenabp:1.2.2'
@@ -215,6 +215,7 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 
+    implementation 'androidx.core:core-ktx:1.2.0'
     implementation "com.chibatching.kotpref:kotpref:2.11.0"
 
     implementation 'com.squareup.moshi:moshi:1.8.0'
