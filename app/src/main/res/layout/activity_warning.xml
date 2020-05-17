@@ -25,6 +25,7 @@
                 android:id="@+id/intro_text"
                 app:fontFamily="sans-serif"
                 android:textSize="16sp"
+                android:justificationMode="inter_word"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
