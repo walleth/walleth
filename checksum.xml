@@ -172,6 +172,9 @@
     <dependency group='androidx.coordinatorlayout' module='coordinatorlayout' version='1.0.0' extension='aar'>
       <sha512>AAA3894A468C872DB96071536023CE54DDC8B35639539087817114F6AEDD06A2BB5182E6851ECF4F33F5D72EEDC49DAF605F928AD1344AFA9015B266B5AC6AD7</sha512>
     </dependency>
+    <dependency group='androidx.coordinatorlayout' module='coordinatorlayout' version='1.1.0' extension='aar'>
+      <sha512>C344128DC6584BB4CD2A324B12E408213111DDC5C35E43A7FAC3E443402A26EBB42B7B1CB7E6B4BDA703F2C004D80B3B520CEC6761527E6AADC51D077D17B63A</sha512>
+    </dependency>
     <dependency group='androidx.core' module='core-ktx' version='1.1.0' extension='aar'>
       <sha512>E0DF6F61D3895635A0176FB4BA5515713AD25F444B0D62425AF87A94B95C807A944E31BDE86A73FFCA6987A0C18C7741ADAD4D4E5CF19AFDEE14CE987882E7B</sha512>
     </dependency>
@@ -622,6 +625,9 @@
     <dependency group='androidx.transition' module='transition' version='1.0.0' extension='aar'>
       <sha512>2CCC7579165B224F5542E62E4755E3BC52A645A895E15AF47A67AD2748CC1D78632B47D2958D13E6592F7DCFE1EA58144BB9911BB1C8440DCCB8FFDD9BFF12B2</sha512>
     </dependency>
+    <dependency group='androidx.transition' module='transition' version='1.2.0' extension='aar'>
+      <sha512>853680DF4F58415D4D04A94F10B33489834EEE736307BDE59A4C1CA62BB9FF8EF554C208C68B70F2BFC097BACFE1C1B22441A380E105B5CE5E1D95D46DE17A22</sha512>
+    </dependency>
     <dependency group='androidx.vectordrawable' module='vectordrawable-animated' version='1.0.0' extension='aar'>
       <sha512>2417AECAC893F2700E57E78E80525A3DC3F18238ED717034A9CA90CAF2486BADB09FB7A90F9B3BE749FB59B38BAC5A214787ED0D6677BEAC6839F79663C69D09</sha512>
     </dependency>
@@ -642,6 +648,9 @@
     </dependency>
     <dependency group='androidx.versionedparcelable' module='versionedparcelable' version='1.1.0' extension='aar'>
       <sha512>8053DD3559F2EED1BB3C4FB8FA2BFB3E0C450EADB6DAA858C1F0398E77E1ED1A1AD083F7D46A17E07E78B58ABBE2AAA0B08436D6171686355EBC2F82E30193A8</sha512>
+    </dependency>
+    <dependency group='androidx.viewpager2' module='viewpager2' version='1.0.0' extension='aar'>
+      <sha512>EBCAD093CCD5F41F7F4938B6AFB9622B40948039C558385F8CA4A4A621CD70626EAD3AE04098897A1799551845C18EE45ADEE58E98E92912C85770C88DFB78BD</sha512>
     </dependency>
     <dependency group='androidx.viewpager' module='viewpager' version='1.0.0' extension='aar'>
       <sha512>7B78494130D0C6DD0F18E7506C8DC5DDA428C56D836D186643360B09992A7F2CCC6072D4316AF17BCD406482DFD426866747B9A48FAB6AA3FB0BB2DF648E62F4</sha512>
@@ -4620,6 +4629,9 @@
     </dependency>
     <dependency group='com.google.android.material' module='material' version='1.0.0' extension='aar'>
       <sha512>D51F296474C84E1846F0572A139FC60DAF10D177EE9C27428800AF4ADF4D754CD1BAEAC59A814470913655238C5C8687B5361AC8B584B61ECE05C1180E0AED8C</sha512>
+    </dependency>
+    <dependency group='com.google.android.material' module='material' version='1.1.0' extension='aar'>
+      <sha512>E8F704544C900FECD94EA47A9F9F8170BD90FB43E7143866B5D782455581EAEDFCA3FDADB015113DC6DBA2FB00E41E4CF73B1D98B595D5A69D6438F72E25A2DC</sha512>
     </dependency>
     <dependency group='com.google.code.findbugs' module='jsr305' version='1.3.9'>
       <sha512>6DA282CFD8E30D9F8CF17702B8709172B00E22B75A627A1D85F8989615B8A1A401BC25D9AEE7B14AED1D9B5DF73BF2EA8D66F9C8468D9577C29F0CCFA2CC70A</sha512>

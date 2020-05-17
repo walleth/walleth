@@ -35,7 +35,7 @@ class WalletNavigationFragment : Fragment() {
     val appDatabase: AppDatabase by inject()
 
     private val navigationView by lazy {
-        NavigationView(activity).apply {
+        NavigationView(requireContext()).apply {
             inflateMenu(R.menu.navigation_drawer)
             inflateHeaderView(R.layout.navigation_drawer_header)
             getHeaderView(0).edit_account_image.setOnClickListener {

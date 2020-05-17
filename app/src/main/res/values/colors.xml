@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#C99D66</color>
-    <color name="colorPrimaryDark">#3C3C3D</color>
+    <color name="colorPrimary">#388E3C</color>
+    <color name="colorInitialToolbar">#eeeeee</color>
+    <color name="colorSecondary">#388E3C</color>
     <color name="colorAccent">#388E3C</color>
 
     <color name="onAccent">@android:color/black</color>
