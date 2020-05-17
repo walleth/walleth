@@ -240,7 +240,7 @@ dependencies {
 
     kapt "androidx.room:room-compiler:$room_version"
 
-    implementation 'com.github.tingyik90:snackprogressbar:6.2.0'
+    implementation 'com.github.tingyik90:snackprogressbar:6.4.0'
 
     androidTestImplementation "com.google.truth:truth:$truth"
 
