@@ -48,9 +48,9 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
 ]]>
     </string>
     <array name="day_night">
+        <item>System</item>
         <item>Day</item>
         <item>Night</item>
-        <item>Auto</item>
     </array>
 
     <array name="scan_hex_choices">

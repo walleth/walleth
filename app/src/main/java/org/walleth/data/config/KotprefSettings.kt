@@ -47,8 +47,8 @@ object KotprefSettings : KotprefModel(), Settings {
     override fun getNightMode() = when (sharedPreferences.getString(context.getString(R.string.key_prefs_day_night), context.getString(R.string.default_day_night))) {
         "day" -> AppCompatDelegate.MODE_NIGHT_NO
         "night" -> AppCompatDelegate.MODE_NIGHT_YES
-        "auto" -> AppCompatDelegate.MODE_NIGHT_AUTO
-        else -> AppCompatDelegate.MODE_NIGHT_AUTO
+        "auto" -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     }
 
 
