@@ -31,8 +31,6 @@ interface Settings {
     var toolbarBackgroundColor: Int
     var toolbarForegroundColor: Int
 
-    var showDebug: Boolean
-
     fun isLightClientWanted(): Boolean
     fun getNightMode(): Int
 

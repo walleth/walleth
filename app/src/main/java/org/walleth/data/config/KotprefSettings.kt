@@ -36,8 +36,6 @@ object KotprefSettings : KotprefModel(), Settings {
     override var toolbarBackgroundColor by intPref(ContextCompat.getColor(context, R.color.colorInitialToolbar))
     override var toolbarForegroundColor by intPref(Color.BLACK)
 
-    override var showDebug by booleanPref(default = false)
-
     private val sharedPreferences by lazy {
         PreferenceManager.getDefaultSharedPreferences(context)
     }
