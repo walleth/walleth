@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
         xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/activity_main"
-        android:focusableInTouchMode="true"
-
         android:layout_width="match_parent"
+
         android:layout_height="match_parent"
-        android:padding="16dp"
+        android:focusableInTouchMode="true"
         android:orientation="vertical"
+        android:padding="16dp"
         tools:context=".debug.DebugWallethActivity">
 
-    <androidx.appcompat.widget.SwitchCompat
-            android:id="@+id/golog_switch"
+    <com.google.android.material.button.MaterialButton
+            android:id="@+id/log_refresh_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="filter GoLog"/>
+            android:text="@string/refresh" />
 
-    <androidx.appcompat.widget.AppCompatSpinner
-            android:id="@+id/geth_verbosity_spinner"
+
+    <androidx.appcompat.widget.AppCompatEditText
+            android:id="@+id/max_log_lines"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:hint="max lines"
+            android:inputType="number"
+            android:text="100" />
 
-    <ScrollView android:layout_width="match_parent" android:layout_height="match_parent">
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
         <TextView
-                android:padding="8dp"
                 android:id="@+id/log_text"
-                app:fontFamily="sans-serif"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:padding="8dp"
+                app:fontFamily="sans-serif" />
     </ScrollView>
 
 

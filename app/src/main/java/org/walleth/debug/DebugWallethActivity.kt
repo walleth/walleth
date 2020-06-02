@@ -13,7 +13,6 @@ import kotlinx.coroutines.withContext
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
-import java.io.IOException
 import kotlin.math.max
 
 class DebugWallethActivity : BaseSubActivity() {
@@ -23,53 +22,39 @@ class DebugWallethActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_logs)
 
-        golog_switch.setOnCheckedChangeListener { _, _ ->
+        log_refresh_button.setOnClickListener {
             displayLog()
         }
 
-        /*
-
-        TODO-GETHOPT
-
-        val verbosityList = listOf("silent", "error", "warn", "info", "debug", "detail", "max")
-        geth_verbosity_spinner.adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, verbosityList)
-        geth_verbosity_spinner.setSelection(settings.currentGoVerbosity)
-        geth_verbosity_spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onNothingSelected(p0: AdapterView<*>?) {}
-
-            override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-                settings.currentGoVerbosity = position
-                Geth.setVerbosity(position.toLong())
-            }
-
-        }
-        */
-
-        golog_switch.isChecked = true
+        displayLog()
 
     }
 
     private fun displayLog() {
-        try {
-            lifecycleScope.launch(Dispatchers.Main) {
-                val textToPrint = withContext(Dispatchers.Default) {
-                    if (golog_switch.isChecked) {
-                        readLogcatString().lines().asSequence().filter {
-                            it.contains("GoLog")
-                        }.joinToString("\n")
-                    } else {
-                        readLogcatString()
-                    }
-                }
+        lifecycleScope.launch(Dispatchers.Main) {
+            var logString = ""
+            try {
 
-                runOnUiThread {
-                    log_text.text = textToPrint
+
+                withContext(Dispatchers.Default) {
+
+                    val maxLines = Integer.parseInt(max_log_lines.text.toString())
+
+                    readLogcatString().lines().reversed().forEachIndexed { index, s ->
+                        if (index <= maxLines) {
+                            logString += s + "\n"
+                        }
+                    }
+
+
                 }
+            } catch (e: Exception) {
+                logString += e.toString()
             }
 
-        } catch (e: IOException) {
-            log_text.text = e.message
+            log_text.text = logString
         }
+
     }
 
     private fun readLogcatString() = Runtime.getRuntime().exec("logcat -d").inputStream.reader().readText()
