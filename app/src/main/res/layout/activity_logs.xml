@@ -11,11 +11,19 @@
         android:padding="16dp"
         tools:context=".debug.DebugWallethActivity">
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+            android:id="@+id/log_rpc_checkbox"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log node RPC requests/responses" />
+
+
     <com.google.android.material.button.MaterialButton
             android:id="@+id/log_refresh_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/refresh" />
+
 
 
     <androidx.appcompat.widget.AppCompatEditText

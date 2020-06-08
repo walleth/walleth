@@ -58,20 +58,3 @@ class TincubETHActivity : BaseSubActivity() {
         }
     }
 }
-
-suspend fun findChainsWithTincubethSupportAndStore(context: Context, appDatabase: AppDatabase): List<ChainInfo> {
-    val res = findTincubethChains(appDatabase)
-    res.forEach {
-        if (!it.hasTincubethSupport()) {
-            appDatabase.chainInfo.upsert(it.copy(rpc = it.rpc + KEY_IN3_RPC))
-        }
-    }
-    return res
-}
-
-private suspend fun findTincubethChains(appDatabase: AppDatabase) = withContext(Dispatchers.IO) {
-    val res = appDatabase.chainInfo.getAll().filter {
-        it.chainId == BigInteger.ONE || it.chainId == BigInteger.valueOf(5L)
-    }
-    res
-}

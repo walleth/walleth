@@ -22,6 +22,12 @@ class DebugWallethActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_logs)
 
+        log_rpc_checkbox.isChecked = settings.logRPCRequests
+
+        log_rpc_checkbox.setOnCheckedChangeListener { _, isChecked ->
+            settings.logRPCRequests = isChecked
+        }
+
         log_refresh_button.setOnClickListener {
             displayLog()
         }

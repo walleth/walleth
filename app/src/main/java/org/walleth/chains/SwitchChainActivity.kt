@@ -19,7 +19,6 @@ import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxt.startActivityFromURL
 import org.ligi.kaxtui.alert
 import org.walleth.R
-import org.walleth.activities.findChainsWithTincubethSupportAndStore
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.enhancedlist.BaseEnhancedListActivity
@@ -114,7 +113,6 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
                             question(configurator = { setMessage("Really Import ${newList.size} Elements?") }, action = {
                                 lifecycleScope.launch(Dispatchers.Main) {
                                     appDatabase.chainInfo.upsert(newList)
-                                    findChainsWithTincubethSupportAndStore(this@SwitchChainActivity,appDatabase)
                                     refreshAdapter()
                                 }
                             })

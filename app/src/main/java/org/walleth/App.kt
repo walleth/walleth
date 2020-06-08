@@ -34,7 +34,6 @@ import org.koin.dsl.module
 import org.ligi.tracedroid.TraceDroid
 import org.walletconnect.impls.FileWCSessionStore
 import org.walletconnect.impls.WCSessionStore
-import org.walleth.activities.findChainsWithTincubethSupportAndStore
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.*
 import org.walleth.data.addresses.*
@@ -82,7 +81,7 @@ open class App : MultiDexApplication() {
         single { keyStore as KeyStore }
         single { KotprefSettings as Settings }
         single { CurrentTokenProvider(get()) }
-        single { RPCProviderImpl(this@App, get(), get(), get()) as RPCProvider }
+        single { RPCProviderImpl(this@App, get(), get(), get(), settings = get()) as RPCProvider }
         single { ENSProviderImpl(get()) as ENSProvider }
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
@@ -187,9 +186,6 @@ open class App : MultiDexApplication() {
                 }
 
                 GlobalScope.launch(Dispatchers.Default) {
-                    if (settings.dataVersion < 4) {
-                        findChainsWithTincubethSupportAndStore(this@App, appDatabase)
-                    }
                     if (settings.dataVersion < 3) {
                         val all = appDatabase.chainInfo.getAll()
                         var currentMin = all.filter { it.order != null }.minBy { it.order!! }?.order ?: 0
