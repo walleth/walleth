@@ -8,6 +8,7 @@
     <trusted-key id='c4c8cb73b1435348' group='com.android.tools.build' />
     <trusted-key id='5ad66315fc018797' group='com.beust' />
     <trusted-key id='24ab323a2c95b019' group='com.getkeepsafe.dexcount' />
+    <trusted-key id='56f8d3f66b76de01' group='com.getkeepsafe.dexcount' />
     <trusted-key id='356c889216ab52f2' group='com.github.madrapps' />
     <trusted-key id='1ed2576e643cdeca' group='com.gojuno.commander' />
     <trusted-key id='1ed2576e643cdeca' group='com.gojuno.composer' />
