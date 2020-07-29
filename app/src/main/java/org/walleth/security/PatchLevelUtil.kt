@@ -1,4 +1,4 @@
-package org.walleth.securityinfo
+package org.walleth.security
 
 import android.os.Build
 import org.ligi.tracedroid.logging.Log

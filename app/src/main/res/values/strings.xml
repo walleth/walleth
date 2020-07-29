@@ -271,7 +271,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="security_info_patched_badly">Your Android system was patched %d days ago - which is considered bad as it is old and the chance is high that there are security flaws and your funds are at risk. Nag your phone provider to provide you with patches or install a custom ROM with recent security patches. You might also consider a hardware wallet like a TREZOR to mitigate the problem</string>
     <string name="offline_transaction">Offline Transaction</string>
     <string name="debug">Debug</string>
-    <string name="security_information">Security Information</string>
+    <string name="security_privacy_label">Security/Privacy</string>
     <string name="key_length_error">Key length error</string>
     <string name="import_as_subtitle">Import as</string>
     <string name="burner_label">burner</string>

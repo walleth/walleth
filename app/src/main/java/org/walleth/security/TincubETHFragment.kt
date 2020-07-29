@@ -1,31 +1,27 @@
-package org.walleth.activities
+package org.walleth.security
 
-import android.content.Context
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.SeekBar
-import kotlinx.android.synthetic.main.activity_in3.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
+import androidx.fragment.app.Fragment
+import kotlinx.android.synthetic.main.tincubeth_config.*
 import org.koin.android.ext.android.inject
 import org.walleth.R
-import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.AppDatabase
-import org.walleth.data.chaininfo.ChainInfo
-import org.walleth.data.rpc.KEY_IN3_RPC
-import org.walleth.util.hasTincubethSupport
-import java.math.BigInteger
 
-class TincubETHActivity : BaseSubActivity() {
+class TincubETHFragment : Fragment() {
 
     val appDatabase: AppDatabase by inject()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_in3)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+            inflater.inflate(R.layout.tincubeth_config, container, false)
 
-        supportActionBar?.subtitle = "TinCubETH preferences"
 
+    override fun onResume() {
+        super.onResume()
         security_seek.max = 29
         val listener = object : SeekBar.OnSeekBarChangeListener {
             override fun onStartTrackingTouch(p0: SeekBar?) {}

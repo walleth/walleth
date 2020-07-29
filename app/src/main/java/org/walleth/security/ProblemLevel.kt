@@ -1,4 +1,4 @@
-package org.walleth.securityinfo
+package org.walleth.security
 
 enum class ProblemLevel {
     GREEN,

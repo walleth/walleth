@@ -1,28 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:name="org.walleth.ui.WalletPrefsFragment"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/preferences_fragment"
-        android:orientation="vertical"
-        android:padding="8dp"
+        android:name="org.walleth.ui.WalletPrefsFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-    <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_margin="16dp"
-            android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/ic_security_textcolor_24dp"/>
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="8dp">
 
-    <ScrollView
+    <LinearLayout
+            android:id="@+id/security_info_content"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/security_info_content"
-                android:orientation="vertical">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>

@@ -13,7 +13,6 @@ import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.accounts.EditAccountActivity
 import org.walleth.accounts.SwitchAccountActivity
-import org.walleth.activities.TincubETHActivity
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.chains.SwitchChainActivity
 import org.walleth.data.AppDatabase
@@ -21,7 +20,7 @@ import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.config.Settings
 import org.walleth.debug.DebugWallethActivity
 import org.walleth.preferences.PreferenceActivity
-import org.walleth.securityinfo.SecurityInfoActivity
+import org.walleth.security.SecurityActivity
 import org.walleth.toolbar.colorize
 import org.walleth.transactions.OfflineTransactionActivity
 import java.security.KeyStore
@@ -65,8 +64,7 @@ class WalletNavigationFragment : Fragment() {
                 R.id.menu_accounts to SwitchAccountActivity::class,
                 R.id.menu_offline_transaction to OfflineTransactionActivity::class,
                 R.id.menu_settings to PreferenceActivity::class,
-                R.id.menu_security to SecurityInfoActivity::class,
-                R.id.menu_tincubeth to TincubETHActivity::class
+                R.id.menu_security to SecurityActivity::class
         )
 
 
@@ -74,7 +72,7 @@ class WalletNavigationFragment : Fragment() {
             requireView().rootView.drawer_layout.closeDrawers()
             val classToStart = idToClassMap[it.itemId]
             if (classToStart != null) {
-                context?.startActivityFromClass(classToStart)
+                requireContext().startActivityFromClass(classToStart)
                 true
             } else {
                 false
