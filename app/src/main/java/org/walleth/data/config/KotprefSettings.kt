@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.chibatching.kotpref.KotprefModel
+import com.chibatching.kotpref.enumpref.enumValuePref
 import org.walleth.R
 import org.walleth.data.DEFAULT_GAS_PRICE
 import org.walleth.util.asBigDecimal
@@ -24,6 +25,12 @@ object KotprefSettings : KotprefModel(), Settings {
     override var filterFastFaucet by booleanPref(default = false)
     override var filterTincubeth by booleanPref(default = false)
     override var logRPCRequests: Boolean by booleanPref(default = false)
+
+    override var sourcifyBaseURL by stringPref(default = "https//reop.sourcify.dev")
+    override var dappNodeVPNProfile by stringPref(default = "dappnode")
+    override var dappNodeAutostartVPN by booleanPref(default = false)
+    override var dappNodeMode by enumValuePref(DappNodeMode.DONT_USE)
+
     override var chain by longPref(5L)
     override var accountAddress by nullableStringPref(null)
 

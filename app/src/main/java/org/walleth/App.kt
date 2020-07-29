@@ -81,7 +81,7 @@ open class App : MultiDexApplication() {
         single { keyStore as KeyStore }
         single { KotprefSettings as Settings }
         single { CurrentTokenProvider(get()) }
-        single { RPCProviderImpl(this@App, get(), get(), get(), settings = get()) as RPCProvider }
+        single { RPCProviderImpl(network = get(), appDatabase = get(), okHttpClient = get(), settings = get()) as RPCProvider }
         single { ENSProviderImpl(get()) as ENSProvider }
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")

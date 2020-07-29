@@ -8,16 +8,19 @@ import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
-import org.walleth.securityinfo.SecurityInfoActivity
+import org.walleth.security.SecurityActivity
+import org.walleth.security.SecurityInfoFragment
 
-class TheSecurityWallETHInfoActivity {
+class TheSecurityActivity {
 
     @get:Rule
-    var rule = TruleskActivityRule(SecurityInfoActivity::class.java)
+    var rule = TruleskActivityRule(SecurityActivity::class.java)
 
     @Test
     fun infoShows() {
-        onView(withText(R.string.security_info)).check(matches(isDisplayed()))
+        onView(withText(R.string.info)).check(matches(isDisplayed()))
+        onView(withText(R.string.rpc)).check(matches(isDisplayed()))
+        onView(withText(R.string.sourcify)).check(matches(isDisplayed()))
 
         rule.screenShot("security_info")
     }

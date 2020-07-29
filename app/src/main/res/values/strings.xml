@@ -81,6 +81,10 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="input_hint_account_address">Address or ENS name</string>
     <string name="please_enter_name">Please enter a name</string>
     <string name="info">Info</string>
+    <string name="rpc">RPC</string>
+    <string name="sourcify">Sourcify</string>
+    <string name="tincubeth">Tincubeth</string>
+    <string name="dappnode">DappNode</string>
     <string name="copy">Copy</string>
     <string name="share">Share</string>
     <string name="print">Print</string>
@@ -223,7 +227,6 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="or">or</string>
     <string name="trezor_not_initialized">TREZOR not initialized. Please use the TREZOR manager to initialize.</string>
     <string name="process_error">Process Error %s</string>
-    <string name="security_info">Security Information</string>
     <string name="click_for_details">Click for details</string>
     <string name="activity_subtitle_oss_license">OSS licenses information</string>
     <string name="alert_chain_unsupported_title">Chain invalid</string>
@@ -271,7 +274,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="security_info_patched_badly">Your Android system was patched %d days ago - which is considered bad as it is old and the chance is high that there are security flaws and your funds are at risk. Nag your phone provider to provide you with patches or install a custom ROM with recent security patches. You might also consider a hardware wallet like a TREZOR to mitigate the problem</string>
     <string name="offline_transaction">Offline Transaction</string>
     <string name="debug">Debug</string>
-    <string name="security_information">Security Information</string>
+    <string name="security_privacy_label">Security/Privacy</string>
     <string name="key_length_error">Key length error</string>
     <string name="import_as_subtitle">Import as</string>
     <string name="burner_label">burner</string>
