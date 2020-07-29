@@ -171,9 +171,28 @@
                     tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
 
             <TextView
-                    android:id="@+id/amount_label"
+                    android:id="@+id/result_label"
                     style="@style/section_header"
                     android:layout_below="@id/function_text"
+                    android:text="Result:" />
+
+            <TextView
+                    android:id="@+id/result_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/result_label"
+                    android:layout_alignParentLeft="true"
+                    android:ellipsize="middle"
+                    android:padding="16dp"
+                    android:singleLine="true"
+                    app:fontFamily="sans-serif"
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
+
+
+            <TextView
+                    android:id="@+id/amount_label"
+                    style="@style/section_header"
+                    android:layout_below="@id/result_text"
                     android:text="@string/create_tx_amount" />
 
             <LinearLayout

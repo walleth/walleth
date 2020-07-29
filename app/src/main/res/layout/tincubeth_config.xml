@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:animateLayoutChanges="true"
+        android:layout_height="match_parent"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical"
+        android:padding="16dp"
+        tools:context=".security.TincubETHFragment">
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="8dp"
+                        app:srcCompat="@drawable/ic_warning_orange_24dp" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="WARNING - Tincubeth support is experimental!\nFor the time being assume the lowest security and privacy like when you would use INFURA" />
+
+            </LinearLayout>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:padding="8dp"
+                    android:text="Security"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <SeekBar
+                    android:id="@+id/security_seek"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            <TextView
+                    android:id="@+id/security_details_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:padding="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            <LinearLayout
+
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:padding="8dp"
+                        android:text="MinDeposit"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <SeekBar
+                        android:id="@+id/min_deposit_seek"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:padding="8dp"
+                        android:text="Finality"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <SeekBar
+                        android:id="@+id/finality_deposit_seek"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:padding="8dp"
+                        android:text="Proof"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+                <SeekBar
+                        android:id="@+id/proof_seek"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" />
+
+                <TextView
+                        android:id="@+id/proof_details_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="sans-serif"
+                        android:padding="8dp"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+            </LinearLayout>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:padding="8dp"
+                    android:text="Privacy"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large" />
+
+            <SeekBar
+                    android:id="@+id/privacy_seek"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+
+            <TextView
+                    android:id="@+id/privacy_details_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:padding="8dp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</LinearLayout>

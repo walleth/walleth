@@ -1,40 +1,36 @@
-package org.walleth.securityinfo
+package org.walleth.security
 
 
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.scottyab.rootbeer.RootBeer
 import kotlinx.android.synthetic.main.activity_security_info.*
 import kotlinx.android.synthetic.main.activity_security_item.view.*
 import org.ligi.compat.HtmlCompat
 import org.walleth.R
-import org.walleth.base_activities.BaseSubActivity
-import org.walleth.securityinfo.ProblemLevel.*
+import org.walleth.security.ProblemLevel.*
 import org.walleth.util.security.isDeviceLockScreenProtected
 
-class SecurityInfoActivity : BaseSubActivity() {
+class SecurityInfoFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_security_info)
-
-        supportActionBar?.run {
-            subtitle = getString(R.string.security_info)
-        }
-    }
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
+            inflater.inflate(R.layout.activity_security_info, container, false)
 
     override fun onResume() {
         super.onResume()
 
-        val inflater = LayoutInflater.from(this)
+        val inflater = LayoutInflater.from(requireContext())
 
         val infoList = listOf(
-                getPatchInfo(),
-                getRootInfo(),
-                getLockInfo(),
-                getNoAuditWarning()
+                requireContext().getPatchInfo(),
+                requireContext().getRootInfo(),
+                requireContext().getLockInfo(),
+                requireContext().getNoAuditWarning()
         )
 
         security_info_content.removeAllViews()

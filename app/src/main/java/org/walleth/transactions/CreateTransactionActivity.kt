@@ -666,7 +666,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                         if (settings.isAdvancedFunctionsEnabled()) {
                                             from_contract_source_button.visibility = VISIBLE
                                             from_contract_source_button.setOnClickListener {
-                                                val uri = Uri.parse("https://contractrepo.komputing.org/contract/byChainId/${chainInfoProvider.getCurrent()?.chainId}/${currentERC681.address}/sources/")
+                                                val uri = Uri.parse("https://contractrepo.komputing.org/contract/${chainInfoProvider.getCurrent()?.chainId}/${currentERC681.address}/sources/")
                                                 startActivity(Intent(Intent.ACTION_VIEW, uri))
                                             }
                                         }

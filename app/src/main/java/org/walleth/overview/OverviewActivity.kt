@@ -14,11 +14,14 @@ import android.view.View.INVISIBLE
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
+import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.toolbar.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.erc681.toERC681
@@ -32,26 +35,28 @@ import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.WallethActivity
+import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
+import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
-import org.walleth.chains.ChainInfoProvider
-import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.info.WallETHInfoActivity
 import org.walleth.qr.scan.QRScanActivityAndProcessActivity
 import org.walleth.qr.scan.startScanActivityForResult
 import org.walleth.request.RequestActivity
+import org.walleth.security.isDappNodeReachable
+import org.walleth.security.startOpenVPN
 import org.walleth.toolbar.DefaultToolbarChangeDetector
 import org.walleth.toolbar.ToolbarColorChangeDetector
 import org.walleth.transactions.CreateTransactionActivity
 import org.walleth.transactions.TransactionAdapterDirection.INCOMING
 import org.walleth.transactions.TransactionAdapterDirection.OUTGOING
 import org.walleth.transactions.TransactionRecyclerAdapter
-import org.walleth.valueview.ValueViewController
 import org.walleth.util.copyToClipboard
+import org.walleth.valueview.ValueViewController
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -113,6 +118,15 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            if (!isDappNodeReachable())
+                lifecycleScope.launch(Dispatchers.Main) {
+                    if (settings.dappNodeAutostartVPN) {
+                        startOpenVPN(settings)
+                    }
+                }
+        }
 
         setContentView(R.layout.activity_main_in_drawer_container)
 

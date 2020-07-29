@@ -28,13 +28,7 @@
 
     <item
             android:id="@+id/menu_security"
-            android:title="@string/security_information"
+            android:title="@string/security_privacy_label"
             android:icon="@drawable/ic_security_black_24dp"/>
-
-    <item
-            android:id="@+id/menu_tincubeth"
-            android:title="Privacy/Security settings"
-            android:icon="@drawable/ic_tincubeth_logo_mono_thick"/>
-
 
 </menu>

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+            android:id="@+id/activity_main"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical"
+            android:padding="16dp"
+            tools:context=".security.TincubETHFragment">
+
+        <TextView
+                android:id="@+id/sourcify_intro_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        <RadioGroup
+                android:id="@+id/radio_group_dappnode_mode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+            <RadioButton
+                    android:id="@+id/radio_dont_use_dappnode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="don't use DappNode" />
+
+            <RadioButton
+                    android:id="@+id/radio_use_dappnode_when_possible"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="use DappNode when possible" />
+
+            <RadioButton
+                    android:id="@+id/radio_only_use_dappnode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="only use DappNode" />
+        </RadioGroup>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/dappnode_vpn_profile_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:hint="OpenVpn profile name"
+                    android:singleLine="true" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <CheckBox
+                android:id="@+id/dappnode_autostart_vpn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Start OpenVPN on startup" />
+
+        <com.google.android.material.button.MaterialButton
+                android:id="@+id/start_openvpn_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="start OpenVpn with profile" />
+    </LinearLayout>
+</ScrollView>

@@ -8,12 +8,12 @@ import org.junit.Rule
 import org.junit.Test
 import org.ligi.trulesk.TruleskActivityRule
 import org.walleth.R
-import org.walleth.securityinfo.SecurityInfoActivity
+import org.walleth.security.SecurityInfoFragment
 
 class TheSecurityWallETHInfoActivity {
 
     @get:Rule
-    var rule = TruleskActivityRule(SecurityInfoActivity::class.java)
+    var rule = TruleskActivityRule(SecurityInfoFragment::class.java)
 
     @Test
     fun infoShows() {

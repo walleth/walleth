@@ -29,6 +29,12 @@ interface Settings {
     var filterTincubeth: Boolean
     var logRPCRequests: Boolean
 
+    var sourcifyBaseURL: String
+
+    var dappNodeVPNProfile: String
+    var dappNodeAutostartVPN: Boolean
+    var dappNodeMode: DappNodeMode
+
     var toolbarBackgroundColor: Int
     var toolbarForegroundColor: Int
 
@@ -44,10 +50,8 @@ interface Settings {
     fun isAdvancedFunctionsEnabled(): Boolean
 }
 
-val ChainIdToDappNodeRPC = mapOf(
-        1 to listOf("http://geth.dappnode:8545", "http://nethermind.public.dappnode:8545", "http://openethereum.dappnode:8545"),
-        3 to listOf("http://ropsten.dappnode:8545"),
-        4 to listOf("http://rinkeby.dappnode:8545"),
-        5 to listOf("http://goerli-geth.dappnode:8545"),
-        42 to listOf("http://kovan.dappnode:8545")
-)
+enum class DappNodeMode {
+    DONT_USE,
+    USE_WHEN_POSSIBLE,
+    ONLY_USE_DAPPNODE
+}
