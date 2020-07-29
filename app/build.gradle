@@ -167,7 +167,7 @@ dependencies {
     implementation "com.github.komputing.kethereum:types:$kethereum_version"
     implementation "com.github.komputing.kethereum:keystore:$kethereum_version"
     implementation "com.github.komputing.kethereum:metadata:$kethereum_version"
-    implementation "com.github.komputing.kethereum:userdoc:$kethereum_version"
+    implementation "com.github.komputing.kethereum:metadata_model:$kethereum_version"
     implementation "com.github.komputing.kethereum:metadata_repo:$kethereum_version"
 
     implementation "com.github.komputing:kbip44:0.1"
