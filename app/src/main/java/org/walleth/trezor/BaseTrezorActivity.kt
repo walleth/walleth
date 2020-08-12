@@ -124,8 +124,8 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                     model == "T" && !(major_version == 2 && (minor_version == 1 || minor_version == 3)) -> {
                         finishingAlert("For Trezor model T only Firmware 2.1.X or 2.3.X is supported but found $major_version.$minor_version.$patch_version")
                     }
-                    model == "1" && !(major_version == 1 && minor_version == 8) -> {
-                        finishingAlert("For Trezor model ONE only Firmware 1.8.X is supported but found $major_version.$minor_version.$patch_version")
+                    model == "1" && !(major_version == 1 && (minor_version == 8 || minor_version == 9)) -> {
+                        finishingAlert("For Trezor model ONE only Firmware 1.8.X or 1.9.X is supported but found $major_version.$minor_version.$patch_version")
                     }
                     else -> {
                         isKeepKeyDevice = model.startsWith("K1")
