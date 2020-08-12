@@ -18,11 +18,7 @@ fun ERC681.getToAddress(): Address? {
     } else {
         this.address
     }
-    return if (address != null) {
-        Address(address)
-    } else {
-        null
-    }
+    return address?.let { Address(address) }
 }
 
 fun ERC681.isTokenTransfer() = this.function == "transfer"
