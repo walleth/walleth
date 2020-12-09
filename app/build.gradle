@@ -255,7 +255,7 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso_version"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
     androidTestImplementation 'com.github.ligi:trulesk:0.31'
-    androidTestUtil 'com.linkedin.testbutler:test-butler-app:2.1.0'
+    androidTestUtil 'com.linkedin.testbutler:test-butler-app:2.1.1'
 
     testImplementation 'junit:junit:4.12'
     testImplementation "com.google.truth:truth:$truth"

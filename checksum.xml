@@ -5349,6 +5349,9 @@
     <dependency group='com.linkedin.testbutler' module='test-butler-app' version='2.1.0' extension='apk'>
       <sha512>BAB1A5961F0FA751B5D9D1AB6934FB3EF7BCE73B11EAB0D4F9C68CCB6C6D2578B321BE28F4CE774E425B4B17DCF5DC56DD6A824D5B566DDD4340FE7722733A15</sha512>
     </dependency>
+    <dependency group='com.linkedin.testbutler' module='test-butler-app' version='2.1.1' extension='apk'>
+      <sha512>82E05A56C5477B2AC51265A7F10053ED1543BC114869383CB577154C8CAC1B47FCCD5B38F2CF7487D569D074E031462EAD1E6BEA9634A8E09324490496DCDD94</sha512>
+    </dependency>
     <dependency group='com.linkedin.testbutler' module='test-butler-library' version='2.0.0' extension='aar'>
       <sha512>4AB436E10A1B7EBEB94F26ABCD0214DBFE33A27EAA4DD63156FA87ABA288D8EE450363CC6AF6E635FBDC2BC63C55609685B30FF4C5C2D0E54BFE84A4401C0DC1</sha512>
     </dependency>
