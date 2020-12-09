@@ -10,6 +10,7 @@
     <trusted-key id='24ab323a2c95b019' group='com.getkeepsafe.dexcount' />
     <trusted-key id='56f8d3f66b76de01' group='com.getkeepsafe.dexcount' />
     <trusted-key id='983fb389173098cc' group='com.getkeepsafe.dexcount' />
+    <trusted-key id='62c82e50836eb3ee' group='com.github.gundy' />
     <trusted-key id='356c889216ab52f2' group='com.github.madrapps' />
     <trusted-key id='1ed2576e643cdeca' group='com.gojuno.commander' />
     <trusted-key id='1ed2576e643cdeca' group='com.gojuno.composer' />
