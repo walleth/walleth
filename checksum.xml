@@ -65,10 +65,12 @@
     <trusted-key id='86fdc7e2a11262cb' group='commons-codec' />
     <trusted-key id='86fdc7e2a11262cb' group='commons-io' />
     <trusted-key id='9c4f7e9d98b1cc53' group='commons-io' />
+    <trusted-key id='9daadc1c9fcc82d0' group='commons-io' />
     <trusted-key id='a41f13c999945293' group='commons-logging' />
     <trusted-key id='6449005f96bc97a3' group='de.undercouch' />
     <trusted-key id='4d176dc503fb4267' group='io.coil-kt' />
     <trusted-key id='94b291aef984a085' group='io.reactivex' />
+    <trusted-key id='94b291aef984a085' group='io.reactivex.rxjava2' />
     <trusted-key id='5e2f2b3d474efe6b' group='it.unimi.dsi' />
     <trusted-key id='6425559c47cc79c4' group='javax.activation' />
     <trusted-key id='0315bfb7970a144f' group='javax.xml.bind' />
@@ -83,6 +85,7 @@
     <trusted-key id='cf9f3090ce4cb752' group='org.abego.treelayout' />
     <trusted-key id='6b1b008864323b92' group='org.antlr' />
     <trusted-key id='82b5574242c20d6f' group='org.antlr' />
+    <trusted-key id='3faad2cd5ecbb314' group='org.apache.commons' />
     <trusted-key id='9daadc1c9fcc82d0' group='org.apache.commons' />
     <trusted-key id='a2115ae15f6b8b72' group='org.apache.commons' />
     <trusted-key id='7c25280eae63ebe5' group='org.apache.httpcomponents' />
@@ -111,6 +114,7 @@
     <trusted-key id='a1b4460d8ba7b9af' group='org.mockito' />
     <trusted-key id='7c7d8456294423ba' group='org.objenesis' />
     <trusted-key id='5f69ad087600b22c' group='org.ow2.asm' />
+    <trusted-key id='11509ed50ec155e6' group='org.reactivestreams' />
     <trusted-key id='1f1ddfe9e2c5dfa4' group='org.robolectric' />
     <trusted-key id='2c7b12f2a511e325' group='org.slf4j' />
     <trusted-key id='72385ff0af338d52' group='org.threeten' />
@@ -5444,6 +5448,18 @@
     </dependency>
     <dependency group='com.squareup.wire' module='wire-runtime' version='3.1.0'>
       <sha512>1E06BAFEB0CAAF18DE4FCCBD1E1061872FADB6224EE5EC62230C8E18470B1195049231A3B19918EEC84457DD8F0428FEC61A87B01CA3DCDA982CF7B84E08D098</sha512>
+    </dependency>
+    <dependency group='com.trevjonez.composer' module='commander-android' version='1.0.0-rc08'>
+      <sha512>8DACF2DBA8C6F3D9F24B2BD601B3A50C930C8651DBC469930F4B937295A6929299EDF651317EA5BFAA7E52FE82DEA1D44FCBF733F1DBA390491BF2AD4A33119</sha512>
+    </dependency>
+    <dependency group='com.trevjonez.composer' module='commander-os' version='1.0.0-rc08'>
+      <sha512>6B67249D67DF79D38523F4D4D0E97B7262FC3C42143153F79F3E574CFF78ABCF30DA97E44D5C61F1D20C3DEBCCE4A3055C9825F389B5464842CAB6D84461E062</sha512>
+    </dependency>
+    <dependency group='com.trevjonez.composer' module='composer' version='1.0.0-rc08'>
+      <sha512>B542E5F75B1030F61D3CAB6DC83D7F92D78C281A22107802A0ECF731F47E09765F27C7F168BD5F0B8E2895734B0999EC801FAC0EE33C7D6362CA7A34F1B1EBAB</sha512>
+    </dependency>
+    <dependency group='com.trevjonez.composer' module='plugin' version='1.0.0-rc08'>
+      <sha512>BDEE90D501FB5D336CD415B887CC714E5D88BBE1D2130DD47BD3762C14D67B4046A34D4634B667FBA9F9D105CF1721FF79ED9A745B5D53B71392EBE4C6D9AC</sha512>
     </dependency>
     <dependency group='de.mobilej.unmock' module='UnMockPlugin' version='0.7.3'>
       <sha512>B732F30B30ACF962A48A24D9CCA4AD117925CCA07A884B0FA595F2848063E7C969E79890584F536C250A8D08535385B6373BA7DAF134B6FA18F17EC9FC50A56C</sha512>
