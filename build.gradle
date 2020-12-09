@@ -28,7 +28,6 @@ buildscript {
         classpath 'de.mobilej.unmock:UnMockPlugin:0.7.6'
         classpath 'com.github.ben-manes:gradle-versions-plugin:0.36.0'
         classpath 'com.github.trevjonez.composer-gradle-plugin:plugin:0.13.1'
-        classpath 'com.getkeepsafe.dexcount:dexcount-gradle-plugin:1.0.4'
         classpath "com.jaredsburrows:gradle-license-plugin:0.8.80"
     }
 }

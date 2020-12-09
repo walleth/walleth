@@ -9,6 +9,7 @@
     <trusted-key id='5ad66315fc018797' group='com.beust' />
     <trusted-key id='24ab323a2c95b019' group='com.getkeepsafe.dexcount' />
     <trusted-key id='56f8d3f66b76de01' group='com.getkeepsafe.dexcount' />
+    <trusted-key id='983fb389173098cc' group='com.getkeepsafe.dexcount' />
     <trusted-key id='356c889216ab52f2' group='com.github.madrapps' />
     <trusted-key id='1ed2576e643cdeca' group='com.gojuno.commander' />
     <trusted-key id='1ed2576e643cdeca' group='com.gojuno.composer' />
@@ -45,6 +46,7 @@
     <trusted-key id='379ce192d401ab61' group='com.jaredsburrows' />
     <trusted-key id='a50569c7ca7fa1f0' group='com.jcraft' />
     <trusted-key id='379ce192d401ab61' group='com.jraska' />
+    <trusted-key id='56f8d3f66b76de01' group='com.microsoft.thrifty' />
     <trusted-key id='c8828ca990d50409' group='com.payneteasy' />
     <trusted-key id='80c08b1c29100955' group='com.squareup' />
     <trusted-key id='8671a8df71296252' group='com.squareup' />
