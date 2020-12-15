@@ -6,7 +6,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
-import coil.api.load
+import coil.load
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
