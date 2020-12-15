@@ -80,7 +80,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                             val url = ERC681(scheme = "ethereum",
                                     address = call.to,
                                     value = HexString(call.value).hexToBigInteger(),
-                                    gas = call.gasLimit?.let { HexString(it).hexToBigInteger() }
+                                    gasLimit = call.gasLimit?.let { HexString(it).hexToBigInteger() }
                             ).generateURL()
 
 

@@ -40,10 +40,7 @@ import org.kethereum.erc831.isEthereumURLString
 import org.kethereum.extensions.maybeHexToBigInteger
 import org.kethereum.extensions.startsWith
 import org.kethereum.extensions.toHexStringZeroPadded
-import org.kethereum.extensions.transactions.encodeRLP
-import org.kethereum.extensions.transactions.getTokenTransferTo
-import org.kethereum.extensions.transactions.getTokenTransferValue
-import org.kethereum.extensions.transactions.tokenTransferSignature
+import org.kethereum.extensions.transactions.*
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.metadata.model.NoMatchingUserDocFound
@@ -238,7 +235,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
         gas_price_input.setText(when {
             gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger().toString()
-            currentERC681.gas != null -> currentERC681.gas.toString()
+            currentERC681.gasPrice  != null -> currentERC681.gasPrice.toString()
             else -> chainInfoProvider.getCurrent()?.chainId?.let {
                 settings.getGasPriceFor(it).toString()
             }
@@ -756,7 +753,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                 }
                             }
 
-                            localERC681.gas?.let {
+                            localERC681.gasPrice?.let {
                                 show_advanced_button.callOnClick()
                                 gas_limit_input.setText(it.toString())
                             }

@@ -196,7 +196,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
         val url = ERC681(scheme = "ethereum",
                 address = to,
                 value = HexString(value).hexToBigInteger(),
-                gas = HexString(gasLimit).hexToBigInteger(),
+                gasLimit = HexString(gasLimit).hexToBigInteger(),
                 chainId = chainId
         ).generateURL()
 

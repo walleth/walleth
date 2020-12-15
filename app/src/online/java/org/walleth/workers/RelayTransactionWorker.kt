@@ -5,8 +5,8 @@ import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
 import org.kethereum.extensions.transactions.encodeRLP
 import org.kethereum.model.ChainId
-import org.koin.core.KoinComponent
-import org.koin.core.inject
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import org.komputing.khex.extensions.toHexString
 import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
