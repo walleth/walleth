@@ -32,8 +32,7 @@ fun signWithEIP191PersonalSign(message: ByteArray, signMessage: (ba: ByteArray) 
 
 class NFCSignTextActivity : NFCBaseActivityWithPINHandling() {
 
-    private val textToSign by lazy { intent.getStringExtra(KEY_TEXT) }
-    private val addressToSignFor by lazy { intent.getStringExtra(KEY_ADDRESS) }
+    private val addressToSignFor by lazy { intent.getStringExtra(KEY_ADDRESS)?.let { Address(it) } }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,21 +43,27 @@ class NFCSignTextActivity : NFCBaseActivityWithPINHandling() {
     override fun afterCorrectPin(channel: KHardwareChannel) {
 
         val address = channel.toPublicKey().toAddress()
+        val textToSign = intent.getStringExtra(KEY_TEXT)
 
-        if (Address(addressToSignFor) != address) {
-            setText("The given card does not match the account")
-        } else {
-            setText("signing")
-
-
-            val signed = signWithEIP191PersonalSign(HexString(textToSign).hexToByteArray()) {
-                channel.signByteArray(it)
+        when {
+            addressToSignFor != address -> {
+                setText("The given card does not match the account")
             }
+            textToSign == null -> {
+                setText("No text to sign")
+            }
+            else -> {
+                setText("signing")
 
-            setText("signed")
-            lifecycleScope.launch(Dispatchers.Main) {
-                setResult(RESULT_OK, Intent().apply { putExtra("HEX", signed.toHex()) })
-                finish()
+                val signed = signWithEIP191PersonalSign(HexString(textToSign).hexToByteArray()) {
+                    channel.signByteArray(it)
+                }
+
+                setText("signed")
+                lifecycleScope.launch(Dispatchers.Main) {
+                    setResult(RESULT_OK, Intent().apply { putExtra("HEX", signed.toHex()) })
+                    finish()
+                }
             }
         }
     }

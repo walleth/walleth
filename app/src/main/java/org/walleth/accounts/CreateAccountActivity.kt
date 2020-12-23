@@ -225,7 +225,7 @@ class CreateAccountActivity : BaseSubActivity() {
         data?.run {
             when (requestCode) {
                 REQUEST_CODE_PICK_ACCOUNT_TYPE, REQUEST_CODE_IMPORT -> {
-                    currentSpec = data.getParcelableExtra(EXTRA_KEY_ACCOUNTSPEC)
+                    currentSpec = data.getParcelableExtra(EXTRA_KEY_ACCOUNTSPEC) ?: throw(IllegalStateException("EXTRA_KEY_ACCOUNTSPEC was not passed"))
                     applyViewModel()
                 }
                 else -> {

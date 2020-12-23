@@ -18,9 +18,11 @@ class ParitySignerQRActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_parity_signer_qr)
 
-        if (intent.hasExtra("signatureHex")) {
+        val signatureHex = intent.getStringExtra("signatureHex")
+        if (signatureHex != null) {
             supportActionBar?.subtitle = "Parity signer QR code (Signed TX)"
-            parity_address_qr_image.setQRCode(intent.getStringExtra("signatureHex"))
+
+            parity_address_qr_image.setQRCode(signatureHex)
         } else {
             supportActionBar?.subtitle = "Address QR Code"
 

@@ -16,6 +16,7 @@ import org.walleth.data.REQUEST_CODE_CREATE_ACCOUNT
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.overview.OverviewActivity
 import org.walleth.startup.StartupStatus.*
+import java.lang.IllegalStateException
 
 class StartupActivity : AppCompatActivity() {
 
@@ -47,7 +48,9 @@ class StartupActivity : AppCompatActivity() {
         if (resultCode == Activity.RESULT_OK && data != null) {
             when (requestCode) {
                 REQUEST_CODE_CREATE_ACCOUNT -> {
-                    currentAddressProvider.setCurrent(Address(data.getStringExtra(EXTRA_KEY_ADDRESS)))
+                    val addressString = data.getStringExtra(EXTRA_KEY_ADDRESS) ?: throw IllegalStateException("No EXTRA_KEY_ADDRESS in onActivityResult")
+                    val address = Address(addressString)
+                    currentAddressProvider.setCurrent(address)
                     startActivityFromClass(OverviewActivity::class.java)
                     finish()
                 }

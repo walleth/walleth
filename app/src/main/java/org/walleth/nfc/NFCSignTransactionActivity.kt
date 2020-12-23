@@ -18,6 +18,7 @@ import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.khartwarewallet.KHardwareChannel
+import java.lang.IllegalStateException
 
 private const val KEY_TRANSACTION = "TX"
 
@@ -28,8 +29,6 @@ fun Activity.startNFCSigningActivity(transactionParcel: TransactionParcel) {
 }
 
 class NFCSignTransactionActivity : NFCBaseActivityWithPINHandling() {
-
-    private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
 
     private val appDatabase: AppDatabase by inject()
 
@@ -42,28 +41,35 @@ class NFCSignTransactionActivity : NFCBaseActivityWithPINHandling() {
     override fun afterCorrectPin(channel: KHardwareChannel) {
 
         val address = channel.toPublicKey().toAddress()
+        val transaction = intent.getParcelableExtra<TransactionParcel>("TX")
 
-        if (transaction.transaction.from != address) {
-            setText("The given card does not match the account")
-        } else {
-            setText("signing")
+        when {
+            transaction == null -> {
+                throw IllegalStateException("Got no transaction from intent in afterCorrectPin(channel)")
+            }
+            transaction.transaction.from != address -> {
+                setText("The given card does not match the account")
+            }
+            else -> {
+                setText("signing")
 
 
-            val oldHash = transaction.transaction.txHash
+                val oldHash = transaction.transaction.txHash
 
-            val signedTransaction = channel.signTransaction(transaction.transaction)
+                val signedTransaction = channel.signTransaction(transaction.transaction)
 
-            setText("signed")
-            lifecycleScope.launch(Dispatchers.Main) {
-                withContext(Dispatchers.Default) {
-                    transaction.transaction.txHash = signedTransaction.encodeRLP().keccak().toHexString()
-                    appDatabase.runInTransaction {
-                        oldHash?.let { appDatabase.transactions.deleteByHash(it) }
-                        appDatabase.transactions.upsert(transaction.transaction.toEntity(signedTransaction.signatureData, TransactionState()))
+                setText("signed")
+                lifecycleScope.launch(Dispatchers.Main) {
+                    withContext(Dispatchers.Default) {
+                        transaction.transaction.txHash = signedTransaction.encodeRLP().keccak().toHexString()
+                        appDatabase.runInTransaction {
+                            oldHash?.let { appDatabase.transactions.deleteByHash(it) }
+                            appDatabase.transactions.upsert(transaction.transaction.toEntity(signedTransaction.signatureData, TransactionState()))
+                        }
                     }
+                    setResult(RESULT_OK, Intent().apply { putExtra("TXHASH", transaction.transaction.txHash) })
+                    finish()
                 }
-                setResult(RESULT_OK, Intent().apply { putExtra("TXHASH", transaction.transaction.txHash) })
-                finish()
             }
         }
     }

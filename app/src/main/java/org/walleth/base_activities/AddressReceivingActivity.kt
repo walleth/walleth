@@ -19,16 +19,14 @@ fun Context.startAddressReceivingActivity(address: Address, clazz: Class<out Add
 }
 
 @SuppressLint("Registered")
-open class AddressReceivingActivity: BaseSubActivity() {
+open class AddressReceivingActivity : BaseSubActivity() {
 
     protected val currentAddressProvider: CurrentAddressProvider by inject()
 
-    protected val relevantAddress by lazy {
-        if (intent?.hasExtra(INTENT_KEY_ADDRESS) == true) {
-            Address(intent.getStringExtra(INTENT_KEY_ADDRESS))
-        } else {
-            currentAddressProvider.getCurrentNeverNull()
-        }
+    protected val relevantAddress: Address by lazy {
+        intent.getStringExtra(INTENT_KEY_ADDRESS)?.let {
+            Address(it)
+        } ?: currentAddressProvider.getCurrentNeverNull()
     }
 
 }

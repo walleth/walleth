@@ -239,8 +239,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
 
             REQUEST_CODE_SELECT_TO_ADDRESS -> {
-                if (data?.hasExtra(EXTRA_KEY_ADDRESS) == true) {
-                    val addressHex = data.getStringExtra(EXTRA_KEY_ADDRESS)
+                data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { addressHex ->
                     currentAddressProvider.setCurrent(Address(addressHex))
                     accounts = listOf(addressHex)
                     wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
@@ -258,9 +257,8 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             }
 
             REQUEST_ID_SIGN_TX -> {
-                if (data?.hasExtra("TXHASH") == true) {
-                    val result = data.getStringExtra("TXHASH")
-                    wcViewModel.session?.approveRequest(currentRequestId!!, result)
+                data?.getStringExtra("TXHASH")?.let { txHash ->
+                    wcViewModel.session?.approveRequest(currentRequestId!!, txHash)
                 }
 
             }

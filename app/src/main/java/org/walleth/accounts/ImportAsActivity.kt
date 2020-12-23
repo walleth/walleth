@@ -13,8 +13,11 @@ import org.walleth.data.addresses.AccountKeySpec
 class ImportAsActivity : BaseSubActivity() {
 
     private val inSpec by lazy {
-        intent.getParcelableExtra<AccountKeySpec>(EXTRA_KEY_ACCOUNTSPEC).copy(source = "import")
+        getAccountSpecFromIntent().copy(source = "import")
     }
+
+    private fun getAccountSpecFromIntent() = intent.getParcelableExtra<AccountKeySpec>(EXTRA_KEY_ACCOUNTSPEC)
+            ?: throw(IllegalStateException("Did not have parcleable extra EXTRA_KEY_ACCOUNTSPEC in intent"))
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,7 +42,7 @@ class ImportAsActivity : BaseSubActivity() {
                 }
                 REQUEST_CODE_ENTER_PIN -> {
                     val pinExtra = data.getStringExtra(EXTRA_KEY_PIN)
-                    val spec =  inSpec.copy(type = ACCOUNT_TYPE_PIN_PROTECTED, pwd = pinExtra)
+                    val spec = inSpec.copy(type = ACCOUNT_TYPE_PIN_PROTECTED, pwd = pinExtra)
                     setResult(resultCode, data.putExtra(EXTRA_KEY_ACCOUNTSPEC, spec))
                 }
                 else -> {

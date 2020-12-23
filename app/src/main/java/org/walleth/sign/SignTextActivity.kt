@@ -34,7 +34,10 @@ class SignTextActivity : BaseSubActivity() {
     private val currentAddress by lazy { currentAddressProvider.getCurrentNeverNull() }
     private val appDatabase: AppDatabase by inject()
 
-    private val text by lazy { HexString(intent.getStringExtra(Intent.EXTRA_TEXT)).hexToByteArray() }
+    private val text by lazy {
+        HexString(intent.getStringExtra(Intent.EXTRA_TEXT) ?: throw (IllegalStateException("no EXTRA_TEXT passed in SignTextActivity")))
+                .hexToByteArray()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

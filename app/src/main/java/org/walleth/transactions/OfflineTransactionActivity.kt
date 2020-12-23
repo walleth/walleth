@@ -278,7 +278,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
 
                 val result = it.getStringExtra("SCAN_RESULT")
                 transaction_to_relay_hex.setText(result)
-                if (result.isUnsignedTransactionJSON() || result.isParityUnsignedTransactionJSON()) {
+                if (result?.isUnsignedTransactionJSON() == true || result?.isParityUnsignedTransactionJSON() == true) {
                     execute()
                 }
             }

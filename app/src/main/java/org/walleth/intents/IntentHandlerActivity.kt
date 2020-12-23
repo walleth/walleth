@@ -148,8 +148,8 @@ class IntentHandlerActivity : WallethActivity() {
             REQUEST_CODE_SELECT_TO_ADDRESS -> {
 
                 if (resultCode == Activity.RESULT_OK) {
-                    if (data?.hasExtra("HEX") == true) {
-                        currentAddressProvider.setCurrent(Address(data.getStringExtra("HEX")))
+                     data?.getStringExtra("HEX")?.let {
+                        currentAddressProvider.setCurrent(Address(it))
                     }
 
                     settings.filterAddressesKeyOnly = oldFilterAddressesKeyOnly

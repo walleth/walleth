@@ -48,7 +48,10 @@ fun Activity.startKeepKeySignTransactionActivity(transactionParcel: TransactionP
 
 class TrezorSignTransactionActivity : BaseTrezorActivity() {
 
-    private val transaction by lazy { intent.getParcelableExtra<TransactionParcel>("TX") }
+    private val transaction by lazy {
+        intent.getParcelableExtra<TransactionParcel>("TX")
+                ?:throw(java.lang.IllegalArgumentException("no TX in ParcleableExtra"))
+    }
     private val currentAddressProvider: CurrentAddressProvider by inject()
 
     override fun handleAddress(address: Address) {

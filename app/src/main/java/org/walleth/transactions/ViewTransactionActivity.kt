@@ -40,6 +40,7 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.qr.show.getQRCodeIntent
 import org.walleth.util.setQRCode
 import org.walleth.valueview.ValueViewController
+import java.lang.IllegalStateException
 
 private const val HASH_KEY = "TXHASH"
 fun Context.getTransactionActivityIntentForHash(hex: String) = Intent(this, ViewTransactionActivity::class.java).apply {
@@ -74,151 +75,153 @@ class ViewTransactionActivity : BaseSubActivity() {
     override fun onResume() {
         super.onResume()
 
-        appDatabase.transactions.getByHashLive(intent.getStringExtra(HASH_KEY)).observe(this, Observer<TransactionEntity> { txEntry ->
-            if (txEntry != null) {
-                txEntity = txEntry
-                invalidateOptionsMenu()
-                val transaction = txEntry.transaction
+        appDatabase.transactions
+                .getByHashLive(intent.getStringExtra(HASH_KEY)?:throw(IllegalStateException("no HASH_KEY string extra")))
+                .observe(this, Observer<TransactionEntity> { txEntry ->
+                    if (txEntry != null) {
+                        txEntity = txEntry
+                        invalidateOptionsMenu()
+                        val transaction = txEntry.transaction
 
-                supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
+                        supportActionBar?.subtitle = getString(R.string.transaction_subtitle)
 
-                nonce.text = transaction.nonce.toString()
-                event_log_textview.text = txEntry.transactionState.eventLog
+                        nonce.text = transaction.nonce.toString()
+                        event_log_textview.text = txEntry.transactionState.eventLog
 
-                fab.setVisibility(txEntry.transactionState.needsSigningConfirmation)
-                fab.setOnClickListener {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        launch(Dispatchers.Default) {
-                            txEntry.transactionState.needsSigningConfirmation = false
-                            appDatabase.transactions.upsert(txEntry)
+                        fab.setVisibility(txEntry.transactionState.needsSigningConfirmation)
+                        fab.setOnClickListener {
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                launch(Dispatchers.Default) {
+                                    txEntry.transactionState.needsSigningConfirmation = false
+                                    appDatabase.transactions.upsert(txEntry)
+                                }
+
+                                finish()
+                            }
                         }
 
-                        finish()
-                    }
-                }
-
-                lifecycleScope.launch(Dispatchers.Default) {
-                    val rootToken = appDatabase.chainInfo.getByChainId(txEntry.transaction.chain!!)?.getRootToken()
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        feeViewModel.setValue(txEntry.transaction.gasLimit!! * txEntry.transaction.gasPrice!!, rootToken)
-                    }
-                }
-                val relevantAddress = if (transaction.from == currentAddressProvider.getCurrent()) {
-                    from_to_title.setText(R.string.transaction_to_label)
-                    if (transaction.isTokenTransfer()) {
-                        transaction.getTokenTransferTo()
-                    } else {
-                        transaction.to
-                    }
-                } else {
-                    from_to_title.setText(R.string.transaction_from_label)
-                    txEntry.transaction.from
-                }
-
-                lifecycleScope.launch {
-                    relevantAddress?.let { ensured_relevant_address ->
-                        val name = appDatabase.addressBook.resolveNameWithFallback(ensured_relevant_address)
-                        from_to.text = name
-                        add_address.setVisibility(name == ensured_relevant_address.hex)
-
-
-                        add_address.setOnClickListener {
-                            startCreateAccountActivity(ensured_relevant_address.hex)
+                        lifecycleScope.launch(Dispatchers.Default) {
+                            val rootToken = appDatabase.chainInfo.getByChainId(txEntry.transaction.chain!!)?.getRootToken()
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                feeViewModel.setValue(txEntry.transaction.gasLimit!! * txEntry.transaction.gasPrice!!, rootToken)
+                            }
+                        }
+                        val relevantAddress = if (transaction.from == currentAddressProvider.getCurrent()) {
+                            from_to_title.setText(R.string.transaction_to_label)
+                            if (transaction.isTokenTransfer()) {
+                                transaction.getTokenTransferTo()
+                            } else {
+                                transaction.to
+                            }
+                        } else {
+                            from_to_title.setText(R.string.transaction_from_label)
+                            txEntry.transaction.from
                         }
 
-                        copy_address.setOnClickListener {
-                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                            val clip = ClipData.newPlainText(getString(R.string.ethereum_address), ensured_relevant_address.hex)
-                            clipboard.setPrimaryClip(clip)
-                            Snackbar.make(fab, R.string.snackbar_after_address_copy, Snackbar.LENGTH_LONG).show()
+                        lifecycleScope.launch {
+                            relevantAddress?.let { ensured_relevant_address ->
+                                val name = appDatabase.addressBook.resolveNameWithFallback(ensured_relevant_address)
+                                from_to.text = name
+                                add_address.setVisibility(name == ensured_relevant_address.hex)
+
+
+                                add_address.setOnClickListener {
+                                    startCreateAccountActivity(ensured_relevant_address.hex)
+                                }
+
+                                copy_address.setOnClickListener {
+                                    val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                    val clip = ClipData.newPlainText(getString(R.string.ethereum_address), ensured_relevant_address.hex)
+                                    clipboard.setPrimaryClip(clip)
+                                    Snackbar.make(fab, R.string.snackbar_after_address_copy, Snackbar.LENGTH_LONG).show()
+                                }
+                            }
                         }
-                    }
-                }
 
-                advanced_button.setOnClickListener {
-                    advanced_container.visibility = View.VISIBLE
-                    advanced_button.visibility = View.GONE
-                }
+                        advanced_button.setOnClickListener {
+                            advanced_container.visibility = View.VISIBLE
+                            advanced_button.visibility = View.GONE
+                        }
 
 
-                val rlpVisible = txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && txEntry.transactionState.relayed.isEmpty()
-                rlp_container.setVisibility(rlpVisible)
-                if (rlpVisible) {
+                        val rlpVisible = txEntry.transactionState.isPending && !txEntry.transactionState.needsSigningConfirmation && txEntry.transactionState.relayed.isEmpty()
+                        rlp_container.setVisibility(rlpVisible)
+                        if (rlpVisible) {
 
-                    val content = if (txEntry.signatureData != null) {
-                        rlp_header.setText(R.string.signed_rlp_header_text)
-                        """{
+                            val content = if (txEntry.signatureData != null) {
+                                rlp_header.setText(R.string.signed_rlp_header_text)
+                                """{
                             "signedTransactionRLP":"${txEntry.transaction.encodeRLP(txEntry.signatureData).toHexString()}",
                             "chainId":${txEntry.transaction.chain}
                             }"""
-                    } else {
-                        rlp_header.setText(R.string.unsigned_rlp_header_text)
-                        """{
+                            } else {
+                                rlp_header.setText(R.string.unsigned_rlp_header_text)
+                                """{
 "nonce":"${txEntry.transaction.nonce?.toHexString()}","gasPrice":"${txEntry.transaction.gasPrice!!.toHexString()}","gasLimit":"${txEntry.transaction.gasLimit!!.toHexString()}","to":"${txEntry.transaction.to}","from":"${txEntry.transaction.from}","value":"${txEntry.transaction.value!!.toHexString()}","data":"${txEntry.transaction.input.toHexString("0x")}","chainId":${txEntry.transaction.chain}
                             }
                             """
-                    }
-                    rlp_image.setQRCode(content)
-                    rlp_copy_button.setOnClickListener {
-                        val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                        clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.clipboard_copy_name), content))
-                        Snackbar.make(fab, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
-                    }
-                    rlp_share_button.setOnClickListener {
-                        val sendIntent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            putExtra(Intent.EXTRA_TEXT, content)
-                            type = "text/plain"
+                            }
+                            rlp_image.setQRCode(content)
+                            rlp_copy_button.setOnClickListener {
+                                val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                                clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.clipboard_copy_name), content))
+                                Snackbar.make(fab, R.string.copied_to_clipboard, Snackbar.LENGTH_LONG).show()
+                            }
+                            rlp_share_button.setOnClickListener {
+                                val sendIntent = Intent().apply {
+                                    action = Intent.ACTION_SEND
+                                    putExtra(Intent.EXTRA_TEXT, content)
+                                    type = "text/plain"
+                                }
+                                startActivity(sendIntent)
+                            }
+                            rlp_fullscreen_button.setOnClickListener {
+                                startActivity(getQRCodeIntent(content))
+                            }
+
                         }
-                        startActivity(sendIntent)
-                    }
-                    rlp_fullscreen_button.setOnClickListener {
-                        startActivity(getQRCodeIntent(content))
-                    }
 
-                }
+                        if (transaction.isTokenTransfer()) {
 
-                if (transaction.isTokenTransfer()) {
-
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        val token = withContext(Dispatchers.Default) {
-                            transaction.to?.let { appDatabase.tokens.forAddress(it) }
-                        }
-                        if (token != null) {
-                            amountViewModel.setValue(transaction.getTokenTransferValue(), token)
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                val token = withContext(Dispatchers.Default) {
+                                    transaction.to?.let { appDatabase.tokens.forAddress(it) }
+                                }
+                                if (token != null) {
+                                    amountViewModel.setValue(transaction.getTokenTransferValue(), token)
+                                } else {
+                                    amountViewModel.setValue(null, null)
+                                }
+                            }
                         } else {
-                            amountViewModel.setValue(null, null)
+                            amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent()?.getRootToken())
+                        }
+                        var message = "Hash:" + transaction.txHash
+                        txEntry.transactionState.error?.let { error ->
+                            message += "\nError:$error"
+                        }
+                        details.text = message
+
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            val signatures = withContext(Dispatchers.Default) {
+                                fourByteDirectory.getSignaturesFor(transaction)
+                            }.toList()
+                            val hasFunction = transaction.input.size > 3
+
+                            function_call_label.setVisibility(hasFunction)
+                            function_call.setVisibility(hasFunction)
+
+                            function_call.text = if (signatures.isNotEmpty()) {
+                                function_call_label.setText(R.string.function_call)
+                                signatures.joinToString(separator = " ${getString(R.string.or)}\n", transform = { it.signature })
+                            } else {
+                                function_call_label.setText(R.string.function_data)
+                                transaction.input.toHexString()
+                            }
+
                         }
                     }
-                } else {
-                    amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent()?.getRootToken())
-                }
-                var message = "Hash:" + transaction.txHash
-                txEntry.transactionState.error?.let { error ->
-                    message += "\nError:$error"
-                }
-                details.text = message
-
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val signatures = withContext(Dispatchers.Default) {
-                        fourByteDirectory.getSignaturesFor(transaction)
-                    }.toList()
-                    val hasFunction = transaction.input.size > 3
-
-                    function_call_label.setVisibility(hasFunction)
-                    function_call.setVisibility(hasFunction)
-
-                    function_call.text = if (signatures.isNotEmpty()) {
-                        function_call_label.setText(R.string.function_call)
-                        signatures.joinToString(separator = " ${getString(R.string.or)}\n", transform = { it.signature })
-                    } else {
-                        function_call_label.setText(R.string.function_data)
-                        transaction.input.toHexString()
-                    }
-
-                }
-            }
-        })
+                })
 
     }
 

@@ -23,15 +23,16 @@ class Videographer(val activity: Activity) {
     private var previewHeight = 0
 
     private val surfaceTextureListener = object : TextureView.SurfaceTextureListener {
-        override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture?, width: Int, height: Int) {}
+        override fun onSurfaceTextureSizeChanged(surface: SurfaceTexture, width: Int, height: Int) {}
 
-        override fun onSurfaceTextureUpdated(surface: SurfaceTexture?) {}
+        override fun onSurfaceTextureUpdated(surface: SurfaceTexture) {}
 
-        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture?) = true
+        override fun onSurfaceTextureDestroyed(surface: SurfaceTexture) = true
 
-        override fun onSurfaceTextureAvailable(surface: SurfaceTexture?, width: Int, height: Int) {
+        override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
             surface?.let { openCamera(it) }
         }
+
     }
 
     lateinit var onSuccessfulScan: (result: String) -> Unit
@@ -65,10 +66,13 @@ class Videographer(val activity: Activity) {
         startBackgroundThread()
 
         if (view.isAvailable) {
-            openCamera(view.surfaceTexture)
-        } else {
-            view.surfaceTextureListener = surfaceTextureListener
+            view.surfaceTexture?.let {
+                openCamera(it)
+            }
+            return
         }
+
+        view.surfaceTextureListener = surfaceTextureListener
     }
 
     fun close() {
@@ -93,7 +97,7 @@ class Videographer(val activity: Activity) {
         thread.join()
     }
 
-    private fun openCamera(surface: SurfaceTexture)  {
+    private fun openCamera(surface: SurfaceTexture) {
         handler.post {
             try {
                 camera = Camera.open(defaultCameraId)

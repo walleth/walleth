@@ -8,6 +8,7 @@ import kotlinx.android.synthetic.main.activity_fullscreen_qrcode.*
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.util.setQRCode
+import java.lang.IllegalArgumentException
 
 private const val KEY_CONTENT = "qrContent"
 private const val KEY_ALTERNATE = "showAlternate"
@@ -28,7 +29,7 @@ class ShowQRCodeActivity : BaseSubActivity() {
 
     override fun onResume() {
         super.onResume()
-        val content = intent.getStringExtra(KEY_CONTENT)
+        val content = intent.getStringExtra(KEY_CONTENT)?:throw(IllegalArgumentException("having no KEY_CONTENT in onResume()"))
         fullscreen_barcode.setQRCode(content)
 
         if (intent.getBooleanExtra(KEY_ALTERNATE, false)) {
