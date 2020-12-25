@@ -55,6 +55,7 @@
     <trusted-key id='8e3f0de7ae354651' group='com.squareup' />
     <trusted-key id='21200d723f53ce38' group='com.squareup.leakcanary' />
     <trusted-key id='28a9fc4431feeee3' group='com.squareup.leakcanary' />
+    <trusted-key id='62ba9c275d14234e' group='com.squareup.leakcanary' />
     <trusted-key id='8671a8df71296252' group='com.squareup.moshi' />
     <trusted-key id='8671a8df71296252' group='com.squareup.okhttp3' />
     <trusted-key id='8671a8df71296252' group='com.squareup.okio' />
