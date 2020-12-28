@@ -1,7 +1,9 @@
 package org.walleth.credentials
 
 import android.app.Activity
-import android.widget.GridLayout
+import android.view.View
+import android.view.ViewGroup
+import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.google.android.material.button.MaterialButton
@@ -29,8 +31,20 @@ fun Activity.showPINDialog(
         view.pin_back.setVisibility(dialogPin.isNotEmpty())
     }
     displayPin.invoke()
-    pinPadMapping.forEach { number ->
-        view.pin_grid.addView(MaterialButton(this).apply {
+
+    // GridView seems the better choice here - but has a problem I could not overcome:
+    // https://github.com/walleth/walleth/issues/485
+    // if anyone can make it work with a GridView (which is nicer code-wise) - PR welcome!
+
+    var horizontalButtonContainer = LinearLayout(this)
+
+    pinPadMapping.forEachIndexed { index, number ->
+        if ((index % 3) == 0) {
+            horizontalButtonContainer = LinearLayout(this)
+            view.grid_container.addView(horizontalButtonContainer)
+        }
+
+        horizontalButtonContainer.addView(MaterialButton(this).apply {
             text = if (labelButtons) number.toString() else "*"
             setOnClickListener {
                 if (dialogPin.length <= maxLength)
@@ -40,10 +54,10 @@ fun Activity.showPINDialog(
 
             setTextColor(ContextCompat.getColor(this@showPINDialog, R.color.onAccent))
 
-            layoutParams = GridLayout.LayoutParams().apply {
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
                 setMargins(5, 5, 5, 5)
             }
-            setVisibility(number != null)
+            setVisibility(number != null, View.INVISIBLE)
         })
 
     }
