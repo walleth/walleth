@@ -188,7 +188,7 @@ open class App : MultiDexApplication() {
                 GlobalScope.launch(Dispatchers.Default) {
                     if (settings.dataVersion < 3) {
                         val all = appDatabase.chainInfo.getAll()
-                        var currentMin = all.filter { it.order != null }.minBy { it.order!! }?.order ?: 0
+                        var currentMin = all.filter { it.order != null }.minByOrNull { it.order!! }?.order ?: 0
                         all.forEach {
                             if (it.order == null) {
                                 it.order = currentMin
