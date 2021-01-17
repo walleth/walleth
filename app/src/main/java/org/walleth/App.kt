@@ -76,13 +76,13 @@ open class App : MultiDexApplication() {
     val settings: Settings by inject()
 
     open fun createKoin() = module {
-        single { CryptoCompareExchangeProvider(this@App, get()) as ExchangeRateProvider }
+        single<ExchangeRateProvider> { CryptoCompareExchangeProvider(this@App, get()) }
         single { SyncProgressProvider() }
-        single { keyStore as KeyStore }
-        single { KotprefSettings as Settings }
+        single<KeyStore> { keyStore }
+        single<Settings> { KotprefSettings }
         single { CurrentTokenProvider(get()) }
-        single { RPCProviderImpl(network = get(), appDatabase = get(), okHttpClient = get(), settings = get()) as RPCProvider }
-        single { ENSProviderImpl(get()) as ENSProvider }
+        single<RPCProvider> { RPCProviderImpl(network = get(), appDatabase = get(), okHttpClient = get(), settings = get()) }
+        single<ENSProvider> { ENSProviderImpl(get()) }
         single {
             Room.databaseBuilder(applicationContext, AppDatabase::class.java, "maindb")
                     .addMigrations(
@@ -96,27 +96,27 @@ open class App : MultiDexApplication() {
 
         single { ChainInfoProvider(get(), get(), get(), assets) }
         single { BlockExplorerProvider(get()) }
-        single {
-            InitializingCurrentAddressProvider(settings = get()) as CurrentAddressProvider
+        single<CurrentAddressProvider> {
+            InitializingCurrentAddressProvider(settings = get())
         }
-        single {
+        single<CachedOnlineMethodSignatureRepository> {
             CachedOnlineMethodSignatureRepositoryImpl(get(), File(cacheDir, "funsignatures").apply {
                 mkdirs()
-            }) as CachedOnlineMethodSignatureRepository
+            })
         }
 
-        single {
+        single<WCSessionStore> {
             FileWCSessionStore(File(this@App.filesDir, "walletConnectSessions.json").apply {
                 createNewFile()
-            }, get()) as WCSessionStore
+            }, get())
         }
 
         single {
             NFCCredentialStore(this@App)
         }
 
-        single {
-            MetaDataRepoHttpWithCacheImpl(cacheDir = File(cacheDir, "metadata").apply { mkdirs() }) as MetaDataRepo
+        single<MetaDataRepo> {
+            MetaDataRepoHttpWithCacheImpl(cacheDir = File(cacheDir, "metadata").apply { mkdirs() })
         }
 
         single {
