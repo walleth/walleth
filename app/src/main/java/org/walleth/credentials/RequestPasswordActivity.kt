@@ -32,7 +32,7 @@ class PasswordReceivingFragment : Fragment() {
 const val TAG_PASSWORD_RECEIVING = "pwdreceive"
 
 fun FragmentActivity.getPassword(callback: (pwd: String?) -> Unit) {
-    Handler().post {
+    Handler(Looper.myLooper()?:error("No looper found")).post {
         var fragmentRemovingCallback: ((foo: Bundle?) -> Unit)? = fun(resultData: Bundle?) {
             supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentByTag(TAG_PASSWORD_RECEIVING)!!).commitAllowingStateLoss()
             resultData?.getString(EXTRA_KEY_PWD).let {
