@@ -73,7 +73,7 @@
                 <action android:name="android.intent.action.VIEW"/>
 
                 <category android:name="android.intent.category.DEFAULT"/>
-
+                <category android:name="android.intent.category.BROWSABLE" />
                 <data
                         android:scheme="wc"/>
             </intent-filter>
@@ -136,6 +136,8 @@
         <activity android:name=".transactions.ChangeActionParametersActivity" />
         <activity android:name=".transactions.ChangeActionActivity" />
         <activity android:name=".transactions.ChangeActionFunctionActivity" />
+        <activity android:name=".walletconnect.WalletConnectManageActivity" />
+        <activity android:name=".walletconnect.WalletConnectManageEmptyActivity" />
 
     </application>
 

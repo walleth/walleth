@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import coil.load
@@ -205,7 +206,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     override fun onPause() {
         super.onPause()
 
-        wcViewModel.session?.removeCallback(sessionCallback)
+        //wcViewModel.session?.removeCallback(sessionCallback)
     }
 
     private fun applyViewModel() {
@@ -217,7 +218,6 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             dapp_icon.load(url)
         }
     }
-
     private fun selectAccount() {
         val intent = Intent(this@WalletConnectConnectionActivity, AccountPickActivity::class.java)
         startActivityForResult(intent, REQUEST_CODE_SELECT_TO_ADDRESS)
@@ -225,7 +225,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        wcViewModel.session?.kill()
+        //wcViewModel.session?.kill()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

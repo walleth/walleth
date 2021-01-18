@@ -21,22 +21,34 @@ class WalletConnectViewModel(app: Application,
     var session: WCSession? = null
     var uri: String? = null
 
-    fun processURI(_uri: String) = if (uri != _uri) {
-        uri = _uri
-        session = WCSession(
-                fromWCUri(_uri),
-                MoshiPayloadAdapter(moshi),
-                sessionStore,
-                OkHttpTransport.Builder(okHttpClient, moshi),
-                Session.PeerMeta(name = "WallETH")
-        )
+    fun processURI(_uri: String): Boolean {
+        if (uri != _uri) {
+            uri = _uri
 
-        viewModelScope.launch {
-            session?.init()
+            val config = fromWCUri(_uri)
+
+            val fullyQualifiedConfig = if (config.isFullyQualifiedConfig()) {
+                config.toFullyQualifiedConfig()
+            } else {
+                sessionStore.load(config.handshakeTopic)?.config
+            }
+
+            if (fullyQualifiedConfig != null) {
+                session = WCSession(
+                        fullyQualifiedConfig,
+                        MoshiPayloadAdapter(moshi),
+                        sessionStore,
+                        OkHttpTransport.Builder(okHttpClient, moshi),
+                        Session.PeerMeta(name = "WallETH")
+                )
+
+                viewModelScope.launch {
+                    session?.init()
+                }
+                return true
+            }
         }
-        true
-    } else {
-        false
+        return false
     }
 
     var statusText: String? = null

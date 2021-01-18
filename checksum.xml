@@ -5225,6 +5225,9 @@
     <dependency group='com.github.walletconnect' module='kotlin-walletconnect-lib' version='0.9.6'>
       <sha512>208A7DA45F41EBB39D2C734AB585E0426F749469A39BD7E19DC25583A006F8D6E43B35DC7A144CEB63C830267ADB4B4D905D8119E4A4753A3BC370C583B85CB9</sha512>
     </dependency>
+    <dependency group='com.github.walletconnect' module='kotlin-walletconnect-lib' version='0.9.7'>
+      <sha512>F7A355E0B78AC66ABDA176DEA4E22FB830CB9780FA354B6D0ADE05AB29B654047D1D1848A6598F1B4894FEE245BE748DF4D0C21EC8288373F8D23D53D4EE34F2</sha512>
+    </dependency>
     <dependency group='com.github.walleth.KHardWareWallet' module='keycard' version='0.9.8' extension='aar'>
       <sha512>D271658ABBAB876E54C2548C211F25D7B4E5DFC0E79FBFFBE58ABB19D4C3DBA0D06B2FD35DBA346AAFD6322CEE0E1B579CD9677B9E68FF4C9A62B4FA61118D73</sha512>
     </dependency>

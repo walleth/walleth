@@ -23,6 +23,7 @@ import org.walleth.preferences.PreferenceActivity
 import org.walleth.security.SecurityActivity
 import org.walleth.toolbar.colorize
 import org.walleth.transactions.OfflineTransactionActivity
+import org.walleth.walletconnect.WalletConnectManageActivity
 import java.security.KeyStore
 
 class WalletNavigationFragment : Fragment() {
@@ -63,6 +64,7 @@ class WalletNavigationFragment : Fragment() {
                 R.id.menu_debug to DebugWallethActivity::class,
                 R.id.menu_accounts to SwitchAccountActivity::class,
                 R.id.menu_offline_transaction to OfflineTransactionActivity::class,
+                R.id.menu_walletconnect to WalletConnectManageActivity::class,
                 R.id.menu_settings to PreferenceActivity::class,
                 R.id.menu_security to SecurityActivity::class
         )

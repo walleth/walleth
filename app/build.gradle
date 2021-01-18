@@ -181,7 +181,7 @@ dependencies {
 
     implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
 
-    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.9.6"
+    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.9.7"
     implementation 'com.github.ligi:circular-with-floating-action-button:androidX_v2.0'
 
     implementation 'com.github.deano2390:MaterialShowcaseView:1.3.4'

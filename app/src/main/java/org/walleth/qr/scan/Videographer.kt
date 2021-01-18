@@ -30,7 +30,7 @@ class Videographer(val activity: Activity) {
         override fun onSurfaceTextureDestroyed(surface: SurfaceTexture) = true
 
         override fun onSurfaceTextureAvailable(surface: SurfaceTexture, width: Int, height: Int) {
-            surface?.let { openCamera(it) }
+            openCamera(surface)
         }
 
     }

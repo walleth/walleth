@@ -22,6 +22,11 @@
             android:icon="@drawable/ic_enhanced_encryption_black_24dp"/>
 
     <item
+            android:id="@+id/menu_walletconnect"
+            android:title="@string/wallet_connect"
+            android:icon="@drawable/ic_walletconnect_logo"/>
+
+    <item
             android:id="@+id/menu_debug"
             android:title="@string/debug"
             android:icon="@drawable/ic_adb_black_24dp"/>

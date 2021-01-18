@@ -263,6 +263,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="invalid_password">Invalid password</string>
     <string name="refresh">refresh</string>
     <string name="export_key">export key</string>
+    <string name="enter_wc_url">Enter WalletConnect URL</string>
     <string name="security_info_no_audit_warning">This software did not yet have an security audit. Please only use it with significant amounts when secured by e.g. a TREZOR.</string>
     <string name="security_info_has_lockscreen">Your device has a secured lock screen - so people finding your device cannot simply access your funds. Be aware if you use very simple PINs, patterns or passwords: then you might still be at risk. For obvious reasons we cannot check the quality of your PINs, patterns or passwords. Also on some Android versions it was possible to brute force e.g. the PINs. And if you use fingerprint as protection - be aware they can easily be copied and should just be used for identification, but not authentication.</string>
     <string name="security_info_no_lockscreen">Your device has no (good) lock screen method set. This means if you loose your phone - your funds are at risk. Please consider setting ideally a password there to protect your funds!</string>
