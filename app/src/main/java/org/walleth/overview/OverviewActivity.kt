@@ -29,7 +29,6 @@ import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.ligi.kaxt.livedata.nonNull
-import org.ligi.kaxt.livedata.observe
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
@@ -153,15 +152,15 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
-        currentAddressProvider.observe(this, Observer {
+        currentAddressProvider.observe(this, {
             refreshSubtitle()
         })
 
-        chainInfoProvider.observe(this, Observer {
+        chainInfoProvider.observe(this, {
             refreshSubtitle()
         })
 
-        currentTokenProvider.observe(this, Observer {
+        currentTokenProvider.observe(this, {
             setCurrentBalanceObservers()
         })
 
@@ -171,22 +170,22 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         val outgoingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, OUTGOING, chainInfoProvider, exchangeRateProvider, settings)
         transaction_recycler_out.adapter = outgoingTransactionsAdapter
 
-        transactionViewModel.isEmptyViewVisible.nonNull().observe(this) { isEmptyVisible ->
+        transactionViewModel.isEmptyViewVisible.nonNull().observe(this, { isEmptyVisible ->
             empty_view_container.setVisibility(isEmptyVisible)
             transaction_recycler_out.setVisibility(!isEmptyVisible)
             transaction_recycler_in.setVisibility(!isEmptyVisible)
-        }
+        })
 
-        transactionViewModel.incomingLiveData.nonNull().observe(this) { transactions ->
+        transactionViewModel.incomingLiveData.nonNull().observe(this, { transactions ->
             incomingTransactionsAdapter.submitList(transactions)
             transactionViewModel.hasIncoming.value = !transactions.isNullOrEmpty()
-        }
+        })
 
-        transactionViewModel.isOnboardingVisible.observe(this, Observer {
+        transactionViewModel.isOnboardingVisible.observe(this, {
             fab.setVisibility(it != true)
         })
 
-        transactionViewModel.outgoingLiveData.observe(this, Observer { transactions ->
+        transactionViewModel.outgoingLiveData.observe(this, { transactions ->
             if (transactions != null) {
                 outgoingTransactionsAdapter.submitList(transactions)
                 transactionViewModel.hasOutgoing.value = !transactions.isNullOrEmpty()
@@ -194,11 +193,11 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         })
 
 
-        chainInfoProvider.observe(this, Observer {
+        chainInfoProvider.observe(this, {
             setCurrentBalanceObservers()
         })
 
-        currentAddressProvider.observe(this, Observer {
+        currentAddressProvider.observe(this, {
             setCurrentBalanceObservers()
         })
 
@@ -212,7 +211,7 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
     }
 
     private fun refreshSubtitle() {
-        appDatabase.addressBook.byAddressLiveData(currentAddressProvider.getCurrentNeverNull()).observe(this, Observer { currentAddress ->
+        appDatabase.addressBook.byAddressLiveData(currentAddressProvider.getCurrentNeverNull()).observe(this, { currentAddress ->
             currentAddress?.let { entry ->
                 val name = chainInfoProvider.value!!.name
                 supportActionBar?.subtitle = entry.name + "@" + name

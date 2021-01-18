@@ -36,6 +36,6 @@ open class BaseSubActivity : WallethActivity() {
         else -> super.onOptionsItemSelected(item)
     }
 
-    protected fun Int.toDp(displayMetrics: DisplayMetrics = resources.displayMetrics) = toFloat().toDp(displayMetrics).toInt()
+    internal fun Int.toDp(displayMetrics: DisplayMetrics = resources.displayMetrics) = toFloat().toDp(displayMetrics).toInt()
     private fun Float.toDp(displayMetrics: DisplayMetrics = resources.displayMetrics) = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, this, displayMetrics)
 }
