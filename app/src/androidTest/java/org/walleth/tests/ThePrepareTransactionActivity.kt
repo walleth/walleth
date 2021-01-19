@@ -38,7 +38,7 @@ import org.walleth.infrastructure.setCurrentToken
 import org.walleth.qr.scan.QRScanActivity
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS2
 import org.walleth.testdata.DEFAULT_TEST_ADDRESS3
-import org.walleth.transactions.CreateTransactionActivity
+import org.walleth.transactions.PrepareTransactionActivity
 import org.walleth.util.decimalsAsMultiplicator
 import java.math.BigInteger
 
@@ -55,10 +55,10 @@ val testToken = Token(
 )
 val eth = TestApp.chainInfoProvider.getCurrent()!!.getRootToken()
 
-class TheCreateTransactionActivity {
+class ThePrepareTransactionActivity {
 
     @get:Rule
-    var rule = TruleskIntentRule(CreateTransactionActivity::class.java, autoLaunch = false)
+    var rule = TruleskIntentRule(PrepareTransactionActivity::class.java, autoLaunch = false)
 
     private val testAddress = "0x1234567890123456789012345678901234567890"
     private val urlBase = "ethereum:$testAddress"

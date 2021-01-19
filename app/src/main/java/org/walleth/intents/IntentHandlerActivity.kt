@@ -25,11 +25,9 @@ import org.walleth.data.REQUEST_CODE_CREATE_TX
 import org.walleth.data.REQUEST_CODE_SELECT_TO_ADDRESS
 import org.walleth.data.REQUEST_CODE_SIGN_TX
 import org.walleth.data.addresses.CurrentAddressProvider
-import org.walleth.data.tokens.isTokenTransfer
 import org.walleth.sign.SignTextActivity
-import org.walleth.transactions.CreateTransactionActivity
+import org.walleth.transactions.PrepareTransactionActivity
 import org.walleth.walletconnect.WalletConnectConnectionActivity
-import java.math.BigInteger.ZERO
 
 fun Context.getEthereumViewIntent(ethereumString: String) = Intent(this, IntentHandlerActivity::class.java).apply {
     data = Uri.parse(ethereumString)
@@ -102,7 +100,7 @@ class IntentHandlerActivity : WallethActivity() {
 
     private fun process681(erc681: ERC681) {
         if (erc681.shouldStartTransactionActivity()) {
-            startActivityForResult(Intent(this, CreateTransactionActivity::class.java).apply {
+            startActivityForResult(Intent(this, PrepareTransactionActivity::class.java).apply {
                 data = intent.data
             }, REQUEST_CODE_CREATE_TX)
         } else {
@@ -115,7 +113,7 @@ class IntentHandlerActivity : WallethActivity() {
                                 finish()
                             }
                             1 -> {
-                                val intent = Intent(this, CreateTransactionActivity::class.java).apply {
+                                val intent = Intent(this, PrepareTransactionActivity::class.java).apply {
                                     data = intent.data
                                 }
                                 startActivityForResult(intent, REQUEST_CODE_CREATE_TX)

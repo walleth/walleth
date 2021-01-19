@@ -106,7 +106,7 @@ import java.util.*
 private const val WARNING_USERDOC = "USERDOCWARN"
 private const val WARNING_GASESTIMATE = "GASWARN"
 
-class CreateTransactionActivity : BaseSubActivity() {
+class PrepareTransactionActivity : BaseSubActivity() {
 
     private var currentERC681: ERC681 = ERC681()
     private var currentToAddress: Address? = null
@@ -362,12 +362,12 @@ class CreateTransactionActivity : BaseSubActivity() {
         setFromURL(currentERC681.generateURL(), false)
 
         address_list_button.setOnClickListener {
-            val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
+            val intent = Intent(this@PrepareTransactionActivity, AccountPickActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_SELECT_TO_ADDRESS)
         }
 
         from_address_list_button.setOnClickListener {
-            val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
+            val intent = Intent(this@PrepareTransactionActivity, AccountPickActivity::class.java)
             startActivityForResult(intent, REQUEST_CODE_SELECT_FROM_ADDRESS)
         }
     }
@@ -415,13 +415,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun estimateGas() {
-        val currentToken = currentTokenProvider.getCurrent()
-        if (currentToken.isRootToken()) {
-            gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
-        } else {
-            gas_limit_input.setText(DEFAULT_GAS_LIMIT_ERC_20_TX.toString())
-        }
-
+        gas_limit_input.setText(DEFAULT_GAS_LIMIT_ETH_TX.toString())
         estimateGasLimit()
     }
 
@@ -717,7 +711,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
                                         if (token != currentTokenProvider.getCurrent()) {
                                             currentTokenProvider.setCurrent(token)
-                                            currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
+                                            currentBalanceLive?.removeObservers(this@PrepareTransactionActivity)
                                             onCurrentTokenChanged()
                                         }
 
@@ -744,7 +738,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                                     if (!currentTokenProvider.getCurrent().isRootToken()) {
                                         chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
                                             currentTokenProvider.setCurrent(token)
-                                            currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
+                                            currentBalanceLive?.removeObservers(this@PrepareTransactionActivity)
                                             onCurrentTokenChanged()
                                         }
                                     }

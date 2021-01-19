@@ -50,7 +50,7 @@ import org.walleth.security.isDappNodeReachable
 import org.walleth.security.startOpenVPN
 import org.walleth.toolbar.DefaultToolbarChangeDetector
 import org.walleth.toolbar.ToolbarColorChangeDetector
-import org.walleth.transactions.CreateTransactionActivity
+import org.walleth.transactions.PrepareTransactionActivity
 import org.walleth.transactions.TransactionAdapterDirection.INCOMING
 import org.walleth.transactions.TransactionAdapterDirection.OUTGOING
 import org.walleth.transactions.TransactionRecyclerAdapter
@@ -104,7 +104,7 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.paste_from_clipboard_action) {
                             alert(R.string.copied_string_warning_message, R.string.copied_string_warning_title) {
-                                startActivity(Intent(this@OverviewActivity, CreateTransactionActivity::class.java).apply {
+                                startActivity(Intent(this@OverviewActivity, PrepareTransactionActivity::class.java).apply {
                                     data = Uri.parse(item)
                                 })
                             }
@@ -143,7 +143,7 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         }
 
         send_button.setOnClickListener {
-            startActivityFromClass(CreateTransactionActivity::class)
+            startActivityFromClass(PrepareTransactionActivity::class)
         }
 
         fab.setOnClickListener {

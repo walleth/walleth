@@ -200,7 +200,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                 chainId = chainId
         ).generateURL()
 
-        startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
+        startActivity(Intent(this, PrepareTransactionActivity::class.java).apply {
             setData(Uri.parse(url))
             putExtra("nonce", nonce)
             putExtra("data", data)

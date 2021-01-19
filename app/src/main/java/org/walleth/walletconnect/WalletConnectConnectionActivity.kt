@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import coil.load
@@ -32,7 +31,7 @@ import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.REQUEST_CODE_SELECT_TO_ADDRESS
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.sign.SignTextActivity
-import org.walleth.transactions.CreateTransactionActivity
+import org.walleth.transactions.PrepareTransactionActivity
 
 fun Context.getWalletConnectIntent(data: Uri) = Intent(this, WalletConnectConnectionActivity::class.java).apply {
     setData(data)
@@ -85,7 +84,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                             ).generateURL()
 
 
-                            val intent = Intent(this@WalletConnectConnectionActivity, CreateTransactionActivity::class.java).apply {
+                            val intent = Intent(this@WalletConnectConnectionActivity, PrepareTransactionActivity::class.java).apply {
                                 this.data = Uri.parse(url)
                                 if (call.data.isNotEmpty()) {
                                     putExtra("data", call.data)

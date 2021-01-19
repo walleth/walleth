@@ -6,7 +6,7 @@
         android:layout_height="match_parent"
         android:animateLayoutChanges="true"
         android:focusableInTouchMode="true"
-        tools:context=".transactions.CreateTransactionActivity">
+        tools:context=".transactions.PrepareTransactionActivity">
 
     <ScrollView
             android:layout_width="match_parent"
