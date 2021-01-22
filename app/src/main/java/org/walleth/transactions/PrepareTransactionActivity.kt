@@ -14,6 +14,8 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.activity.result.ActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -134,6 +136,10 @@ class PrepareTransactionActivity : BaseSubActivity() {
     private val ensMap = mutableMapOf<String, String>()
     private val warningMap = mutableMapOf<String, String>()
 
+    private val changeTokenForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        onCurrentTokenChanged()
+    }
+
     private val amountController by lazy {
         ValueViewController(amount_value, exchangeRateProvider, settings)
     }
@@ -176,9 +182,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
                     startTransaction(data?.getStringExtra(EXTRA_KEY_PWD), createTransaction())
                 }
             }
-            REQUEST_CODE_SELECT_TOKEN -> {
-                onCurrentTokenChanged()
-            }
+
             else -> data?.let {
                 if (data.hasExtra(EXTRA_KEY_ADDRESS)) {
                     setFromURL(data.getStringExtra(EXTRA_KEY_ADDRESS), fromUser = true)
@@ -229,7 +233,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
         })
 
         current_token_symbol.setOnClickListener {
-            startActivityForResult(Intent(this, SelectTokenActivity::class.java), REQUEST_CODE_SELECT_TOKEN)
+            changeTokenForResult.launch(Intent(this, SelectTokenActivity::class.java))
         }
 
         val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
