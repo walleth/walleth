@@ -16,6 +16,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.ActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
@@ -136,8 +137,14 @@ class PrepareTransactionActivity : BaseSubActivity() {
     private val ensMap = mutableMapOf<String, String>()
     private val warningMap = mutableMapOf<String, String>()
 
-    private val changeTokenForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+    private val changeTokenForResult = registerForActivityResult(StartActivityForResult()) {
         onCurrentTokenChanged()
+    }
+
+    private val addActionForResult = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            setFromURL(it.data?.getStringExtra(EXTRA_KEY_ERC681), false)
+        }
     }
 
     private val amountController by lazy {
@@ -165,11 +172,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_CODE_ADD_ACTION -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    setFromURL(data?.getStringExtra(EXTRA_KEY_ERC681), false)
-                }
-            }
+
             TREZOR_REQUEST_CODE -> {
                 if (resultCode == Activity.RESULT_OK) {
                     currentTxHash = data?.getStringExtra("TXHASH")
@@ -672,7 +675,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
 
                                         action_button.setOnClickListener {
                                             val noFunctionERC681 = currentERC681.copy(function = null, functionParams = emptyList())
-                                            startActivityForResult(getERC681ActivityIntent(noFunctionERC681, ChangeActionActivity::class), REQUEST_CODE_ADD_ACTION)
+                                            addActionForResult.launch(getERC681ActivityIntent(noFunctionERC681, ChangeActionActivity::class))
                                         }
 
                                     }

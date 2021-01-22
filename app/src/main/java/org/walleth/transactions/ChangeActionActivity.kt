@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
-import org.walleth.data.REQUEST_CODE_ADD_ACTION
 import org.walleth.data.REQUEST_CODE_CHANGE_ACTION
 
 class ChangeActionActivity : BaseSubActivity() {
