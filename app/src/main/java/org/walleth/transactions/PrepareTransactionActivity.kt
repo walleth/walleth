@@ -180,12 +180,6 @@ class PrepareTransactionActivity : BaseSubActivity() {
                 }
             }
 
-            REQUEST_CODE_ENTER_PASSWORD -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    startTransaction(data?.getStringExtra(EXTRA_KEY_PWD), createTransaction())
-                }
-            }
-
             else -> data?.let {
                 if (data.hasExtra(EXTRA_KEY_ADDRESS)) {
                     setFromURL(data.getStringExtra(EXTRA_KEY_ADDRESS), fromUser = true)
