@@ -360,7 +360,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
 
             if (nonce_input.text?.isBlank() != false) {
                 val nonceBigInt = if (it != null && it.isNotEmpty()) {
-                    it.max()!! + ONE
+                    it.maxOrNull()!! + ONE
                 } else {
                     ZERO
                 }
