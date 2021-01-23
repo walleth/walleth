@@ -152,6 +152,18 @@ class PrepareTransactionActivity : BaseSubActivity() {
         }
     }
 
+    private val selectToAddressForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            setFromURL(it.data?.getStringExtra(EXTRA_KEY_ADDRESS), fromUser = true)
+        }
+    }
+
+    private val selectFromAddressForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            it.data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { address_string -> currentAddressProvider.setCurrent(Address(address_string)) }
+        }
+    }
+
     private val amountController by lazy {
         ValueViewController(amount_value, exchangeRateProvider, settings)
     }
@@ -178,14 +190,10 @@ class PrepareTransactionActivity : BaseSubActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
 
-
-
             else -> data?.let {
-                if (data.hasExtra(EXTRA_KEY_ADDRESS)) {
-                    setFromURL(data.getStringExtra(EXTRA_KEY_ADDRESS), fromUser = true)
-                } else if (data.hasExtra("SCAN_RESULT")) {
-                    setFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
-                }
+                if (data.hasExtra("SCAN_RESULT")) {
+                setFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
+            }
             }
         }
     }
@@ -222,12 +230,13 @@ class PrepareTransactionActivity : BaseSubActivity() {
                     val drawable = ACCOUNT_TYPE_MAP[entry.getSpec()?.type]?.actionDrawable
 
                     fab.setImageResource(drawable ?: R.drawable.ic_action_done)
-                    fab.setOnClickListener {
-                        onFabClick()
-                    }
                 }
             }
         })
+
+        fab.setOnClickListener {
+            onFabClick()
+        }
 
         current_token_symbol.setOnClickListener {
             changeTokenForResult.launch(Intent(this, SelectTokenActivity::class.java))
@@ -236,7 +245,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
         val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
         gas_price_input.setText(when {
             gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger().toString()
-            currentERC681.gasPrice  != null -> currentERC681.gasPrice.toString()
+            currentERC681.gasPrice != null -> currentERC681.gasPrice.toString()
             else -> chainInfoProvider.getCurrent()?.chainId?.let {
                 settings.getGasPriceFor(it).toString()
             }
@@ -364,12 +373,12 @@ class PrepareTransactionActivity : BaseSubActivity() {
 
         address_list_button.setOnClickListener {
             val intent = Intent(this@PrepareTransactionActivity, AccountPickActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE_SELECT_TO_ADDRESS)
+            selectToAddressForResult.launch(intent)
         }
 
         from_address_list_button.setOnClickListener {
             val intent = Intent(this@PrepareTransactionActivity, AccountPickActivity::class.java)
-            startActivityForResult(intent, REQUEST_CODE_SELECT_FROM_ADDRESS)
+            selectFromAddressForResult.launch(intent)
         }
     }
 
@@ -648,7 +657,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
                                 currentERC681.address?.let { address ->
 
 
-                                    val metaDataForAddressOnChain =  withContext(Dispatchers.Default) {
+                                    val metaDataForAddressOnChain = withContext(Dispatchers.Default) {
                                         metaDataRepo.getMetaDataForAddressOnChain(Address(address), chainInfoProvider.getCurrentChainId())
                                     }
 
