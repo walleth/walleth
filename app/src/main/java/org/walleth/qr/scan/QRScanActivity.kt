@@ -6,13 +6,9 @@ import android.os.Bundle
 import kotlinx.android.synthetic.main.activity_scan.*
 import org.walleth.R
 import org.walleth.base_activities.WallethActivity
-import org.walleth.data.REQUEST_CODE_SCAN_QR
 
 
-fun startScanActivityForResult(activity: Activity, requestCode: Int = REQUEST_CODE_SCAN_QR) {
-    val intent = Intent(activity, QRScanActivity::class.java)
-    activity.startActivityForResult(intent, requestCode)
-}
+fun Activity.getQRScanActivity() = Intent(this, QRScanActivity::class.java)
 
 open class QRScanActivity : WallethActivity() {
     private val videographer: Videographer

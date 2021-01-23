@@ -1,9 +1,13 @@
 package org.walleth.tokens
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_create_token.*
@@ -18,14 +22,20 @@ import org.walleth.base_activities.BaseSubActivity
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
 import org.walleth.data.tokens.Token
-import org.walleth.qr.scan.startScanActivityForResult
-
+import org.walleth.qr.scan.getQRScanActivity
 
 class CreateTokenDefinitionActivity : BaseSubActivity() {
 
 
     val appDatabase: AppDatabase by inject()
     val chainInfoProvider: ChainInfoProvider by inject()
+
+    private val scanQRForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            token_address_input.setText(it.data?.getStringExtra("SCAN_RESULT"))
+        }
+    }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -76,18 +86,9 @@ class CreateTokenDefinitionActivity : BaseSubActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        data?.let {
-            if (data.hasExtra("SCAN_RESULT")) {
-                token_address_input.setText(data.getStringExtra("SCAN_RESULT"))
-            }
-        }
-    }
-
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_scan -> true.also {
-            startScanActivityForResult(this)
+            scanQRForResult.launch(getQRScanActivity())
         }
         else -> super.onOptionsItemSelected(item)
     }

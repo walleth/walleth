@@ -86,7 +86,7 @@ import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
 import org.walleth.nfc.startNFCSigningActivity
-import org.walleth.qr.scan.startScanActivityForResult
+import org.walleth.qr.scan.getQRScanActivity
 import org.walleth.sign.ParitySignerQRActivity
 import org.walleth.startup.StartupActivity
 import org.walleth.tmp.Do
@@ -164,6 +164,13 @@ class PrepareTransactionActivity : BaseSubActivity() {
         }
     }
 
+    private val scanQRForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            setFromURL(it.data?.getStringExtra("SCAN_RESULT"), fromUser = true)
+        }
+    }
+
+
     private val amountController by lazy {
         ValueViewController(amount_value, exchangeRateProvider, settings)
     }
@@ -183,18 +190,6 @@ class PrepareTransactionActivity : BaseSubActivity() {
             }
         } else {
             createAfterCheck(savedInstanceState)
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-
-            else -> data?.let {
-                if (data.hasExtra("SCAN_RESULT")) {
-                setFromURL(data.getStringExtra("SCAN_RESULT"), fromUser = true)
-            }
-            }
         }
     }
 
@@ -793,7 +788,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
-        R.id.menu_scan -> true.also { startScanActivityForResult(this) }
+        R.id.menu_scan -> true.also { scanQRForResult.launch(getQRScanActivity()) }
         else -> super.onOptionsItemSelected(item)
     }
 

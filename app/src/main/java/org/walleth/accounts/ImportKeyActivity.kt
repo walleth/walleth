@@ -11,6 +11,9 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_import_key.*
@@ -34,7 +37,7 @@ import org.walleth.accounts.KeyType.*
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
-import org.walleth.qr.scan.startScanActivityForResult
+import org.walleth.qr.scan.getQRScanActivity
 import java.io.FileNotFoundException
 
 enum class KeyType {
@@ -57,6 +60,14 @@ fun Context.getKeyImportIntentViaCreate(spec: AccountKeySpec) = Intent(this, Cre
 open class ImportKeyActivity : BaseSubActivity() {
 
     private var importing = false
+
+    private val scanQRForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            key_content.setText(it.data?.getStringExtra("SCAN_RESULT"))
+        }
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -179,9 +190,7 @@ open class ImportKeyActivity : BaseSubActivity() {
 
         super.onActivityResult(requestCode, resultCode, resultData)
         resultData?.let {
-            if (it.hasExtra("SCAN_RESULT")) {
-                key_content.setText(it.getStringExtra("SCAN_RESULT"))
-            }
+
             if (requestCode == REQUEST_CODE_OPEN_DOCUMENT && resultCode == Activity.RESULT_OK) {
 
                 it.data?.let { data ->
@@ -216,7 +225,7 @@ open class ImportKeyActivity : BaseSubActivity() {
         }
 
         R.id.menu_scan -> true.also {
-            startScanActivityForResult(this)
+            scanQRForResult.launch(getQRScanActivity())
         }
 
         else -> super.onOptionsItemSelected(item)

@@ -1,11 +1,15 @@
 package org.walleth.transactions
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_relay.*
 import kotlinx.coroutines.Dispatchers
@@ -40,7 +44,7 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionState
 import org.walleth.data.transactions.toEntity
-import org.walleth.qr.scan.startScanActivityForResult
+import org.walleth.qr.scan.getQRScanActivity
 import org.walleth.sign.ParitySignerQRActivity
 import org.walleth.util.isParityUnsignedTransactionJSON
 import org.walleth.util.isSignedTransactionJSON
@@ -57,6 +61,16 @@ class OfflineTransactionActivity : BaseSubActivity() {
     private val chainInfoProvider: ChainInfoProvider by inject()
     private val appDatabase: AppDatabase by inject()
     private val currentAddressProvider: CurrentAddressProvider by inject()
+
+    private val scanQRForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            val result = it.data?.getStringExtra("SCAN_RESULT")
+            transaction_to_relay_hex.setText(result)
+            if (result?.isUnsignedTransactionJSON() == true || result?.isParityUnsignedTransactionJSON() == true) {
+                execute()
+            }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -270,27 +284,10 @@ class OfflineTransactionActivity : BaseSubActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        super.onActivityResult(requestCode, resultCode, resultData)
-
-        resultData?.let {
-            if (it.hasExtra("SCAN_RESULT")) {
-
-                val result = it.getStringExtra("SCAN_RESULT")
-                transaction_to_relay_hex.setText(result)
-                if (result?.isUnsignedTransactionJSON() == true || result?.isParityUnsignedTransactionJSON() == true) {
-                    execute()
-                }
-            }
-        }
-
-
-    }
-
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
 
         R.id.menu_scan -> true.also {
-            startScanActivityForResult(this)
+            scanQRForResult.launch(getQRScanActivity())
         }
         else -> super.onOptionsItemSelected(item)
     }

@@ -30,7 +30,8 @@ open class NewAccountTypeSelectActivity : BaseSubActivity() {
         recycler.adapter = AccountTypeAdapter(ACCOUNT_TYPE_LIST, AccountKeySpec(ACCOUNT_TYPE_NONE))
 
         fab.setOnClickListener {
-            startActivityForResult(Intent(this, QRScanActivityAndProcessActivity::class.java), REQUEST_CODE_SCAN_QR)
+            startActivity(Intent(this, QRScanActivityAndProcessActivity::class.java))
+            finish()
         }
     }
 

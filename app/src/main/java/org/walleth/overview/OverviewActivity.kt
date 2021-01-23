@@ -44,7 +44,6 @@ import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.getRootToken
 import org.walleth.info.WallETHInfoActivity
 import org.walleth.qr.scan.QRScanActivityAndProcessActivity
-import org.walleth.qr.scan.startScanActivityForResult
 import org.walleth.request.RequestActivity
 import org.walleth.security.isDappNodeReachable
 import org.walleth.security.startOpenVPN
@@ -200,10 +199,6 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         currentAddressProvider.observe(this, {
             setCurrentBalanceObservers()
         })
-
-        if (intent.action?.equals("org.walleth.action.SCAN") == true) {
-            startScanActivityForResult(this)
-        }
 
         if (savedInstanceState != null) {
             lastPastedData = savedInstanceState.getString(KEY_LAST_PASTED_DATA)
