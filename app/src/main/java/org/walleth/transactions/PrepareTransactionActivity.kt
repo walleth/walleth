@@ -14,8 +14,7 @@ import android.widget.EditText
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.activity.result.ActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.LiveData
@@ -92,9 +91,8 @@ import org.walleth.sign.ParitySignerQRActivity
 import org.walleth.startup.StartupActivity
 import org.walleth.tmp.Do
 import org.walleth.tokens.SelectTokenActivity
-import org.walleth.trezor.TREZOR_REQUEST_CODE
-import org.walleth.trezor.startKeepKeySignTransactionActivity
-import org.walleth.trezor.startTrezorSignTransactionActivity
+import org.walleth.trezor.getKeepKeySignIntent
+import org.walleth.trezor.getTrezorSignIntent
 import org.walleth.util.hasText
 import org.walleth.util.question
 import org.walleth.util.security.getPasswordForAccountType
@@ -147,6 +145,13 @@ class PrepareTransactionActivity : BaseSubActivity() {
         }
     }
 
+    private val signWithTrezorForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            currentTxHash = it.data?.getStringExtra("TXHASH")
+            storeDefaultGasPriceAndFinish()
+        }
+    }
+
     private val amountController by lazy {
         ValueViewController(amount_value, exchangeRateProvider, settings)
     }
@@ -173,12 +178,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
 
-            TREZOR_REQUEST_CODE -> {
-                if (resultCode == Activity.RESULT_OK) {
-                    currentTxHash = data?.getStringExtra("TXHASH")
-                    storeDefaultGasPriceAndFinish()
-                }
-            }
+
 
             else -> data?.let {
                 if (data.hasExtra(EXTRA_KEY_ADDRESS)) {
@@ -521,8 +521,8 @@ class PrepareTransactionActivity : BaseSubActivity() {
                 }
             }
             ACCOUNT_TYPE_NFC -> startNFCSigningActivity(TransactionParcel(createTransaction()))
-            ACCOUNT_TYPE_TREZOR -> startTrezorSignTransactionActivity(TransactionParcel(createTransaction()))
-            ACCOUNT_TYPE_KEEPKEY -> startKeepKeySignTransactionActivity(TransactionParcel(createTransaction()))
+            ACCOUNT_TYPE_TREZOR -> signWithTrezorForResult.launch(getTrezorSignIntent(TransactionParcel(createTransaction())))
+            ACCOUNT_TYPE_KEEPKEY -> signWithTrezorForResult.launch(getKeepKeySignIntent(TransactionParcel(createTransaction())))
         }
     }
 

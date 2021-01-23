@@ -30,27 +30,20 @@ import org.walleth.data.transactions.toEntity
 import org.walleth.kethereum.android.TransactionParcel
 import java.math.BigInteger
 
-const val TREZOR_REQUEST_CODE = 7688
+private fun Activity.getTrezorSignTransactionIntent() = Intent(this, TrezorSignTransactionActivity::class.java)
 
-fun Activity.startTrezorSignTransactionActivity(transactionParcel: TransactionParcel) {
-    val trezorIntent = Intent(this, TrezorSignTransactionActivity::class.java).putExtra("TX", transactionParcel)
-    startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
+fun Activity.getTrezorSignIntent(transactionParcel: TransactionParcel) = getTrezorSignTransactionIntent().putExtra("TX", transactionParcel)
+
+fun Activity.getKeepKeySignIntent(transactionParcel: TransactionParcel) = getTrezorSignTransactionIntent().apply {
+    putExtra("TX", transactionParcel)
+    putExtra(KEY_KEEPKEY_MODE, true)
 }
-
-fun Activity.startKeepKeySignTransactionActivity(transactionParcel: TransactionParcel) {
-    val trezorIntent = Intent(this, TrezorSignTransactionActivity::class.java).apply {
-        putExtra("TX", transactionParcel)
-        putExtra(KEY_KEEPKEY_MODE, true)
-    }
-    startActivityForResult(trezorIntent, TREZOR_REQUEST_CODE)
-}
-
 
 class TrezorSignTransactionActivity : BaseTrezorActivity() {
 
     private val transaction by lazy {
         intent.getParcelableExtra<TransactionParcel>("TX")
-                ?:throw(java.lang.IllegalArgumentException("no TX in ParcleableExtra"))
+                ?: throw(java.lang.IllegalArgumentException("no TX in ParcleableExtra"))
     }
     private val currentAddressProvider: CurrentAddressProvider by inject()
 
