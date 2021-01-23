@@ -72,12 +72,11 @@ class CreateAccountActivity : BaseSubActivity() {
                 setAddressFromExternalApplyingChecksum(Address(it))
             }
             ACCOUNT_TYPE_IMPORT -> startActivityForResult(getKeyImportIntent(currentSpec), REQUEST_CODE_IMPORT)
-            ACCOUNT_TYPE_NONE -> startActivityForResult(getSelectTypeIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
-
+            ACCOUNT_TYPE_NONE -> selectAccountType()
         }
 
         type_select_button.setOnClickListener {
-            startActivityForResult(getSelectTypeIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
+            selectAccountTypeNoScanOption()
         }
 
         fab.setOnClickListener {
@@ -182,10 +181,12 @@ class CreateAccountActivity : BaseSubActivity() {
     }
 
     private fun selectAccountType() {
-        startActivityForResult(getSelectTypeIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
+        startActivityForResult(getNewAccountTypeSelectActivityIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
     }
 
-    private fun getSelectTypeIntent() = Intent(this, NewAccountTypeSelectActivity::class.java)
+    private fun selectAccountTypeNoScanOption() {
+        startActivityForResult(getNewAccountTypeSelectActivityNoFABIntent(), REQUEST_CODE_PICK_ACCOUNT_TYPE)
+    }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         android.R.id.home -> false.also { selectAccountType() }

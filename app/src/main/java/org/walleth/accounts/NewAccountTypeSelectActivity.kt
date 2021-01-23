@@ -3,6 +3,7 @@ package org.walleth.accounts
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.view.View
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_account_type_select.*
 import org.koin.android.ext.android.inject
@@ -12,6 +13,11 @@ import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.qr.scan.QRScanActivityAndProcessActivity
+
+private const val NO_QR_KEY = "NO_QR"
+
+fun Activity.getNewAccountTypeSelectActivityIntent() = Intent(this, NewAccountTypeSelectActivity::class.java)
+fun Activity.getNewAccountTypeSelectActivityNoFABIntent() = getNewAccountTypeSelectActivityIntent().putExtra(NO_QR_KEY, true)
 
 open class NewAccountTypeSelectActivity : BaseSubActivity() {
 
@@ -29,9 +35,13 @@ open class NewAccountTypeSelectActivity : BaseSubActivity() {
         recycler.layoutManager = LinearLayoutManager(this)
         recycler.adapter = AccountTypeAdapter(ACCOUNT_TYPE_LIST, AccountKeySpec(ACCOUNT_TYPE_NONE))
 
-        fab.setOnClickListener {
-            startActivity(Intent(this, QRScanActivityAndProcessActivity::class.java))
-            finish()
+        if (intent.getBooleanExtra(NO_QR_KEY, false)) {
+            fab.visibility = View.GONE
+        } else {
+            fab.setOnClickListener {
+                startActivity(Intent(this, QRScanActivityAndProcessActivity::class.java))
+                finish()
+            }
         }
     }
 
