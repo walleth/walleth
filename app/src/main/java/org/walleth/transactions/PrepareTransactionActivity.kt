@@ -287,7 +287,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
         }
 
         gas_station_image.setOnClickListener {
-            startActivityFromURL("http://ethgasstation.info")
+            startActivityFromURL("https://gasnow.org")
         }
 
         show_advanced_button.setOnClickListener {
