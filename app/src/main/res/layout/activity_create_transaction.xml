@@ -284,7 +284,7 @@
                         android:id="@+id/gas_limit_input"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:inputType="number|numberDecimal"
+                        android:inputType="number"
                         android:minWidth="128dp" />
             </com.google.android.material.textfield.TextInputLayout>
 
