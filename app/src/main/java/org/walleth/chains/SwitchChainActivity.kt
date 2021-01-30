@@ -141,6 +141,7 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
                 bind = { chainInfo, view ->
                     view.setOnClickListener {
                         chainInfoProvider.setCurrent(chainInfo)
+                        setResult(RESULT_OK)
                         finish()
                     }
                     view.in3_indicator.setVisibility(chainInfo.hasTincubethSupport())

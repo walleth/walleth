@@ -1,9 +1,11 @@
 package org.walleth.walletconnect
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import coil.load
@@ -37,10 +39,6 @@ fun Context.getWalletConnectIntent(data: Uri) = Intent(this, WalletConnectConnec
     setData(data)
 }
 
-private const val REQUEST_ID_SIGN_TEXT = 100
-private const val REQUEST_ID_SIGN_TX = 101
-private const val REQUEST_ID_SWITCH_NET = 102
-
 class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private val currentAddressProvider: CurrentAddressProvider by inject()
@@ -51,6 +49,43 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     private var currentRequestId: Long? = null
 
     private var accounts = listOf<String>()
+
+    private val signTextActionForResult = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            if (it.data?.hasExtra("SIGNATURE") == true) {
+                val result = it.data?.getStringExtra("SIGNATURE")
+                wcViewModel.session?.approveRequest(currentRequestId!!, "0x$result")
+            } else {
+                wcViewModel.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
+            }
+        }
+    }
+
+    private val switchNetActionForResult = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+        }
+    }
+
+
+    private val switchAccountActionForResult = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            it.data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { addressHex ->
+                currentAddressProvider.setCurrent(Address(addressHex))
+                accounts = listOf(addressHex)
+                wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+            }
+        }
+    }
+
+    private val signTxActionForResult = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+
+            it.data?.getStringExtra("TXHASH")?.let { txHash ->
+                wcViewModel.session?.approveRequest(currentRequestId!!, txHash)
+            }
+        }
+    }
 
     private val sessionCallback = object : Session.Callback {
         override fun onMethodCall(call: Session.MethodCall) {
@@ -67,11 +102,9 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
                     is Session.MethodCall.SignMessage -> {
                         currentRequestId = call.id
-                        val intent = Intent(this@WalletConnectConnectionActivity, SignTextActivity::class.java).apply {
-                            putExtra(Intent.EXTRA_TEXT, call.message)
+                        signText(call.message)
 
-                        }
-                        startActivityForResult(intent, REQUEST_ID_SIGN_TEXT)
+                        signTextActionForResult.launch(intent)
                     }
 
                     is Session.MethodCall.SendTransaction -> {
@@ -96,7 +129,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                                 putExtra("parityFlow", false)
                             }
 
-                            startActivityForResult(intent, REQUEST_ID_SIGN_TX)
+                            signTxActionForResult.launch(intent)
                         }
                     }
 
@@ -150,7 +183,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             putExtra(Intent.EXTRA_TEXT, message)
 
         }
-        startActivityForResult(intent, REQUEST_ID_SIGN_TEXT)
+        signTextActionForResult.launch(intent)
     }
 
     private fun requestInitialAccount(): AlertDialog? {
@@ -187,7 +220,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         }
 
         wc_change_network.setOnClickListener {
-            startActivityForResult(Intent(this@WalletConnectConnectionActivity, SwitchChainActivity::class.java), REQUEST_ID_SWITCH_NET)
+            switchNetActionForResult.launch(Intent(this@WalletConnectConnectionActivity, SwitchChainActivity::class.java))
         }
 
         if (!wcViewModel.processURI(intent?.data.toString())) {
@@ -217,9 +250,11 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             dapp_icon.load(url)
         }
     }
+
     private fun selectAccount() {
         val intent = Intent(this@WalletConnectConnectionActivity, AccountPickActivity::class.java)
-        startActivityForResult(intent, REQUEST_CODE_SELECT_TO_ADDRESS)
+
+        switchAccountActionForResult.launch(intent)
     }
 
     override fun onDestroy() {
@@ -227,45 +262,4 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         //wcViewModel.session?.kill()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        wcViewModel.session?.addCallback(sessionCallback)
-        super.onActivityResult(requestCode, resultCode, data)
-
-        when (requestCode) {
-            REQUEST_ID_SWITCH_NET -> {
-                wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
-            }
-
-
-            REQUEST_CODE_SELECT_TO_ADDRESS -> {
-                data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { addressHex ->
-                    currentAddressProvider.setCurrent(Address(addressHex))
-                    accounts = listOf(addressHex)
-                    wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
-                }
-            }
-
-            REQUEST_ID_SIGN_TEXT -> {
-                if (data?.hasExtra("SIGNATURE") == true) {
-                    val result = data.getStringExtra("SIGNATURE")
-                    wcViewModel.session?.approveRequest(currentRequestId!!, "0x$result")
-                } else {
-                    wcViewModel.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
-                }
-
-            }
-
-            REQUEST_ID_SIGN_TX -> {
-                data?.getStringExtra("TXHASH")?.let { txHash ->
-                    wcViewModel.session?.approveRequest(currentRequestId!!, txHash)
-                }
-
-            }
-
-            else -> {
-                alert("unknown")
-            }
-        }
-
-    }
 }
