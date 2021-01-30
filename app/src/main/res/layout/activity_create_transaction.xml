@@ -173,11 +173,13 @@
             <TextView
                     android:id="@+id/result_label"
                     style="@style/section_header"
+                    android:visibility="gone"
                     android:layout_below="@id/function_text"
                     android:text="Result:" />
 
             <TextView
                     android:id="@+id/result_text"
+                    android:visibility="gone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/result_label"
