@@ -643,11 +643,11 @@ class CreateTransactionActivity : BaseSubActivity() {
                             val address = currentERC681.address?.let { Address(it) }
                             val chainId = chainInfoProvider.getCurrent()?.chainId?.let { ChainId(it) }
 
-                            if (address != null && chainId != null) {
-                                val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
-                                function_label.setVisibility(functionVisibility)
-                                function_text.setVisibility(functionVisibility)
+                            val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
+                            function_label.setVisibility(functionVisibility)
+                            function_text.setVisibility(functionVisibility)
 
+                            if (address != null && chainId != null) {
 
                                 currentERC681.address?.let { address ->
 
