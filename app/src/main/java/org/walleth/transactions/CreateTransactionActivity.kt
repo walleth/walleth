@@ -610,7 +610,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private fun refreshFee() {
         val fee = try {
-            BigInteger(gas_price_input.text.toString()) * BigInteger(gas_limit_input.text.toString())
+            gas_price_input.asBigInteger()*gas_limit_input.asBigInteger()
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
