@@ -107,7 +107,7 @@ import java.util.*
 private const val WARNING_USERDOC = "USERDOCWARN"
 private const val WARNING_GASESTIMATE = "GASWARN"
 
-class PrepareTransactionActivity : BaseSubActivity() {
+class CreateTransactionActivity : BaseSubActivity() {
 
     private var currentERC681: ERC681 = ERC681()
     private var currentToAddress: Address? = null
@@ -367,12 +367,12 @@ class PrepareTransactionActivity : BaseSubActivity() {
         setFromURL(currentERC681.generateURL(), false)
 
         address_list_button.setOnClickListener {
-            val intent = Intent(this@PrepareTransactionActivity, AccountPickActivity::class.java)
+            val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
             selectToAddressForResult.launch(intent)
         }
 
         from_address_list_button.setOnClickListener {
-            val intent = Intent(this@PrepareTransactionActivity, AccountPickActivity::class.java)
+            val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
             selectFromAddressForResult.launch(intent)
         }
     }
@@ -716,7 +716,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
 
                                         if (token != currentTokenProvider.getCurrent()) {
                                             currentTokenProvider.setCurrent(token)
-                                            currentBalanceLive?.removeObservers(this@PrepareTransactionActivity)
+                                            currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
                                             onCurrentTokenChanged()
                                         }
 
@@ -743,7 +743,7 @@ class PrepareTransactionActivity : BaseSubActivity() {
                                     if (!currentTokenProvider.getCurrent().isRootToken()) {
                                         chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
                                             currentTokenProvider.setCurrent(token)
-                                            currentBalanceLive?.removeObservers(this@PrepareTransactionActivity)
+                                            currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
                                             onCurrentTokenChanged()
                                         }
                                     }

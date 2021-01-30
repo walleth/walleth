@@ -54,7 +54,7 @@
 
         <activity android:name="org.walleth.preferences.PreferenceActivity"/>
 
-        <activity android:name="org.walleth.transactions.PrepareTransactionActivity"/>
+        <activity android:name="org.walleth.transactions.CreateTransactionActivity"/>
         <activity android:name="org.walleth.transactions.ViewTransactionActivity"/>
 
         <activity android:name="org.walleth.toolbar.ToolbarSetupActivity"/>

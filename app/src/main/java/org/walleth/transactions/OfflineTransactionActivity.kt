@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_relay.*
@@ -214,7 +213,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                 chainId = chainId
         ).generateURL()
 
-        startActivity(Intent(this, PrepareTransactionActivity::class.java).apply {
+        startActivity(Intent(this, CreateTransactionActivity::class.java).apply {
             setData(Uri.parse(url))
             putExtra("nonce", nonce)
             putExtra("data", data)
