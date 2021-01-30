@@ -490,7 +490,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         } else if (currentTokenProvider.getCurrent().isRootToken() && hasEnoughETH()) {
             alert(R.string.create_tx_error_not_enough_funds)
         } else if (!nonce_input.hasText()) {
-            alert(title = R.string.nonce_invalid, message = R.string.please_enter_name)
+            alert(title = R.string.nonce_invalid, message = R.string.please_enter_nonce)
         } else {
             if (currentTokenProvider.getCurrent().isRootToken() && currentERC681.function == null && amountController.getValueOrZero() == ZERO) {
                 question(configurator = {
