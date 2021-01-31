@@ -132,6 +132,8 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val ensMap = mutableMapOf<String, String>()
     private val warningMap = mutableMapOf<String, String>()
 
+    private var dataString: String? = null
+
     private val changeTokenForResult = registerForActivityResult(StartActivityForResult()) {
         onCurrentTokenChanged()
     }
@@ -260,6 +262,11 @@ class CreateTransactionActivity : BaseSubActivity() {
                         "uint256" to tmpTX.getTokenTransferValue().toString()
                 )
             }
+
+            data_label.visibility = VISIBLE
+            data_text.visibility = VISIBLE
+            data_text.text = it
+            dataString = it
 
         }
 
@@ -495,7 +502,9 @@ class CreateTransactionActivity : BaseSubActivity() {
                 } else if (!nonce_input.hasText()) {
                     alert(title = R.string.nonce_invalid, message = R.string.please_enter_nonce)
                 } else {
-                    if (currentTokenProvider.getCurrent().isRootToken() && currentERC681.function == null && amountController.getValueOrZero() == ZERO) {
+                    if (dataString != null) {
+                        prepareTransaction()
+                    } else if (currentTokenProvider.getCurrent().isRootToken() && currentERC681.function == null && amountController.getValueOrZero() == ZERO) {
                         question(configurator = {
                             setMessage(R.string.create_tx_zero_amount)
                             setTitle(R.string.alert_problem_title)
@@ -579,7 +588,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         val value = amountController.getValueOrZero()
 
-        val txProto = if (currentTokenProvider.getCurrent().isRootToken()) createEmptyTransaction().copy(
+        val txProto = if (dataString != null || currentTokenProvider.getCurrent().isRootToken()) createEmptyTransaction().copy(
                 value = value,
                 to = currentToAddress!!
         ) else ERC20TransactionGenerator(currentTokenProvider.getCurrent().address).transfer(currentToAddress!!, value).copy(
@@ -595,7 +604,10 @@ class CreateTransactionActivity : BaseSubActivity() {
                 gasLimit = gas_limit_input.asBigInitOrNull()
         )
 
-        if (currentTokenProvider.getCurrent().isRootToken() && localERC681.function != null) {
+        val immutableDataString = dataString
+        if (immutableDataString != null) {
+            transaction.input = HexString(immutableDataString).hexToByteArray()
+        } else if (currentTokenProvider.getCurrent().isRootToken() && localERC681.function != null) {
             transaction.input = localERC681.toTransactionInput()
         }
 

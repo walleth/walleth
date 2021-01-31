@@ -170,11 +170,32 @@
                     app:fontFamily="sans-serif"
                     tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
 
+
+            <TextView
+                    android:id="@+id/data_label"
+                    android:visibility="gone"
+                    style="@style/section_header"
+                    android:layout_below="@id/function_text"
+                    android:text="Data:" />
+
+            <TextView
+                    android:id="@+id/data_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/data_label"
+                    android:layout_alignParentLeft="true"
+                    android:ellipsize="middle"
+                    android:padding="16dp"
+                    android:singleLine="true"
+                    app:fontFamily="sans-serif"
+                    android:visibility="gone"
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
+
             <TextView
                     android:id="@+id/result_label"
                     style="@style/section_header"
                     android:visibility="gone"
-                    android:layout_below="@id/function_text"
+                    android:layout_below="@id/data_text"
                     android:text="Result:" />
 
             <TextView
