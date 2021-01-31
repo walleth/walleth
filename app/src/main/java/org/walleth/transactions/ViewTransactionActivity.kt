@@ -235,7 +235,7 @@ class ViewTransactionActivity : BaseSubActivity() {
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_delete -> true.also {
             txEntity?.hash?.let {
-                lifecycleScope.async(Dispatchers.Main) {
+                lifecycleScope.launch(Dispatchers.Main) {
                     withContext(Dispatchers.Default) {
                         appDatabase.transactions.deleteByHash(it)
                     }
