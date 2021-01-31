@@ -8,12 +8,10 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_view_transaction.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.extensions.toHexString
@@ -77,7 +75,7 @@ class ViewTransactionActivity : BaseSubActivity() {
 
         appDatabase.transactions
                 .getByHashLive(intent.getStringExtra(HASH_KEY)?:throw(IllegalStateException("no HASH_KEY string extra")))
-                .observe(this, Observer<TransactionEntity> { txEntry ->
+                .observe(this, { txEntry ->
                     if (txEntry != null) {
                         txEntity = txEntry
                         invalidateOptionsMenu()
