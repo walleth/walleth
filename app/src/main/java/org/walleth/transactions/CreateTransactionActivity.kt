@@ -17,7 +17,6 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.lifecycleScope
@@ -77,7 +76,6 @@ import org.walleth.data.addresses.AddressBookEntry
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.addresses.getSpec
 import org.walleth.data.addresses.resolveNameWithFallback
-import org.walleth.data.balances.Balance
 import org.walleth.data.ens.ENSProvider
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.rpc.RPCProvider
@@ -123,9 +121,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val ensProvider: ENSProvider by inject()
     private val metaDataRepo: MetaDataRepo by inject()
 
-    private var currentBalance: Balance? = null
     private var lastWarningURI: String? = null
-    private var currentBalanceLive: LiveData<Balance>? = null
     private var currentSignatureData: SignatureData? = null
     private var currentTxHash: String? = null
 
@@ -245,9 +241,9 @@ class CreateTransactionActivity : BaseSubActivity() {
             else -> chainInfoProvider.getCurrent()?.chainId?.let {
                 settings.getGasPriceFor(it)
             }
-        }?:ONE
+        } ?: ONE
 
-        gas_price_input.setText((s.toBigDecimal()/GIGA).toString())
+        gas_price_input.setText((s.toBigDecimal() / GIGA).toString())
 
         intent.getStringExtra("data")?.let {
             val data = HexString(it).hexToByteArray()
@@ -268,16 +264,20 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
 
         sweep_button.setOnClickListener {
-            val balance = currentBalanceSafely()
-            if (currentTokenProvider.getCurrent().isRootToken()) {
-                val amountAfterFee = balance - calculateGasCost()
-                if (amountAfterFee < ZERO) {
-                    alert(R.string.no_funds_after_fee)
-                } else {
-                    amountController.setValue(amountAfterFee, currentTokenProvider.getCurrent())
+            lifecycleScope.launch(Dispatchers.IO) {
+                val balance = currentBalanceSafely()
+                lifecycleScope.launch(Dispatchers.Main) {
+                    if (currentTokenProvider.getCurrent().isRootToken()) {
+                        val amountAfterFee = balance - calculateGasCost()
+                        if (amountAfterFee < ZERO) {
+                            alert(R.string.no_funds_after_fee)
+                        } else {
+                            amountController.setValue(amountAfterFee, currentTokenProvider.getCurrent())
+                        }
+                    } else {
+                        amountController.setValue(balance, currentTokenProvider.getCurrent())
+                    }
                 }
-            } else {
-                amountController.setValue(balance, currentTokenProvider.getCurrent())
             }
         }
 
@@ -410,12 +410,6 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private fun onCurrentTokenChanged() {
         val currentToken = currentTokenProvider.getCurrent()
-        currentBalanceLive = Transformations.switchMap(currentAddressProvider) { address ->
-            appDatabase.balances.getBalanceLive(address, currentToken.address, chainInfoProvider.getCurrent()!!.chainId)
-        }
-        currentBalanceLive!!.observe(this, Observer {
-            currentBalance = it
-        })
 
         amountController.setValue(amountController.getValueOrZero(), currentToken)
 
@@ -489,30 +483,37 @@ class CreateTransactionActivity : BaseSubActivity() {
 
             processShowCaseViewState(true)
 
+            return
+        }
 
-        } else if (currentTokenProvider.getCurrent().isRootToken() && hasEnoughETH()) {
-            alert(R.string.create_tx_error_not_enough_funds)
-        } else if (!nonce_input.hasText()) {
-            alert(title = R.string.nonce_invalid, message = R.string.please_enter_nonce)
-        } else {
-            if (currentTokenProvider.getCurrent().isRootToken() && currentERC681.function == null && amountController.getValueOrZero() == ZERO) {
-                question(configurator = {
-                    setMessage(R.string.create_tx_zero_amount)
-                    setTitle(R.string.alert_problem_title)
-                }, action = { prepareTransaction() })
-            } else if (!currentTokenProvider.getCurrent().isRootToken() && amountController.getValueOrZero() > currentBalanceSafely()) {
-                question(configurator = {
-                    setMessage(R.string.create_tx_negative_token_balance)
-                    setTitle(R.string.alert_problem_title)
-                }, action = { prepareTransaction() })
-            } else {
-                prepareTransaction()
+        lifecycleScope.launch(Dispatchers.IO) {
+            val currentBalanceSafely = currentBalanceSafely()
+            val hasEnoughETH = amountController.getValueOrZero() + calculateGasCost() > currentBalanceSafely
+            lifecycleScope.launch(Dispatchers.Main) {
+                if (currentTokenProvider.getCurrent().isRootToken() && hasEnoughETH) {
+                    alert(R.string.create_tx_error_not_enough_funds)
+                } else if (!nonce_input.hasText()) {
+                    alert(title = R.string.nonce_invalid, message = R.string.please_enter_nonce)
+                } else {
+                    if (currentTokenProvider.getCurrent().isRootToken() && currentERC681.function == null && amountController.getValueOrZero() == ZERO) {
+                        question(configurator = {
+                            setMessage(R.string.create_tx_zero_amount)
+                            setTitle(R.string.alert_problem_title)
+                        }, action = { prepareTransaction() })
+                    } else if (!currentTokenProvider.getCurrent().isRootToken() && amountController.getValueOrZero() > currentBalanceSafely) {
+                        question(configurator = {
+                            setMessage(R.string.create_tx_negative_token_balance)
+                            setTitle(R.string.alert_problem_title)
+                        }, action = { prepareTransaction() })
+                    } else {
+                        prepareTransaction()
+                    }
+                }
             }
         }
     }
 
     private fun calculateGasCost() = getGasPrice() * gas_limit_input.asBigInteger()
-    private fun hasEnoughETH() = amountController.getValueOrZero() + calculateGasCost() > currentBalanceSafely()
 
     private fun processShowCaseViewState(isShowcaseViewShown: Boolean) {
         if (isShowcaseViewShown) fab.hide() else fab.show()
@@ -601,7 +602,11 @@ class CreateTransactionActivity : BaseSubActivity() {
         return transaction
     }
 
-    private fun currentBalanceSafely() = currentBalance?.balance ?: ZERO
+    private fun currentBalanceSafely() = currentAccount?.address?.let { currentAddress ->
+        chainInfoProvider.getCurrent()?.chainId?.let { chainId ->
+            appDatabase.balances.getBalance(currentAddress, currentTokenProvider.getCurrent().address, chainId)?.balance
+        }
+    } ?: ZERO
 
     private fun TextView.asBigInitOrNull() = try {
         BigInteger(text.toString())
@@ -613,7 +618,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private fun refreshFee() {
         val fee = try {
-            getGasPrice() *gas_limit_input.asBigInteger()
+            getGasPrice() * gas_limit_input.asBigInteger()
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
@@ -719,7 +724,6 @@ class CreateTransactionActivity : BaseSubActivity() {
 
                                         if (token != currentTokenProvider.getCurrent()) {
                                             currentTokenProvider.setCurrent(token)
-                                            currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
                                             onCurrentTokenChanged()
                                         }
 
@@ -746,7 +750,6 @@ class CreateTransactionActivity : BaseSubActivity() {
                                     if (!currentTokenProvider.getCurrent().isRootToken()) {
                                         chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
                                             currentTokenProvider.setCurrent(token)
-                                            currentBalanceLive?.removeObservers(this@CreateTransactionActivity)
                                             onCurrentTokenChanged()
                                         }
                                     }
@@ -831,7 +834,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
     }
 
-    private fun getGasPrice() = (BigDecimal(gas_price_input.text.toString())* GIGA).toBigInteger()
+    private fun getGasPrice() = (BigDecimal(gas_price_input.text.toString()) * GIGA).toBigInteger()
 
     private fun finishAndFollowUp() {
         if (isParityFlow()) {
