@@ -16,13 +16,13 @@ import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.TransactionState
-import org.walleth.kethereum.blockscout.getBlockscoutBaseURL
+import org.walleth.kethereum.etherscan.getEtherScanAPIBaseURL
 import java.io.IOException
 import java.security.cert.CertPathValidatorException
 
-class BlockScoutAPI(private val appDatabase: AppDatabase,
-                    private val rpcProvider: RPCProvider,
-                    private val okHttpClient: OkHttpClient) {
+class EtherScanAPI(private val appDatabase: AppDatabase,
+                   private val rpcProvider: RPCProvider,
+                   private val okHttpClient: OkHttpClient) {
 
     private var lastSeenTransactionsBlock = 0L
 
@@ -38,10 +38,10 @@ class BlockScoutAPI(private val appDatabase: AppDatabase,
         val requestString = "module=account&action=$action&address=$addressHex&startblock=$startBlock&sort=asc"
 
         try {
-            val blockScoutResult = getBlockScoutResult(requestString, currentChain)
-            if (blockScoutResult != null && blockScoutResult.has("result")) {
-                val jsonArray = blockScoutResult.getJSONArray("result")
-                val newTransactions = parseBlockScoutTransactionList(jsonArray)
+            val result = getEtherscanResult(requestString, currentChain)
+            if (result != null && result.has("result")) {
+                val jsonArray = result.getJSONArray("result")
+                val newTransactions = parseEtherscanTransactionList(jsonArray)
 
                 lastSeenTransactionsBlock = newTransactions.highestBlock
 
@@ -71,18 +71,18 @@ class BlockScoutAPI(private val appDatabase: AppDatabase,
 
             }
         } catch (e: JSONException) {
-            Log.w("Problem with JSON from BlockScout: " + e.message)
+            Log.w("Problem with JSON from EtherScan: " + e.message)
         }
     }
 
-    private fun getBlockScoutResult(requestString: String, chainInfo: ChainInfo) = try {
-        getBlockScoutResult(requestString, chainInfo, false)
+    private fun getEtherscanResult(requestString: String, chainInfo: ChainInfo) = try {
+        getEtherscanResult(requestString, chainInfo, false)
     } catch (e: CertPathValidatorException) {
-        getBlockScoutResult(requestString, chainInfo, true)
+        getEtherscanResult(requestString, chainInfo, true)
     }
 
-    private fun getBlockScoutResult(requestString: String, chainInfo: ChainInfo, httpFallback: Boolean): JSONObject? {
-        val baseURL = getBlockscoutBaseURL(ChainId(chainInfo.chainId))?.letIf(httpFallback) {
+    private fun getEtherscanResult(requestString: String, chainInfo: ChainInfo, httpFallback: Boolean): JSONObject? {
+        val baseURL = getEtherScanAPIBaseURL(ChainId(chainInfo.chainId))?.letIf(httpFallback) {
             replace("https://", "http://") // :-( https://github.com/walleth/walleth/issues/134 )
         }
         val urlString = "$baseURL/api?$requestString"

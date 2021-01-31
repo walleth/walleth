@@ -26,7 +26,7 @@ import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
-import org.walleth.kethereum.blockscout.ALL_BLOCKSCOUT_SUPPORTED_NETWORKS
+import org.walleth.kethereum.etherscan.ALL_ETHERSCAN_SUPPORTED_NETWORKS
 import org.walleth.workers.RelayTransactionWorker
 import java.io.IOException
 import java.util.concurrent.TimeUnit
@@ -39,7 +39,7 @@ class DataProvidingService : LifecycleService() {
     private val appDatabase: AppDatabase by inject()
     private val chainInfoProvider: ChainInfoProvider by inject()
     private val rpcProvider: RPCProvider by inject()
-    private val blockScoutApi = BlockScoutAPI(appDatabase, rpcProvider, okHttpClient)
+    private val blockScoutApi = EtherScanAPI(appDatabase, rpcProvider, okHttpClient)
 
     companion object {
         private var timing = 7_000 // in MilliSeconds
@@ -85,7 +85,7 @@ class DataProvidingService : LifecycleService() {
                     currentAddressProvider.value?.let { address ->
 
                         try {
-                            if (ALL_BLOCKSCOUT_SUPPORTED_NETWORKS.contains(currentChainId)) {
+                            if (ALL_ETHERSCAN_SUPPORTED_NETWORKS.contains(currentChainId)) {
                                 tryFetchFromBlockscout(address, currentChain)
                             }
 
