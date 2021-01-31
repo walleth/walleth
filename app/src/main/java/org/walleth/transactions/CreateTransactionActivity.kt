@@ -100,6 +100,7 @@ import org.walleth.valueview.ValueViewController
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView
 import java.lang.System.currentTimeMillis
+import java.math.BigDecimal
 import java.math.BigInteger
 import java.math.BigInteger.*
 import java.util.*
@@ -238,13 +239,15 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
 
         val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
-        gas_price_input.setText(when {
-            gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger().toString()
-            currentERC681.gasPrice != null -> currentERC681.gasPrice.toString()
+        val s = when {
+            gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger()
+            currentERC681.gasPrice != null -> currentERC681.gasPrice
             else -> chainInfoProvider.getCurrent()?.chainId?.let {
-                settings.getGasPriceFor(it).toString()
+                settings.getGasPriceFor(it)
             }
-        })
+        }?:ONE
+
+        gas_price_input.setText((s.toBigDecimal()/GIGA).toString())
 
         intent.getStringExtra("data")?.let {
             val data = HexString(it).hexToByteArray()
@@ -508,7 +511,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
     }
 
-    private fun calculateGasCost() = gas_price_input.asBigInteger() * gas_limit_input.asBigInteger()
+    private fun calculateGasCost() = getGasPrice() * gas_limit_input.asBigInteger()
     private fun hasEnoughETH() = amountController.getValueOrZero() + calculateGasCost() > currentBalanceSafely()
 
     private fun processShowCaseViewState(isShowcaseViewShown: Boolean) {
@@ -587,7 +590,7 @@ class CreateTransactionActivity : BaseSubActivity() {
                 from = currentAddressProvider.getCurrentNeverNull(),
                 creationEpochSecond = currentTimeMillis() / 1000,
                 nonce = nonce_input.asBigInitOrNull(),
-                gasPrice = gas_price_input.asBigInitOrNull(),
+                gasPrice = getGasPrice(),
                 gasLimit = gas_limit_input.asBigInitOrNull()
         )
 
@@ -610,7 +613,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private fun refreshFee() {
         val fee = try {
-            gas_price_input.asBigInteger()*gas_limit_input.asBigInteger()
+            getGasPrice() *gas_limit_input.asBigInteger()
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
@@ -809,7 +812,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun storeDefaultGasPriceAndFinish() {
-        val gasPrice = gas_price_input.asBigInteger()
+        val gasPrice = getGasPrice()
         val chainId = chainInfoProvider.getCurrentChainId()
         if (gasPrice != settings.getGasPriceFor(chainId.value)) {
             AlertDialog.Builder(this)
@@ -827,6 +830,8 @@ class CreateTransactionActivity : BaseSubActivity() {
             finishAndFollowUp()
         }
     }
+
+    private fun getGasPrice() = (BigDecimal(gas_price_input.text.toString())* GIGA).toBigInteger()
 
     private fun finishAndFollowUp() {
         if (isParityFlow()) {

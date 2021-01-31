@@ -156,7 +156,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="create_transaction_receiver_label">Receiver:</string>
     <string name="create_tx_please_specify_amount">Please specify the amount</string>
     <string name="create_tx_show_advanced_options">Show Advanced Options</string>
-    <string name="create_tx_gas_price">Gas Price</string>
+    <string name="create_tx_gas_price">Gas Price (in Gwei)</string>
     <string name="create_tx_amount">Amount:</string>
     <string name="create_tx_fee">Fee:</string>
     <string name="create_tx_gas_limit">Gas Limit</string>
