@@ -2,8 +2,7 @@ package org.walleth
 
 import android.content.Context
 import android.content.Intent
-import android.net.TrafficStats
-import android.os.StrictMode
+import android.os.Build
 import androidx.annotation.XmlRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
@@ -56,13 +55,13 @@ import org.walleth.nfc.NFCCredentialStore
 import org.walleth.notifications.TransactionNotificationService
 import org.walleth.overview.TransactionListViewModel
 import org.walleth.startup.StartupViewModel
-import org.walleth.util.DelegatingSocketFactory
+import org.walleth.util.enableStrictMode
 import org.walleth.util.jsonadapter.BigIntegerJSONAdapter
 import org.walleth.walletconnect.WalletConnectViewModel
+import timber.log.Timber
+import timber.log.Timber.DebugTree
 import java.io.File
-import java.net.Socket
 import java.security.Security
-import javax.net.SocketFactory
 
 
 open class App : MultiDexApplication() {
@@ -120,16 +119,7 @@ open class App : MultiDexApplication() {
         }
 
         single {
-            val socketFactory = object : DelegatingSocketFactory(SocketFactory.getDefault()) {
-                override fun configureSocket(socket: Socket): Socket {
-                    // https://github.com/walleth/walleth/issues/164
-                    // https://github.com/square/okhttp/issues/3537
-                    TrafficStats.tagSocket(socket)
-
-                    return socket
-                }
-            }
-            OkHttpClient.Builder().socketFactory(socketFactory).build()
+            OkHttpClient.Builder().build()
         }
         viewModel { TransactionListViewModel(this@App, get(), get(), get()) }
         viewModel { WalletConnectViewModel(this@App, get(), get(), get()) }
@@ -153,15 +143,13 @@ open class App : MultiDexApplication() {
             modules(listOf(koinModule, createKoin()))
         }
 
-        if (BuildConfig.DEBUG) {
-            StrictMode.setVmPolicy(StrictMode.VmPolicy.Builder()
-                    .detectAll()
-                    .penaltyLog()
-                    .build())
+        if (BuildConfig.DEBUG && Build.VERSION.SDK_INT >= 28) {
+            enableStrictMode()
         }
 
         Kotpref.init(this)
         TraceDroid.init(this)
+        Timber.plant(DebugTree())
         AndroidThreeTen.init(this)
         applyNightMode(settings)
         executeCodeWeWillIgnoreInTests()

@@ -135,6 +135,8 @@ dependencies {
 
     implementation 'androidx.paging:paging-runtime:2.1.2'
 
+    implementation 'com.jakewharton.timber:timber:4.7.1'
+
     implementation "com.github.komputing.kethereum:abi:$kethereum_version"
     implementation "com.github.komputing.kethereum:abi_filter:$kethereum_version"
     implementation "com.github.komputing.kethereum:model:$kethereum_version"
