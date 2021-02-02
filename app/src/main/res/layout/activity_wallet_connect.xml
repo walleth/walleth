@@ -1,47 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools" xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:orientation="vertical"
-        android:layout_gravity="center_vertical"
-        android:padding="16dp"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true"
+        android:focusableInTouchMode="true"
+        tools:context=".transactions.CreateTransactionActivity">
 
-    <androidx.appcompat.widget.AppCompatImageView
-            android:layout_gravity="center"
-            android:id="@+id/dapp_icon"
-            android:padding="8dp"
-            android:layout_width="96dp"
-            android:layout_height="96dp"/>
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:focusableInTouchMode="true">
 
-    <TextView android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              tools:text="Waiting for interaction with application"
-              android:textAlignment="center"
-              app:fontFamily="sans-serif"
-              android:textAppearance="?android:attr/textAppearanceLarge"
-              android:id="@+id/status_text"
-              android:gravity="center_horizontal" />
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
 
-    <com.google.android.material.button.MaterialButton
+            <TextView
+                    android:id="@+id/app_label"
+                    style="@style/section_header"
+                    android:text="App"
+                    tools:visibility="visible" />
+
+            <LinearLayout
+                    android:id="@+id/app_container"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/app_label"
+                    android:orientation="horizontal">
+
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/app_icon"
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:visibility="gone"
+                        android:clickable="false" />
+
+                <TextView
+                        android:id="@+id/app_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="16dp"
+                        android:lines="1"
+                        android:layout_gravity="center_vertical"
+                        tools:text="App name"/>
+
+            </LinearLayout>
+
+            <TextView
+                    android:id="@+id/account_label"
+                    style="@style/section_header"
+                    android:layout_below="@id/app_container"
+                    android:text="Account" />
+
+
+            <TextView
+                    android:id="@+id/account_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/account_label"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/wc_change_account"
+                    android:ellipsize="middle"
+                    android:padding="16dp"
+                    android:singleLine="true"
+                    app:fontFamily="sans-serif"
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
+
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/wc_change_account"
+                    style="@style/button"
+                    android:layout_below="@id/account_label"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_list_black_24dp" />
+
+            <TextView
+                    android:id="@+id/network_label"
+                    style="@style/section_header"
+                    android:layout_below="@id/account_name"
+                    android:text="Network" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/wc_change_network"
+                    style="@style/button"
+                    android:layout_below="@id/network_label"
+                    android:layout_alignParentRight="true"
+                    app:srcCompat="@drawable/ic_list_black_24dp" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/from_contract_source_button"
+                    style="@style/button"
+                    android:layout_below="@id/network_label"
+                    android:layout_toLeftOf="@id/wc_change_network"
+                    android:visibility="gone"
+                    app:srcCompat="@drawable/ic_subject_black_24dp" />
+
+            <TextView
+                    android:id="@+id/network_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/network_label"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@id/from_contract_source_button"
+                    android:ellipsize="middle"
+                    android:padding="16dp"
+                    android:singleLine="true"
+                    app:fontFamily="sans-serif"
+                    tools:text="wiefjre gujreoijger ihgiure hgiuhreihghre hgirehgiu" />
+
+            <TextView
+                    android:id="@+id/function_label"
+                    style="@style/section_header"
+                    android:layout_below="@id/network_name"
+                    android:text="Options" />
+
+            <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/close_after_interactions_checkbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/function_label"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginLeft="16dp"
+                    android:checked="true"
+                    android:text="close after interactions" />
+
+
+        </RelativeLayout>
+    </ScrollView>
+
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fab"
             android:layout_width="wrap_content"
-            android:id="@+id/wc_change_account"
-            android:visibility="gone"
-            app:icon="@drawable/ic_group_black_24dp"
-            android:layout_gravity="center_horizontal"
             android:layout_height="wrap_content"
-            style="@style/MaterialButtonStyle"
-            android:text="Change Account"/>
-
-    <com.google.android.material.button.MaterialButton
-            android:layout_width="wrap_content"
-            android:layout_gravity="center_horizontal"
-            app:icon="@drawable/ic_flag_network"
+            android:layout_gravity="bottom|right|end"
+            android:layout_margin="16dp"
             android:visibility="gone"
-            android:layout_height="wrap_content"
-            android:id="@+id/wc_change_network"
-            style="@style/MaterialButtonStyle"
-            android:text="Change Network"/>
+            app:srcCompat="@drawable/ic_action_done" />
 
-</LinearLayout>
+
+</FrameLayout>
+

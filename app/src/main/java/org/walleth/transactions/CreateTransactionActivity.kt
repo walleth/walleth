@@ -590,7 +590,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         val txProto = if (dataString != null || currentTokenProvider.getCurrent().isRootToken()) createEmptyTransaction().copy(
                 value = value,
-                to = currentToAddress!!
+                to = if (currentToAddress?.cleanHex?.isEmpty() == true) null else currentToAddress
         ) else ERC20TransactionGenerator(currentTokenProvider.getCurrent().address).transfer(currentToAddress!!, value).copy(
                 value = ZERO
         )

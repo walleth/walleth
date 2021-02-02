@@ -26,6 +26,7 @@
             android:theme="@style/AppTheme">
 
         <service android:name="org.walleth.notifications.TransactionNotificationService"/>
+        <service android:name="org.walleth.walletconnect.WalletConnectService"/>
 
         <activity android:name="org.walleth.qr.scan.QRScanActivity"/>
 
@@ -136,8 +137,7 @@
         <activity android:name=".transactions.ChangeActionParametersActivity" />
         <activity android:name=".transactions.ChangeActionActivity" />
         <activity android:name=".transactions.ChangeActionFunctionActivity" />
-        <activity android:name=".walletconnect.WalletConnectManageActivity" />
-        <activity android:name=".walletconnect.WalletConnectManageEmptyActivity" />
+       <activity android:name=".walletconnect.WalletConnectListApps" />
 
     </application>
 

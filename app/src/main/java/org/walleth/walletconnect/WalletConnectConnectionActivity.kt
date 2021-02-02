@@ -1,12 +1,15 @@
 package org.walleth.walletconnect
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.ServiceConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.IBinder
+import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.*
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import coil.load
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
@@ -19,9 +22,9 @@ import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.komputing.khex.model.HexString
-import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walletconnect.Session
+import org.walletconnect.Session.MethodCall.*
 import org.walletconnect.Session.Status.Approved
 import org.walletconnect.Session.Status.Closed
 import org.walleth.R
@@ -29,6 +32,7 @@ import org.walleth.accounts.AccountPickActivity
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.chains.SwitchChainActivity
+import org.walleth.data.AppDatabase
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.sign.SignTextActivity
@@ -44,25 +48,94 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     private val currentNetworkProvider: ChainInfoProvider by inject()
 
     private val wcViewModel: WalletConnectViewModel by viewModel()
+    private val appDatabase: AppDatabase by inject()
 
     private var currentRequestId: Long? = null
 
     private var accounts = listOf<String>()
 
-    private val signTextActionForResult = registerForActivityResult(StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            if (it.data?.hasExtra("SIGNATURE") == true) {
-                val result = it.data?.getStringExtra("SIGNATURE")
-                wcViewModel.session?.approveRequest(currentRequestId!!, "0x$result")
-            } else {
-                wcViewModel.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
+    private var approved = false
+
+    private lateinit var mService: WalletConnectService
+    private var mBound: Boolean = false
+
+    private val connection = object : ServiceConnection {
+
+        override fun onServiceConnected(className: ComponentName, service: IBinder) {
+            val binder = service as WalletConnectService.LocalBinder
+            mService = binder.getService()
+
+            if (mService.handler.session == null) {
+                startService(getServiceIntent())
+            }
+
+            processCallAndStatus()
+            mService.uiPendingCallback = {
+                processCallAndStatus()
+            }
+
+            wcViewModel.peerMeta = mService.handler.session?.peerMeta()
+
+            applyViewModel()
+
+            mBound = true
+        }
+
+        private fun processCallAndStatus() {
+
+            mService.takeCall {
+                sessionCallback.onMethodCall(it)
+            }
+
+            val uiPendingStatus = mService.uiPendingStatus
+            if (uiPendingStatus != null) {
+                sessionCallback.onStatus(uiPendingStatus)
+                mService.uiPendingStatus = null
+                applyViewModel()
             }
         }
+
+
+        override fun onServiceDisconnected(arg0: ComponentName) {
+            mBound = false
+
+            mService.handler.session?.removeCallback(sessionCallback)
+        }
+    }
+
+
+    private val signTxActionForResult = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK) {
+            it.data?.getStringExtra("TXHASH")?.let { txHash ->
+                mService.handler.session?.approveRequest(currentRequestId!!, txHash)
+            }
+        } else {
+            mService.handler.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
+        }
+
+        if (close_after_interactions_checkbox.isChecked) {
+            finish()
+        }
+
+    }
+
+    private val signTextActionForResult = registerForActivityResult(StartActivityForResult()) {
+        if (it.resultCode == Activity.RESULT_OK && it.data?.hasExtra("SIGNATURE") == true) {
+            val result = it.data?.getStringExtra("SIGNATURE")
+            mService.handler.session?.approveRequest(currentRequestId!!, "0x$result")
+        } else {
+            mService.handler.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
+        }
+
+        if (close_after_interactions_checkbox.isChecked) {
+            finish()
+        }
+
     }
 
     private val switchNetActionForResult = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+            mService.handler.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
         }
     }
 
@@ -72,16 +145,11 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             it.data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { addressHex ->
                 currentAddressProvider.setCurrent(Address(addressHex))
                 accounts = listOf(addressHex)
-                wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
-            }
-        }
-    }
 
-    private val signTxActionForResult = registerForActivityResult(StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
 
-            it.data?.getStringExtra("TXHASH")?.let { txHash ->
-                wcViewModel.session?.approveRequest(currentRequestId!!, txHash)
+                if (approved) {
+                    mService.handler.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+                }
             }
         }
     }
@@ -90,23 +158,22 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         override fun onMethodCall(call: Session.MethodCall) {
             lifecycleScope.launch(Dispatchers.Main) {
                 when (call) {
-                    is Session.MethodCall.SessionRequest -> {
+                    is SessionRequest -> {
                         wcViewModel.peerMeta = call.peer.meta
-                        wcViewModel.statusText = "waiting for interactions with " + call.peer.meta?.name
-                        wcViewModel.iconURL = call.peer.meta?.icons?.firstOrNull()
                         applyViewModel()
 
-                        requestInitialAccount()
+                        fab.show()
+
                     }
 
-                    is Session.MethodCall.SignMessage -> {
+                    is SignMessage -> {
                         currentRequestId = call.id
                         signText(call.message)
 
                         signTextActionForResult.launch(intent)
                     }
 
-                    is Session.MethodCall.SendTransaction -> {
+                    is SendTransaction -> {
                         currentRequestId = call.id
                         lifecycleScope.launch(Dispatchers.Main) {
                             val url = ERC681(scheme = "ethereum",
@@ -132,7 +199,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                         }
                     }
 
-                    is Session.MethodCall.Custom -> {
+                    is Custom -> {
                         currentRequestId = call.id
                         if (call.method == "personal_sign") {
                             if (call.params == null) {
@@ -140,11 +207,6 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                             } else {
                                 signText("" + call.params!!.first())
                             }
-                        }
-                    }
-                    else -> {
-                        lifecycleScope.launch(Dispatchers.Main) {
-                            alert("" + call)
                         }
                     }
                 }
@@ -164,10 +226,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                     is Closed -> {
                         finish()
                     }
-                    is Session.Status.Connected -> {
-                        //requestInitialAccount()
-                    }
-                    else -> alert("Error:" + status)
+                    else -> Unit
                 }
 
             }
@@ -185,34 +244,27 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         signTextActionForResult.launch(intent)
     }
 
-    private fun requestInitialAccount(): AlertDialog? {
-        return AlertDialog.Builder(this@WalletConnectConnectionActivity)
-                .setTitle(getString(R.string.walletconnect_do_you_want_to_use, wcViewModel.peerMeta?.name))
-                .setItems(R.array.walletconnect_options) { _, i ->
-                    when (i) {
-                        0 -> {
-                            accounts = listOf(currentAddressProvider.getCurrentNeverNull().hex)
-                            wcViewModel.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
-                        }
-
-                        1 -> selectAccount()
-
-                        else -> {
-                            wcViewModel.session?.reject()
-                            finish()
-                        }
-                    }
-                }
-                .setOnCancelListener { finish() }
-                .show()
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_wallet_connect)
+
         supportActionBar?.subtitle = getString(R.string.wallet_connect)
+
+        currentAddressProvider.observe(this, { address ->
+            address?.let {
+                lifecycleScope.launch {
+                    val entry = appDatabase.addressBook.byAddress(address)
+                    account_name.text = entry?.name
+                }
+            }
+        })
+
+        currentNetworkProvider.observe(this, {
+            lifecycleScope.launch {
+                network_name.text = it.name
+            }
+        })
 
         wc_change_account.setOnClickListener {
             selectAccount()
@@ -222,43 +274,61 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             switchNetActionForResult.launch(Intent(this@WalletConnectConnectionActivity, SwitchChainActivity::class.java))
         }
 
-        if (!wcViewModel.processURI(intent?.data.toString())) {
-            requestInitialAccount()
+        fab.setOnClickListener {
+            approved = true
+
+            accounts = listOf(currentAddressProvider.getCurrentNeverNull().hex)
+            mService.handler.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+
+            if (close_after_interactions_checkbox.isChecked) {
+                finish()
+            } else {
+                fab.hide()
+            }
+
         }
+
     }
+
+    private fun getServiceIntent() = Intent(this, WalletConnectService::class.java).setData(intent.data)
 
     override fun onResume() {
         super.onResume()
+        intent.data?.let { uri ->
+            if (Session.Config.fromWCUri(uri.toString()).isFullyQualifiedConfig()) {
+                stopService(getServiceIntent())
+            }
+        }
+        bindService(getServiceIntent(), connection, Context.BIND_AUTO_CREATE)
         applyViewModel()
-
-        wcViewModel.session?.addCallback(sessionCallback)
     }
 
     override fun onPause() {
         super.onPause()
+        mService.uiPendingCallback = null
+    }
 
-        //wcViewModel.session?.removeCallback(sessionCallback)
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if (!approved) {
+            mService.handler.session?.reject()
+        }
     }
 
     private fun applyViewModel() {
 
-        wc_change_account.setVisibility(wcViewModel.showSwitchAccountButton)
-        wc_change_network.setVisibility(wcViewModel.showSwitchNetworkButton)
-        status_text.text = wcViewModel.statusText
-        wcViewModel.iconURL?.let { url ->
-            dapp_icon.load(url)
+        app_text.text = wcViewModel.peerMeta?.name ?: "Unknown app"
+        wcViewModel.peerMeta?.icons?.firstOrNull()?.let { url ->
+            app_icon.load(url)
+            app_icon.visibility = View.VISIBLE
         }
     }
+
 
     private fun selectAccount() {
         val intent = Intent(this@WalletConnectConnectionActivity, AccountPickActivity::class.java)
 
         switchAccountActionForResult.launch(intent)
     }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        //wcViewModel.session?.kill()
-    }
-
 }

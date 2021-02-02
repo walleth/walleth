@@ -25,29 +25,26 @@
 
         <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/session_name"
+                    android:id="@+id/app_name"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_weight="1"
                     android:gravity="center_vertical"
-                    android:padding="8dp"
                     android:textAppearance="?android:textAppearanceLarge"
-                    tools:text="Function name" />
+                    tools:text="App name" />
 
             <TextView
-                    android:id="@+id/session_description"
+                    android:id="@+id/app_networks"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
+                    android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:padding="8dp"
-                    android:textAppearance="?android:textAppearanceLarge"
-                    tools:text="Function name" />
+                    android:textAppearance="?android:textAppearanceSmall"
+                    tools:text="App networks" />
 
         </LinearLayout>
     </LinearLayout>

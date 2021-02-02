@@ -18,41 +18,6 @@ class WalletConnectViewModel(app: Application,
                              private val okHttpClient: OkHttpClient,
                              private val sessionStore: WCSessionStore) : AndroidViewModel(app) {
 
-    var session: WCSession? = null
-    var uri: String? = null
-
-    fun processURI(_uri: String): Boolean {
-        if (uri != _uri) {
-            uri = _uri
-
-            val config = fromWCUri(_uri)
-
-            val fullyQualifiedConfig = if (config.isFullyQualifiedConfig()) {
-                config.toFullyQualifiedConfig()
-            } else {
-                sessionStore.load(config.handshakeTopic)?.config
-            }
-
-            if (fullyQualifiedConfig != null) {
-                session = WCSession(
-                        fullyQualifiedConfig,
-                        MoshiPayloadAdapter(moshi),
-                        sessionStore,
-                        OkHttpTransport.Builder(okHttpClient, moshi),
-                        Session.PeerMeta(name = "WallETH")
-                )
-
-                viewModelScope.launch {
-                    session?.init()
-                }
-                return true
-            }
-        }
-        return false
-    }
-
-    var statusText: String? = null
-    var iconURL: String? = null
     var showSwitchNetworkButton = false
     var showSwitchAccountButton = false
     var peerMeta: Session.PeerMeta? = null
