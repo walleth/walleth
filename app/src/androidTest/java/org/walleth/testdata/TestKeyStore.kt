@@ -28,6 +28,6 @@ class TestKeyStore : KeyStore {
 
     override fun getAddresses() = addresses.keys
 
-    override fun hasKeyForForAddress(wallethAddress: Address) = addresses.contains(wallethAddress)
+    override fun hasKeyForForAddress(address: Address) = addresses.contains(address)
 
 }
