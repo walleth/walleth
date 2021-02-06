@@ -121,7 +121,7 @@ class TheOverviewActivity {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
             TestApp.testDatabase.transactions.loadTestData(ChainId(currentNetwork!!.chainId))
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork!!.getRootToken().address, currentNetwork.chainId, 42, ETH_IN_WEI))
+            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork.getRootToken().address, currentNetwork.chainId, 42, ETH_IN_WEI))
             TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, currentNetwork.chainId, 42, ZERO))
         }
 
