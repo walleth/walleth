@@ -49,15 +49,15 @@ private fun <T> uninitialized(): T = null as T
 class TestApp : App() {
 
     override fun createKoin() = module {
-        single { fixedValueExchangeProvider as ExchangeRateProvider }
+        single<ExchangeRateProvider> { fixedValueExchangeProvider }
         single {
             SyncProgressProvider().apply {
                 value = WallethSyncProgress(true, 42000, 42042)
             }
         }
-        single { keyStore as KeyStore }
+        single<KeyStore> { keyStore }
         single { mySettings }
-        single { currentAddressProvider as CurrentAddressProvider }
+        single<CurrentAddressProvider> { currentAddressProvider }
         single { chainInfoProvider }
         single { currentTokenProvider }
         single { testDatabase }
