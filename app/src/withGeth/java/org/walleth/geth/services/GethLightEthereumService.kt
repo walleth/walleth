@@ -19,7 +19,6 @@ import kotlinx.coroutines.launch
 import org.ethereum.geth.*
 import org.kethereum.extensions.transactions.encodeRLP
 import org.koin.android.ext.android.inject
-import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
@@ -32,6 +31,7 @@ import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.geth.toGethAddr
 import org.walleth.overview.OverviewActivity
+import timber.log.Timber
 import java.io.File
 import java.math.BigInteger
 import org.ethereum.geth.Context as EthereumContext
@@ -129,7 +129,7 @@ class GethLightEthereumService : LifecycleService() {
                     }
                     val ethereumNode = Geth.newNode(subPath.absolutePath, nodeConfig)
 
-                    Log.i("Starting Node for " + nodeConfig.ethereumNetworkID)
+                    Timber.i("Starting Node for " + nodeConfig.ethereumNetworkID)
                     ethereumNode.start()
                     isRunning = true
                     while (shouldRun && !finishedSyncing) {
@@ -162,7 +162,7 @@ class GethLightEthereumService : LifecycleService() {
                         }, 16)
 
                     } catch (e: Exception) {
-                        Log.e("node error", e)
+                        Timber.e(e,"node error")
                     }
 
                     while (shouldRun) {

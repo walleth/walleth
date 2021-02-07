@@ -1,10 +1,10 @@
 package org.walleth.security
 
 import android.os.Build
-import org.ligi.tracedroid.logging.Log
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 import org.threeten.bp.temporal.ChronoUnit
+import timber.log.Timber
 import java.util.*
 
 private const val GETPROP_EXECUTABLE_PATH = "/system/bin/getprop"
@@ -18,7 +18,7 @@ private fun getSecurityPatchDate() = readSecurityPatchDateString()?.let {
     try {
         LocalDate.parse(it, PATCH_LEVEL_DATE_FORMAT)
     } catch (e: Exception) {
-        Log.w("Could not parse date $it")
+        Timber.w("Could not parse date $it")
         null
     }
 }
@@ -36,7 +36,7 @@ private fun readSecurityPatchDateString(): String? {
                 .start()
         process.inputStream.bufferedReader().use { it.readText() }.replace("\n", "")
     } catch (e: Exception) {
-        Log.e("Failed to read System Property ro.build.version.security_patch", e)
+        Timber.e(e, "Failed to read System Property ro.build.version.security_patch")
         null
     } finally {
         process?.destroy()

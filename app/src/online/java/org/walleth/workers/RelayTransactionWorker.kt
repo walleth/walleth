@@ -8,12 +8,12 @@ import org.kethereum.model.ChainId
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import org.komputing.khex.extensions.toHexString
-import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.setHash
+import timber.log.Timber
 
 class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters)
     : CoroutineWorker(appContext, workerParams), KoinComponent {
@@ -28,7 +28,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
         val transaction: TransactionEntity? = txHash?.let { appDatabase.transactions.getByHash(it) }
 
         if (transaction == null) {
-            Log.i("Cannot load address with $txHash")
+            Timber.i("Cannot load address with $txHash")
             return Result.failure()
         }
 

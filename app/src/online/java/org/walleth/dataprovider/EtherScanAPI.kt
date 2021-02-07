@@ -10,13 +10,13 @@ import org.kethereum.extensions.transactions.getTokenRelevantTo
 import org.kethereum.model.ChainId
 import org.kethereum.rpc.EthereumRPC
 import org.ligi.kaxt.letIf
-import org.ligi.tracedroid.logging.Log
 import org.walleth.data.AppDatabase
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.data.transactions.TransactionState
 import org.walleth.kethereum.etherscan.getEtherScanAPIBaseURL
+import timber.log.Timber
 import java.io.IOException
 import java.security.cert.CertPathValidatorException
 
@@ -71,7 +71,7 @@ class EtherScanAPI(private val appDatabase: AppDatabase,
 
             }
         } catch (e: JSONException) {
-            Log.w("Problem with JSON from EtherScan: " + e.message)
+            Timber.w("Problem with JSON from EtherScan: " + e.message)
         }
     }
 

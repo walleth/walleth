@@ -14,7 +14,6 @@ import org.koin.android.ext.android.inject
 import org.komputing.kethereum.erc20.ERC20RPCConnector
 import org.ligi.kaxt.livedata.nonNull
 import org.ligi.kaxt.livedata.observe
-import org.ligi.tracedroid.logging.Log
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
@@ -28,6 +27,7 @@ import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.etherscan.ALL_ETHERSCAN_SUPPORTED_NETWORKS
 import org.walleth.workers.RelayTransactionWorker
+import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.TimeUnit
 
@@ -92,7 +92,7 @@ class DataProvidingService : LifecycleService() {
                             queryRPCForBalance(address)
                             queryRPCForTransactions()
                         } catch (ioe: IOException) {
-                            Log.i("problem fetching data - are we online? ", ioe)
+                            Timber.i(ioe, "problem fetching data - are we online? ")
                         }
                     }
 
@@ -153,8 +153,8 @@ class DataProvidingService : LifecycleService() {
         val currentChainId = chainInfoProvider.getCurrent()?.chainId
         val rpc = rpcProvider.get()
         when {
-            currentChainId == null -> Log.e("no current chain is null")
-            rpc == null -> Log.e("no RPC found")
+            currentChainId == null -> Timber.e("no current chain is null")
+            rpc == null -> Timber.e("no RPC found")
             else -> {
                 try {
                     val blockNumber = rpc.blockNumber()
@@ -181,7 +181,7 @@ class DataProvidingService : LifecycleService() {
                 } catch (rpcException: EthereumRPCException) {
 
                 } catch (iae: IllegalArgumentException) {
-                    Log.e("error when getting balance", iae)
+                    Timber.e(iae, "error when getting balance")
                 }
             }
         }

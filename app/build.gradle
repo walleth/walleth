@@ -190,8 +190,8 @@ dependencies {
 
     implementation 'com.github.deano2390:MaterialShowcaseView:1.3.4'
 
-    implementation 'com.github.ligi.tracedroid:lib:3.0'
-    implementation 'com.github.ligi.tracedroid:supportemail:3.0'
+    implementation 'com.github.ligi.tracedroid:lib:4.0'
+    implementation 'com.github.ligi.tracedroid:supportemail:4.0'
 
     implementation 'com.github.ligi:KAXT:1.0'
 
@@ -258,7 +258,7 @@ dependencies {
 
     androidTestImplementation "androidx.test.espresso:espresso-intents:$espresso_version"
     androidTestImplementation "androidx.test.espresso:espresso-contrib:$espresso_version"
-    androidTestImplementation 'com.github.ligi:trulesk:0.31'
+    androidTestImplementation 'com.github.ligi:trulesk:4.0'
     androidTestUtil 'com.linkedin.testbutler:test-butler-app:2.1.1'
 
     testImplementation 'junit:junit:4.12'

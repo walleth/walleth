@@ -22,7 +22,6 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromURL
-import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.chains.getFaucetURL
@@ -31,6 +30,7 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.util.question
+import timber.log.Timber
 
 interface Deletable {
     var deleted: Boolean
@@ -117,7 +117,7 @@ abstract class BaseEnhancedListActivity<T : ListItem> : BaseSubActivity() {
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
 
-        Log.i("setting search term " + searchTerm)
+        Timber.i("setting search term $searchTerm")
         searchItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
             override fun onMenuItemActionExpand(p0: MenuItem?) = true
 
@@ -129,7 +129,7 @@ abstract class BaseEnhancedListActivity<T : ListItem> : BaseSubActivity() {
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newSearchTerm: String) = true.also {
                 searchTerm = newSearchTerm
-                Log.i("setting search term 2 " + newSearchTerm)
+                Timber.i("setting search term 2 $newSearchTerm")
                 refreshAdapter()
             }
 

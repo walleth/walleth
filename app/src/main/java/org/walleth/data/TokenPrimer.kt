@@ -7,10 +7,10 @@ import kotlinx.coroutines.launch
 import org.json.JSONArray
 import org.json.JSONObject
 import org.kethereum.model.Address
-import org.ligi.tracedroid.logging.Log
 import org.walleth.data.config.Settings
 import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.getRootToken
+import timber.log.Timber
 
 private const val TOKEN_INIT_VERSION = 43
 // yes this is opinionated - but it also cuts to the chase
@@ -55,7 +55,7 @@ fun initTokens(settings: Settings, assets: AssetManager, appDatabase: AppDatabas
                     }
                     appDatabase.tokens.upsert(newTokens)
                 } catch (exception: Exception) {
-                    Log.e("Could not load Token $exception")
+                    Timber.e("Could not load Token $exception")
                 }
 
             }

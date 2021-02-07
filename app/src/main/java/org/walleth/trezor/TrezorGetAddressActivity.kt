@@ -12,11 +12,9 @@ import org.komputing.kbip44.BIP44
 import org.ligi.kaxt.doAfterEdit
 import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
-import org.ligi.tracedroid.logging.Log
 import org.walleth.R
 import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
-import org.walleth.kethereum.android.TransactionParcel
 
 fun Intent?.hasAddressResult() = this?.hasExtra(EXTRA_KEY_ADDRESS) == true
 fun Intent?.getAddressResult() = this?.getStringExtra(EXTRA_KEY_ADDRESS)

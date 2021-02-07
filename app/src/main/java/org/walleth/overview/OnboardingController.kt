@@ -2,8 +2,7 @@ package org.walleth.overview
 
 import android.app.Activity
 import kotlinx.android.synthetic.main.activity_overview.*
-import org.ligi.tracedroid.TraceDroid
-import org.ligi.tracedroid.sending.TraceDroidEmailSender
+import org.ligi.tracedroid.sending.sendTraceDroidStackTracesIfExist
 import org.walleth.R
 import org.walleth.data.config.Settings
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener
@@ -37,9 +36,7 @@ class OnboardingController(val activity: Activity,
 
             settings.onboardingDone = true
         } else {
-            if (TraceDroid.getStackTraceFiles().isNotEmpty()) {
-                TraceDroidEmailSender.sendStackTraces("walleth@walleth.org", activity)
-            }
+           sendTraceDroidStackTracesIfExist("walleth@walleth.org", activity)
         }
 
     }
