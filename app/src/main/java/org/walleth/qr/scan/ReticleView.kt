@@ -16,19 +16,19 @@ class ReticleView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         const val FRAME_SCALE = 0.5
     }
 
-    val framePaint = Paint().apply {
+    private val framePaint = Paint().apply {
         color = ContextCompat.getColor(context, R.color.colorPrimary)
         style = Paint.Style.STROKE
         strokeWidth = pxToDp(2.0f)
     }
 
-    val marginPaint = Paint().apply {
+    private val marginPaint = Paint().apply {
         color = Color.argb(127, 0, 0, 0)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-        val frame = buildFrame(canvas.width, canvas.height)
+        val frame = buildFrame(width, height)
         drawMargins(canvas, frame)
         drawFrame(canvas, frame)
     }
@@ -37,7 +37,7 @@ class ReticleView(context: Context, attrs: AttributeSet) : View(context, attrs) 
         val centerX = width / 2
         val centerY = height / 2
 
-        var size = if (height > width) { width } else { height }
+        var size = minOf(height, width)
         size = (size.toDouble() * FRAME_SCALE).toInt()
 
         val halfSize = size / 2

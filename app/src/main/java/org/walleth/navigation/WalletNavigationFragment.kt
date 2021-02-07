@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.view.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
@@ -81,8 +80,8 @@ class WalletNavigationFragment : Fragment() {
             }
         }
 
-        currentAddressProvider.observe(this, Observer { address ->
-            appDatabase.addressBook.byAddressLiveData(address!!).observe(this@WalletNavigationFragment, Observer { currentAddress ->
+        currentAddressProvider.observe(this, { address ->
+            appDatabase.addressBook.byAddressLiveData(address!!).observe(this@WalletNavigationFragment, { currentAddress ->
                 navigationView.getHeaderView(0).let { header ->
                     currentAddress?.let { entry ->
                         header.accountHash.text = entry.address.hex
@@ -93,7 +92,7 @@ class WalletNavigationFragment : Fragment() {
             })
         })
 
-        chainInfoProvider.observe(this, Observer {
+        chainInfoProvider.observe(this, {
             val networkName = chainInfoProvider.value?.name
             navigationView.menu.findItem(R.id.menu_switch_chain).title = "Chain: $networkName"
         })

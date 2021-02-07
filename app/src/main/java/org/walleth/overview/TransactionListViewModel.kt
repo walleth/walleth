@@ -9,8 +9,8 @@ import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import org.kethereum.model.AddressOnChain
 import org.ligi.kaxt.livedata.CombinatorMediatorLiveData
-import org.walleth.data.AppDatabase
 import org.walleth.chains.ChainInfoProvider
+import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.transactions.TransactionEntity
 
@@ -35,12 +35,12 @@ class TransactionListViewModel(app: Application,
 
     val incomingLiveData: LiveData<PagedList<TransactionEntity>> = Transformations.switchMap(addressOnChainMediator) { addressOnChain ->
         val incomingDataSource = appDatabase.transactions.getIncomingPaged(addressOnChain.address, addressOnChain.chain.value)
-        LivePagedListBuilder<Int, TransactionEntity>(incomingDataSource, 50).build()
+        LivePagedListBuilder(incomingDataSource, 50).build()
     }
 
     val outgoingLiveData: LiveData<PagedList<TransactionEntity>> = Transformations.switchMap(addressOnChainMediator) { addressOnChain ->
         val outgoingDataSourceDataSource = appDatabase.transactions.getOutgoingPaged(addressOnChain.address, addressOnChain.chain.value)
-        LivePagedListBuilder<Int, TransactionEntity>(outgoingDataSourceDataSource, 50).build()
+        LivePagedListBuilder(outgoingDataSourceDataSource, 50).build()
     }
 
 }
