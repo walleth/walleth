@@ -85,6 +85,9 @@ class ViewTransactionActivity : BaseSubActivity() {
                         nonce.text = transaction.nonce.toString()
                         event_log_textview.text = txEntry.transactionState.eventLog
 
+                        event_log_label.setVisibility(txEntry.transactionState.eventLog != null)
+                        event_log_textview.setVisibility(txEntry.transactionState.eventLog != null)
+
                         fab.setVisibility(txEntry.transactionState.needsSigningConfirmation)
                         fab.setOnClickListener {
                             lifecycleScope.launch(Dispatchers.Main) {
