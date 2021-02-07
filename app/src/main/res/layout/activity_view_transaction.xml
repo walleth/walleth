@@ -65,7 +65,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:paddingBottom="8dp"
-                    android:text="Fee:"
+                    android:text="Fee"
                     android:textSize="18dp"
                     app:fontFamily="sans-serif" />
 
@@ -158,7 +158,16 @@
                     tools:visibility="visible">
 
                 <TextView
-                        android:id="@+id/details"
+                        android:id="@+id/error_label"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:text="Error"
+                        android:textSize="18dp"
+                        app:fontFamily="sans-serif" />
+
+                <TextView
+                        android:id="@+id/error_text"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
 
@@ -166,7 +175,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="8dp"
-                        android:text="Hash:"
+                        android:text="Hash"
                         android:textSize="18dp"
                         app:fontFamily="sans-serif" />
 
@@ -199,7 +208,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="8dp"
-                        android:text="Nonce:"
+                        android:text="Nonce"
                         android:textSize="18dp"
                         app:fontFamily="sans-serif" />
 
@@ -215,7 +224,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingBottom="8dp"
-                        android:text="Log:"
+                        android:text="Log"
                         android:textSize="18dp"
                         app:fontFamily="sans-serif" />
 

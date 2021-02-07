@@ -38,7 +38,6 @@ import org.walleth.data.transactions.TransactionEntity
 import org.walleth.qr.show.getQRCodeIntent
 import org.walleth.util.setQRCode
 import org.walleth.valueview.ValueViewController
-import java.lang.IllegalStateException
 
 private const val HASH_KEY = "TXHASH"
 fun Context.getTransactionActivityIntentForHash(hex: String) = Intent(this, ViewTransactionActivity::class.java).apply {
@@ -74,7 +73,7 @@ class ViewTransactionActivity : BaseSubActivity() {
         super.onResume()
 
         appDatabase.transactions
-                .getByHashLive(intent.getStringExtra(HASH_KEY)?:throw(IllegalStateException("no HASH_KEY string extra")))
+                .getByHashLive(intent.getStringExtra(HASH_KEY) ?: throw(IllegalStateException("no HASH_KEY string extra")))
                 .observe(this, { txEntry ->
                     if (txEntry != null) {
                         txEntity = txEntry
@@ -203,12 +202,9 @@ class ViewTransactionActivity : BaseSubActivity() {
                             Snackbar.make(fab, "Hash copied to clipboard", Snackbar.LENGTH_LONG).show()
                         }
 
-
-                        var message = ""
-                        txEntry.transactionState.error?.let { error ->
-                            message += "\nError:$error"
-                        }
-                        details.text = message
+                        error_label.setVisibility(txEntry.transactionState.error != null)
+                        error_text.setVisibility(txEntry.transactionState.error != null)
+                        error_text.text = txEntry.transactionState.error
 
                         lifecycleScope.launch(Dispatchers.Main) {
                             val signatures = withContext(Dispatchers.Default) {
