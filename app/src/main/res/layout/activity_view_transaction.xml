@@ -26,6 +26,7 @@
                     app:fontFamily="sans-serif" />
 
             <LinearLayout
+                    android:id="@+id/from_to_content_container"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"

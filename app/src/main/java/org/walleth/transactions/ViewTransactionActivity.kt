@@ -118,6 +118,12 @@ class ViewTransactionActivity : BaseSubActivity() {
                             txEntry.transaction.from
                         }
 
+                        if (relevantAddress == null) {
+                            from_to_content_container.visibility = View.GONE
+                            from_to_title.visibility = View.GONE
+                        }
+
+
                         lifecycleScope.launch {
                             relevantAddress?.let { ensured_relevant_address ->
                                 val name = appDatabase.addressBook.resolveNameWithFallback(ensured_relevant_address)
