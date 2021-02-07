@@ -71,7 +71,7 @@ class EtherScanAPI(private val appDatabase: AppDatabase,
 
             }
         } catch (e: JSONException) {
-            Timber.w("Problem with JSON from EtherScan: " + e.message)
+            Timber.w("Problem with JSON from EtherScan: %s", e.message)
         }
     }
 
@@ -82,7 +82,7 @@ class EtherScanAPI(private val appDatabase: AppDatabase,
     }
 
     private fun getEtherscanResult(requestString: String, chainInfo: ChainInfo, httpFallback: Boolean): JSONObject? {
-        val baseURL = getEtherScanAPIBaseURL(ChainId(chainInfo.chainId))?.letIf(httpFallback) {
+        val baseURL = getEtherScanAPIBaseURL(ChainId(chainInfo.chainId)).letIf(httpFallback) {
             replace("https://", "http://") // :-( https://github.com/walleth/walleth/issues/134 )
         }
         val urlString = "$baseURL/api?$requestString"
@@ -91,8 +91,8 @@ class EtherScanAPI(private val appDatabase: AppDatabase,
 
         try {
             val resultString = newCall.execute().body().use { it?.string() }
-            resultString.let {
-                return JSONObject(it)
+            resultString?.let {
+                return JSONObject(resultString)
             }
         } catch (ioe: IOException) {
             ioe.printStackTrace()
