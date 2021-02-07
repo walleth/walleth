@@ -7,6 +7,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.ResultReceiver
 import android.view.inputmethod.EditorInfo
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import kotlinx.android.synthetic.main.activity_enter_password.*
@@ -18,21 +19,20 @@ const val EXTRA_KEY_RESULT_RECEIVER = "resultReceiver"
 
 class PasswordReceivingFragment : Fragment() {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        startActivityForResult(Intent(context, RequestPasswordActivity::class.java), 1)
+    private val changeTokenForResult = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        arguments?.getParcelable<ResultReceiver>(EXTRA_KEY_RESULT_RECEIVER)?.send(it.resultCode, it.data?.extras)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        arguments?.getParcelable<ResultReceiver>(EXTRA_KEY_RESULT_RECEIVER)?.send(resultCode, data?.extras)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        changeTokenForResult.launch(Intent(context, RequestPasswordActivity::class.java))
     }
 }
 
 const val TAG_PASSWORD_RECEIVING = "pwdreceive"
 
 fun FragmentActivity.getPassword(callback: (pwd: String?) -> Unit) {
-    Handler(Looper.myLooper()?:error("No looper found")).post {
+    Handler(Looper.myLooper() ?: error("No looper found")).post {
         var fragmentRemovingCallback: ((foo: Bundle?) -> Unit)? = fun(resultData: Bundle?) {
             supportFragmentManager.beginTransaction().remove(supportFragmentManager.findFragmentByTag(TAG_PASSWORD_RECEIVING)!!).commitAllowingStateLoss()
             resultData?.getString(EXTRA_KEY_PWD).let {
@@ -75,6 +75,5 @@ class RequestPasswordActivity : BaseSubActivity() {
         setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_KEY_PWD, input_pwd.text.toString()))
         finish()
     }
-
 
 }
