@@ -540,6 +540,7 @@ class CreateTransactionActivity : BaseSubActivity() {
             ACCOUNT_TYPE_NFC -> startNFCSigningActivity(TransactionParcel(createTransaction()))
             ACCOUNT_TYPE_TREZOR -> signWithTrezorForResult.launch(getTrezorSignIntent(TransactionParcel(createTransaction())))
             ACCOUNT_TYPE_KEEPKEY -> signWithTrezorForResult.launch(getKeepKeySignIntent(TransactionParcel(createTransaction())))
+            ACCOUNT_TYPE_WATCH_ONLY -> alert("You have no key for this account")
         }
     }
 

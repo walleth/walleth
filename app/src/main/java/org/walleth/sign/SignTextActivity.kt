@@ -65,6 +65,9 @@ class SignTextActivity : BaseSubActivity() {
                         }
                     }
                     ACCOUNT_TYPE_TREZOR -> alert("signing text not yet supported for TREZOR")
+                    ACCOUNT_TYPE_WATCH_ONLY -> fab.setOnClickListener {
+                        alert("You have no key to sign with this account")
+                    }
                 }
             }
         }
