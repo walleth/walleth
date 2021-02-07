@@ -38,8 +38,11 @@ import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.sign.SignTextActivity
 import org.walleth.transactions.CreateTransactionActivity
 
+private const val EXTRA_FROM_SCAN = "fromScan"
+
 fun Context.getWalletConnectIntent(data: Uri) = Intent(this, WalletConnectConnectionActivity::class.java).apply {
     setData(data)
+    putExtra(EXTRA_FROM_SCAN, true)
 }
 
 class WalletConnectConnectionActivity : BaseSubActivity() {
@@ -299,6 +302,8 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                 stopService(getServiceIntent())
             }
         }
+
+        close_after_interactions_checkbox.isChecked = !intent.getBooleanExtra(EXTRA_FROM_SCAN, false)
         bindService(getServiceIntent(), connection, Context.BIND_AUTO_CREATE)
         applyViewModel()
     }
