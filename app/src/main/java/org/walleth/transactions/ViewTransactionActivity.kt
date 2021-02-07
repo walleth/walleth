@@ -194,7 +194,17 @@ class ViewTransactionActivity : BaseSubActivity() {
                         } else {
                             amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent()?.getRootToken())
                         }
-                        var message = "Hash:" + transaction.txHash
+
+                        hash_txt.text = transaction.txHash
+                        hash_copy.setOnClickListener {
+                            val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                            val clip = ClipData.newPlainText(getString(R.string.ethereum_address), transaction.txHash)
+                            clipboard.setPrimaryClip(clip)
+                            Snackbar.make(fab, "Hash copied to clipboard", Snackbar.LENGTH_LONG).show()
+                        }
+
+
+                        var message = ""
                         txEntry.transactionState.error?.let { error ->
                             message += "\nError:$error"
                         }

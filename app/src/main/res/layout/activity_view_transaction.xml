@@ -95,10 +95,10 @@
 
             <LinearLayout
                     android:id="@+id/rlp_container"
-                    android:visibility="gone"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
 
                 <TextView
                         android:id="@+id/rlp_header"
@@ -116,18 +116,18 @@
 
                     <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/rlp_copy_button"
-                            app:srcCompat="@drawable/ic_content_copy"
-                            style="@style/button"/>
+                            style="@style/button"
+                            app:srcCompat="@drawable/ic_content_copy" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/rlp_share_button"
-                            app:srcCompat="@drawable/ic_share_24dp"
-                            style="@style/button"/>
+                            style="@style/button"
+                            app:srcCompat="@drawable/ic_share_24dp" />
 
                     <androidx.appcompat.widget.AppCompatImageView
                             android:id="@+id/rlp_fullscreen_button"
-                            app:srcCompat="@drawable/ic_open_with_black_24dp"
-                            style="@style/button"/>
+                            style="@style/button"
+                            app:srcCompat="@drawable/ic_open_with_black_24dp" />
 
                 </LinearLayout>
 
@@ -151,16 +151,49 @@
 
             <LinearLayout
                     android:id="@+id/advanced_container"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:visibility="gone">
-
+                    android:visibility="gone"
+                    tools:visibility="visible">
 
                 <TextView
                         android:id="@+id/details"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content" />
+
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="8dp"
+                        android:text="Hash:"
+                        android:textSize="18dp"
+                        app:fontFamily="sans-serif" />
+
+                <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingLeft="8dp"
+                        android:paddingRight="8dp">
+
+                    <TextView
+                            android:id="@+id/hash_txt"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_weight="1"
+                            android:ellipsize="middle"
+                            android:singleLine="true" />
+
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                            android:id="@+id/hash_copy"
+                            style="@style/button"
+                            app:srcCompat="@drawable/ic_content_copy" />
+
+                </LinearLayout>
+
 
                 <TextView
                         android:layout_width="wrap_content"
