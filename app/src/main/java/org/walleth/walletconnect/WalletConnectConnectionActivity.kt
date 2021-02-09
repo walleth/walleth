@@ -101,8 +101,6 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
         override fun onServiceDisconnected(arg0: ComponentName) {
             mBound = false
-
-            mService.handler.session?.removeCallback(sessionCallback)
         }
     }
 
