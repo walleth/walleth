@@ -323,7 +323,6 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         super.onPause()
         mService?.uiPendingCallback = null
 
-        unbindService(connection)
     }
 
     override fun onBackPressed() {
