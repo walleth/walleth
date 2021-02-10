@@ -18,7 +18,6 @@ import org.walletconnect.Session.MethodCall
 import org.walletconnect.Session.MethodCall.*
 import org.walletconnect.impls.WCSessionStore
 import org.walleth.R
-import timber.log.Timber
 import kotlin.random.Random
 
 class WalletConnectService : LifecycleService() {
@@ -28,7 +27,7 @@ class WalletConnectService : LifecycleService() {
 
     val handler by lazy { WalletConnectHandler(moshi, okhttp, sessionStore) }
 
-    private val binder = LocalBinder()
+    private var binder: LocalBinder? = LocalBinder()
 
     var uiPendingCallback: (() -> Unit)? = null
 
@@ -100,6 +99,7 @@ class WalletConnectService : LifecycleService() {
 
         handler.session?.reject()
         handler.session?.kill()
+        binder = null
     }
 
     inner class LocalBinder : Binder() {
@@ -108,6 +108,6 @@ class WalletConnectService : LifecycleService() {
 
     override fun onBind(intent: Intent): IBinder {
         super.onBind(intent)
-        return binder
+        return binder!!
     }
 }

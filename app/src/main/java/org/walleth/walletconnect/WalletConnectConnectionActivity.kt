@@ -59,7 +59,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private var approved = false
 
-    private lateinit var mService: WalletConnectService
+    private var mService: WalletConnectService? = null
     private var mBound: Boolean = false
 
     private val connection = object : ServiceConnection {
@@ -68,16 +68,16 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             val binder = service as WalletConnectService.LocalBinder
             mService = binder.getService()
 
-            if (mService.handler.session == null) {
+            if (mService?.handler?.session == null) {
                 startService(getServiceIntent())
             }
 
             processCallAndStatus()
-            mService.uiPendingCallback = {
+            mService?.uiPendingCallback = {
                 processCallAndStatus()
             }
 
-            wcViewModel.peerMeta = mService.handler.session?.peerMeta()
+            wcViewModel.peerMeta = mService?.handler?.session?.peerMeta()
 
             applyViewModel()
 
@@ -86,14 +86,14 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
         private fun processCallAndStatus() {
 
-            mService.takeCall {
+            mService?.takeCall {
                 sessionCallback.onMethodCall(it)
             }
 
-            val uiPendingStatus = mService.uiPendingStatus
+            val uiPendingStatus = mService?.uiPendingStatus
             if (uiPendingStatus != null) {
                 sessionCallback.onStatus(uiPendingStatus)
-                mService.uiPendingStatus = null
+                mService?.uiPendingStatus = null
                 applyViewModel()
             }
         }
@@ -101,6 +101,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
         override fun onServiceDisconnected(arg0: ComponentName) {
             mBound = false
+            mService = null
         }
     }
 
@@ -108,10 +109,10 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     private val signTxActionForResult = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
             it.data?.getStringExtra("TXHASH")?.let { txHash ->
-                mService.handler.session?.approveRequest(currentRequestId!!, txHash)
+                mService?.handler?.session?.approveRequest(currentRequestId!!, txHash)
             }
         } else {
-            mService.handler.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
+            mService?.handler?.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
         }
 
         if (close_after_interactions_checkbox.isChecked) {
@@ -123,9 +124,9 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     private val signTextActionForResult = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK && it.data?.hasExtra("SIGNATURE") == true) {
             val result = it.data?.getStringExtra("SIGNATURE")
-            mService.handler.session?.approveRequest(currentRequestId!!, "0x$result")
+            mService?.handler?.session?.approveRequest(currentRequestId!!, "0x$result")
         } else {
-            mService.handler.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
+            mService?.handler?.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
         }
 
         if (close_after_interactions_checkbox.isChecked) {
@@ -136,7 +137,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private val switchNetActionForResult = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            mService.handler.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+            mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
         }
     }
 
@@ -149,7 +150,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
 
                 if (approved) {
-                    mService.handler.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+                    mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
                 }
             }
         }
@@ -279,7 +280,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             approved = true
 
             accounts = listOf(currentAddressProvider.getCurrentNeverNull().hex)
-            mService.handler.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+            mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
 
             if (close_after_interactions_checkbox.isChecked) {
                 finish()
@@ -291,7 +292,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     }
 
-    private fun getServiceIntent() = Intent(this, WalletConnectService::class.java).setData(intent.data)
+    private fun getServiceIntent() = Intent(applicationContext, WalletConnectService::class.java).setData(intent.data)
 
     override fun onResume() {
         super.onResume()
@@ -308,14 +309,16 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     override fun onPause() {
         super.onPause()
-        mService.uiPendingCallback = null
+        mService?.uiPendingCallback = null
+
+        unbindService(connection)
     }
 
     override fun onBackPressed() {
         super.onBackPressed()
 
         if (!approved) {
-            mService.handler.session?.reject()
+            mService?.handler?.session?.reject()
         }
     }
 
