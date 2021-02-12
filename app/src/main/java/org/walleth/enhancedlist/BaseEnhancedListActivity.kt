@@ -140,9 +140,7 @@ abstract class BaseEnhancedListActivity<T : ListItem> : BaseSubActivity() {
         return super.onCreateOptionsMenu(menu)
     }
 
-    fun checkForSearchTerm(vararg terms: String) = searchTerm.toLowerCase().let { lowerCaseSearchTerm ->
-        terms.any { it.toLowerCase().contains(lowerCaseSearchTerm) }
-    }
+    fun checkForSearchTerm(vararg terms: String) = terms.any { it.toLowerCase().contains(searchTerm, ignoreCase = true) }
 
     override fun onOptionsItemSelected(item: MenuItem) = when (item.itemId) {
         R.id.menu_undelete -> true.also {

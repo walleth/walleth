@@ -8,7 +8,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts.*
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_relay.*
 import kotlinx.coroutines.Dispatchers
@@ -196,7 +196,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
                                           parityFlow: Boolean) {
 
         val currentAccount = currentAddressProvider.getCurrentNeverNull().hex
-        if (HexString(from).clean0xPrefix().string.toLowerCase() != HexString(currentAccount).clean0xPrefix().string.toLowerCase()) {
+        if (HexString(from).clean0xPrefix().string.equals(HexString(currentAccount).clean0xPrefix().string, ignoreCase = true)) {
             alert("The from field of the transaction ($from) does not match your current account ($currentAccount)")
             return
         }
