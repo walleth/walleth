@@ -286,5 +286,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="add_action">Add Action</string>
     <string name="change_action">Change Action</string>
     <string name="please_enter_nonce">Please enter a nonce</string>
+    <string name="keep_sync_on_prefer">Might drain battery - but you stay up to date</string>
+    <string name="keep_sync_on_title">Keep ETH sync on</string>
 
 </resources>

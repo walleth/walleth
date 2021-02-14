@@ -48,6 +48,7 @@ interface Settings {
     fun storeGasPriceFor(gasPrice: BigInteger, chainId: BigInteger)
     fun isScreenshotsDisabled(): Boolean
     fun isAdvancedFunctionsEnabled(): Boolean
+    fun isKeepETHSyncEnabledWanted(): Boolean
 }
 
 enum class DappNodeMode {

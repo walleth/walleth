@@ -1,56 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto">
     <ListPreference
             android:defaultValue="@string/default_day_night"
-            app:iconSpaceReserved="false"
             android:entries="@array/day_night"
             android:entryValues="@array/day_night_keys"
             android:key="@string/key_prefs_day_night"
             android:summary="@string/day_or_night_summary"
-            android:title="@string/day_or_night"/>
+            android:title="@string/day_or_night"
+            app:iconSpaceReserved="false" />
 
     <Preference
-            app:iconSpaceReserved="false"
-            android:title="@string/customize_toolbar">
+            android:title="@string/customize_toolbar"
+            app:iconSpaceReserved="false">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="@string/package_name"
-                android:targetClass="org.walleth.toolbar.ToolbarSetupActivity"/>
+                android:targetClass="org.walleth.toolbar.ToolbarSetupActivity"
+                android:targetPackage="@string/package_name" />
     </Preference>
 
     <Preference
             android:key="@string/key_token"
-            app:iconSpaceReserved="false"
-            android:title="@string/select_token">
+            android:title="@string/select_token"
+            app:iconSpaceReserved="false">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="@string/package_name"
-                android:targetClass="org.walleth.tokens.SelectTokenActivity"/>
+                android:targetClass="org.walleth.tokens.SelectTokenActivity"
+                android:targetPackage="@string/package_name" />
     </Preference>
 
     <Preference
             android:key="@string/key_reference"
-            app:iconSpaceReserved="false"
-            android:title="@string/select_fiat_reference">
+            android:title="@string/select_fiat_reference"
+            app:iconSpaceReserved="false">
         <intent
                 android:action="android.intent.action.VIEW"
-                android:targetPackage="@string/package_name"
-                android:targetClass="org.walleth.preferences.reference.SelectReferenceActivity"/>
+                android:targetClass="org.walleth.preferences.reference.SelectReferenceActivity"
+                android:targetPackage="@string/package_name" />
     </Preference>
 
     <CheckBoxPreference
             android:key="@string/key_noscreenshots"
-            app:iconSpaceReserved="false"
+            android:summary="@string/preferences_no_screenshots_summary"
             android:title="@string/preferences_no_screenshots_title"
-            android:summary="@string/preferences_no_screenshots_summary"/>
+            app:iconSpaceReserved="false" />
 
     <CheckBoxPreference
             android:key="@string/key_advanced_functions"
-            app:iconSpaceReserved="false"
+            android:summary="@string/preferences_advanced_functions_summary"
             android:title="@string/preferences_advanced_functions_title"
-            android:summary="@string/preferences_advanced_functions_summary"/>
+            app:iconSpaceReserved="false" />
 
+
+    <CheckBoxPreference
+            android:key="@string/key_keep_eth_sync_on"
+            android:summary="@string/keep_sync_on_prefer"
+            android:title="@string/keep_sync_on_title"
+            android:defaultValue="false"
+            app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

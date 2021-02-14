@@ -18,7 +18,8 @@ import org.walletconnect.Session.MethodCall
 import org.walletconnect.Session.MethodCall.*
 import org.walletconnect.impls.WCSessionStore
 import org.walleth.R
-import kotlin.random.Random
+import org.walleth.notifications.NOTIFICATION_CHANNEL_ID_WALLETCONNECT
+import org.walleth.notifications.NOTIFICATION_ID_WALLETCONNECT
 
 class WalletConnectService : LifecycleService() {
     val moshi: Moshi by inject()
@@ -34,12 +35,10 @@ class WalletConnectService : LifecycleService() {
     var uiPendingCall: MethodCall? = null
     var uiPendingStatus: Session.Status? = null
 
-    val notificationId = Random.nextInt()
-
     fun takeCall(action: (c: MethodCall) -> Unit) {
         uiPendingCall?.let {
             action(it)
-            getNotificationManager().cancel(notificationId)
+            getNotificationManager().cancel(NOTIFICATION_ID_WALLETCONNECT)
             uiPendingCall = null
         }
 
@@ -56,12 +55,12 @@ class WalletConnectService : LifecycleService() {
                 val contentIntent = PendingIntent.getActivity(baseContext, 0, wcIntent, PendingIntent.FLAG_UPDATE_CURRENT)
 
                 if (Build.VERSION.SDK_INT > 25) {
-                    val channel = NotificationChannel("walletconnect", "Geth Service", NotificationManager.IMPORTANCE_HIGH)
+                    val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID_WALLETCONNECT, "WalletConnect", NotificationManager.IMPORTANCE_HIGH)
                     channel.description = "WalletConnectNotifications"
                     getNotificationManager().createNotificationChannel(channel)
                 }
 
-                val notification = NotificationCompat.Builder(this@WalletConnectService, "walletconnect").apply {
+                val notification = NotificationCompat.Builder(this@WalletConnectService, NOTIFICATION_CHANNEL_ID_WALLETCONNECT).apply {
                     setContentTitle("WalletConnect Interaction")
 
                     if (call is Custom || call is SignMessage) {
@@ -74,7 +73,7 @@ class WalletConnectService : LifecycleService() {
                     setSmallIcon(R.drawable.ic_walletconnect_logo)
                 }.build()
 
-                getNotificationManager().notify(notificationId, notification)
+                getNotificationManager().notify(NOTIFICATION_ID_WALLETCONNECT, notification)
             }
 
         }

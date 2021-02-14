@@ -4,37 +4,22 @@ import android.content.ContentProvider
 import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
-import androidx.lifecycle.*
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import androidx.core.content.ContextCompat
 import org.walleth.dataprovider.DataProvidingService
 
-class OnlineInitContentProvider : ContentProvider(), LifecycleObserver {
+class OnlineInitContentProvider : ContentProvider() {
 
     override fun onCreate(): Boolean {
-        tryStartService()
+        val observer = {
+            tryStartService()
+        }
+        App.onActivityToForegroundObserver.add(observer)
+
         return true
     }
 
     private fun tryStartService() {
-        val lifecycle = ProcessLifecycleOwner.get().lifecycle
-        lifecycle.coroutineScope.launch {
-            while (!App.isInitialized) {
-                delay(500)
-            }
-            try {
-                context?.startService(Intent(context, DataProvidingService::class.java))
-                lifecycle.removeObserver(this@OnlineInitContentProvider)
-            } catch (ise: IllegalStateException) {
-                // happens on android 8+ when app is not in foreground
-                lifecycle.addObserver(this@OnlineInitContentProvider)
-            }
-        }
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    fun onEnterForeground() {
-        tryStartService()
+        ContextCompat.startForegroundService(context!!, Intent(context, DataProvidingService::class.java))
     }
 
     override fun insert(uri: Uri, values: ContentValues?) = null

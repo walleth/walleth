@@ -1,7 +1,13 @@
 package org.walleth.dataprovider
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.Intent
+import android.os.Build
+import androidx.core.app.NotificationCompat
 import androidx.lifecycle.*
+import androidx.lifecycle.Observer
 import androidx.work.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -12,8 +18,10 @@ import org.kethereum.model.Address
 import org.kethereum.rpc.EthereumRPCException
 import org.koin.android.ext.android.inject
 import org.komputing.kethereum.erc20.ERC20RPCConnector
+import org.ligi.kaxt.getNotificationManager
 import org.ligi.kaxt.livedata.nonNull
 import org.ligi.kaxt.livedata.observe
+import org.walleth.App
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
 import org.walleth.data.KEY_TX_HASH
@@ -21,15 +29,22 @@ import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.balances.Balance
 import org.walleth.data.balances.upsertIfNewerBlock
 import org.walleth.data.chaininfo.ChainInfo
+import org.walleth.data.config.Settings
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.kethereum.etherscan.ALL_ETHERSCAN_SUPPORTED_NETWORKS
+import org.walleth.notifications.NOTIFICATION_CHANNEL_ID_DATA_SERVICE
+import org.walleth.notifications.NOTIFICATION_ID_DATA_SERVICE
 import org.walleth.workers.RelayTransactionWorker
 import timber.log.Timber
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.TimeUnit
+
+
+private const val ACTION_STOP_SERVICE = "STOP"
 
 class DataProvidingService : LifecycleService() {
 
@@ -39,6 +54,7 @@ class DataProvidingService : LifecycleService() {
     private val appDatabase: AppDatabase by inject()
     private val chainInfoProvider: ChainInfoProvider by inject()
     private val rpcProvider: RPCProvider by inject()
+    private val settings: Settings by inject()
     private val blockScoutApi = EtherScanAPI(appDatabase, rpcProvider, okHttpClient)
 
     companion object {
@@ -70,42 +86,80 @@ class DataProvidingService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        currentAddressProvider.observe(this, ResettingObserver())
-        chainInfoProvider.observe(this, ResettingObserver())
+        if (ACTION_STOP_SERVICE == intent?.action) {
+            Timber.d("DataProvider stopped via intent from notificaion");
+            stopSelf();
+        } else {
 
-        lifecycle.addObserver(TimingModifyingLifecycleObserver())
-
-        lifecycleScope.launch(Dispatchers.IO) {
-
-            while (true) {
-                last_run = System.currentTimeMillis()
-
-                chainInfoProvider.getCurrent()?.let { currentChain ->
-                    val currentChainId = currentChain.chainId
-                    currentAddressProvider.value?.let { address ->
-
-                        try {
-                            if (ALL_ETHERSCAN_SUPPORTED_NETWORKS.contains(currentChainId)) {
-                                tryFetchFromBlockscout(address, currentChain)
-                            }
-
-                            queryRPCForBalance(address)
-                            queryRPCForTransactions()
-                        } catch (ioe: IOException) {
-                            Timber.i(ioe, "problem fetching data - are we online? ")
-                        }
-                    }
-
-                    while ((last_run + timing) > System.currentTimeMillis() && !shortcut) {
-                        delay(100)
-                    }
-                    shortcut = false
-                }
+            if (Build.VERSION.SDK_INT > 25) {
+                val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID_DATA_SERVICE, "Ethereum Data Provider", NotificationManager.IMPORTANCE_LOW)
+                channel.description = "WalletConnectNotifications"
+                getNotificationManager().createNotificationChannel(channel)
             }
+
+            val stopSelf = Intent(this, DataProvidingService::class.java)
+            stopSelf.action = ACTION_STOP_SERVICE
+
+            val stopSelfPendingIntent = PendingIntent.getService(this, 0, stopSelf, PendingIntent.FLAG_CANCEL_CURRENT)
+
+            val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID_DATA_SERVICE).apply {
+                setSmallIcon(org.walleth.R.drawable.ic_ethereum_logo)
+
+                setContentTitle(null)
+                setOngoing(true)
+                setLocalOnly(true)
+                setOnlyAlertOnce(true)
+                addAction(org.walleth.R.drawable.ic_baseline_cancel_24, "stop", stopSelfPendingIntent)
+                priority = NotificationCompat.PRIORITY_MIN
+            }
+
+            startForeground(NOTIFICATION_ID_DATA_SERVICE, notification.build())
+
+            currentAddressProvider.observe(this, ResettingObserver())
+            chainInfoProvider.observe(this, ResettingObserver())
+
+            lifecycle.addObserver(TimingModifyingLifecycleObserver())
+
+            val dateFormat = java.text.DateFormat.getTimeInstance()
+            lifecycleScope.launch(Dispatchers.IO) {
+
+                while (settings.isKeepETHSyncEnabledWanted() || last_run == 0L || App.visibleActivities.isNotEmpty()) {
+                    last_run = System.currentTimeMillis()
+
+                    chainInfoProvider.getCurrent()?.let { currentChain ->
+                        val currentChainId = currentChain.chainId
+                        currentAddressProvider.value?.let { address ->
+
+                            notification.setContentTitle("Last Ethereum data sync: " + dateFormat.format(Date()))
+                            notification.setContentText("via " + rpcProvider.get()?.description)
+                            getNotificationManager().notify(NOTIFICATION_ID_DATA_SERVICE, notification.build())
+
+                            try {
+                                if (ALL_ETHERSCAN_SUPPORTED_NETWORKS.contains(currentChainId)) {
+                                    tryFetchFromBlockscout(address, currentChain)
+                                }
+
+                                queryRPCForBalance(address)
+                                queryRPCForTransactions()
+                            } catch (ioe: IOException) {
+                                Timber.i(ioe, "problem fetching data - are we online? ")
+                            }
+                        }
+
+                        while ((last_run + timing) > System.currentTimeMillis() && !shortcut) {
+                            delay(100)
+                        }
+                        shortcut = false
+                    }
+                }
+
+                stopSelf()
+            }
+
+
+            relayTransactionsIfNeeded()
+
         }
-
-
-        relayTransactionsIfNeeded()
         return START_STICKY
     }
 

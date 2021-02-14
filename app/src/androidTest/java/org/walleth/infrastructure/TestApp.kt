@@ -27,6 +27,7 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.data.rpc.DescribedRPC
 import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
@@ -94,7 +95,7 @@ class TestApp : App() {
     }
 
     companion object {
-        val RPCMock: EthereumRPC = mock(EthereumRPC::class.java).apply {
+        val RPCMock: DescribedRPC = mock(DescribedRPC::class.java).apply {
             `when`(estimateGas(any())).thenReturn(ZERO)
         }
         val fixedValueExchangeProvider = FixedValueExchangeProvider()

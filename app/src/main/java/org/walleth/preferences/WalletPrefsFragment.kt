@@ -5,11 +5,13 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.SeekBarPreference
 import org.koin.android.ext.android.inject
 import org.walleth.App
 import org.walleth.R
 import org.walleth.data.config.Settings
 import org.walleth.data.tokens.CurrentTokenProvider
+import timber.log.Timber
 
 class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnSharedPreferenceChangeListener {
 

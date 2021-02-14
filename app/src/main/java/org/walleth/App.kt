@@ -1,5 +1,6 @@
 package org.walleth
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -216,6 +217,12 @@ open class App : MultiDexApplication() {
     }
 
     companion object {
+        val activeActivities: MutableSet<Activity> = HashSet()
+        val visibleActivities: MutableSet<Activity> = HashSet()
+
+        // A process lifecycle observer would be nicer here - but ran into serious trouble here - so doing this for now
+        val onActivityToForegroundObserver: MutableSet<() -> Unit> = HashSet()
+
         var isInitialized = false
         val postInitCallbacks = mutableListOf<() -> Unit>()
         val extraPreferences = mutableListOf<Pair<@XmlRes Int, (preferenceScreen: PreferenceScreen) -> Unit>>()

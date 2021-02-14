@@ -28,9 +28,12 @@ class ConsoleLoggingTransportWrapper(private val transport: RPCTransport) : RPCT
 
 const val KEY_IN3_RPC = "in3"
 
+// open only for mocking - once switched to mockk we can remove
+open class DescribedRPC(transport: RPCTransport, val description : String) : BaseEthereumRPC(transport)
+
 interface RPCProvider {
-    suspend fun get(): EthereumRPC?
-    suspend fun getForChain(chainId: ChainId): EthereumRPC?
+    suspend fun get(): DescribedRPC?
+    suspend fun getForChain(chainId: ChainId): DescribedRPC?
 }
 
 class RPCProviderImpl(var network: ChainInfoProvider,
@@ -38,38 +41,33 @@ class RPCProviderImpl(var network: ChainInfoProvider,
                       var okHttpClient: OkHttpClient,
                       var settings: Settings) : RPCProvider {
 
-    private fun ChainInfo.get(): BaseEthereumRPC? {
+    private fun ChainInfo.get(): DescribedRPC? {
 
 
-        val transport = if (settings.dappNodeMode == DappNodeMode.ONLY_USE_DAPPNODE) {
-            getDappNodeTransport()
+        if (settings.dappNodeMode == DappNodeMode.ONLY_USE_DAPPNODE) {
+            return getDappNodeDescribedRPC()
         } else {
-            val potentialTransport = if (settings.dappNodeMode == DappNodeMode.USE_WHEN_POSSIBLE) {
-                getDappNodeTransport()
-            } else {
-                null
+            if (settings.dappNodeMode == DappNodeMode.USE_WHEN_POSSIBLE) {
+                return getDappNodeDescribedRPC()
             }
 
-            potentialTransport ?: getMin3BootnNdesByChainId(ChainId(chainId))?.let { bootNodes ->
-                MIN3Transport(bootNodes, okHttpClient, debug = settings.logRPCRequests)
+            getMin3BootnNdesByChainId(ChainId(chainId))?.let { bootNodes ->
+                return DescribedRPC(MIN3Transport(bootNodes, okHttpClient, debug = settings.logRPCRequests), "MIN3/TincubETH chainId $chainId")
             } ?: getRPCEndpoint()?.let {
-                HttpTransport(it, okHttpClient, settings.logRPCRequests)
+                return DescribedRPC(HttpTransport(it, okHttpClient, settings.logRPCRequests), "RPC $it")
             }
         }
-
-        return transport?.let { nonNullTransport ->
-            BaseEthereumRPC(nonNullTransport)
-        }
+        return null
     }
 
-    private fun ChainInfo.getDappNodeTransport() = getDappNodeURL(chainId)?.let {
-        HttpTransport(it, okHttpClient, settings.logRPCRequests)
+    private fun ChainInfo.getDappNodeDescribedRPC() = getDappNodeURL(chainId)?.let {
+        DescribedRPC(HttpTransport(it, okHttpClient, settings.logRPCRequests), it )
     }
 
 
     override suspend fun getForChain(chainId: ChainId) = appDatabase.chainInfo.getByChainId(chainId.value)?.get()
 
-    override suspend fun get(): EthereumRPC? = network.getCurrent()?.get()
+    override suspend fun get(): DescribedRPC? = network.getCurrent()?.get()
 
 }
 

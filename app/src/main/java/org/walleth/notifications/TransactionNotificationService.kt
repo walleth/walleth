@@ -48,12 +48,12 @@ class TransactionNotificationService : LifecycleService() {
                     val notificationService = baseContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
                     if (Build.VERSION.SDK_INT > 25) {
-                        val channel = NotificationChannel("transactions", "Geth Service", NotificationManager.IMPORTANCE_HIGH)
+                        val channel = NotificationChannel("transactions", NOTIFICATION_CHANNEL_ID_TRANSACTION_NOTIFICATIONS, NotificationManager.IMPORTANCE_HIGH)
                         channel.description = "View and Stop Geth Service"
                         notificationService.createNotificationChannel(channel)
                     }
 
-                    val notification = NotificationCompat.Builder(baseContext, "transactions").apply {
+                    val notification = NotificationCompat.Builder(baseContext, NOTIFICATION_CHANNEL_ID_TRANSACTION_NOTIFICATIONS).apply {
                         setContentTitle("WallETH Transaction")
                         setContentText("Got transaction")
                         setAutoCancel(true)
@@ -69,7 +69,7 @@ class TransactionNotificationService : LifecycleService() {
                     }.build()
 
 
-                    notificationService.notify(111, notification)
+                    notificationService.notify(NOTIFICATION_ID_TRANSACTION_NOTIFICATIONS, notification)
                 }
             }
         }

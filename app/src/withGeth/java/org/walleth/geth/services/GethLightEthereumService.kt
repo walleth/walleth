@@ -30,14 +30,13 @@ import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.getRootToken
 import org.walleth.data.transactions.TransactionEntity
 import org.walleth.geth.toGethAddr
+import org.walleth.notifications.NOTIFICATION_CHANNEL_ID_GETH
+import org.walleth.notifications.NOTIFICATION_ID_GETH
 import org.walleth.overview.OverviewActivity
 import timber.log.Timber
 import java.io.File
 import java.math.BigInteger
 import org.ethereum.geth.Context as EthereumContext
-
-private const val NOTIFICATION_ID = 101
-private const val NOTIFICATION_CHANNEL_ID = "geth"
 
 class GethLightEthereumService : LifecycleService() {
 
@@ -92,7 +91,7 @@ class GethLightEthereumService : LifecycleService() {
                         setNotificationChannel()
                     }
 
-                    val notification = NotificationCompat.Builder(this@GethLightEthereumService, NOTIFICATION_CHANNEL_ID)
+                    val notification = NotificationCompat.Builder(this@GethLightEthereumService, NOTIFICATION_CHANNEL_ID_GETH)
                             .setContentTitle(getString(R.string.geth_service_notification_title))
                             .setContentText(resources.getString(R.string.geth_service_notification_content_text, networkDefinitionProvider.getCurrent()?.name))
                             .setContentIntent(contentIntent)
@@ -100,7 +99,7 @@ class GethLightEthereumService : LifecycleService() {
                             .setSmallIcon(R.drawable.notification)
                             .build()
 
-                    startForeground(NOTIFICATION_ID, notification)
+                    startForeground(NOTIFICATION_ID_GETH, notification)
                 }.await()
 
                 val network = networkDefinitionProvider.getCurrent()
@@ -162,7 +161,7 @@ class GethLightEthereumService : LifecycleService() {
                         }, 16)
 
                     } catch (e: Exception) {
-                        Timber.e(e,"node error")
+                        Timber.e(e, "node error")
                     }
 
                     while (shouldRun) {
@@ -180,7 +179,7 @@ class GethLightEthereumService : LifecycleService() {
                             stopSelf()
                             isRunning = false
                         } else {
-                            notificationManager.cancel(NOTIFICATION_ID)
+                            notificationManager.cancel(NOTIFICATION_ID_GETH)
                         }
                     }.await()
                 }
@@ -192,7 +191,7 @@ class GethLightEthereumService : LifecycleService() {
 
     @TargetApi(26)
     private fun setNotificationChannel() {
-        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID, "Geth Service", IMPORTANCE_HIGH)
+        val channel = NotificationChannel(NOTIFICATION_CHANNEL_ID_GETH, "Geth Service", IMPORTANCE_HIGH)
         channel.description = getString(R.string.geth_service_notification_channel_description)
         notificationManager.createNotificationChannel(channel)
     }

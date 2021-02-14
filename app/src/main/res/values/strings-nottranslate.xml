@@ -6,10 +6,12 @@
     <string name="key_reference">KEY_REFERENCE</string>
     <string name="key_noscreenshots">KEY_NO_SCREENSHOTS</string>
     <string name="key_advanced_functions">KEY_ADVANCED_FUNCTIONS</string>
+    <string name="key_data_seekbar_ref">KEY_DATA_SEEKBAR</string>
     <string name="key_token">KEY_TOKEN</string>
 
     <string name="default_day_night">system</string>
     <string name="default_stats_username">WALLΞTH user</string>
+    <string name="key_keep_eth_sync_on">KEY_KEEP_ETH_SYNC</string>
 
     <array name="day_night_keys">
         <item>system</item>
