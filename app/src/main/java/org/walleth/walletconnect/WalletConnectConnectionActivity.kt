@@ -209,6 +209,13 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                             } else {
                                 signText("" + call.params!!.first())
                             }
+                        } else {
+                            alert("The method " + call.method + " is not yet supported. If you think it should - open an issue in on github or write a mail to walleth@walleth.org") {
+                                if (close_after_interactions_checkbox.isChecked) {
+                                    finish()
+                                }
+                            }
+                            mService?.handler?.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")
                         }
                     }
                 }
