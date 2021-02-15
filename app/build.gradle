@@ -155,6 +155,7 @@ dependencies {
     implementation "com.github.komputing.kethereum:eip155:$kethereum_version"
     implementation "com.github.komputing.kethereum:eip191:$kethereum_version"
     implementation "com.github.komputing.kethereum:erc681:$kethereum_version"
+    implementation "com.github.komputing.kethereum:erc712:$kethereum_version"
     implementation "com.github.komputing.kethereum:erc831:$kethereum_version"
     implementation "com.github.komputing.kethereum:erc1328:$kethereum_version"
     implementation "com.github.komputing.kethereum:extensions_kotlin:$kethereum_version"

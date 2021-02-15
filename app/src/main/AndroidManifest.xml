@@ -50,6 +50,7 @@
         <activity android:name="org.walleth.preferences.reference.SelectReferenceActivity"/>
         <activity android:name="org.walleth.sign.ParitySignerQRActivity"/>
         <activity android:name="org.walleth.sign.SignTextActivity"/>
+        <activity android:name="org.walleth.sign.SignTypedDataActivity"/>
         <activity android:name="org.walleth.tokens.SelectTokenActivity"/>
         <activity android:name="org.walleth.tokens.CreateTokenDefinitionActivity"/>
 

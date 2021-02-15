@@ -36,6 +36,7 @@ import org.walleth.data.AppDatabase
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.sign.SignTextActivity
+import org.walleth.sign.getSignTypedDataIntent
 import org.walleth.transactions.CreateTransactionActivity
 
 private const val EXTRA_FROM_SCAN = "fromScan"
@@ -207,9 +208,12 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                             if (call.params == null) {
                                 alert("got personal_sign without parameters")
                             } else {
-                                signText("" + call.params!!.first())
+                                signText(call.params!!.first().toString())
                             }
-                        } else {
+                        } else if(call.method == "eth_signTypedData") {
+                            val intent = getSignTypedDataIntent(call.params!!.last().toString())
+                            signTextActionForResult.launch(intent)
+                        }  else {
                             alert("The method " + call.method + " is not yet supported. If you think it should - open an issue in on github or write a mail to walleth@walleth.org") {
                                 if (close_after_interactions_checkbox.isChecked) {
                                     finish()
