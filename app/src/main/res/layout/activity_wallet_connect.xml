@@ -8,10 +8,30 @@
         android:focusableInTouchMode="true"
         tools:context=".transactions.CreateTransactionActivity">
 
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/loading_indicator"
+            android:orientation="vertical">
+
+        <ProgressBar
+                android:layout_gravity="center_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Waiting for Brige/Client" />
+    </LinearLayout>
+
     <ScrollView
+            android:id="@+id/main_wc_scrollview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusableInTouchMode="true">
+            android:focusableInTouchMode="true"
+            android:visibility="gone">
 
         <RelativeLayout
                 android:layout_width="match_parent"
@@ -35,17 +55,17 @@
                         android:id="@+id/app_icon"
                         android:layout_width="64dp"
                         android:layout_height="64dp"
-                        android:visibility="gone"
-                        android:clickable="false" />
+                        android:clickable="false"
+                        android:visibility="gone" />
 
                 <TextView
                         android:id="@+id/app_text"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:padding="16dp"
-                        android:lines="1"
                         android:layout_gravity="center_vertical"
-                        tools:text="App name"/>
+                        android:lines="1"
+                        android:padding="16dp"
+                        tools:text="App name" />
 
             </LinearLayout>
 

@@ -22,6 +22,7 @@ import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import org.komputing.khex.model.HexString
+import org.ligi.kaxt.setVisibility
 import org.ligi.kaxtui.alert
 import org.walletconnect.Session
 import org.walletconnect.Session.MethodCall.*
@@ -210,10 +211,10 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                             } else {
                                 signText(call.params!!.first().toString())
                             }
-                        } else if(call.method == "eth_signTypedData") {
+                        } else if (call.method == "eth_signTypedData") {
                             val intent = getSignTypedDataIntent(call.params!!.last().toString())
                             signTextActionForResult.launch(intent)
-                        }  else {
+                        } else {
                             alert("The method " + call.method + " is not yet supported. If you think it should - open an issue in on github or write a mail to walleth@walleth.org") {
                                 if (close_after_interactions_checkbox.isChecked) {
                                     finish()
@@ -334,6 +335,10 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
     }
 
     private fun applyViewModel() {
+
+        val isLoading = wcViewModel.peerMeta == null || !mBound
+        loading_indicator.setVisibility(isLoading)
+        main_wc_scrollview.setVisibility(!isLoading)
 
         app_text.text = wcViewModel.peerMeta?.name ?: "Unknown app"
         wcViewModel.peerMeta?.icons?.firstOrNull()?.let { url ->
