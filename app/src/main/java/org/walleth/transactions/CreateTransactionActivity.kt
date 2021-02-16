@@ -830,7 +830,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private fun storeDefaultGasPriceAndFinish() {
         val gasPrice = getGasPrice()
         val chainId = chainInfoProvider.getCurrentChainId()
-        if (gasPrice != settings.getGasPriceFor(chainId.value)) {
+        if ( !listOf(valueOf(4L),valueOf(5L),valueOf(100L)).contains(chainId.value) &&  gasPrice != settings.getGasPriceFor(chainId.value)) {
             AlertDialog.Builder(this)
                     .setTitle(getString(R.string.default_gas_price, chainInfoProvider.getCurrent()!!.name))
                     .setMessage(R.string.store_gas_price)

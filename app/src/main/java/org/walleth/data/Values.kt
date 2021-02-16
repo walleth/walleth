@@ -6,7 +6,7 @@ import java.math.BigInteger
 val ETH_IN_WEI = BigInteger("1000000000000000000")
 val GIGA = BigDecimal(1_000_000_000L) // for Gwei calc
 
-var DEFAULT_GAS_PRICE = BigInteger("20000000000")
+var DEFAULT_GAS_PRICE = BigInteger("1000000000")
 var DEFAULT_GAS_LIMIT_ETH_TX = BigInteger("21000")
 
 const val DEFAULT_PASSWORD = "default"
