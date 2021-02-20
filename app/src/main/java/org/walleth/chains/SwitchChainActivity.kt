@@ -121,12 +121,13 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
                     }
 
                 }
-                snackProgressBarManager.dismissAll()
 
             } catch (e: SSLException) {
                 handleRefreshError("SSLError - cannot load chains. Setting your time can help in some cases.")
             } catch (e: Throwable) {
                 handleRefreshError("General Error - cannot load chains. $e")
+            } finally {
+                snackProgressBarManager.dismissAll()
             }
         }
     }
