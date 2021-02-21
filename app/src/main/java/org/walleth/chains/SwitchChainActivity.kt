@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.lifecycle.lifecycleScope
+import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
@@ -26,6 +27,8 @@ import org.walleth.enhancedlist.EnhancedListAdapter
 import org.walleth.enhancedlist.EnhancedListInterface
 import org.walleth.util.hasTincubethSupport
 import org.walleth.util.question
+import timber.log.Timber
+import java.io.IOException
 import javax.net.ssl.SSLException
 
 open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
@@ -123,8 +126,14 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
                 }
 
             } catch (e: SSLException) {
-                handleRefreshError("SSLError - cannot load chains. Setting your time can help in some cases.")
+                handleRefreshError("SSLError - cannot load chains. Setting your time can help in some cases. If it does not help please drop a mail to walleth@walleth.org")
+            } catch (e: JsonEncodingException) {
+                handleRefreshError("List was not valid JSON - this should not happen - if it happened to you - please drop a mail to walleth@walleth.org")
+            } catch (e: IOException) {
+                Timber.e(e, "Cannot load chains - there seems to be a problem with your internet")
+                handleRefreshError("Cannot load chains - there seems to be a problem with your internet - please try again later. If you think it is not your internet - please drop a mail to walleth@walleth.org")
             } catch (e: Throwable) {
+                Timber.e(e, "Cannot load chains - this should not happen - if it happened to you - please drop a mail to walleth@walleth.org")
                 handleRefreshError("General Error - cannot load chains. $e")
             } finally {
                 snackProgressBarManager.dismissAll()
