@@ -51,6 +51,8 @@ import org.kethereum.metadata.model.UserDocResultContractNotFound
 import org.kethereum.metadata.repo.model.MetaDataRepo
 import org.kethereum.metadata.repo.model.MetaDataResolveResultOK
 import org.kethereum.metadata.resolveFunctionUserDoc
+import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
+import org.kethereum.methodsignatures.model.TextMethodSignature
 import org.kethereum.model.*
 import org.kethereum.rpc.EthereumRPCException
 import org.koin.android.ext.android.inject
@@ -120,6 +122,7 @@ class CreateTransactionActivity : BaseSubActivity() {
     private val rpcProvider: RPCProvider by inject()
     private val ensProvider: ENSProvider by inject()
     private val metaDataRepo: MetaDataRepo by inject()
+    private val fourByteDirectory: CachedOnlineMethodSignatureRepository by inject()
 
     private var lastWarningURI: String? = null
     private var currentSignatureData: SignatureData? = null
@@ -267,6 +270,23 @@ class CreateTransactionActivity : BaseSubActivity() {
             data_text.visibility = VISIBLE
             data_text.text = it
             dataString = it
+
+
+            lifecycleScope.launch(Dispatchers.IO) {
+                val signatures: Iterable<TextMethodSignature> = fourByteDirectory.getSignaturesFor(createTransaction())
+
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val signaturesText = signatures.joinToString("\n") { signature ->
+                        signature.normalizedSignature
+                    }
+                    if (signaturesText.isNotBlank()) {
+                        action_text.setVisibility(true)
+                        action_text.text = signaturesText
+                        action_label.visibility = VISIBLE
+                    }
+
+                }
+            }
 
         }
 
