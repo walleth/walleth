@@ -103,7 +103,9 @@ class DataProvidingService : LifecycleService() {
             val stopSelfPendingIntent = PendingIntent.getService(this, 0, stopSelf, PendingIntent.FLAG_CANCEL_CURRENT)
 
             val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID_DATA_SERVICE).apply {
-                setSmallIcon(org.walleth.R.drawable.ic_ethereum_logo)
+                if (Build.VERSION.SDK_INT > 19) {
+                    setSmallIcon(org.walleth.R.drawable.ic_ethereum_logo)
+                }
 
                 setContentTitle(null)
                 setOngoing(true)

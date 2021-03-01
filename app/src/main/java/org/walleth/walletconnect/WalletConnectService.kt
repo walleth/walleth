@@ -70,7 +70,9 @@ class WalletConnectService : LifecycleService() {
                     }
                     setAutoCancel(true)
                     setContentIntent(contentIntent)
-                    setSmallIcon(R.drawable.ic_walletconnect_logo)
+                    if (Build.VERSION.SDK_INT > 19) {
+                        setSmallIcon(R.drawable.ic_walletconnect_logo)
+                    }
                 }.build()
 
                 getNotificationManager().notify(NOTIFICATION_ID_WALLETCONNECT, notification)
