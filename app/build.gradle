@@ -179,7 +179,7 @@ dependencies {
 
     implementation 'org.bouncycastle:bcprov-jdk15on:1.67'
 
-    implementation "com.github.komputing:khex:1.0.0"
+    implementation "com.github.komputing:khex:1.1.0"
 
     implementation "com.github.walleth:KHardWareWallet:0.9.8"
     implementation 'com.squareup.okio:okio:2.5.0'
