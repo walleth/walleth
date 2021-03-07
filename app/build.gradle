@@ -6,7 +6,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'de.mobilej.unmock'
-apply plugin: 'org.jetbrains.kotlin.android.extensions'
 apply plugin: "com.jaredsburrows.license"
 
 android {
