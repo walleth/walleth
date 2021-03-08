@@ -4,43 +4,54 @@
 [![on FDroid](https://ligi.de/img/fdroid_badge.png)](https://f-droid.org/repository/browse/?fdid=org.walleth)
 
 
-WallΞTH
-=======
+# WallΞTH
 
 Native Android Ethereum wallet.
 
-Features
-========
+# Features
 
- - Networks main, görli, rinkeby, ropsten, kovan, POA, sokol, ETC, xDAI
- - Keys on your device under your control
- - Tokens (your own ERC-20 compatible or predefined like DAI, Unicorn, OMG, SNT, ZRC, GNO, ..)
- - Day/Night mode
- - ERC-67 / ERC-681 URLs (e.g. scanned from QR-Code)
+## Hardware Wallet Support
+
+ * [TREZOR](https://trezor.io) Support via USB-OTG - model 1 and model T are supported
+ * [KeyCard](https://keycard.status.im) 
+ * [KeepKey](https://shapeshift.com/keepkey)
+
+## other Account types
+ 
+ * Watch only
+ * PIN protected
+ * Password protected
+ * Burner style accounts
+ * Key Import ( JSON UTC, RAW and Mnemonics)
+
+## Networks (Chains)
+ * main, görli, rinkeby, ropsten, kovan, POA, sokol, ETC, xDAI, ...
+ * load all chains from [chainid.network](https://chainId.network)
+ * [DappNode](https://dappnode.io) support
+ * Testnets with direct link to faucets (on görli and ropsten even auto-fill of address)
+ * one flavor contains go-ethereum light client
+
+## UI
+ * Day/Night mode (Dark mode)
+ * display information about Security of the phone
+ * [Sourcify](https://sourcify.dev) support
+ * display function calls when available from https://github.com/ethereum-lists/4bytes (fallback if contracts are not verified on Sourcify)
+ * Keys on your device under your control
+ * Tokens (your own ERC-20 compatible or predefined like DAI, Unicorn, OMG, SNT, ZRC, GNO, ..) - add your own in the app or on [https://github.com/ethereum-lists/tokens](https://github.com/ethereum-lists/tokens) so everyone can use it
+ * display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI
+
+## Standarts
+ - ERC-67 / ERC-681 / ERC-1328 URLs (e.g. scanned from QR-Code or via intent)
  - ERC-55 Checksums
- - WalletConnect (https://walletconnect.org) 1.0 Support
+ * EIP712 signing
+ * EIP155 Transactions
+
+## Other
+ - [WalletConnect](https://walletconnect.org) 1.0 Support
  - Offline signing (compatible to Parity signing flow)
- - Testnets with direct link to faucets (on görli and ropsten even auto-fill of address)
- - JSON UTC key import/export
- - display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI
- - display function calls when available from https://github.com/ethereum-lists/4bytes
- - TREZOR (https://trezor.io) Support via USB-OTG - model 1 (v1.8.X) and model T (v2.1.X) are supported
- - KeyCard (https://keycard.status.im) support
- - watch only accounts
- - one flavor contains go-ethereum light client
 
-find more information on https://walleth.org
-
-References
-==========
-
-* [ERC67](https://github.com/ethereum/EIPs/issues/67)
-* [ERC681](https://eips.ethereum.org/EIPS/eip-681)
-* [ERC20](https://eips.ethereum.org/EIPS/eip-20)
-* [Import Geth - a Devcon2 talk](https://ethereum.karalabe.com/talks/2016-devcon.html#1)
-* [go Mobile:-Account-management](https://github.com/ethereum/go-ethereum/wiki/Mobile:-Account-management)
-* [Ethereum visual reference](https://www.ethereum.org/images/logos/Ethereum_Visual_Identity_1.0.0.pdf)
-
+Find more information on [https://walleth.org](https://walleth.org)
+ 
 License
 =======
 
