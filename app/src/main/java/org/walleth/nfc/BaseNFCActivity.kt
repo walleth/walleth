@@ -6,6 +6,7 @@ import android.os.Bundle
 import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
+import org.walleth.databinding.ActivityNfcBinding
 import org.walleth.khartwarewallet.KHardwareManager
 import org.walleth.khartwarewallet.enableKhardwareReader
 
@@ -13,6 +14,8 @@ import org.walleth.khartwarewallet.enableKhardwareReader
 open class BaseNFCActivity : BaseSubActivity() {
 
     protected val nfcCredentialStore: NFCCredentialStore by inject()
+
+    protected val binding by lazy { ActivityNfcBinding.inflate(layoutInflater) }
 
     private val nfcAdapter by lazy {
         getDefaultAdapter(this)
@@ -23,7 +26,7 @@ open class BaseNFCActivity : BaseSubActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_nfc)
+        setContentView(binding.root)
 
     }
 

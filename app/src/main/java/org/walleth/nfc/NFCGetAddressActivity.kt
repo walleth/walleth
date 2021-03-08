@@ -8,7 +8,6 @@ import android.nfc.NdefRecord
 import android.os.Bundle
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
-import kotlinx.android.synthetic.main.activity_nfc.*
 import org.kethereum.crypto.toAddress
 import org.kethereum.model.Address
 import org.ligi.kaxtui.alert
@@ -28,9 +27,9 @@ class NFCGetAddressActivity : BaseNFCActivity() {
 
     fun setText(value: String) {
         runOnUiThread {
-            nfc_status_text.text = value
+            binding.nfcStatusText.text = value
 
-            nfc_status_text.parent.requestLayout()
+            binding.nfcStatusText.parent.requestLayout()
         }
     }
 

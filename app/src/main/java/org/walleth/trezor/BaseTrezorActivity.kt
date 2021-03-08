@@ -7,15 +7,12 @@ import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
 import com.squareup.wire.Message
 import io.trezor.deviceprotocol.*
-import kotlinx.android.synthetic.main.activity_trezor.*
-import kotlinx.android.synthetic.main.password_input.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.komputing.kbip44.BIP44
 import org.ligi.compat.HtmlCompat
-import org.ligi.kaxt.inflate
 import org.ligi.kaxtui.alert
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
@@ -23,12 +20,16 @@ import org.walleth.chains.ChainInfoProvider
 import org.walleth.credentials.KEY_MAP_NUM_PAD
 import org.walleth.credentials.showPINDialog
 import org.walleth.data.AppDatabase
+import org.walleth.databinding.ActivityTrezorBinding
+import org.walleth.databinding.PasswordInputBinding
 import org.walleth.khartwarewallet.trezor.tryConnectTrezor
 import org.walleth.trezor.BaseTrezorActivity.STATES.*
 
 const val KEY_KEEPKEY_MODE = "KEEPKEY_MODE"
 
 abstract class BaseTrezorActivity : BaseSubActivity() {
+
+    private val binding by lazy { ActivityTrezorBinding.inflate(layoutInflater) }
 
     private val isKeepKeyMode by lazy { intent.extras?.getBoolean(KEY_KEEPKEY_MODE) == true }
     abstract fun handleExtraMessage(res: Message<*, *>?)
@@ -61,10 +62,10 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
 
         setContentView(R.layout.activity_trezor)
 
-        device_status_text.text = HtmlCompat.fromHtml(getString(getConnectMessage()))
-        device_status_text.movementMethod = LinkMovementMethod()
+        binding.deviceStatusText.text = HtmlCompat.fromHtml(getString(getConnectMessage()))
+        binding.deviceStatusText.movementMethod = LinkMovementMethod()
 
-        device_connect_indicator.setImageResource(if (isKeepKeyMode)R.drawable.keepkey else R.drawable.trezor_connect)
+        binding.deviceConnectIndicator.setImageResource(if (isKeepKeyMode) R.drawable.keepkey else R.drawable.trezor_connect)
     }
 
     private fun getConnectMessage() = if (isKeepKeyMode) R.string.connect_keepkey_message else R.string.connect_trezor_message
@@ -134,7 +135,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                             isKeepKeyDevice && isKeepKeyDevice != isKeepKeyMode -> finishingAlert("this is not a TREZOR - this is a KeepKey")
                             !isKeepKeyDevice && isKeepKeyDevice != isKeepKeyMode -> finishingAlert("this is not a KeepKey - this is a TREZOR")
                             else -> {
-                                device_status_text.text = HtmlCompat.fromHtml(getString(getActionMessage()))
+                                binding.deviceStatusText.text = HtmlCompat.fromHtml(getString(getActionMessage()))
                                 enterNewState(READ_ADDRESS)
                             }
                         }
@@ -165,7 +166,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
     }
 
     private fun finishingAlert(message: String) = lifecycleScope.launch(Dispatchers.Main) {
-        alert(message,"Error") {
+        alert(message, "Error") {
             finish()
         }
     }
@@ -192,12 +193,12 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
 
 
     private fun showPassPhraseDialog() {
-        val inputLayout = inflate(R.layout.password_input)
+        val inputLayoutBinding = PasswordInputBinding.inflate(layoutInflater)
         AlertDialog.Builder(this)
-                .setView(inputLayout)
+                .setView(inputLayoutBinding.root)
                 .setTitle(R.string.trezor_please_enter_your_passphrase)
                 .setPositiveButton(android.R.string.ok) { _, _ ->
-                    currentSecret = inputLayout.password_input.text.toString()
+                    currentSecret = inputLayoutBinding.passwordInput.text.toString()
                     state = PWD_REQUEST
                     connectAndExecute()
                 }

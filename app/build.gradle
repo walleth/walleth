@@ -120,6 +120,10 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -283,8 +287,4 @@ licenseReport {
     generateJsonReport = true
 
     copyJsonReportToAssets = true
-}
-
-androidExtensions {
-    experimental = true
 }

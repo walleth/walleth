@@ -4,9 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.WindowManager
-import kotlinx.android.synthetic.main.activity_fullscreen_qrcode.*
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
+import org.walleth.databinding.ActivityFullscreenQrcodeBinding
 import org.walleth.util.setQRCode
 import java.lang.IllegalArgumentException
 
@@ -21,19 +21,21 @@ fun Context.getQRCodeIntent(content: String,
 
 class ShowQRCodeActivity : BaseSubActivity() {
 
+    private val binding by lazy { ActivityFullscreenQrcodeBinding.inflate(layoutInflater) }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_fullscreen_qrcode)
+        setContentView(binding.root)
         supportActionBar?.subtitle = getString(R.string.actionbar_subtitle_qr_code)
     }
 
     override fun onResume() {
         super.onResume()
         val content = intent.getStringExtra(KEY_CONTENT)?:throw(IllegalArgumentException("having no KEY_CONTENT in onResume()"))
-        fullscreen_barcode.setQRCode(content)
+        binding.fullscreenBarcode.setQRCode(content)
 
         if (intent.getBooleanExtra(KEY_ALTERNATE, false)) {
-            alternativeBarcodeText.text = content
+            binding.alternativeBarcodeText.text = content
         }
 
         setToFullBrightness()

@@ -3,7 +3,6 @@ package org.walleth.nfc
 import android.os.Bundle
 import androidx.lifecycle.lifecycleScope
 import im.status.keycard.io.WrongPINException
-import kotlinx.android.synthetic.main.activity_nfc.*
 import org.ligi.kaxtui.alert
 import org.walleth.credentials.showAccountPinDialog
 import org.walleth.khartwarewallet.KHardwareChannel
@@ -14,9 +13,9 @@ abstract class NFCBaseActivityWithPINHandling : BaseNFCActivity() {
 
     fun setText(value: String) {
         runOnUiThread {
-            nfc_status_text.text = value
+            binding.nfcStatusText.text = value
 
-            nfc_status_text.parent.requestLayout()
+            binding.nfcStatusText.parent.requestLayout()
         }
     }
 

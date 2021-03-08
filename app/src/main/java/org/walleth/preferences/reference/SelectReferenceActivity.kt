@@ -5,16 +5,17 @@ import android.os.Handler
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.android.synthetic.main.activity_list.*
-import kotlinx.android.synthetic.main.dialog_add_reference.view.*
 import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import org.walleth.databinding.ActivityListBinding
+import org.walleth.databinding.DialogAddReferenceBinding
 
 class SelectReferenceActivity : BaseSubActivity() {
 
     private val exchangeRateProvider: ExchangeRateProvider by inject()
+    private val binding  by lazy { ActivityListBinding.inflate(layoutInflater) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,24 +24,25 @@ class SelectReferenceActivity : BaseSubActivity() {
 
         supportActionBar?.subtitle = getString(R.string.select_reference_activity_select_reference)
 
-        recycler_view.layoutManager = LinearLayoutManager(this)
-        recycler_view.adapter = ReferenceListAdapter(exchangeRateProvider, this, settings)
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = ReferenceListAdapter(exchangeRateProvider, this, settings)
 
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             val inflater = LayoutInflater.from(this@SelectReferenceActivity)
-            val layout = inflater.inflate(R.layout.dialog_add_reference, null, false)
+
+            val layout = DialogAddReferenceBinding.inflate(inflater)
 
             AlertDialog.Builder(this@SelectReferenceActivity)
                     .setTitle(getString(R.string.select_reference_activity_add_reference))
-                    .setView(layout)
+                    .setView(layout.root)
 
                     .setPositiveButton(android.R.string.ok) { _, _ ->
 
-                        val fiatName = layout.reference_text.text.toString().toUpperCase()
+                        val fiatName = layout.referenceText.text.toString().toUpperCase()
 
                         exchangeRateProvider.addFiat(fiatName)
                         Handler().postDelayed({
-                            recycler_view.adapter = ReferenceListAdapter(exchangeRateProvider, this, settings)
+                            binding.recyclerView.adapter = ReferenceListAdapter(exchangeRateProvider, this, settings)
                         }, 1000)
                     }
                     .show()

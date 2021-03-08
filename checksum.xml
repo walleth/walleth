@@ -350,6 +350,9 @@
     <dependency group='androidx.databinding' module='databinding-compiler-common' version='4.1.2'>
       <sha512>777C1966FD784FE2E76F64432C6CA18C2C1EC56E2A48377E44314DAD479A05073C048BD51BBC3053FF2325FD11B49345E748031DF9E6BF5B9075A1504230E5A0</sha512>
     </dependency>
+    <dependency group='androidx.databinding' module='viewbinding' version='4.1.2' extension='aar'>
+      <sha512>9B8DF70C9AD8C66EEA7A56B8BE2CE5AF538C8B2BAB55E7754BF235DEF42B7D0E92FCDD01A4F38924634DD53A8620E8D4091CCCE097C844C9A79EA978BF1D8F68</sha512>
+    </dependency>
     <dependency group='androidx.documentfile' module='documentfile' version='1.0.0' extension='aar'>
       <sha512>41691B5F8E0397E03A73AC93B5B44A16E1E3B786433DA4C0F062826486DAB7D955A95F15F71967C6DC5B53093261574C91C84020A22FE559625EA4FFFAE6552F</sha512>
     </dependency>

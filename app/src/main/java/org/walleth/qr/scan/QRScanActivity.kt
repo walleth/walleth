@@ -3,14 +3,15 @@ package org.walleth.qr.scan
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import kotlinx.android.synthetic.main.activity_scan.*
-import org.walleth.R
 import org.walleth.base_activities.WallethActivity
-
+import org.walleth.databinding.ActivityScanBinding
 
 fun Activity.getQRScanActivity() = Intent(this, QRScanActivity::class.java)
 
 open class QRScanActivity : WallethActivity() {
+
+    private val binding by lazy { ActivityScanBinding.inflate(layoutInflater) }
+
     private val videographer: Videographer
         get() = Videographer(this).also {
             it.onSuccessfulScan = this::finishWithResult
@@ -21,7 +22,7 @@ open class QRScanActivity : WallethActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_scan)
+        setContentView(binding.root)
     }
 
     override fun onResume() {
@@ -30,7 +31,7 @@ open class QRScanActivity : WallethActivity() {
         if (!cameraPermission.isGranted()) {
             cameraPermission.request()
         } else {
-            videographer.open(viewfinderView)
+            videographer.open(binding.viewfinderView)
         }
     }
 
