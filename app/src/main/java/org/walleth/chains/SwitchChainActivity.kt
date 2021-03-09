@@ -8,7 +8,6 @@ import com.squareup.moshi.JsonEncodingException
 import com.squareup.moshi.Moshi
 import com.tingyik90.snackprogressbar.SnackProgressBar
 import com.tingyik90.snackprogressbar.SnackProgressBarManager
-import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.item_network_definition.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -33,7 +32,7 @@ import javax.net.ssl.SSLException
 
 open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
 
-    private val snackProgressBarManager by lazy { SnackProgressBarManager(coordinator, lifecycleOwner = this) }
+    private val snackProgressBarManager by lazy { SnackProgressBarManager(binding.coordinator, lifecycleOwner = this) }
 
     override val enhancedList by lazy {
         object : EnhancedListInterface<ChainInfo> {
@@ -60,7 +59,7 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
 
         supportActionBar?.subtitle = getString(R.string.chains_subtitle)
 
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             startActivityFromClass(EditChainActivity::class)
         }
 
