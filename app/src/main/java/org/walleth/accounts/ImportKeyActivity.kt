@@ -12,11 +12,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
-import kotlinx.android.synthetic.main.activity_import_key.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -37,6 +35,7 @@ import org.walleth.accounts.KeyType.*
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.*
 import org.walleth.data.addresses.AccountKeySpec
+import org.walleth.databinding.ActivityImportKeyBinding
 import org.walleth.qr.scan.getQRScanActivity
 import java.io.FileNotFoundException
 
@@ -56,14 +55,14 @@ fun Context.getKeyImportIntentViaCreate(spec: AccountKeySpec) = Intent(this, Cre
     putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
 }
 
-
 open class ImportKeyActivity : BaseSubActivity() {
 
+    private val binding by lazy { ActivityImportKeyBinding.inflate(layoutInflater) }
     private var importing = false
 
     private val scanQRForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            key_content.setText(it.data?.getStringExtra("SCAN_RESULT"))
+            binding.keyContent.setText(it.data?.getStringExtra("SCAN_RESULT"))
         }
     }
 
@@ -71,28 +70,28 @@ open class ImportKeyActivity : BaseSubActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_import_key)
+        setContentView(binding.root)
 
         var type = WORDLIST.toString()
         intent.getParcelableExtra<AccountKeySpec>(EXTRA_KEY_ACCOUNTSPEC)?.let { spec ->
 
             spec.initPayload?.split(SERIALISATION_DELIMITER)?.let { params ->
-                key_content.setText(params.last())
+                binding.keyContent.setText(params.last())
                 type = params.first()
             }
         }
 
-        type_wordlist_select.isChecked = valueOf(type) == WORDLIST
-        type_json_select.isChecked = valueOf(type) == JSON
-        type_ecdsa_select.isChecked = !type_json_select.isChecked && !type_wordlist_select.isChecked
+        binding.typeWordlistSelect.isChecked = valueOf(type) == WORDLIST
+        binding.typeJsonSelect.isChecked = valueOf(type) == JSON
+        binding.typeEcdsaSelect.isChecked = !binding.typeJsonSelect.isChecked && !binding.typeWordlistSelect.isChecked
 
-        key_type_select.setOnCheckedChangeListener { _, _ ->
+        binding.keyTypeSelect.setOnCheckedChangeListener { _, _ ->
             refreshKeyTypeDependingUI()
         }
 
         supportActionBar?.subtitle = getString(R.string.import_json_subtitle)
 
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             doImport()
         }
 
@@ -100,13 +99,13 @@ open class ImportKeyActivity : BaseSubActivity() {
     }
 
     private fun refreshKeyTypeDependingUI() {
-        password_container.setVisibility(!type_ecdsa_select.isChecked)
-        key_container.hint = getString(if (type_wordlist_select.isChecked) {
+        binding.passwordContainer.setVisibility(!binding.typeEcdsaSelect.isChecked)
+        binding.keyContainer.hint = getString(if (binding.typeWordlistSelect.isChecked) {
             R.string.key_input_wordlist_hint
         } else {
             R.string.key_input_key_hint
         })
-        key_container.isCounterEnabled = type_ecdsa_select.isChecked
+        binding.keyContainer.isCounterEnabled = binding.typeEcdsaSelect.isChecked
     }
 
     private fun doImport() = lifecycleScope.launch(Dispatchers.Main) {
@@ -115,12 +114,12 @@ open class ImportKeyActivity : BaseSubActivity() {
         }
         importing = true
 
-        val content = key_content.text.toString()
+        val content = binding.keyContent.text.toString()
 
         val currentKeyType: KeyType = when {
-            type_json_select.isChecked -> JSON
-            type_ecdsa_select.isChecked -> ECDSA
-            type_wordlist_select.isChecked -> WORDLIST
+            binding.typeJsonSelect.isChecked -> JSON
+            binding.typeEcdsaSelect.isChecked -> ECDSA
+            binding.typeWordlistSelect.isChecked -> WORDLIST
             else -> throw IllegalStateException("KeyType selection invalid") // should never happen
         }
 
@@ -129,13 +128,13 @@ open class ImportKeyActivity : BaseSubActivity() {
                     message = "The length of the ECDSA Key MUST be 64 characters (32 bytes) - but currently is ${content.length} characters")
         } else {
 
-            fab_progress_bar.visibility = View.VISIBLE
+            binding.fabProgressBar.visibility = View.VISIBLE
             try {
 
                 val importKey = withContext(Dispatchers.Default) {
 
                     when (currentKeyType) {
-                        JSON -> content.loadKeysFromWalletJsonString(password.text.toString())
+                        JSON -> content.loadKeysFromWalletJsonString(binding.password.text.toString())
                         WORDLIST -> {
                             val mnemonicWords = dirtyPhraseToMnemonicWords(content)
                             if (!mnemonicWords.validate(WORDLIST_ENGLISH)) {
@@ -161,12 +160,12 @@ open class ImportKeyActivity : BaseSubActivity() {
                 }
 
             } catch (e: Exception) {
-                displayError(e.message?:"Could not decrypt key")
+                displayError(e.message ?: "Could not decrypt key")
             } catch (oom: OutOfMemoryError) {
                 displayError("Cannot decrypt this key with the RAM available on this device.")
             }
         }
-        fab_progress_bar.visibility = View.INVISIBLE
+        binding.fabProgressBar.visibility = View.INVISIBLE
         importing = false
     }
 
@@ -198,7 +197,7 @@ open class ImportKeyActivity : BaseSubActivity() {
                         if (length > 1_000) {
                             alert("The selected content does not look like a key. If you think it should be - please contact walleth@walleth.org ")
                         } else {
-                            key_content.setText(this)
+                            binding.keyContent.setText(this)
                         }
                     }
                 }

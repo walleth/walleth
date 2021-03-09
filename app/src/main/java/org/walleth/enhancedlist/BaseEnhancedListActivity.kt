@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -29,6 +28,7 @@ import org.walleth.chains.hasFaucetWithAddressSupport
 import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.chaininfo.ChainInfo
+import org.walleth.databinding.ActivityListBinding
 import org.walleth.util.question
 import timber.log.Timber
 
@@ -43,6 +43,8 @@ interface ListItem : Deletable {
 @SuppressLint("Registered")
 abstract class BaseEnhancedListActivity<T : ListItem> : BaseSubActivity() {
 
+    val binding by lazy { ActivityListBinding.inflate(layoutInflater) }
+
     abstract val enhancedList: EnhancedListInterface<T>
     abstract val adapter: EnhancedListAdapter<T>
 
@@ -55,7 +57,7 @@ abstract class BaseEnhancedListActivity<T : ListItem> : BaseSubActivity() {
             withContext(Dispatchers.Default) {
                 enhancedList.upsert(changedEntity)
                 if (state) {
-                    currentSnack = Snackbar.make(coordinator, "Deleted " + changedEntity.name, Snackbar.LENGTH_INDEFINITE)
+                    currentSnack = Snackbar.make(binding.coordinator, "Deleted " + changedEntity.name, Snackbar.LENGTH_INDEFINITE)
                             .setAction(getString(R.string.undo)) { changeDeleteState(false) }
                             .apply { show() }
                 }
@@ -178,10 +180,10 @@ abstract class BaseEnhancedListActivity<T : ListItem> : BaseSubActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list)
+        setContentView(binding.root)
 
-        recycler_view.layoutManager = LinearLayoutManager(this)
-        recycler_view.adapter = adapter
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
+        binding.recyclerView.adapter = adapter
 
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
 
@@ -193,7 +195,7 @@ abstract class BaseEnhancedListActivity<T : ListItem> : BaseSubActivity() {
         }
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(recycler_view)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
 
     override fun onResume() {

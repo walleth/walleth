@@ -20,7 +20,7 @@ class SelectReferenceActivity : BaseSubActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        setContentView(R.layout.activity_list)
+        setContentView(binding.root)
 
         supportActionBar?.subtitle = getString(R.string.select_reference_activity_select_reference)
 

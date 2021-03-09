@@ -68,10 +68,9 @@ abstract class BaseAddressBookActivity : BaseEnhancedListActivity<AddressBookEnt
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-
         supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
 
-        fab.setOnClickListener {
+        binding.fab.setOnClickListener {
             startActivityFromClass(CreateAccountActivity::class.java)
         }
 
@@ -89,7 +88,7 @@ abstract class BaseAddressBookActivity : BaseEnhancedListActivity<AddressBookEnt
         }
 
         val itemTouchHelper = ItemTouchHelper(simpleItemTouchCallback)
-        itemTouchHelper.attachToRecyclerView(recycler_view)
+        itemTouchHelper.attachToRecyclerView(binding.recyclerView)
     }
 
 
