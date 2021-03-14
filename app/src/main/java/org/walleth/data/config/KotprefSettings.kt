@@ -26,7 +26,7 @@ object KotprefSettings : KotprefModel(), Settings {
     override var filterTincubeth by booleanPref(default = false)
     override var logRPCRequests: Boolean by booleanPref(default = false)
 
-    override var sourcifyBaseURL by stringPref(default = "https//reop.sourcify.dev")
+    override var sourcifyBaseURL by stringPref(default = "https//repo.sourcify.dev")
     override var dappNodeVPNProfile by stringPref(default = "dappnode")
     override var dappNodeAutostartVPN by booleanPref(default = false)
     override var dappNodeMode by enumValuePref(DappNodeMode.DONT_USE)
