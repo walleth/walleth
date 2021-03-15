@@ -74,6 +74,8 @@ class TransactionViewHolder(itemView: View,
                     DateUtils.WEEK_IN_MILLIS,
                     0
             )
+            itemView.date.setVisibility(false)
+            itemView.address.setVisibility(false)
 
             itemView.transaction_state_indicator.setImageResource(
                     when {
