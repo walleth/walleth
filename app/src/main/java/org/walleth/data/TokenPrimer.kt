@@ -12,7 +12,7 @@ import org.walleth.data.tokens.Token
 import org.walleth.data.tokens.getRootToken
 import timber.log.Timber
 
-private const val TOKEN_INIT_VERSION = 43
+private const val TOKEN_INIT_VERSION = 44
 // yes this is opinionated - but it also cuts to the chase
 // so much garbage in this token-list ..
 
