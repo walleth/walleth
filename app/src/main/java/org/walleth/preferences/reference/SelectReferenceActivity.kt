@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.HandlerCompat.postDelayed
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.activity_list.*
 import kotlinx.android.synthetic.main.dialog_add_reference.view.*
@@ -39,9 +40,8 @@ class SelectReferenceActivity : BaseSubActivity() {
                         val fiatName = layout.reference_text.text.toString().toUpperCase()
 
                         exchangeRateProvider.addFiat(fiatName)
-                        Handler().postDelayed({
-                            recycler_view.adapter = ReferenceListAdapter(exchangeRateProvider, this, settings)
-                        }, 1000)
+
+                        recycler_view.adapter = ReferenceListAdapter(exchangeRateProvider, this, settings)
                     }
                     .show()
         }
