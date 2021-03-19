@@ -176,16 +176,16 @@ dependencies {
 
     implementation "com.github.komputing:kbip44:0.1"
 
-    implementation 'org.bouncycastle:bcprov-jdk15on:1.67'
+    implementation "org.bouncycastle:bcprov-jdk15to18:1.68"
 
     implementation "com.github.komputing:khex:1.1.0"
 
-    implementation "com.github.walleth:KHardWareWallet:0.9.8"
+    implementation "com.github.walleth:KHardWareWallet:0.9.9"
     implementation 'com.squareup.okio:okio:2.5.0'
 
     implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"
 
-    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.9.7"
+    implementation "com.github.walletconnect:kotlin-walletconnect-lib:0.9.8"
     implementation 'com.github.ligi:circular-with-floating-action-button:androidX_v2.0'
 
     implementation 'com.github.deano2390:MaterialShowcaseView:1.3.4'
