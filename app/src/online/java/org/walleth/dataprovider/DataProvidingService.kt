@@ -236,8 +236,8 @@ class DataProvidingService : LifecycleService() {
                     }
                 } catch (rpcException: EthereumRPCException) {
 
-                } catch (iae: IllegalArgumentException) {
-                    Timber.e(iae, "error when getting balance")
+                } catch (e: Exception) {
+                    Timber.e(e, "error when getting balance")
                 }
             }
         }
