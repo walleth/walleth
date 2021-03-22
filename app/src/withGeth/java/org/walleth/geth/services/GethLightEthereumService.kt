@@ -12,10 +12,7 @@ import androidx.core.app.NotificationCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.ethereum.geth.*
 import org.kethereum.extensions.transactions.encodeRLP
 import org.koin.android.ext.android.inject
@@ -83,7 +80,7 @@ class GethLightEthereumService : LifecycleService() {
                 shouldRestart = false // just did restart
                 shouldRun = true
 
-                async(Dispatchers.Main) {
+                withContext(Dispatchers.Main) {
                     val pendingStopIntent = PendingIntent.getService(baseContext, 0, gethStopIntent(), 0)
                     val contentIntent = PendingIntent.getActivity(baseContext, 0, Intent(baseContext, OverviewActivity::class.java), 0)
 
@@ -100,7 +97,7 @@ class GethLightEthereumService : LifecycleService() {
                             .build()
 
                     startForeground(NOTIFICATION_ID_GETH, notification)
-                }.await()
+                }
 
                 val network = networkDefinitionProvider.getCurrent()
 
@@ -168,7 +165,7 @@ class GethLightEthereumService : LifecycleService() {
                         syncTick(ethereumNode, ethereumContext)
                     }
 
-                    async(Dispatchers.Main) {
+                    withContext(Dispatchers.Main) {
                         transactionsLiveData.removeObserver(transactionObserver)
                         launch {
                             ethereumNode.stop()
@@ -181,7 +178,7 @@ class GethLightEthereumService : LifecycleService() {
                         } else {
                             notificationManager.cancel(NOTIFICATION_ID_GETH)
                         }
-                    }.await()
+                    }
                 }
             }
 
