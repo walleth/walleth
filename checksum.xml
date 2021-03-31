@@ -6469,6 +6469,9 @@
     <dependency group='com.linkedin.testbutler' module='test-butler-library' version='2.1.1' extension='aar'>
       <sha512>F08AE0782AE9C5024637FBF55056FED0B47CAB87F9DF6049E0609EBADE7F0AF822A5447A616A75A000355129C8C7BB05490C69187F19D3FAD06FDD9E8B0545E</sha512>
     </dependency>
+    <dependency group='com.squareup.curtains' module='curtains' version='1.0.1'>
+      <sha512>88EC14A1E6DADEC133187D7FCC6C2CFD55213115BEFA92127FE6CC6C7C9DDEC1F503110331E00A1E11D56A8574E297AF5B37F577295F6CEC0B4C3322F7F3D5F9</sha512>
+    </dependency>
     <dependency group='com.squareup.leakcanary' module='leakcanary-android-core' version='2.0' extension='aar'>
       <sha512>393BAB45539704F828B9C7B56EA0B426AA97F1CACDBEC6A64413F5D5AD41D3AA2A4A8D27C111E1378AFB17D2F97AB6965ADE2451D61BA83352163DC43DDDF389</sha512>
     </dependency>
