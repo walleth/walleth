@@ -1,19 +1,56 @@
 package org.walleth.chains
 
 import android.content.res.AssetManager
-import androidx.lifecycle.MutableLiveData
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.Types.newParameterizedType
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.MutableStateFlow
 import org.kethereum.model.Address
 import org.kethereum.model.ChainId
-import org.walleth.data.AppDatabase
+import org.walleth.data.*
+import org.walleth.data.addresses.AccountKeySpec
+import org.walleth.data.addresses.toJSON
 import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.config.Settings
+import org.walleth.data.tokens.getRootToken
 import java.math.BigInteger
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+
+
+fun <T> suspendBlockingLazy(
+        dispatcher: CoroutineDispatcher = Dispatchers.Default,
+        initializer: () -> T
+): SuspendLazy<T> = SuspendLazyBlockingImpl(dispatcher, initializer)
+
+fun <T> CoroutineScope.suspendLazy(
+        context: CoroutineContext = EmptyCoroutineContext,
+        initializer: suspend CoroutineScope.() -> T
+): SuspendLazy<T> = SuspendLazySuspendingImpl(this, context, initializer)
+
+interface SuspendLazy<out T> {
+    suspend operator fun invoke(): T
+}
+
+private class SuspendLazyBlockingImpl<out T>(
+        private val dispatcher: CoroutineDispatcher = Dispatchers.Default,
+        initializer: () -> T
+) : SuspendLazy<T> {
+    private val lazyValue = lazy(initializer)
+    override suspend operator fun invoke(): T = with(lazyValue) {
+        if (isInitialized()) value else withContext(dispatcher) { value }
+    }
+}
+
+private class SuspendLazySuspendingImpl<out T>(
+        coroutineScope: CoroutineScope,
+        context: CoroutineContext,
+        initializer: suspend CoroutineScope.() -> T
+) : SuspendLazy<T> {
+    private val deferred = coroutineScope.async(context, start = CoroutineStart.LAZY, block = initializer)
+    override suspend operator fun invoke(): T = deferred.await()
+}
 
 private const val FAUCET_ADDRESS_TOKEN = "\${ADDRESS}"
 fun ChainInfo.getFaucetURL(address: Address) = getFaucetWithAddressSupport()?.replace(FAUCET_ADDRESS_TOKEN, address.hex) ?: faucets.firstOrNull()
@@ -41,14 +78,45 @@ fun Moshi.deSerialize(chainsJSON: String): List<ChainInfo> {
 
 class ChainInfoProvider(val settings: Settings,
                         val appDatabase: AppDatabase,
+                        val keyStore: org.kethereum.keystore.api.KeyStore,
                         private val moshi: Moshi,
-                        private val assetManager: AssetManager) : MutableLiveData<ChainInfo>() {
+                        private val assetManager: AssetManager) {
 
-    init {
+    private val flow = GlobalScope.suspendLazy {
+
+        initTokens(settings, assetManager, appDatabase)
+
         GlobalScope.launch(Dispatchers.Default) {
-            postValue(getInitial())
+            if (settings.dataVersion < 3) {
+                val all = appDatabase.chainInfo.getAll()
+                var currentMin = all.filter { it.order != null }.minByOrNull { it.order!! }?.order ?: 0
+                all.forEach {
+                    if (it.order == null) {
+                        it.order = currentMin
+                    }
+                    currentMin -= 10
+                }
+                appDatabase.chainInfo.upsert(all)
+            }
+            if (settings.dataVersion < 1) {
+                appDatabase.addressBook.all().forEach {
+                    if (it.keySpec == null || it.keySpec?.isBlank() == true) {
+                        val type = if (keyStore.hasKeyForForAddress(it.address)) ACCOUNT_TYPE_BURNER else ACCOUNT_TYPE_WATCH_ONLY
+                        it.keySpec = AccountKeySpec(type).toJSON()
+                        appDatabase.addressBook.upsert(it)
+                    } else if (it.keySpec?.startsWith("m") == true) {
+                        it.keySpec = AccountKeySpec(ACCOUNT_TYPE_TREZOR, derivationPath = it.keySpec).toJSON()
+                        appDatabase.addressBook.upsert(it)
+                    }
+                }
+            }
+            settings.dataVersion = 4
         }
+
+        MutableStateFlow(getInitial())
     }
+
+    suspend fun getFlow() = flow()
 
     private suspend fun getInitial(): ChainInfo = appDatabase.chainInfo.getByChainId(settings.chain.toBigInteger())
             ?: appDatabase.chainInfo.getByChainId(BigInteger.valueOf(5L))
@@ -57,12 +125,12 @@ class ChainInfoProvider(val settings: Settings,
                 getInitial()
             }
 
-    fun setCurrent(value: ChainInfo) {
+    suspend fun setCurrent(value: ChainInfo) {
         settings.chain = value.chainId.toLong()
-        setValue(value)
+        flow().emit(value)
     }
 
-    fun getCurrent() = value
-    fun getCurrentChainId() = ChainId(value!!.chainId)
+    suspend fun getCurrent() = flow().value
+    suspend fun getCurrentChainId() = ChainId(flow().value.chainId)
 
 }

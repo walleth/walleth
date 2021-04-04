@@ -77,8 +77,10 @@ class EditAccountActivity : AddressReceivingActivity() {
             copyToClipboard(relevantAddress, activity_main)
         }
         R.id.menu_etherscan -> true.also {
-            blockExplorerProvider.getOrAlert(this)?.let {
-                startActivityFromURL(it.getAddressURL(relevantAddress))
+            lifecycleScope.launch(Dispatchers.Main) {
+                blockExplorerProvider.getOrAlert(this@EditAccountActivity)?.let {
+                    startActivityFromURL(it.getAddressURL(relevantAddress))
+                }
             }
         }
         else -> super.onOptionsItemSelected(item)

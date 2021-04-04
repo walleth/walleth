@@ -17,16 +17,13 @@ import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
-import androidx.lifecycle.Observer
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import org.bouncycastle.math.ec.ECConstants.TWO
 import org.kethereum.DEFAULT_GAS_LIMIT
 import org.kethereum.eip137.model.ENSName
@@ -162,7 +159,9 @@ class CreateTransactionActivity : BaseSubActivity() {
 
     private val selectFromAddressForResult: ActivityResultLauncher<Intent> = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            it.data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { address_string -> currentAddressProvider.setCurrent(Address(address_string)) }
+            lifecycleScope.launch(Dispatchers.Main) {
+                it.data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { address_string -> currentAddressProvider.setCurrent(Address(address_string)) }
+            }
         }
     }
 
@@ -195,41 +194,115 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
     }
 
-    private fun String.toERC681() = if (startsWith("0x")) ERC681(address = this, chainId = chainInfoProvider.getCurrent()?.let { ChainId(it.chainId) }) else parseERC681(this)
+    private suspend fun String.toERC681() = if (startsWith("0x")) ERC681(address = this, chainId = ChainId(chainInfoProvider.getCurrent().chainId)) else parseERC681(this)
 
     private fun isParityFlow() = intent.getBooleanExtra("parityFlow", false)
 
     private fun createAfterCheck(savedInstanceState: Bundle?) {
-        currentERC681 = if (savedInstanceState != null && savedInstanceState.containsKey("ERC67")) {
-            savedInstanceState.getString("ERC67")
-        } else {
-            intent.data?.toString()
-        }?.toERC681() ?: ERC681()
+        lifecycleScope.launch(Dispatchers.Main) {
+            currentERC681 = if (savedInstanceState != null && savedInstanceState.containsKey("ERC67")) {
+                savedInstanceState.getString("ERC67")
+            } else {
+                intent.data?.toString()
+            }?.toERC681() ?: ERC681()
 
-        if (savedInstanceState != null && savedInstanceState.containsKey("lastERC67")) {
-            lastWarningURI = savedInstanceState.getString("lastERC67")
-        }
-
-        chainInfoProvider.observe(this, Observer {
-            supportActionBar?.subtitle = getString(R.string.create_transaction_on_chain_subtitle, it.name)
-        })
-
-        currentTokenProvider.observe(this, Observer {
-            onCurrentTokenChanged()
-        })
-
-        currentAddressProvider.observe(this, Observer { address ->
-            address?.let {
-                lifecycleScope.launch {
-                    val entry = appDatabase.addressBook.byAddress(address)
-                    currentAccount = entry
-                    from_address.text = entry?.name
-                    val drawable = ACCOUNT_TYPE_MAP[entry.getSpec()?.type]?.actionDrawable
-
-                    fab.setImageResource(drawable ?: R.drawable.ic_action_done)
-                }
+            if (savedInstanceState != null && savedInstanceState.containsKey("lastERC67")) {
+                lastWarningURI = savedInstanceState.getString("lastERC67")
             }
-        })
+
+
+            chainInfoProvider.getFlow().onEach {
+                supportActionBar?.subtitle = getString(R.string.create_transaction_on_chain_subtitle, it.name)
+            }.launchIn(lifecycleScope)
+
+            currentTokenProvider.getFlow().onEach {
+                onCurrentTokenChanged()
+            }.launchIn(lifecycleScope)
+
+            val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
+            val s = when {
+                gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger()
+                currentERC681.gasPrice != null -> currentERC681.gasPrice
+                else -> chainInfoProvider.getCurrent().chainId.let {
+                    settings.getGasPriceFor(it)
+                }
+            } ?: ONE
+
+            gas_price_input.setText((s.toBigDecimal() / GIGA).toString())
+
+            currentAddressProvider.flow.onEach { address ->
+                address?.let {
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        val entry = appDatabase.addressBook.byAddress(address)
+                        currentAccount = entry
+                        from_address.text = entry?.name
+                        val drawable = ACCOUNT_TYPE_MAP[entry.getSpec()?.type]?.actionDrawable
+
+                        fab.setImageResource(drawable ?: R.drawable.ic_action_done)
+                    }
+                }
+            }.launchIn(lifecycleScope)
+
+            intent.getStringExtra("data")?.let {
+                val data = HexString(it).hexToByteArray()
+
+                if (data.toList().startsWith(prefix = tokenTransferSignature)) {
+                    currentERC681.function = "transfer"
+
+                    val tmpTX = Transaction().apply {
+                        input = data
+                    }
+
+                    currentERC681.functionParams = listOf(
+                            "address" to tmpTX.getTokenTransferTo().hex,
+                            "uint256" to tmpTX.getTokenTransferValue().toString()
+                    )
+                }
+
+                data_label.visibility = VISIBLE
+                data_text.visibility = VISIBLE
+                data_text.text = it
+                dataString = it
+
+
+                lifecycleScope.launch(Dispatchers.IO) {
+                    val signatures: Iterable<TextMethodSignature> = fourByteDirectory.getSignaturesFor(createTransaction())
+
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        val signaturesText = signatures.joinToString("\n") { signature ->
+                            signature.normalizedSignature
+                        }
+                        if (signaturesText.isNotBlank()) {
+                            action_text.setVisibility(true)
+                            action_text.text = signaturesText
+                            action_label.visibility = VISIBLE
+                        }
+
+                    }
+                }
+
+            }
+
+            currentAddressProvider.flow.onEach { address ->
+                if (address != null) {
+                    val nonce = withContext(Dispatchers.Default) {
+                        appDatabase.transactions.getNonceForAddress(address, chainInfoProvider.getCurrent().chainId)
+                    }
+
+                    if (nonce_input.text?.isBlank() != false) {
+                        val nonceBigInt = if (nonce != null && nonce.isNotEmpty()) {
+                            nonce.maxOrNull()!! + ONE
+                        } else {
+                            ZERO
+                        }
+                        nonce_input.setText(String.format(Locale.ENGLISH, "%d", nonceBigInt))
+                    }
+                }
+            }.launchIn(lifecycleScope)
+
+            refreshFee()
+            setFromURL(currentERC681.generateURL(), false)
+        }
 
         fab.setOnClickListener {
             onFabClick()
@@ -237,57 +310,6 @@ class CreateTransactionActivity : BaseSubActivity() {
 
         current_token_symbol.setOnClickListener {
             changeTokenForResult.launch(Intent(this, SelectTokenActivity::class.java))
-        }
-
-        val gasPriceFromStringExtra = intent.getStringExtra("gasPrice")
-        val s = when {
-            gasPriceFromStringExtra != null -> HexString(gasPriceFromStringExtra).maybeHexToBigInteger()
-            currentERC681.gasPrice != null -> currentERC681.gasPrice
-            else -> chainInfoProvider.getCurrent()?.chainId?.let {
-                settings.getGasPriceFor(it)
-            }
-        } ?: ONE
-
-        gas_price_input.setText((s.toBigDecimal() / GIGA).toString())
-
-        intent.getStringExtra("data")?.let {
-            val data = HexString(it).hexToByteArray()
-
-            if (data.toList().startsWith(prefix = tokenTransferSignature)) {
-                currentERC681.function = "transfer"
-
-                val tmpTX = Transaction().apply {
-                    input = data
-                }
-
-                currentERC681.functionParams = listOf(
-                        "address" to tmpTX.getTokenTransferTo().hex,
-                        "uint256" to tmpTX.getTokenTransferValue().toString()
-                )
-            }
-
-            data_label.visibility = VISIBLE
-            data_text.visibility = VISIBLE
-            data_text.text = it
-            dataString = it
-
-
-            lifecycleScope.launch(Dispatchers.IO) {
-                val signatures: Iterable<TextMethodSignature> = fourByteDirectory.getSignaturesFor(createTransaction())
-
-                lifecycleScope.launch(Dispatchers.Main) {
-                    val signaturesText = signatures.joinToString("\n") { signature ->
-                        signature.normalizedSignature
-                    }
-                    if (signaturesText.isNotBlank()) {
-                        action_text.setVisibility(true)
-                        action_text.text = signaturesText
-                        action_label.visibility = VISIBLE
-                    }
-
-                }
-            }
-
         }
 
         sweep_button.setOnClickListener {
@@ -379,22 +401,6 @@ class CreateTransactionActivity : BaseSubActivity() {
                     .show()
         }
 
-        Transformations.switchMap(currentAddressProvider) { address ->
-            appDatabase.transactions.getNonceForAddressLive(address, chainInfoProvider.getCurrent()!!.chainId)
-        }.observe(this, Observer {
-
-            if (nonce_input.text?.isBlank() != false) {
-                val nonceBigInt = if (it != null && it.isNotEmpty()) {
-                    it.maxOrNull()!! + ONE
-                } else {
-                    ZERO
-                }
-                nonce_input.setText(String.format(Locale.ENGLISH, "%d", nonceBigInt))
-            }
-
-        })
-        refreshFee()
-        setFromURL(currentERC681.generateURL(), false)
 
         address_list_button.setOnClickListener {
             val intent = Intent(this@CreateTransactionActivity, AccountPickActivity::class.java)
@@ -436,11 +442,13 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun onCurrentTokenChanged() {
-        val currentToken = currentTokenProvider.getCurrent()
+        lifecycleScope.launch(Dispatchers.Main) {
+            val currentToken = currentTokenProvider.getCurrent()
+            amountController.setValue(amountController.getValueOrZero(), currentToken)
 
-        amountController.setValue(amountController.getValueOrZero(), currentToken)
+            estimateGas()
 
-        estimateGas()
+        }
     }
 
     private fun estimateGas() {
@@ -551,16 +559,19 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun prepareTransaction() {
-        when (val type = currentAccount.getSpec()?.type) {
-            ACCOUNT_TYPE_PIN_PROTECTED, ACCOUNT_TYPE_BURNER, ACCOUNT_TYPE_PASSWORD_PROTECTED -> getPasswordForAccountType(type) { pwd ->
-                if (pwd != null) {
-                    startTransaction(pwd, createTransaction())
+        lifecycleScope.launch(Dispatchers.Main) {
+            val transaction = createTransaction()
+            when (val type = currentAccount.getSpec()?.type) {
+                ACCOUNT_TYPE_PIN_PROTECTED, ACCOUNT_TYPE_BURNER, ACCOUNT_TYPE_PASSWORD_PROTECTED -> getPasswordForAccountType(type) { pwd ->
+                    if (pwd != null) {
+                        startTransaction(pwd, transaction)
+                    }
                 }
+                ACCOUNT_TYPE_NFC -> startNFCSigningActivity(TransactionParcel(transaction))
+                ACCOUNT_TYPE_TREZOR -> signWithTrezorForResult.launch(getTrezorSignIntent(TransactionParcel(transaction)))
+                ACCOUNT_TYPE_KEEPKEY -> signWithTrezorForResult.launch(getKeepKeySignIntent(TransactionParcel(transaction)))
+                ACCOUNT_TYPE_WATCH_ONLY -> alert("You have no key for this account")
             }
-            ACCOUNT_TYPE_NFC -> startNFCSigningActivity(TransactionParcel(createTransaction()))
-            ACCOUNT_TYPE_TREZOR -> signWithTrezorForResult.launch(getTrezorSignIntent(TransactionParcel(createTransaction())))
-            ACCOUNT_TYPE_KEEPKEY -> signWithTrezorForResult.launch(getKeepKeySignIntent(TransactionParcel(createTransaction())))
-            ACCOUNT_TYPE_WATCH_ONLY -> alert("You have no key for this account")
         }
     }
 
@@ -603,7 +614,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
     }
 
-    private fun createTransaction(): Transaction {
+    private suspend fun createTransaction(): Transaction {
 
         val localERC681 = currentERC681
 
@@ -635,8 +646,8 @@ class CreateTransactionActivity : BaseSubActivity() {
         return transaction
     }
 
-    private fun currentBalanceSafely() = currentAccount?.address?.let { currentAddress ->
-        chainInfoProvider.getCurrent()?.chainId?.let { chainId ->
+    private suspend fun currentBalanceSafely() = currentAccount?.address?.let { currentAddress ->
+        chainInfoProvider.getCurrent().chainId.let { chainId ->
             appDatabase.balances.getBalance(currentAddress, currentTokenProvider.getCurrent().address, chainId)?.balance
         }
     } ?: ZERO
@@ -655,7 +666,9 @@ class CreateTransactionActivity : BaseSubActivity() {
         } catch (numberFormatException: NumberFormatException) {
             ZERO
         }
-        feeValueViewModel.setValue(fee, chainInfoProvider.getCurrent()?.getRootToken())
+        lifecycleScope.launch(Dispatchers.Main) {
+            feeValueViewModel.setValue(fee, chainInfoProvider.getCurrent().getRootToken())
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -667,161 +680,163 @@ class CreateTransactionActivity : BaseSubActivity() {
     private fun setFromURL(uri: String?, fromUser: Boolean) {
         if (uri == null) return
 
-        val localERC681 = uri.toERC681()
-        currentERC681 = localERC681
+        lifecycleScope.launch(Dispatchers.Main) {
 
-        if (currentERC681.valid) {
+            val localERC681 = uri.toERC681()
+            currentERC681 = localERC681
 
-            chainIDAlert(chainInfoProvider,
-                    appDatabase,
-                    localERC681.chainId,
-                    continuationWithWrongChainId = {
-                        finish()
-                    },
-                    continuationWithCorrectOrNullChainId = {
-                        lifecycleScope.launch {
+            if (currentERC681.valid) {
 
-                            val address = currentERC681.address?.let { Address(it) }
-                            val chainId = chainInfoProvider.getCurrent()?.chainId?.let { ChainId(it) }
+                chainIDAlert(chainInfoProvider,
+                        appDatabase,
+                        localERC681.chainId,
+                        continuationWithWrongChainId = {
+                            finish()
+                        },
+                        continuationWithCorrectOrNullChainId = {
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                val address = currentERC681.address?.let { Address(it) }
+                                val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
+                                function_label.setVisibility(functionVisibility)
+                                function_text.setVisibility(functionVisibility)
 
-                            val functionVisibility = currentERC681.function != null && !currentERC681.isTokenTransfer()
-                            function_label.setVisibility(functionVisibility)
-                            function_text.setVisibility(functionVisibility)
+                                if (address != null) {
 
-                            if (address != null && chainId != null) {
-
-                                currentERC681.address?.let { address ->
+                                    currentERC681.address?.let { address ->
 
 
-                                    val metaDataForAddressOnChain = withContext(Dispatchers.Default) {
-                                        metaDataRepo.getMetaDataForAddressOnChain(Address(address), chainInfoProvider.getCurrentChainId())
+                                        val metaDataForAddressOnChain = withContext(Dispatchers.Default) {
+                                            metaDataRepo.getMetaDataForAddressOnChain(Address(address), chainInfoProvider.getCurrentChainId())
+                                        }
+
+                                        action_button.setVisibility(metaDataForAddressOnChain is MetaDataResolveResultOK)
+
+                                        if (metaDataForAddressOnChain is MetaDataResolveResultOK) {
+                                            if (settings.isAdvancedFunctionsEnabled()) {
+                                                from_contract_source_button.visibility = VISIBLE
+                                                from_contract_source_button.setOnClickListener {
+                                                    lifecycleScope.launch(Dispatchers.Main) {
+                                                        val uri = Uri.parse("https://contractrepo.komputing.org/contract/${chainInfoProvider.getCurrent()?.chainId}/${currentERC681.address}/sources/")
+                                                        startActivity(Intent(Intent.ACTION_VIEW, uri))
+                                                    }
+                                                }
+                                            }
+
+                                            action_label.visibility = VISIBLE
+                                            action_button.setText(if (currentERC681.function == null) R.string.add_action else R.string.change_action)
+                                            action_text.visibility = GONE
+
+                                            action_button.setOnClickListener {
+                                                val noFunctionERC681 = currentERC681.copy(function = null, functionParams = emptyList())
+                                                addActionForResult.launch(getERC681ActivityIntent(noFunctionERC681, ChangeActionActivity::class))
+                                            }
+
+                                        }
                                     }
 
-                                    action_button.setVisibility(metaDataForAddressOnChain is MetaDataResolveResultOK)
 
-                                    if (metaDataForAddressOnChain is MetaDataResolveResultOK) {
-                                        if (settings.isAdvancedFunctionsEnabled()) {
-                                            from_contract_source_button.visibility = VISIBLE
-                                            from_contract_source_button.setOnClickListener {
-                                                val uri = Uri.parse("https://contractrepo.komputing.org/contract/${chainInfoProvider.getCurrent()?.chainId}/${currentERC681.address}/sources/")
-                                                startActivity(Intent(Intent.ACTION_VIEW, uri))
+                                    if (functionVisibility) {
+                                        function_text.text = currentERC681.function + "(" + currentERC681.functionParams?.joinToString(",") { it.second } + ")"
+
+                                        if (BuildConfig.FLAVOR_connectivity == "online") {
+                                            lifecycleScope.launch(Dispatchers.Main) {
+                                                val res = currentERC681.resolveFunctionUserDoc(ChainId(chainInfoProvider.getCurrent()?.chainId!!), metaDataRepo)
+                                                Do exhaustive when (res) {
+                                                    is UserDocResultContractNotFound -> showWarning(WARNING_USERDOC, "Contact MetaData not found. Please <a href='wallethwarn:contractnotfound||" + currentERC681.address + "'>read here</a> to learn more.")
+                                                    is ResolvedUserDocResult -> setUserDoc(res.userDoc)
+                                                    is ResolveErrorUserDocResult -> showWarning(WARNING_USERDOC, "Cannot resolve Userdoc. " + res.error)
+                                                    is NoMatchingUserDocFound -> showWarning(WARNING_USERDOC, "Userdoc for function not found. Please <a href='wallethwarn:userdocnotfound||" + currentERC681.address + "||" + currentERC681.function + "'>read here</a> to learn more.")
+                                                }
                                             }
                                         }
-
-                                        action_label.visibility = VISIBLE
-                                        action_button.setText(if (currentERC681.function == null) R.string.add_action else R.string.change_action)
-                                        action_text.visibility = GONE
-
-                                        action_button.setOnClickListener {
-                                            val noFunctionERC681 = currentERC681.copy(function = null, functionParams = emptyList())
-                                            addActionForResult.launch(getERC681ActivityIntent(noFunctionERC681, ChangeActionActivity::class))
-                                        }
-
                                     }
                                 }
 
 
-                                if (functionVisibility) {
-                                    function_text.text = currentERC681.function + "(" + currentERC681.functionParams?.joinToString(",") { it.second } + ")"
+                                intent.getStringExtra("nonce")?.let {
+                                    nonce_input.setText(HexString(it).maybeHexToBigInteger().toString())
+                                }
 
-                                    if (BuildConfig.FLAVOR_connectivity == "online") {
-                                        lifecycleScope.launch(Dispatchers.Main) {
-                                            val res = currentERC681.resolveFunctionUserDoc(ChainId(chainInfoProvider.getCurrent()?.chainId!!), metaDataRepo)
-                                            Do exhaustive when (res) {
-                                                is UserDocResultContractNotFound -> showWarning(WARNING_USERDOC, "Contact MetaData not found. Please <a href='wallethwarn:contractnotfound||" + currentERC681.address + "'>read here</a> to learn more.")
-                                                is ResolvedUserDocResult -> setUserDoc(res.userDoc)
-                                                is ResolveErrorUserDocResult -> showWarning(WARNING_USERDOC, "Cannot resolve Userdoc. " + res.error)
-                                                is NoMatchingUserDocFound -> showWarning(WARNING_USERDOC, "Userdoc for function not found. Please <a href='wallethwarn:userdocnotfound||" + currentERC681.address + "||" + currentERC681.function + "'>read here</a> to learn more.")
+                                currentToAddress = localERC681.getToAddress()?.apply {
+                                    if (cleanHex.isEmpty()) {
+                                        action_label.setVisibility(true)
+                                        action_text.setVisibility(true)
+                                        action_text.text = "Contract creation"
+                                        to_address.setVisibility(false)
+                                        to_label.setVisibility(false)
+                                        from_address_enter_button.setVisibility(false)
+                                        address_list_button.setVisibility(false)
+                                    }
+                                    to_address.text = appDatabase.addressBook.resolveNameWithFallback(this, ensMap[hex]?.let {
+                                        "$it($hex)"
+                                    } ?: hex)
+
+                                }
+
+
+                                if (localERC681.isTokenTransfer()) {
+                                    if (localERC681.address != null) {
+                                        val token = appDatabase.tokens.forAddress(Address(localERC681.address!!))
+                                        if (token != null) {
+
+                                            if (token != currentTokenProvider.getCurrent()) {
+                                                currentTokenProvider.setCurrent(token)
+                                                onCurrentTokenChanged()
                                             }
-                                        }
-                                    }
-                                }
-                            }
 
-
-                            intent.getStringExtra("nonce")?.let {
-                                nonce_input.setText(HexString(it).maybeHexToBigInteger().toString())
-                            }
-
-                            currentToAddress = localERC681.getToAddress()?.apply {
-                                if (cleanHex.isEmpty()) {
-                                    action_label.setVisibility(true)
-                                    action_text.setVisibility(true)
-                                    action_text.text = "Contract creation"
-                                    to_address.setVisibility(false)
-                                    to_label.setVisibility(false)
-                                    from_address_enter_button.setVisibility(false)
-                                    address_list_button.setVisibility(false)
-                                }
-                                to_address.text = appDatabase.addressBook.resolveNameWithFallback(this, ensMap[hex]?.let {
-                                    "$it($hex)"
-                                } ?: hex)
-
-                            }
-
-
-                            if (localERC681.isTokenTransfer()) {
-                                if (localERC681.address != null) {
-                                    val token = appDatabase.tokens.forAddress(Address(localERC681.address!!))
-                                    if (token != null) {
-
-                                        if (token != currentTokenProvider.getCurrent()) {
-                                            currentTokenProvider.setCurrent(token)
-                                            onCurrentTokenChanged()
+                                            localERC681.getValueForTokenTransfer()?.let {
+                                                amountController.setValue(it, token)
+                                            }
+                                        } else {
+                                            alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
                                         }
 
-                                        localERC681.getValueForTokenTransfer()?.let {
-                                            amountController.setValue(it, token)
-                                        }
                                     } else {
-                                        alert(getString(R.string.add_token_manually, localERC681.address), getString(R.string.unknown_token))
+                                        alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
                                     }
-
                                 } else {
-                                    alert(getString(R.string.no_token_address), getString(R.string.unknown_token))
-                                }
-                            } else {
 
-                                if (localERC681.function != null) {
-                                    if (!checkFunctionParameters(localERC681)) {
-                                        localERC681.function = null
-                                    }
-                                }
-
-                                localERC681.value?.let {
-
-                                    if (!currentTokenProvider.getCurrent().isRootToken()) {
-                                        chainInfoProvider.getCurrent()?.getRootToken()?.let { token ->
-                                            currentTokenProvider.setCurrent(token)
-                                            onCurrentTokenChanged()
+                                    if (localERC681.function != null) {
+                                        if (!checkFunctionParameters(localERC681)) {
+                                            localERC681.function = null
                                         }
                                     }
 
-                                    amountController.setValue(it, currentTokenProvider.getCurrent())
+                                    localERC681.value?.let {
+
+                                        if (!currentTokenProvider.getCurrent().isRootToken()) {
+                                            chainInfoProvider.getCurrent().getRootToken().let { token ->
+                                                currentTokenProvider.setCurrent(token)
+                                                onCurrentTokenChanged()
+                                            }
+                                        }
+
+                                        amountController.setValue(it, currentTokenProvider.getCurrent())
+                                    }
                                 }
+
+                                localERC681.gasPrice?.let {
+                                    show_advanced_button.callOnClick()
+                                    gas_limit_input.setText(it.toString())
+                                }
+
+                                estimateGas()
                             }
-
-                            localERC681.gasPrice?.let {
-                                show_advanced_button.callOnClick()
-                                gas_limit_input.setText(it.toString())
-                            }
-
-                            estimateGas()
-                        }
-                    })
+                        })
 
 
-        } else {
-            currentToAddress = null
-            to_address.setText(R.string.no_address_selected)
-            if (fromUser || lastWarningURI != uri) {
-                lastWarningURI = uri
-                if (uri.isEthereumURLString()) {
-                    alert(getString(R.string.create_tx_error_invalid_url_msg, uri), getString(R.string.create_tx_error_invalid_url_title))
-                } else {
-                    alert(getString(R.string.create_tx_error_invalid_address, uri))
+            } else {
+                currentToAddress = null
+                to_address.setText(R.string.no_address_selected)
+                if (fromUser || lastWarningURI != uri) {
+                    lastWarningURI = uri
+                    if (uri.isEthereumURLString()) {
+                        alert(getString(R.string.create_tx_error_invalid_url_msg, uri), getString(R.string.create_tx_error_invalid_url_title))
+                    } else {
+                        alert(getString(R.string.create_tx_error_invalid_address, uri))
+                    }
+
                 }
-
             }
         }
     }
@@ -858,22 +873,24 @@ class CreateTransactionActivity : BaseSubActivity() {
     }
 
     private fun storeDefaultGasPriceAndFinish() {
-        val gasPrice = getGasPrice()
-        val chainId = chainInfoProvider.getCurrentChainId()
-        if (!listOf(valueOf(4L), valueOf(5L), valueOf(100L)).contains(chainId.value) && gasPrice != settings.getGasPriceFor(chainId.value)) {
-            AlertDialog.Builder(this)
-                    .setTitle(getString(R.string.default_gas_price, chainInfoProvider.getCurrent()!!.name))
-                    .setMessage(R.string.store_gas_price)
-                    .setPositiveButton(R.string.save) { _: DialogInterface, _: Int ->
-                        settings.storeGasPriceFor(gasPrice, chainId.value)
-                        finishAndFollowUp()
-                    }
-                    .setNegativeButton(R.string.no) { _: DialogInterface, _: Int ->
-                        finishAndFollowUp()
-                    }
-                    .show()
-        } else {
-            finishAndFollowUp()
+        lifecycleScope.launch(Dispatchers.Main) {
+            val gasPrice = getGasPrice()
+            val chainId = chainInfoProvider.getCurrentChainId()
+            if (!listOf(valueOf(4L), valueOf(5L), valueOf(100L)).contains(chainId.value) && gasPrice != settings.getGasPriceFor(chainId.value)) {
+                AlertDialog.Builder(this@CreateTransactionActivity)
+                        .setTitle(getString(R.string.default_gas_price, chainInfoProvider.getCurrent()!!.name))
+                        .setMessage(R.string.store_gas_price)
+                        .setPositiveButton(R.string.save) { _: DialogInterface, _: Int ->
+                            settings.storeGasPriceFor(gasPrice, chainId.value)
+                            finishAndFollowUp()
+                        }
+                        .setNegativeButton(R.string.no) { _: DialogInterface, _: Int ->
+                            finishAndFollowUp()
+                        }
+                        .show()
+            } else {
+                finishAndFollowUp()
+            }
         }
     }
 

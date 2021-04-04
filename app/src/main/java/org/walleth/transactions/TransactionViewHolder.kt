@@ -53,7 +53,9 @@ class TransactionViewHolder(itemView: View,
                     }
                 }
             } else {
-                amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent()?.getRootToken())
+                GlobalScope.launch(Dispatchers.Main) {
+                    amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent().getRootToken())
+                }
             }
 
             relevantAddress?.let {

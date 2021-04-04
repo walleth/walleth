@@ -48,7 +48,7 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
     }
 
     override fun handleExtraMessage(res: Message<*, *>?) = Unit // we ony care for addresses
-    override fun getTaskSpecificMessage(): Message<*, *>? = null // and have no specific task
+    override suspend fun getTaskSpecificMessage(): Message<*, *>? = null // and have no specific task
 
     private fun showDerivationDialog() {
 

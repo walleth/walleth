@@ -1,5 +1,7 @@
 package org.walleth.testdata
 
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import org.kethereum.crypto.createEthereumKeyPair
 import org.kethereum.crypto.toAddress
 import org.walleth.data.DEFAULT_PASSWORD
@@ -20,8 +22,10 @@ class DefaultCurrentAddressProvider(settings: Settings, keyStore: TestKeyStore) 
         keyStore.addKey(DEFAULT_TEST_KEY, DEFAULT_PASSWORD, true)
         keyStore.addKey(DEFAULT_TEST_KEY2, DEFAULT_PASSWORD, true)
         keyStore.addKey(DEFAULT_TEST_KEY3, DEFAULT_PASSWORD, true)
-        setCurrent(DEFAULT_TEST_ADDRESS)
 
+        GlobalScope.launch {
+            setCurrent(DEFAULT_TEST_ADDRESS)
+        }
     }
 
 }

@@ -42,18 +42,19 @@ import org.walleth.transactions.CreateTransactionActivity
 import org.walleth.util.decimalsAsMultiplicator
 import java.math.BigInteger
 
-val testToken = Token(
+suspend fun getTestToken() = Token(
         "Test",
         "TEST",
         Address("0x01"),
         15,
-        TestApp.chainInfoProvider.getCurrent()!!.chainId,
+        TestApp.chainInfoProvider.getCurrent().chainId,
         deleted = true,
         starred = false,
         fromUser = false,
         order = 1
 )
-val eth = TestApp.chainInfoProvider.getCurrent()!!.getRootToken()
+
+suspend fun getChainRootToken() = TestApp.chainInfoProvider.getCurrent().getRootToken()
 
 class TheCreateTransactionActivity {
 
@@ -71,11 +72,11 @@ class TheCreateTransactionActivity {
     }
 
     @Test
-    fun chainNameDisplayedInSubtitle() {
+    fun chainNameDisplayedInSubtitle() = runBlocking {
         val chainDefinition = TestApp.chainInfoProvider.getCurrent()
         rule.launchActivity()
 
-        Espresso.onView(withText(rule.activity.getString(R.string.create_transaction_on_chain_subtitle, chainDefinition?.name)))
+        Espresso.onView(withText(rule.activity.getString(R.string.create_transaction_on_chain_subtitle, chainDefinition.name)))
                 .check(matches(ViewMatchers.isDisplayed()))
         rule.screenShot("chain_name_in_subtitle")
         Truth.assertThat(rule.activity.isFinishing).isFalse()
@@ -106,8 +107,8 @@ class TheCreateTransactionActivity {
     }
 
     @Test
-    fun acceptsDifferentChainId() {
-        val chainIdForTransaction = TestApp.chainInfoProvider.getCurrent()!!.chainId
+    fun acceptsDifferentChainId() = runBlocking {
+        val chainIdForTransaction = TestApp.chainInfoProvider.getCurrent().chainId
         rule.launchActivity(Intent.getIntentOld("$urlBase@$chainIdForTransaction"))
 
         Espresso.onView(withText(R.string.alert_chain_unsupported_title)).check(ViewAssertions.doesNotExist())
@@ -166,9 +167,9 @@ class TheCreateTransactionActivity {
     }
 
     @Test
-    fun usesCorrectValuesForETHTransaction1() {
-        setCurrentToken(eth)
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+    fun usesCorrectValuesForETHTransaction1() = runBlocking {
+        setCurrentToken(getChainRootToken())
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getChainRootToken().address, TestApp.chainInfoProvider.getCurrent().chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
         rule.launchActivity(Intent.getIntentOld("$urlBase?value=1"))
 
@@ -182,9 +183,9 @@ class TheCreateTransactionActivity {
     }
 
     @Test
-    fun usesCorrectValuesForETHTransaction2() {
-        setCurrentToken(testToken)
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+    fun usesCorrectValuesForETHTransaction2() = runBlocking {
+        setCurrentToken(getTestToken())
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getChainRootToken().address, TestApp.chainInfoProvider.getCurrent().chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
         rule.launchActivity(Intent.getIntentOld("$urlBase?value=1"))
 
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
@@ -198,14 +199,14 @@ class TheCreateTransactionActivity {
 
     @Test
     fun usesCorrectValuesForCurrentTokenTransfer(): Unit = runBlocking {
-        TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
-        setCurrentToken(testToken)
+        TestApp.testDatabase.tokens.addIfNotPresent(listOf(getTestToken()))
+        setCurrentToken(getTestToken())
 
         val toAddress = DEFAULT_TEST_ADDRESS2
-        val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()
+        val uri = TokenTransfer(toAddress, getTestToken(), BigInteger.TEN).toERC681().generateURL()
 
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getChainRootToken().address, TestApp.chainInfoProvider.getCurrent().chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getTestToken().address, TestApp.chainInfoProvider.getCurrent().chainId, 1L, BigInteger.TEN * BigInteger("1" + "0".repeat(18))))
 
         rule.launchActivity(Intent.getIntentOld(uri))
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
@@ -213,7 +214,7 @@ class TheCreateTransactionActivity {
         val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(toAddress))
         Truth.assertThat(allTransactionsForAddress).hasSize(0)
 
-        val allTransactionsForToken = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(testToken.address))
+        val allTransactionsForToken = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(getTestToken().address))
         Truth.assertThat(allTransactionsForToken).hasSize(1)
         Truth.assertThat(allTransactionsForToken[0].transaction.isTokenTransfer()).isTrue()
         Truth.assertThat(allTransactionsForToken[0].transaction.getTokenTransferTo()).isEqualTo(toAddress)
@@ -222,15 +223,14 @@ class TheCreateTransactionActivity {
 
     @Test
     fun usesCorrectValuesForNewTokenTransfer(): Unit = runBlocking {
-        val eth = TestApp.chainInfoProvider.getCurrent()!!.getRootToken()
+        val eth = TestApp.chainInfoProvider.getCurrent().getRootToken()
         setCurrentToken(eth)
-        TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * eth.decimalsAsMultiplicator().toBigInteger()))
-        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, TestApp.chainInfoProvider.getCurrent()!!.chainId, 1L, BigInteger.TEN * testToken.decimalsAsMultiplicator().toBigInteger()))
+        TestApp.testDatabase.tokens.addIfNotPresent(listOf(getTestToken()))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), eth.address, TestApp.chainInfoProvider.getCurrent().chainId, 1L, BigInteger.TEN * eth.decimalsAsMultiplicator().toBigInteger()))
+        TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getTestToken().address, TestApp.chainInfoProvider.getCurrent().chainId, 1L, BigInteger.TEN * getTestToken().decimalsAsMultiplicator().toBigInteger()))
 
         val toAddress = DEFAULT_TEST_ADDRESS2
-        val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()
-
+        val uri = TokenTransfer(toAddress, getTestToken(), BigInteger.TEN).toERC681().generateURL()
 
         rule.launchActivity(Intent.getIntentOld(uri))
         Espresso.onView(ViewMatchers.withId(R.id.fab)).perform(ViewActions.closeSoftKeyboard(), click())
@@ -238,7 +238,7 @@ class TheCreateTransactionActivity {
         val allTransactionsForAddress = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(toAddress))
         Truth.assertThat(allTransactionsForAddress).hasSize(0)
 
-        val allTransactionsForToken = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(testToken.address))
+        val allTransactionsForToken = TestApp.testDatabase.transactions.getAllTransactionsForAddress(listOf(getTestToken().address))
         Truth.assertThat(allTransactionsForToken).hasSize(1)
         Truth.assertThat(allTransactionsForToken[0].transaction.isTokenTransfer()).isTrue()
         Truth.assertThat(allTransactionsForToken[0].transaction.getTokenTransferTo()).isEqualTo(toAddress)
@@ -246,11 +246,11 @@ class TheCreateTransactionActivity {
     }
 
     @Test
-    fun doesNotAcceptUnknownTokenTransfer() {
-        setCurrentToken(TestApp.chainInfoProvider.getCurrent()!!.getRootToken())
+    fun doesNotAcceptUnknownTokenTransfer() = runBlocking {
+        setCurrentToken(TestApp.chainInfoProvider.getCurrent().getRootToken())
 
         val toAddress = DEFAULT_TEST_ADDRESS2
-        val uri = TokenTransfer(toAddress, testToken, BigInteger.TEN).toERC681().generateURL()
+        val uri = TokenTransfer(toAddress, getTestToken(), BigInteger.TEN).toERC681().generateURL()
 
         rule.launchActivity(Intent.getIntentOld(uri))
 
@@ -264,10 +264,10 @@ class TheCreateTransactionActivity {
     @Test
     fun doesNotChangeTokenOnToAddressScan() {
         runBlocking {
-            setCurrentToken(testToken)
-            TestApp.testDatabase.tokens.addIfNotPresent(listOf(testToken))
+            setCurrentToken(getTestToken())
+            TestApp.testDatabase.tokens.addIfNotPresent(listOf(getTestToken()))
 
-            val uri = TokenTransfer(DEFAULT_TEST_ADDRESS2, testToken, BigInteger.TEN).toERC681()
+            val uri = TokenTransfer(DEFAULT_TEST_ADDRESS2, getTestToken(), BigInteger.TEN).toERC681()
                     .generateURL()
             rule.launchActivity(Intent.getIntentOld(uri))
 
@@ -276,7 +276,7 @@ class TheCreateTransactionActivity {
 
             Espresso.onView(ViewMatchers.withId(R.id.menu_scan)).perform(click())
 
-            Espresso.onView(withText(testToken.symbol)).check(matches(ViewMatchers.isDisplayed()))
+            Espresso.onView(withText(getTestToken().symbol)).check(matches(ViewMatchers.isDisplayed()))
 
         }
     }

@@ -6,6 +6,9 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import androidx.appcompat.app.AlertDialog
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.kethereum.erc1328.isERC1328
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.isERC681
@@ -83,8 +86,10 @@ class IntentHandlerActivity : WallethActivity() {
                     val wantedAddress = Address(split.first())
 
                     if (keyStore.hasKeyForForAddress(wantedAddress)) {
-                        currentAddressProvider.setCurrent(wantedAddress)
-                        startEthereumSignedMessage()
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            currentAddressProvider.setCurrent(wantedAddress)
+                            startEthereumSignedMessage()
+                        }
                     } else {
                         alert("Don't have the key for the requested address $wantedAddress")
                     }
@@ -146,12 +151,14 @@ class IntentHandlerActivity : WallethActivity() {
             REQUEST_CODE_SELECT_TO_ADDRESS -> {
 
                 if (resultCode == Activity.RESULT_OK) {
-                     data?.getStringExtra("HEX")?.let {
-                        currentAddressProvider.setCurrent(Address(it))
-                    }
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        data?.getStringExtra("HEX")?.let {
+                            currentAddressProvider.setCurrent(Address(it))
+                        }
 
-                    settings.filterAddressesKeyOnly = oldFilterAddressesKeyOnly
-                    startEthereumSignedMessage()
+                        settings.filterAddressesKeyOnly = oldFilterAddressesKeyOnly
+                        startEthereumSignedMessage()
+                    }
                 } else {
                     finish()
                 }

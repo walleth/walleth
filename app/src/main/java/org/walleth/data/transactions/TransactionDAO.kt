@@ -36,6 +36,8 @@ interface TransactionDAO {
     @Query("SELECT * FROM transactions WHERE \"to\" COLLATE NOCASE IN(:addresses) OR  \"from\" COLLATE NOCASE IN(:addresses)")
     fun getAllTransactionsForAddress(addresses: List<Address>): List<TransactionEntity>
 
+    @Query("SELECT EXISTS(SELECT * FROM transactions WHERE (\"to\" = :address COLLATE NOCASE OR \"extraIncomingAffectedAddress\" = :address COLLATE NOCASE )AND chain=:chain)")
+    fun isTransactionForAddressOnChainExisting(address: Address, chain: BigInteger) : Boolean
 
     @Query("SELECT * FROM transactions")
     fun getAll(): List<TransactionEntity>

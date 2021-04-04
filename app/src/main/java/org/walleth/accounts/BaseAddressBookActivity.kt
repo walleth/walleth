@@ -51,7 +51,7 @@ abstract class BaseAddressBookActivity : BaseEnhancedListActivity<AddressBookEnt
                 }
             }
 
-            override fun filter(item: AddressBookEntry) = (!settings.filterAddressesStared || item.starred)
+            override suspend fun filter(item: AddressBookEntry) = (!settings.filterAddressesStared || item.starred)
                     && (!settings.filterAddressesKeyOnly || keyStore.hasKeyForForAddress(item.address))
                     && checkForSearchTerm(item.name, item.note ?: "", item.address.hex)
                     && item != faucet

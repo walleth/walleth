@@ -6,12 +6,11 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.result.contract.ActivityResultContracts.*
-import androidx.lifecycle.Observer
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_create_token.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.model.Address
@@ -55,28 +54,27 @@ class CreateTokenDefinitionActivity : BaseSubActivity() {
             } else if (newTokenAddress.isBlank()) {
                 alert(R.string.create_token_activity_error_invalid_address)
             } else {
-                chainInfoProvider.observe(this, Observer { networkDefinition ->
-                    if (networkDefinition == null)
-                        throw IllegalStateException("NetworkDefinition should not be null")
+                lifecycleScope.launch(Dispatchers.Main) {
+                    chainInfoProvider.getFlow().collect { networkDefinition ->
 
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        withContext(Dispatchers.Default) {
-                            appDatabase.tokens.upsert(Token(
-                                    name = newTokenName,
-                                    symbol = newTokenName,
-                                    address = Address(newTokenAddress),
-                                    decimals = newDecimals,
-                                    chain = networkDefinition.chainId,
-                                    deleted = false,
-                                    starred = true,
-                                    fromUser = true,
-                                    order = 0
-                            ))
+                        lifecycleScope.launch(Dispatchers.Main) {
+                            withContext(Dispatchers.Default) {
+                                appDatabase.tokens.upsert(Token(
+                                        name = newTokenName,
+                                        symbol = newTokenName,
+                                        address = Address(newTokenAddress),
+                                        decimals = newDecimals,
+                                        chain = networkDefinition.chainId,
+                                        deleted = false,
+                                        starred = true,
+                                        fromUser = true,
+                                        order = 0
+                                ))
+                            }
+                            finish()
                         }
-                        finish()
                     }
-                })
-
+                }
             }
         }
     }

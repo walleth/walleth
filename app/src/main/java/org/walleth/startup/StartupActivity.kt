@@ -3,9 +3,12 @@ package org.walleth.startup
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts.*
+import androidx.activity.result.contract.ActivityResultContracts.StartActivityForResult
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -27,9 +30,12 @@ class StartupActivity : AppCompatActivity() {
 
             val addressString = it.data?.getStringExtra(EXTRA_KEY_ADDRESS) ?: throw IllegalStateException("No EXTRA_KEY_ADDRESS in onActivityResult")
             val address = Address(addressString)
-            currentAddressProvider.setCurrent(address)
-            startActivityFromClass(OverviewActivity::class.java)
-            finish()
+
+            lifecycleScope.launch(Dispatchers.Main) {
+                currentAddressProvider.setCurrent(address)
+                startActivityFromClass(OverviewActivity::class.java)
+                finish()
+            }
 
         } else {
             finish()

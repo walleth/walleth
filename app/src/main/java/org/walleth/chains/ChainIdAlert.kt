@@ -19,10 +19,11 @@ fun Context.chainIDAlert(chainInfoProvider: ChainInfoProvider,
                          continuationWithWrongChainId: () -> Unit = {},
                          continuationWithCorrectOrNullChainId: () -> Unit) {
 
-    if (chainId == null || chainId == chainInfoProvider.getCurrentChainId()) {
-        continuationWithCorrectOrNullChainId()
-    } else {
-        GlobalScope.launch(Dispatchers.Default) {
+    GlobalScope.launch(Dispatchers.Default) {
+        if (chainId == null || chainId == chainInfoProvider.getCurrentChainId()) {
+            continuationWithCorrectOrNullChainId()
+        } else {
+
             val networkToSwitchTo = appDatabase.chainInfo.getByChainId(chainId.value)
 
             GlobalScope.launch(Dispatchers.Main) {
@@ -38,8 +39,10 @@ fun Context.chainIDAlert(chainInfoProvider: ChainInfoProvider,
                     AlertDialog.Builder(this@chainIDAlert)
                             .setMessage("wrong chainID - do you want to switch?")
                             .setPositiveButton(android.R.string.yes) { _, _ ->
-                                chainInfoProvider.setCurrent(networkToSwitchTo)
-                                continuationWithCorrectOrNullChainId()
+                                GlobalScope.launch {
+                                    chainInfoProvider.setCurrent(networkToSwitchTo)
+                                    continuationWithCorrectOrNullChainId()
+                                }
                             }
                             .setNegativeButton(android.R.string.no) { _, _ ->
                                 continuationWithWrongChainId()

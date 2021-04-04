@@ -33,7 +33,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
     private val isKeepKeyMode by lazy { intent.extras?.getBoolean(KEY_KEEPKEY_MODE) == true }
     abstract fun handleExtraMessage(res: Message<*, *>?)
     abstract fun handleAddress(address: Address)
-    abstract fun getTaskSpecificMessage(): Message<*, *>?
+    abstract suspend fun getTaskSpecificMessage(): Message<*, *>?
 
     protected var currentBIP44: BIP44? = null
     protected val appDatabase: AppDatabase by inject()
@@ -81,10 +81,12 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                     finishingAlert("Without you granting permission for this device WallETH is not able to talk to the device")
                 },
                 onDeviceConnected = {
-                    val m = getMessageForState()
-                    val result = it.exchangeMessage(m)
-                    result?.handleTrezorResult()
-                    it.disconnect()
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        val m = getMessageForState()
+                        val result = it.exchangeMessage(m)
+                        result?.handleTrezorResult()
+                        it.disconnect()
+                    }
                 })
 
     }
@@ -175,7 +177,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
         finish()
     }
 
-    protected open fun getMessageForState(): Message<*, *> = when (state) {
+    protected open suspend fun getMessageForState(): Message<*, *> = when (state) {
         INIT, REQUEST_PERMISSION -> Initialize.Builder().build()
         READ_ADDRESS -> {
             EthereumGetAddress.Builder()

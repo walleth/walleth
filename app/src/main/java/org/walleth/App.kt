@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Build
 import androidx.annotation.XmlRes
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.Observer
 import androidx.multidex.MultiDex
 import androidx.multidex.MultiDexApplication
 import androidx.preference.PreferenceScreen
@@ -38,7 +37,6 @@ import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.*
 import org.walleth.data.addresses.*
 import org.walleth.data.blockexplorer.BlockExplorerProvider
-import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.data.config.KotprefSettings
 import org.walleth.data.config.Settings
 import org.walleth.data.ens.ENSProvider
@@ -49,7 +47,7 @@ import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.rpc.RPCProviderImpl
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.tokens.CurrentTokenProvider
-import org.walleth.data.tokens.getRootToken
+import org.walleth.data.tokens.CurrentTokenProviderImpl
 import org.walleth.migrations.ChainAddingAndRecreatingMigration
 import org.walleth.migrations.TransactionExtendingMigration
 import org.walleth.nfc.NFCCredentialStore
@@ -80,7 +78,7 @@ open class App : MultiDexApplication() {
         single { SyncProgressProvider() }
         single<KeyStore> { keyStore }
         single<Settings> { KotprefSettings }
-        single { CurrentTokenProvider(get()) }
+        single<CurrentTokenProvider> { CurrentTokenProviderImpl(get()) }
         single<RPCProvider> { RPCProviderImpl(network = get(), appDatabase = get(), okHttpClient = get(), settings = get()) }
         single<ENSProvider> { ENSProviderImpl(get()) }
         single {
@@ -94,10 +92,10 @@ open class App : MultiDexApplication() {
                     ).build()
         }
 
-        single { ChainInfoProvider(get(), get(), get(), assets) }
+        single { ChainInfoProvider(settings = get(), appDatabase = get(), keyStore = get(), moshi = get(), assetManager = assets) }
         single { BlockExplorerProvider(get()) }
         single<CurrentAddressProvider> {
-            InitializingCurrentAddressProvider(settings = get())
+            CurrentAddressProvider(settings = get())
         }
         single<CachedOnlineMethodSignatureRepository> {
             CachedOnlineMethodSignatureRepositoryImpl(get(), File(cacheDir, "funsignatures").apply {
@@ -166,46 +164,6 @@ open class App : MultiDexApplication() {
         val currentTokenProvider: CurrentTokenProvider by inject()
         val chainInfoProvider: ChainInfoProvider by inject()
 
-        val initialChainObserver = object : Observer<ChainInfo> {
-            override fun onChanged(chainInfo: ChainInfo?) {
-                chainInfo?.getRootToken()?.let { rootToken ->
-                    initTokens(settings, assets, appDatabase)
-                    currentTokenProvider.setCurrent(rootToken)
-                    chainInfoProvider.removeObserver(this)
-                }
-
-                GlobalScope.launch(Dispatchers.Default) {
-                    if (settings.dataVersion < 3) {
-                        val all = appDatabase.chainInfo.getAll()
-                        var currentMin = all.filter { it.order != null }.minByOrNull { it.order!! }?.order ?: 0
-                        all.forEach {
-                            if (it.order == null) {
-                                it.order = currentMin
-                            }
-                            currentMin -= 10
-                        }
-                        appDatabase.chainInfo.upsert(all)
-                    }
-                    if (settings.dataVersion < 1) {
-                        appDatabase.addressBook.all().forEach {
-                            if (it.keySpec == null || it.keySpec?.isBlank() == true) {
-                                val type = if (keyStore.hasKeyForForAddress(it.address)) ACCOUNT_TYPE_BURNER else ACCOUNT_TYPE_WATCH_ONLY
-                                it.keySpec = AccountKeySpec(type).toJSON()
-                                appDatabase.addressBook.upsert(it)
-                            } else if (it.keySpec?.startsWith("m") == true) {
-                                it.keySpec = AccountKeySpec(ACCOUNT_TYPE_TREZOR, derivationPath = it.keySpec).toJSON()
-                                appDatabase.addressBook.upsert(it)
-                            }
-                        }
-                    }
-                    settings.dataVersion = 4
-                }
-
-                isInitialized = true
-            }
-        }
-
-        chainInfoProvider.observeForever(initialChainObserver)
 
     }
 
@@ -223,7 +181,6 @@ open class App : MultiDexApplication() {
         // A process lifecycle observer would be nicer here - but ran into serious trouble here - so doing this for now
         val onActivityToForegroundObserver: MutableSet<() -> Unit> = HashSet()
 
-        var isInitialized = false
         val postInitCallbacks = mutableListOf<() -> Unit>()
         val extraPreferences = mutableListOf<Pair<@XmlRes Int, (preferenceScreen: PreferenceScreen) -> Unit>>()
 

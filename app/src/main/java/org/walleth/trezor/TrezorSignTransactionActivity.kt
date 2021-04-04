@@ -61,7 +61,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
     }
 
     private fun ByteArray.toByteString() = toByteString(0, size)
-    override fun getTaskSpecificMessage() = if (isKeepKeyDevice) {
+    override suspend fun getTaskSpecificMessage() = if (isKeepKeyDevice) {
         EthereumSignTxKeepKey.Builder()
                 //.to(transaction.transaction.to!!.hex)
                 .to(HexString(transaction.transaction.to!!.hex).hexToByteArray().toByteString())
@@ -69,7 +69,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
                 .nonce(transaction.transaction.nonce!!.toByteArray().removeLeadingZero().toByteString())
                 .gas_price(transaction.transaction.gasPrice!!.toByteArray().removeLeadingZero().toByteString())
                 .gas_limit(transaction.transaction.gasLimit!!.toByteArray().removeLeadingZero().toByteString())
-                .chain_id(chainInfoProvider.value!!.chainId.toInt())
+                .chain_id(chainInfoProvider.getCurrent().chainId.toInt())
                 .data_length(transaction.transaction.input.size)
                 .data_initial_chunk(transaction.transaction.input.toByteString())
                 .address_n(currentBIP44!!.path.map { it.numberWithHardeningFlag })
@@ -81,7 +81,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
                 .nonce(transaction.transaction.nonce!!.toByteArray().removeLeadingZero().toByteString())
                 .gas_price(transaction.transaction.gasPrice!!.toByteArray().removeLeadingZero().toByteString())
                 .gas_limit(transaction.transaction.gasLimit!!.toByteArray().removeLeadingZero().toByteString())
-                .chain_id(chainInfoProvider.value!!.chainId.toInt())
+                .chain_id(chainInfoProvider.getCurrent().chainId.toInt())
                 .data_length(transaction.transaction.input.size)
                 .data_initial_chunk(transaction.transaction.input.toByteString())
                 .address_n(currentBIP44!!.path.map { it.numberWithHardeningFlag })

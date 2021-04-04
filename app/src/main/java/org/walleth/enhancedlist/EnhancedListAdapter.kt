@@ -6,6 +6,9 @@ import android.view.ViewGroup
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import kotlinx.coroutines.flow.asFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.toList
 
 class EnhancedListViewHolder(view: View) : RecyclerView.ViewHolder(view)
 
@@ -31,16 +34,16 @@ class EnhancedListAdapter<T : ListItem>(
     }
 
 
-    fun filter(newList: List<T>,
-               filter: (t: T) -> Boolean,
-               onChange: () -> Unit,
-               areEqual: (t1: T, t2: T) -> Boolean) {
+    suspend fun filter(newList: List<T>,
+                       filter: suspend (t: T) -> Boolean,
+                       onChange: suspend () -> Unit,
+                       areEqual: (t1: T, t2: T) -> Boolean) {
         if (list.size != newList.size || !list.containsAll(newList)) {
             onChange.invoke()
         }
         list = newList
         val newDisplayList = newList
-                .asSequence()
+                .asFlow()
                 .filter { filter(it) }
                 .filter { !it.deleted }
                 .toList()

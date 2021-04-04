@@ -6,6 +6,10 @@ import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.espresso.matcher.ViewMatchers.Visibility.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import org.hamcrest.Matchers.allOf
 import org.hamcrest.Matchers.containsString
 import org.junit.FixMethodOrder
@@ -29,7 +33,7 @@ import java.math.BigInteger.ZERO
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class TheOverviewActivity {
 
-    private val currentNetwork = TestApp.chainInfoProvider.getCurrent()
+    suspend fun getCurrentChain() = TestApp.chainInfoProvider.getCurrent()
 
     @get:Rule
     var rule = TruleskActivityRule(OverviewActivity::class.java, false)
@@ -40,7 +44,11 @@ class TheOverviewActivity {
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
             TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork!!.getRootToken().address, currentNetwork.chainId, 42, ZERO))
+            GlobalScope.launch {
+                val address = TestApp.currentAddressProvider.getCurrentNeverNull()
+                val balance = Balance(address, getCurrentChain().getRootToken().address, getCurrentChain().chainId, 42, ZERO)
+                TestApp.testDatabase.balances.upsert(balance)
+            }
         }
 
         `when`(TestApp.mySettings.onboardingDone).thenReturn(false)
@@ -66,10 +74,11 @@ class TheOverviewActivity {
 
     }
 
-    @Test
-    fun behavesCorrectlyNoTransactions() {
 
-        val balance = Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork!!.getRootToken().address, currentNetwork.chainId, 42, ZERO)
+    @Test
+    fun behavesCorrectlyNoTransactions() = runBlocking {
+
+        val balance = Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), getCurrentChain().getRootToken().address, getCurrentChain().chainId, 42, ZERO)
 
         TestApp.testDatabase.runInTransaction {
             TestApp.testDatabase.balances.deleteAll()
@@ -89,16 +98,21 @@ class TheOverviewActivity {
         onView(withId(R.id.transaction_recycler_out)).check(matches(withEffectiveVisibility(GONE)))
 
         rule.screenShot("no_transactions")
+
     }
 
     @Test
     fun behavesCorrectlyWhenBalanceIsOneWithTransactions() {
 
         TestApp.testDatabase.runInTransaction {
-            TestApp.testDatabase.balances.deleteAll()
-            TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.transactions.loadTestData(ChainId(currentNetwork!!.chainId))
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork.getRootToken().address, currentNetwork.chainId, 42, ETH_IN_WEI))
+            GlobalScope.launch {
+                TestApp.testDatabase.balances.deleteAll()
+                TestApp.testDatabase.transactions.deleteAll()
+                TestApp.testDatabase.transactions.loadTestData(ChainId(getCurrentChain().chainId))
+                val address = TestApp.currentAddressProvider.getCurrentNeverNull()
+                val tokenAddress = getCurrentChain().getRootToken().address
+                TestApp.testDatabase.balances.upsert(Balance(address, tokenAddress, getCurrentChain().chainId, 42, ETH_IN_WEI))
+            }
         }
         rule.launchActivity()
 
@@ -115,14 +129,19 @@ class TheOverviewActivity {
     }
 
     @Test
-    fun behavesCorrectlyWhenZeroTokenBalanceButOneEther() {
-        setCurrentToken(testToken)
+    fun behavesCorrectlyWhenZeroTokenBalanceButOneEther() = runBlocking {
+
+        setCurrentToken(getTestToken())
+        val chain = getCurrentChain()
+        val testToken = getTestToken()
         TestApp.testDatabase.runInTransaction {
-            TestApp.testDatabase.balances.deleteAll()
-            TestApp.testDatabase.transactions.deleteAll()
-            TestApp.testDatabase.transactions.loadTestData(ChainId(currentNetwork!!.chainId))
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), currentNetwork.getRootToken().address, currentNetwork.chainId, 42, ETH_IN_WEI))
-            TestApp.testDatabase.balances.upsert(Balance(TestApp.currentAddressProvider.getCurrentNeverNull(), testToken.address, currentNetwork.chainId, 42, ZERO))
+                TestApp.testDatabase.balances.deleteAll()
+                TestApp.testDatabase.transactions.deleteAll()
+                TestApp.testDatabase.transactions.loadTestData(ChainId(chain.chainId))
+                val address = TestApp.currentAddressProvider.getCurrentNeverNull()
+                val tokenAddress = chain.getRootToken().address
+                TestApp.testDatabase.balances.upsert(Balance(address, tokenAddress, chain.chainId, 42, ETH_IN_WEI))
+                TestApp.testDatabase.balances.upsert(Balance(address, testToken.address, chain.chainId, 42, ZERO))
         }
 
         rule.launchActivity()

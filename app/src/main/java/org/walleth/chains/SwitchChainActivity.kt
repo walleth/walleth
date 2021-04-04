@@ -43,7 +43,7 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
 
             override suspend fun undeleteAll() = appDatabase.chainInfo.undeleteAll()
             override suspend fun deleteAllSoftDeleted() = appDatabase.chainInfo.deleteAllSoftDeleted()
-            override fun filter(item: ChainInfo) = (!settings.filterFastFaucet || item.hasFaucetWithAddressSupport())
+            override suspend fun filter(item: ChainInfo) = (!settings.filterFastFaucet || item.hasFaucetWithAddressSupport())
                     && (!settings.filterFaucet || (item.faucets.isNotEmpty() && !item.hasFaucetWithAddressSupport()))
                     && (!settings.filterTincubeth || (item.hasTincubethSupport()))
                     && checkForSearchTerm(item.name, item.nativeCurrency.symbol, item.nativeCurrency.name)
@@ -150,7 +150,9 @@ open class SwitchChainActivity : BaseEnhancedListActivity<ChainInfo>() {
                 layout = R.layout.item_network_definition,
                 bind = { chainInfo, view ->
                     view.setOnClickListener {
-                        chainInfoProvider.setCurrent(chainInfo)
+                        lifecycleScope.launch( context = Dispatchers.IO) {
+                            chainInfoProvider.setCurrent(chainInfo)
+                        }
                         setResult(RESULT_OK)
                         finish()
                     }

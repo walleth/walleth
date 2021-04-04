@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import coil.load
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
@@ -139,20 +140,23 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private val switchNetActionForResult = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK) {
-            mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+            lifecycleScope.launch(Dispatchers.Main) {
+                mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent().chainId.toLong())
+            }
         }
     }
 
 
     private val switchAccountActionForResult = registerForActivityResult(StartActivityForResult()) {
-        if (it.resultCode == Activity.RESULT_OK) {
-            it.data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { addressHex ->
-                currentAddressProvider.setCurrent(Address(addressHex))
-                accounts = listOf(addressHex)
+        lifecycleScope.launch(Dispatchers.Main) {
+            if (it.resultCode == Activity.RESULT_OK) {
+                it.data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { addressHex ->
+                    currentAddressProvider.setCurrent(Address(addressHex))
+                    accounts = listOf(addressHex)
 
-
-                if (approved) {
-                    mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
+                    if (approved) {
+                        mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent().chainId.toLong())
+                    }
                 }
             }
         }
@@ -265,20 +269,20 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
         supportActionBar?.subtitle = getString(R.string.wallet_connect)
 
-        currentAddressProvider.observe(this, { address ->
-            address?.let {
-                lifecycleScope.launch {
-                    val entry = appDatabase.addressBook.byAddress(address)
-                    account_name.text = entry?.name
-                }
-            }
-        })
-
-        currentNetworkProvider.observe(this, {
-            lifecycleScope.launch {
+        lifecycleScope.launch(Dispatchers.Main) {
+            currentNetworkProvider.getFlow().collect {
                 network_name.text = it.name
             }
-        })
+
+            currentAddressProvider.flow.collect { address ->
+                address?.let {
+                    lifecycleScope.launch {
+                        val entry = appDatabase.addressBook.byAddress(address)
+                        account_name.text = entry?.name
+                    }
+                }
+            }
+        }
 
         wc_change_account.setOnClickListener {
             selectAccount()
@@ -292,8 +296,9 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
             approved = true
 
             accounts = listOf(currentAddressProvider.getCurrentNeverNull().hex)
-            mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent()!!.chainId.toLong())
-
+            lifecycleScope.launch(Dispatchers.Main) {
+                mService?.handler?.session?.approve(accounts, currentNetworkProvider.getCurrent().chainId.toLong())
+            }
             if (close_after_interactions_checkbox.isChecked) {
                 finish()
             } else {

@@ -200,7 +200,9 @@ class ViewTransactionActivity : BaseSubActivity() {
                                 }
                             }
                         } else {
-                            amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent()?.getRootToken())
+                            lifecycleScope.launch(Dispatchers.Main) {
+                                amountViewModel.setValue(transaction.value, chainInfoProvider.getCurrent().getRootToken())
+                            }
                         }
 
                         hash_txt.text = transaction.txHash
@@ -259,9 +261,11 @@ class ViewTransactionActivity : BaseSubActivity() {
 
         R.id.menu_etherscan -> true.also {
             txEntity?.let {
-                blockExplorerProvider.getOrAlert(this)?.run {
-                    val url = getTransactionURL(it.transaction.txHash!!)
-                    startActivityFromURL(url)
+                lifecycleScope.launch(Dispatchers.Main) {
+                    blockExplorerProvider.getOrAlert(this@ViewTransactionActivity)?.run {
+                        val url = getTransactionURL(it.transaction.txHash!!)
+                        startActivityFromURL(url)
+                    }
                 }
             }
         }

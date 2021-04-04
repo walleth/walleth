@@ -4,9 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main_in_drawer_container.view.*
 import kotlinx.android.synthetic.main.navigation_drawer_header.view.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
@@ -80,22 +86,25 @@ class WalletNavigationFragment : Fragment() {
             }
         }
 
-        currentAddressProvider.observe(this, { address ->
-            appDatabase.addressBook.byAddressLiveData(address!!).observe(this@WalletNavigationFragment, { currentAddress ->
-                navigationView.getHeaderView(0).let { header ->
-                    currentAddress?.let { entry ->
-                        header.accountHash.text = entry.address.hex
-                        header.accountName.text = entry.name
+
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            currentAddressProvider.flow.onEach { address ->
+                appDatabase.addressBook.byAddressLiveData(address!!).observe(this@WalletNavigationFragment, { currentAddress ->
+                    navigationView.getHeaderView(0).let { header ->
+                        currentAddress?.let { entry ->
+                            header.accountHash.text = entry.address.hex
+                            header.accountName.text = entry.name
+                        }
                     }
-                }
 
-            })
-        })
-
-        chainInfoProvider.observe(this, {
-            val networkName = chainInfoProvider.value?.name
-            navigationView.menu.findItem(R.id.menu_switch_chain).title = "Chain: $networkName"
-        })
+                })
+            }.launchIn(lifecycleScope)
+            chainInfoProvider.getFlow().collect {
+                val networkName = it.name
+                navigationView.menu.findItem(R.id.menu_switch_chain).title = "Chain: $networkName"
+            }
+        }
 
     }
 

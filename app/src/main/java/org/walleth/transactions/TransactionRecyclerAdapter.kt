@@ -3,6 +3,7 @@ package org.walleth.transactions
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import org.walleth.R
 import org.walleth.data.AppDatabase
@@ -32,7 +33,7 @@ class TransactionRecyclerAdapter(val appDatabase: AppDatabase,
                                  val chainInfoProvider: ChainInfoProvider,
                                  private val exchangeRateProvider: ExchangeRateProvider,
                                  val settings: Settings
-) : PagedListAdapter<TransactionEntity, TransactionViewHolder>(TransactionDiffCallback()) {
+) : PagingDataAdapter<TransactionEntity, TransactionViewHolder>(TransactionDiffCallback()) {
 
     override fun onBindViewHolder(holder: TransactionViewHolder, position: Int) = holder.bind(getItem(position), appDatabase)
 

@@ -2,45 +2,43 @@ package org.walleth.overview
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.map
 import org.kethereum.model.AddressOnChain
-import org.ligi.kaxt.livedata.CombinatorMediatorLiveData
+import org.kethereum.model.ChainId
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.CurrentAddressProvider
-import org.walleth.data.transactions.TransactionEntity
 
 class TransactionListViewModel(app: Application,
-                               appDatabase: AppDatabase,
-                               currentAddressProvider: CurrentAddressProvider,
-                               chainInfoProvider: ChainInfoProvider) : AndroidViewModel(app) {
-
+                               val appDatabase: AppDatabase,
+                               val currentAddressProvider: CurrentAddressProvider,
+                               val chainInfoProvider: ChainInfoProvider) : AndroidViewModel(app) {
 
     val isOnboardingVisible = MutableLiveData<Boolean>().apply { value = false }
 
-    var hasIncoming = MutableLiveData<Boolean>().apply { value = false }
-    var hasOutgoing = MutableLiveData<Boolean>().apply { value = false }
+    private val pagingConfig by lazy { PagingConfig(50) }
 
-    val isEmptyViewVisible = CombinatorMediatorLiveData(listOf(isOnboardingVisible, hasIncoming, hasOutgoing)) {
-        (isOnboardingVisible.value == false) && (hasIncoming.value == false) && (hasOutgoing.value == false)
+    private suspend fun getAddressOnChainFlow() = currentAddressProvider.flow.filterNotNull().combine(chainInfoProvider.getFlow()) { address, chain ->
+        AddressOnChain(address, ChainId(chain.chainId))
     }
 
-    private val addressOnChainMediator = CombinatorMediatorLiveData(listOf(currentAddressProvider, chainInfoProvider)) {
-        AddressOnChain(currentAddressProvider.getCurrentNeverNull(), chainInfoProvider.getCurrentChainId())
+    suspend fun isEmptyViewVisibleFlow() = getAddressOnChainFlow().map {
+        !appDatabase.transactions.isTransactionForAddressOnChainExisting(it.address, it.chain.value)
     }
 
-    val incomingLiveData: LiveData<PagedList<TransactionEntity>> = Transformations.switchMap(addressOnChainMediator) { addressOnChain ->
-        val incomingDataSource = appDatabase.transactions.getIncomingPaged(addressOnChain.address, addressOnChain.chain.value)
-        LivePagedListBuilder(incomingDataSource, 50).build()
+    suspend fun getIncomingTransactionsPager() = getAddressOnChainFlow().map {
+        val dataSource = appDatabase.transactions.getIncomingPaged(it.address, it.chain.value)
+        Pager(pagingConfig, pagingSourceFactory = dataSource.asPagingSourceFactory(Dispatchers.IO))
     }
 
-    val outgoingLiveData: LiveData<PagedList<TransactionEntity>> = Transformations.switchMap(addressOnChainMediator) { addressOnChain ->
-        val outgoingDataSourceDataSource = appDatabase.transactions.getOutgoingPaged(addressOnChain.address, addressOnChain.chain.value)
-        LivePagedListBuilder(outgoingDataSourceDataSource, 50).build()
+    suspend fun getOutgoingTransactionsPager() = getAddressOnChainFlow().map {
+        val dataSource = appDatabase.transactions.getOutgoingPaged(it.address, it.chain.value)
+        Pager(pagingConfig, pagingSourceFactory = dataSource.asPagingSourceFactory(Dispatchers.IO))
     }
-
 }

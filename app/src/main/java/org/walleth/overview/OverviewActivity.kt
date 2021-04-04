@@ -12,8 +12,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.INVISIBLE
 import androidx.appcompat.app.ActionBarDrawerToggle
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
@@ -21,6 +19,8 @@ import kotlinx.android.synthetic.main.activity_main_in_drawer_container.*
 import kotlinx.android.synthetic.main.activity_overview.*
 import kotlinx.android.synthetic.main.toolbar.*
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
@@ -28,7 +28,6 @@ import org.kethereum.erc681.toERC681
 import org.kethereum.model.EthereumURI
 import org.koin.android.ext.android.inject
 import org.koin.androidx.viewmodel.ext.android.viewModel
-import org.ligi.kaxt.livedata.nonNull
 import org.ligi.kaxt.setVisibility
 import org.ligi.kaxt.startActivityFromClass
 import org.ligi.kaxtui.alert
@@ -37,7 +36,6 @@ import org.walleth.base_activities.WallethActivity
 import org.walleth.chains.ChainInfoProvider
 import org.walleth.data.AppDatabase
 import org.walleth.data.addresses.CurrentAddressProvider
-import org.walleth.data.balances.Balance
 import org.walleth.data.config.Settings
 import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.tokens.CurrentTokenProvider
@@ -50,11 +48,11 @@ import org.walleth.security.startOpenVPN
 import org.walleth.toolbar.DefaultToolbarChangeDetector
 import org.walleth.toolbar.ToolbarColorChangeDetector
 import org.walleth.transactions.CreateTransactionActivity
-import org.walleth.transactions.TransactionAdapterDirection.INCOMING
-import org.walleth.transactions.TransactionAdapterDirection.OUTGOING
+import org.walleth.transactions.TransactionAdapterDirection.*
 import org.walleth.transactions.TransactionRecyclerAdapter
 import org.walleth.util.copyToClipboard
 import org.walleth.valueview.ValueViewController
+import timber.log.Timber
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -72,8 +70,8 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
     private val transactionViewModel: TransactionListViewModel by viewModel()
 
     private var lastNightMode: Int? = null
-    private var balanceLiveData: LiveData<Balance>? = null
-    private var etherLiveData: LiveData<Balance>? = null
+    private var balanceFlowCollectorJob: Job? = null
+    private var etherLiveData: Job? = null
     private val onboardingController by lazy { OnboardingController(this, transactionViewModel, settings) }
 
     private var lastPastedData: String? = null
@@ -92,13 +90,16 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         }
         lastToolbarColor = calcToolbarColorCombination()
         lastNightMode = settings.getNightMode()
-        setCurrentBalanceObservers()
+
+        lifecycleScope.launch(Dispatchers.Main) {
+            setCurrentBalanceObservers()
+        }
 
         val clipboard = getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
         if (clipboard.hasPrimaryClip()) {
             val item = clipboard.primaryClip?.let { it.getItemAt(0).text?.toString() }
             val erc681 = item?.let { EthereumURI(it).toERC681() }
-            if (erc681?.valid == true && erc681.address != null && item != lastPastedData && item != currentAddressProvider.value?.hex.let { ERC681(address = it).generateURL() }) {
+            if (erc681?.valid == true && erc681.address != null && item != lastPastedData && item != currentAddressProvider.getCurrent()?.hex.let { ERC681(address = it).generateURL() }) {
                 lastPastedData = item
                 Snackbar.make(fab, R.string.paste_from_clipboard, Snackbar.LENGTH_INDEFINITE)
                         .setAction(R.string.paste_from_clipboard_action) {
@@ -151,17 +152,6 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         transaction_recycler_out.layoutManager = LinearLayoutManager(this)
         transaction_recycler_in.layoutManager = LinearLayoutManager(this)
 
-        currentAddressProvider.observe(this, {
-            refreshSubtitle()
-        })
-
-        chainInfoProvider.observe(this, {
-            refreshSubtitle()
-        })
-
-        currentTokenProvider.observe(this, {
-            setCurrentBalanceObservers()
-        })
 
         val incomingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, INCOMING, chainInfoProvider, exchangeRateProvider, settings)
         transaction_recycler_in.adapter = incomingTransactionsAdapter
@@ -169,36 +159,54 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         val outgoingTransactionsAdapter = TransactionRecyclerAdapter(appDatabase, OUTGOING, chainInfoProvider, exchangeRateProvider, settings)
         transaction_recycler_out.adapter = outgoingTransactionsAdapter
 
-        transactionViewModel.isEmptyViewVisible.nonNull().observe(this, { isEmptyVisible ->
-            empty_view_container.setVisibility(isEmptyVisible)
-            transaction_recycler_out.setVisibility(!isEmptyVisible)
-            transaction_recycler_in.setVisibility(!isEmptyVisible)
-        })
+        lifecycleScope.launch(Dispatchers.Main) {
+            chainInfoProvider.getFlow().onEach {
+                refreshSubtitle()
+                setCurrentBalanceObservers()
+            }.launchIn(lifecycleScope)
 
-        transactionViewModel.incomingLiveData.nonNull().observe(this, { transactions ->
-            incomingTransactionsAdapter.submitList(transactions)
-            transactionViewModel.hasIncoming.value = !transactions.isNullOrEmpty()
-        })
+            currentAddressProvider.flow.onEach {
+                refreshSubtitle()
+                setCurrentBalanceObservers()
+            }.launchIn(lifecycleScope)
+
+            currentTokenProvider.getFlow().onEach {
+                setCurrentBalanceObservers()
+            }.launchIn(lifecycleScope)
+
+
+            var incomingAdapterJob : Job? = null
+            transactionViewModel.getIncomingTransactionsPager().onEach { pager ->
+                incomingAdapterJob?.cancel()
+                incomingAdapterJob = pager.flow.onEach {
+                    incomingTransactionsAdapter.submitData(it)
+                }.launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
+
+            var outgoingAdapterJob : Job? = null
+            transactionViewModel.getOutgoingTransactionsPager().onEach { pager ->
+                outgoingAdapterJob?.cancel()
+                outgoingAdapterJob = pager.flow.onEach {
+                    outgoingTransactionsAdapter.submitData(it)
+                }.launchIn(lifecycleScope)
+            }.launchIn(lifecycleScope)
+
+        }
+
+        lifecycleScope.launch(Dispatchers.IO) {
+            transactionViewModel.isEmptyViewVisibleFlow().collect { isEmptyVisible ->
+                lifecycleScope.launch(Dispatchers.Main) {
+                    empty_view_container.setVisibility(isEmptyVisible)
+                    transaction_recycler_out.setVisibility(!isEmptyVisible)
+                    transaction_recycler_in.setVisibility(!isEmptyVisible)
+                }
+            }
+        }
 
         transactionViewModel.isOnboardingVisible.observe(this, {
             fab.setVisibility(it != true)
         })
 
-        transactionViewModel.outgoingLiveData.observe(this, { transactions ->
-            if (transactions != null) {
-                outgoingTransactionsAdapter.submitList(transactions)
-                transactionViewModel.hasOutgoing.value = !transactions.isNullOrEmpty()
-            }
-        })
-
-
-        chainInfoProvider.observe(this, {
-            setCurrentBalanceObservers()
-        })
-
-        currentAddressProvider.observe(this, {
-            setCurrentBalanceObservers()
-        })
 
         if (savedInstanceState != null) {
             lastPastedData = savedInstanceState.getString(KEY_LAST_PASTED_DATA)
@@ -208,38 +216,37 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
     private fun refreshSubtitle() {
         appDatabase.addressBook.byAddressLiveData(currentAddressProvider.getCurrentNeverNull()).observe(this, { currentAddress ->
             currentAddress?.let { entry ->
-                val name = chainInfoProvider.value!!.name
-                supportActionBar?.subtitle = entry.name + "@" + name
+                lifecycleScope.launch(Dispatchers.Main) {
+                    val name = chainInfoProvider.getCurrent().name
+                    supportActionBar?.subtitle = entry.name + "@" + name
+                }
             }
         })
     }
 
-
-    private val balanceObserver = Observer<Balance> {
-        if (it != null && it.chain == chainInfoProvider.getCurrent()?.chainId) {
-            amountViewModel.setValue(it.balance, currentTokenProvider.getCurrent())
-        } else {
-            amountViewModel.setValue(null, currentTokenProvider.getCurrent())
-        }
-    }
-
-    private val etherObserver = Observer<Balance> {
-        if (it != null) {
-            send_button.setVisibility(it.balance > ZERO, INVISIBLE)
-        } else {
-            send_button.visibility = INVISIBLE
-        }
-    }
-
-    private fun setCurrentBalanceObservers() {
-        val currentAddress = currentAddressProvider.value
+    private suspend fun setCurrentBalanceObservers() {
+        val currentAddress = currentAddressProvider.getCurrent()
         if (currentAddress != null) {
-            balanceLiveData?.removeObserver(balanceObserver)
-            balanceLiveData = appDatabase.balances.getBalanceLive(currentAddress, currentTokenProvider.getCurrent().address, chainInfoProvider.getCurrent()?.chainId)
-            balanceLiveData?.observe(this, balanceObserver)
-            etherLiveData?.removeObserver(etherObserver)
-            etherLiveData = appDatabase.balances.getBalanceLive(currentAddress, chainInfoProvider.getCurrent()?.getRootToken()?.address, chainInfoProvider.getCurrent()?.chainId)
-            etherLiveData?.observe(this, etherObserver)
+            balanceFlowCollectorJob?.cancel()
+            balanceFlowCollectorJob = lifecycleScope.launch {
+                Timber.i("GOTOKEN  pre ")
+                val tokenAddress = currentTokenProvider.getCurrent().address
+                Timber.i("GOTOKEN  " + tokenAddress)
+                appDatabase.balances.getBalanceLive(currentAddress, tokenAddress, chainInfoProvider.getCurrent().chainId).filterNotNull().collect {
+                    if (it.chain == chainInfoProvider.getCurrent().chainId) {
+                        amountViewModel.setValue(it.balance, currentTokenProvider.getCurrent())
+                    } else {
+                        amountViewModel.setValue(null, currentTokenProvider.getCurrent())
+                    }
+                }
+            }
+
+            etherLiveData?.cancel()
+            etherLiveData = lifecycleScope.launch {
+                appDatabase.balances.getBalanceLive(currentAddress, chainInfoProvider.getCurrent().getRootToken().address, chainInfoProvider.getCurrent().chainId).filterNotNull().collect {
+                    send_button.setVisibility(it.balance > ZERO, INVISIBLE)
+                }
+            }
         }
     }
 

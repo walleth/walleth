@@ -96,39 +96,40 @@ class OfflineTransactionActivity : BaseSubActivity() {
     }
 
     private fun execute() {
-        val content = transaction_to_relay_hex.text.toString()
-        when {
-            content.isUnsignedTransactionJSON() -> handleUnsignedTransactionJson(content)
-            content.isParityUnsignedTransactionJSON() -> handleParityUnsignedTransactionJson(content)
-            content.isSignedTransactionJSON() -> {
-                val json = JSONObject(content)
+        lifecycleScope.launch(Dispatchers.Main) {
+            val content = transaction_to_relay_hex.text.toString()
+            when {
+                content.isUnsignedTransactionJSON() -> handleUnsignedTransactionJson(content)
+                content.isParityUnsignedTransactionJSON() -> handleParityUnsignedTransactionJson(content)
+                content.isSignedTransactionJSON() -> {
+                    val json = JSONObject(content)
 
-                try {
-                    val transactionRLP = HexString(json.getString("signedTransactionRLP")).hexToByteArray()
-                    val txRLP = transactionRLP.decodeRLP() as? RLPList
-                            ?: throw IllegalArgumentException("RLP not a list")
-                    require(txRLP.element.size == 9) { "RLP list has the wrong size ${txRLP.element.size} != 9" }
+                    try {
+                        val transactionRLP = HexString(json.getString("signedTransactionRLP")).hexToByteArray()
+                        val txRLP = transactionRLP.decodeRLP() as? RLPList
+                                ?: throw IllegalArgumentException("RLP not a list")
+                        require(txRLP.element.size == 9) { "RLP list has the wrong size ${txRLP.element.size} != 9" }
 
 
-                    val signatureData = txRLP.toTransactionSignatureData()
-                    val transaction = txRLP.toTransaction()
-                            ?: throw IllegalArgumentException("RLP list has the wrong size ${txRLP.element.size} != 9")
+                        val signatureData = txRLP.toTransactionSignatureData()
+                        val transaction = txRLP.toTransaction()
+                                ?: throw IllegalArgumentException("RLP list has the wrong size ${txRLP.element.size} != 9")
 
-                    val chainID = (signatureData.extractChainID()
-                            ?: throw IllegalArgumentException("Cannot extract chainID from RLP"))
-                    transaction.chain = chainID
+                        val chainID = (signatureData.extractChainID()
+                                ?: throw IllegalArgumentException("Cannot extract chainID from RLP"))
+                        transaction.chain = chainID
 
-                    transaction.from = transaction.extractFrom(signatureData, ChainId(chainID))
-                    transaction.txHash = txRLP.encode().keccak().toHexString()
-                    createTransaction(transaction, signatureData)
-                } catch (e: Exception) {
-                    alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
+                        transaction.from = transaction.extractFrom(signatureData, ChainId(chainID))
+                        transaction.txHash = txRLP.encode().keccak().toHexString()
+                        createTransaction(transaction, signatureData)
+                    } catch (e: Exception) {
+                        alert(getString(R.string.input_not_valid_message, e.message), getString(R.string.input_not_valid_title))
+                    }
+
                 }
-
+                else -> executeForRLP()
             }
-            else -> executeForRLP()
         }
-
     }
 
     private fun handleParityUnsignedTransactionJson(content: String) {
@@ -151,17 +152,19 @@ class OfflineTransactionActivity : BaseSubActivity() {
                 if (transaction == null) {
                     alert("could not decode transaction")
                 } else {
-                    handleUnsignedTransaction(
-                            from = "0x" + HexString(dataJSON.getString("account")).clean0xPrefix().string,
-                            to = transaction.to!!.hex,
-                            data = transaction.input.toHexString(),
-                            value = transaction.value!!.toHexString(),
-                            nonce = transaction.nonce!!.toHexString(),
-                            gasPrice = transaction.gasPrice!!.toHexString(),
-                            gasLimit = transaction.gasLimit!!.toHexString(),
-                            chainId = chainInfoProvider.getCurrentChainId(),
-                            parityFlow = true
-                    )
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        handleUnsignedTransaction(
+                                from = "0x" + HexString(dataJSON.getString("account")).clean0xPrefix().string,
+                                to = transaction.to!!.hex,
+                                data = transaction.input.toHexString(),
+                                value = transaction.value!!.toHexString(),
+                                nonce = transaction.nonce!!.toHexString(),
+                                gasPrice = transaction.gasPrice!!.toHexString(),
+                                gasLimit = transaction.gasLimit!!.toHexString(),
+                                chainId = chainInfoProvider.getCurrentChainId(),
+                                parityFlow = true
+                        )
+                    }
                 }
             }
 
@@ -170,7 +173,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
         }
     }
 
-    private fun handleUnsignedTransactionJson(content: String) {
+    private suspend fun handleUnsignedTransactionJson(content: String) {
         val json = JSONObject(content)
         handleUnsignedTransaction(
                 from = json.getString("from"),
@@ -185,15 +188,15 @@ class OfflineTransactionActivity : BaseSubActivity() {
         )
     }
 
-    private fun handleUnsignedTransaction(from: String,
-                                          chainId: ChainId,
-                                          to: String,
-                                          value: String,
-                                          gasLimit: String,
-                                          nonce: String,
-                                          data: String,
-                                          gasPrice: String,
-                                          parityFlow: Boolean) {
+    private suspend fun handleUnsignedTransaction(from: String,
+                                                  chainId: ChainId,
+                                                  to: String,
+                                                  value: String,
+                                                  gasLimit: String,
+                                                  nonce: String,
+                                                  data: String,
+                                                  gasPrice: String,
+                                                  parityFlow: Boolean) {
 
         val currentAccount = currentAddressProvider.getCurrentNeverNull().hex
         if (HexString(from).clean0xPrefix().string.equals(HexString(currentAccount).clean0xPrefix().string, ignoreCase = true)) {
@@ -223,7 +226,7 @@ class OfflineTransactionActivity : BaseSubActivity() {
         })
     }
 
-    private fun executeForRLP() {
+    private suspend fun executeForRLP() {
 
         try {
             val transactionRLP = HexString(transaction_to_relay_hex.text.toString()).hexToByteArray()

@@ -5,7 +5,10 @@ import android.os.Bundle
 import android.text.method.LinkMovementMethod
 import android.view.Menu
 import android.view.MenuItem
+import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_request.*
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
 import org.kethereum.model.ChainId
@@ -14,16 +17,16 @@ import org.ligi.compat.HtmlCompat
 import org.ligi.kaxt.setVisibility
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
-import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.chains.ChainInfoProvider
-import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.chains.getFaucetURL
+import org.walleth.data.addresses.CurrentAddressProvider
+import org.walleth.data.exchangerate.ExchangeRateProvider
 import org.walleth.data.tokens.CurrentTokenProvider
 import org.walleth.data.tokens.isRootToken
-import org.walleth.util.setQRCode
 import org.walleth.qr.show.getQRCodeIntent
-import org.walleth.valueview.ValueViewController
 import org.walleth.util.copyToClipboard
+import org.walleth.util.setQRCode
+import org.walleth.valueview.ValueViewController
 
 class RequestActivity : BaseSubActivity() {
 
@@ -49,16 +52,19 @@ class RequestActivity : BaseSubActivity() {
             }
         }
 
-        val initText = if (chainInfoProvider.getCurrent()?.faucets?.isNotEmpty() == true) {
-            val faucetURL = chainInfoProvider.getCurrent()?.getFaucetURL(currentAddressProvider.getCurrentNeverNull())
-            getString(R.string.request_faucet_message,
-                    chainInfoProvider.getCurrent()!!.name,
-                    faucetURL)
-        } else {
-            getString(R.string.no_faucet)
+        lifecycleScope.launch(Dispatchers.Main) {
+            val initText = if (chainInfoProvider.getCurrent().faucets.isNotEmpty()) {
+                val faucetURL = chainInfoProvider.getCurrent().getFaucetURL(currentAddressProvider.getCurrentNeverNull())
+                getString(R.string.request_faucet_message,
+                        chainInfoProvider.getCurrent()!!.name,
+                        faucetURL)
+            } else {
+                getString(R.string.no_faucet)
+            }
+            request_hint.text = HtmlCompat.fromHtml(initText)
+            request_hint.movementMethod = LinkMovementMethod()
         }
-        request_hint.text = HtmlCompat.fromHtml(initText)
-        request_hint.movementMethod = LinkMovementMethod()
+
 
         add_value_checkbox.setOnCheckedChangeListener { _, isChecked ->
             value_input.setVisibility(isChecked)
@@ -73,44 +79,48 @@ class RequestActivity : BaseSubActivity() {
     override fun onResume() {
         super.onResume()
         refreshQR()
-        valueInputController?.setValue(valueInputController?.getValueOrZero(), currentTokenProvider.getCurrent())
+        lifecycleScope.launch(Dispatchers.Main) {
+            valueInputController?.setValue(valueInputController?.getValueOrZero(), currentTokenProvider.getCurrent())
+        }
     }
 
     private fun refreshQR() {
 
-        val currentToken = currentTokenProvider.getCurrent()
-        if (!add_value_checkbox.isChecked || currentToken.isRootToken()) {
+        lifecycleScope.launch(Dispatchers.Main) {
+            val currentToken = currentTokenProvider.getCurrent()
+            if (!add_value_checkbox.isChecked || currentToken.isRootToken()) {
 
-            val relevantAddress = currentAddressProvider.getCurrent()
-            currentERC67String = ERC681(address = relevantAddress!!.hex).generateURL()
+                val relevantAddress = currentAddressProvider.getCurrent()
+                currentERC67String = ERC681(address = relevantAddress!!.hex).generateURL()
 
-            if (add_value_checkbox.isChecked) {
-                try {
-                    currentERC67String = ERC681(
-                            address = relevantAddress.hex,
-                            value = valueInputController?.getValueOrZero(),
-                            chainId = chainInfoProvider.getCurrent()?.let { ChainId(it.chainId) }
-                    ).generateURL()
-                } catch (e: NumberFormatException) {
+                if (add_value_checkbox.isChecked) {
+                    try {
+                        currentERC67String = ERC681(
+                                address = relevantAddress.hex,
+                                value = valueInputController?.getValueOrZero(),
+                                chainId = chainInfoProvider.getCurrent()?.let { ChainId(it.chainId) }
+                        ).generateURL()
+                    } catch (e: NumberFormatException) {
+                    }
                 }
-            }
-        } else {
-            val relevantAddress = currentToken.address.hex
+            } else {
+                val relevantAddress = currentToken.address.hex
 
-            val userAddress = currentAddressProvider.getCurrentNeverNull().hex
-            val functionParams = mutableListOf("address" to userAddress)
-            if (add_value_checkbox.isChecked) {
-                try {
-                    functionParams.add("uint256" to valueInputController?.getValueOrZero().toString())
-                } catch (e: NumberFormatException) {
+                val userAddress = currentAddressProvider.getCurrentNeverNull().hex
+                val functionParams = mutableListOf("address" to userAddress)
+                if (add_value_checkbox.isChecked) {
+                    try {
+                        functionParams.add("uint256" to valueInputController?.getValueOrZero().toString())
+                    } catch (e: NumberFormatException) {
+                    }
                 }
+
+                currentERC67String = ERC681(address = relevantAddress, function = "transfer",
+                        functionParams = functionParams).generateURL()
             }
 
-            currentERC67String = ERC681(address = relevantAddress, function = "transfer",
-                    functionParams = functionParams).generateURL()
+            receive_qrcode.setQRCode(currentERC67String)
         }
-
-        receive_qrcode.setQRCode(currentERC67String)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

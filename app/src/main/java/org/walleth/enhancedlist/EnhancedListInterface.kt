@@ -7,5 +7,5 @@ interface EnhancedListInterface<T> {
     suspend fun getAll(): List<T>
     fun compare(t1: T, t2: T): Boolean
     suspend fun upsert(item: T)
-    fun filter(item: T) : Boolean
+    suspend fun filter(item: T) : Boolean
 }

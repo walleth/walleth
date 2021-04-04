@@ -1,6 +1,9 @@
 package org.walleth.accounts
 
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.walleth.R
 import org.walleth.data.addresses.AddressBookEntry
 
@@ -12,7 +15,9 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
     }
 
     override fun onAddressClick(addressEntry: AddressBookEntry) {
-        currentAddressProvider.setCurrent(addressEntry.address)
-        finish()
+        lifecycleScope.launch(Dispatchers.Main) {
+            currentAddressProvider.setCurrent(addressEntry.address)
+            finish()
+        }
     }
 }

@@ -11,6 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.work.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 import okhttp3.OkHttpClient
 import org.kethereum.extensions.toHexString
@@ -117,20 +119,21 @@ class DataProvidingService : LifecycleService() {
 
             startForeground(NOTIFICATION_ID_DATA_SERVICE, notification.build())
 
-            currentAddressProvider.observe(this, ResettingObserver())
-            chainInfoProvider.observe(this, ResettingObserver())
-
             lifecycle.addObserver(TimingModifyingLifecycleObserver())
 
             val dateFormat = java.text.DateFormat.getTimeInstance()
             lifecycleScope.launch(Dispatchers.IO) {
 
+                lifecycleScope.launch {
+                    currentAddressProvider.flow.combine(chainInfoProvider.getFlow()) { _, _ -> }.collect { shortcut = true }
+                }
+
                 while (settings.isKeepETHSyncEnabledWanted() || last_run == 0L || App.visibleActivities.isNotEmpty()) {
                     last_run = System.currentTimeMillis()
 
-                    chainInfoProvider.getCurrent()?.let { currentChain ->
+                    chainInfoProvider.getCurrent().let { currentChain ->
                         val currentChainId = currentChain.chainId
-                        currentAddressProvider.value?.let { address ->
+                        currentAddressProvider.getCurrent()?.let { address ->
 
                             notification.setContentTitle("Last Ethereum data sync: " + dateFormat.format(Date()))
                             notification.setContentText("via " + rpcProvider.get()?.description)

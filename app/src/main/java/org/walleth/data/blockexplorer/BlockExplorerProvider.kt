@@ -9,9 +9,9 @@ import org.walleth.kethereum.etherscan.getEtherScanBlockExplorer
 
 class BlockExplorerProvider(var network: ChainInfoProvider) {
 
-    fun get() = getBlockScoutBlockExplorer(network.getCurrentChainId())?: getEtherScanBlockExplorer(network.getCurrentChainId())
+    suspend fun get() = getBlockScoutBlockExplorer(network.getCurrentChainId()) ?: getEtherScanBlockExplorer(network.getCurrentChainId())
 
-    fun getOrAlert(context: Context): BlockExplorer? {
+    suspend fun getOrAlert(context: Context): BlockExplorer? {
         val result = get()
         if (result == null) {
             context.alert("No blockExplorer found for the current Network")

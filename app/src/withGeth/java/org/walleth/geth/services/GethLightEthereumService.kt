@@ -13,6 +13,7 @@ import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collect
 import org.ethereum.geth.*
 import org.kethereum.extensions.transactions.encodeRLP
 import org.koin.android.ext.android.inject
@@ -101,83 +102,81 @@ class GethLightEthereumService : LifecycleService() {
 
                 val network = networkDefinitionProvider.getCurrent()
 
-                if (network != null) {
-                    networkDefinitionProvider.observe(this@GethLightEthereumService, Observer {
-                        if (network != networkDefinitionProvider.getCurrent()) {
-                            shouldRun = false
-                            shouldRestart = true
-                        }
-                    })
-
-                    val subPath = File(path, "chain" + network.chainId)
-                    subPath.mkdirs()
-                    val nodeConfig = NodeConfig().apply {
-
-                        ethereumNetworkID = network.chainId.toLong()
-
-                        ethereumGenesis = when (ethereumNetworkID) {
-                            1L -> Geth.mainnetGenesis()
-                            3L -> Geth.testnetGenesis()
-                            4L -> Geth.rinkebyGenesis()
-                            else -> throw (IllegalStateException("NO genesis"))
-                        }
-
+                networkDefinitionProvider.getFlow().collect {
+                    if (network != networkDefinitionProvider.getCurrent()) {
+                        shouldRun = false
+                        shouldRestart = true
                     }
-                    val ethereumNode = Geth.newNode(subPath.absolutePath, nodeConfig)
+                }
 
-                    Timber.i("Starting Node for " + nodeConfig.ethereumNetworkID)
-                    ethereumNode.start()
-                    isRunning = true
-                    while (shouldRun && !finishedSyncing) {
-                        delay(1000)
-                        syncTick(ethereumNode, ethereumContext)
-                    }
-                    val transactionsLiveData = appDatabase.transactions.getAllToRelayLive()
-                    val transactionObserver = Observer<List<TransactionEntity>> {
-                        it?.forEach { transaction ->
-                            transaction.execute(ethereumNode.ethereumClient, ethereumContext)
-                        }
-                    }
-                    transactionsLiveData.observe(this@GethLightEthereumService, transactionObserver)
-                    try {
-                        ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
-                            override fun onNewHead(p0: Header) {
-                                val address = currentAddressProvider.getCurrentNeverNull()
-                                val gethAddress = address.toGethAddr()
-                                val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, gethAddress, p0.number)
-                                appDatabase.balances.upsert(Balance(
-                                        address = address,
-                                        tokenAddress = network.getRootToken().address,
-                                        chain = network.chainId,
-                                        balance = BigInteger(balance.string()),
-                                        block = p0.number))
-                            }
+                val subPath = File(path, "chain" + network.chainId)
+                subPath.mkdirs()
+                val nodeConfig = NodeConfig().apply {
 
-                            override fun onError(p0: String?) {}
+                    ethereumNetworkID = network.chainId.toLong()
 
-                        }, 16)
-
-                    } catch (e: Exception) {
-                        Timber.e(e, "node error")
+                    ethereumGenesis = when (ethereumNetworkID) {
+                        1L -> Geth.mainnetGenesis()
+                        3L -> Geth.testnetGenesis()
+                        4L -> Geth.rinkebyGenesis()
+                        else -> throw (IllegalStateException("NO genesis"))
                     }
 
-                    while (shouldRun) {
-                        syncTick(ethereumNode, ethereumContext)
+                }
+                val ethereumNode = Geth.newNode(subPath.absolutePath, nodeConfig)
+
+                Timber.i("Starting Node for " + nodeConfig.ethereumNetworkID)
+                ethereumNode.start()
+                isRunning = true
+                while (shouldRun && !finishedSyncing) {
+                    delay(1000)
+                    syncTick(ethereumNode, ethereumContext)
+                }
+                val transactionsLiveData = appDatabase.transactions.getAllToRelayLive()
+                val transactionObserver = Observer<List<TransactionEntity>> {
+                    it?.forEach { transaction ->
+                        transaction.execute(ethereumNode.ethereumClient, ethereumContext)
+                    }
+                }
+                transactionsLiveData.observe(this@GethLightEthereumService, transactionObserver)
+                try {
+                    ethereumNode.ethereumClient.subscribeNewHead(ethereumContext, object : NewHeadHandler {
+                        override fun onNewHead(p0: Header) {
+                            val address = currentAddressProvider.getCurrentNeverNull()
+                            val gethAddress = address.toGethAddr()
+                            val balance = ethereumNode.ethereumClient.getBalanceAt(ethereumContext, gethAddress, p0.number)
+                            appDatabase.balances.upsert(Balance(
+                                    address = address,
+                                    tokenAddress = network.getRootToken().address,
+                                    chain = network.chainId,
+                                    balance = BigInteger(balance.string()),
+                                    block = p0.number))
+                        }
+
+                        override fun onError(p0: String?) {}
+
+                    }, 16)
+
+                } catch (e: Exception) {
+                    Timber.e(e, "node error")
+                }
+
+                while (shouldRun) {
+                    syncTick(ethereumNode, ethereumContext)
+                }
+
+                withContext(Dispatchers.Main) {
+                    transactionsLiveData.removeObserver(transactionObserver)
+                    launch {
+                        ethereumNode.stop()
                     }
 
-                    withContext(Dispatchers.Main) {
-                        transactionsLiveData.removeObserver(transactionObserver)
-                        launch {
-                            ethereumNode.stop()
-                        }
-
-                        if (!shouldRestart) {
-                            stopForeground(true)
-                            stopSelf()
-                            isRunning = false
-                        } else {
-                            notificationManager.cancel(NOTIFICATION_ID_GETH)
-                        }
+                    if (!shouldRestart) {
+                        stopForeground(true)
+                        stopSelf()
+                        isRunning = false
+                    } else {
+                        notificationManager.cancel(NOTIFICATION_ID_GETH)
                     }
                 }
             }

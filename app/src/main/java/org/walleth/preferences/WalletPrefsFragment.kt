@@ -3,9 +3,12 @@ package org.walleth.preferences
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.lifecycle.lifecycleScope
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SeekBarPreference
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import org.koin.android.ext.android.inject
 import org.walleth.App
 import org.walleth.R
@@ -22,7 +25,9 @@ class WalletPrefsFragment : PreferenceFragmentCompat(), SharedPreferences.OnShar
         super.onResume()
         preferenceScreen.sharedPreferences.registerOnSharedPreferenceChangeListener(this)
         findPreference<Preference>(getString(R.string.key_reference))?.summary = getString(R.string.settings_currently, settings.currentFiat)
-        findPreference<Preference>(getString(R.string.key_token))?.summary = getString(R.string.settings_currently, currentTokenProvider.getCurrent().name)
+        lifecycleScope.launch(Dispatchers.Main) {
+            findPreference<Preference>(getString(R.string.key_token))?.summary = getString(R.string.settings_currently, currentTokenProvider.getCurrent().name)
+        }
     }
 
     override fun onPause() {

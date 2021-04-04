@@ -32,6 +32,7 @@ import org.walleth.data.rpc.RPCProvider
 import org.walleth.data.syncprogress.SyncProgressProvider
 import org.walleth.data.syncprogress.WallethSyncProgress
 import org.walleth.data.tokens.CurrentTokenProvider
+import org.walleth.data.tokens.CurrentTokenProviderImpl
 import org.walleth.overview.TransactionListViewModel
 import org.walleth.testdata.DefaultCurrentAddressProvider
 import org.walleth.testdata.FixedValueExchangeProvider
@@ -60,7 +61,7 @@ class TestApp : App() {
         single { mySettings }
         single<CurrentAddressProvider> { currentAddressProvider }
         single { chainInfoProvider }
-        single { currentTokenProvider }
+        single<CurrentTokenProvider> { currentTokenProvider }
         single { testDatabase }
         single { testFourByteDirectory }
         single {
@@ -112,10 +113,10 @@ class TestApp : App() {
         }
         val currentAddressProvider = DefaultCurrentAddressProvider(mySettings, keyStore)
         val chainInfoProvider by lazy {
-            ChainInfoProvider(mySettings, testDatabase, Moshi.Builder().add(BigIntegerJSONAdapter()).build(), companionContext!!.assets)
+            ChainInfoProvider(mySettings, testDatabase, keyStore, Moshi.Builder().add(BigIntegerJSONAdapter()).build(), companionContext!!.assets)
         }
         val currentTokenProvider by lazy {
-            CurrentTokenProvider(chainInfoProvider)
+            CurrentTokenProviderImpl(chainInfoProvider)
         }
 
         const val contractFunctionTextSignature1 = "aFunctionCall1(address)"

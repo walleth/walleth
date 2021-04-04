@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import org.kethereum.model.Address
 import java.math.BigInteger
 
@@ -22,7 +23,7 @@ interface BalanceDAO {
     fun getBalance(address: Address, tokenAddress: Address?, chain: BigInteger): Balance?
 
     @Query("SELECT * FROM balances WHERE address = :address AND tokenAddress = :tokenAddress AND chain = :chain")
-    fun getBalanceLive(address: Address, tokenAddress: Address?, chain: BigInteger?): LiveData<Balance>
+    fun getBalanceLive(address: Address, tokenAddress: Address?, chain: BigInteger?): Flow<Balance>
 
     @Query("SELECT * FROM balances")
     fun getAllBalances(): List<Balance>

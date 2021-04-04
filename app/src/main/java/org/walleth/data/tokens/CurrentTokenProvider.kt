@@ -1,25 +1,40 @@
 package org.walleth.data.tokens
 
-import androidx.lifecycle.MediatorLiveData
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.walleth.chains.ChainInfoProvider
+import org.walleth.chains.suspendLazy
+import org.walleth.data.chaininfo.ChainInfo
 
-open class CurrentTokenProvider(val chainInfoProvider: ChainInfoProvider) : MediatorLiveData<Token>() {
+interface CurrentTokenProvider {
+    suspend fun getFlow(): Flow<Token>
 
-    init {
-        addSource(chainInfoProvider) {
-            it?.let { chainInfo ->
-                if (chainInfo.chainId != value?.chain) {
-                    value = chainInfo.getRootToken()
+    suspend fun setCurrent(newValue: Token)
+
+    suspend fun getCurrent(): Token
+}
+
+open class CurrentTokenProviderImpl(val chainInfoProvider: ChainInfoProvider) : CurrentTokenProvider {
+
+    private val flow = GlobalScope.suspendLazy {
+        MutableStateFlow(chainInfoProvider.getCurrent().getRootToken()).also {
+            GlobalScope.launch {
+                chainInfoProvider.getFlow().collect { chainInfo ->
+                    it.emit(chainInfo.getRootToken())
                 }
             }
         }
     }
 
-    fun setCurrent(newValue: Token) {
-        value = newValue
+    override suspend fun getFlow() = flow()
+
+    override suspend fun setCurrent(newValue: Token) {
+        flow().emit(newValue)
     }
 
-    fun getCurrent() = value!!
+    override suspend fun getCurrent() = flow().value
 
-    fun isInitialized() = value != null
 }

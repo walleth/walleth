@@ -74,7 +74,7 @@ class SelectTokenActivity : BaseEnhancedListActivity<Token>() {
                 }
             }
 
-            override fun filter(item: Token) = (!settings.showOnlyStaredTokens || item.starred)
+            override suspend fun filter(item: Token) = (!settings.showOnlyStaredTokens || item.starred)
                     && (!settings.showOnlyTokensOnCurrentNetwork || item.chain == chainInfoProvider.getCurrentChainId().value)
                     && checkForSearchTerm(item.name, item.symbol)
         }
@@ -114,8 +114,10 @@ class SelectTokenActivity : BaseEnhancedListActivity<Token>() {
                             if (chainInfo == null) {
                                 alert("Chain for this token not found")
                             } else {
-                                currentTokenProvider.setCurrent(entry)
-                                chainInfoProvider.setCurrent(chainInfo)
+                                lifecycleScope.launch(Dispatchers.Default) {
+                                    currentTokenProvider.setCurrent(entry)
+                                    chainInfoProvider.setCurrent(chainInfo)
+                                }
                                 finish()
                             }                        }
                     }
