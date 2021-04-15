@@ -50,4 +50,6 @@ if (!violations.isEmpty()) {
   throw new GradleException("Buildscript classpath has non-whitelisted files:\n  $violations")
 }
 
-apply plugin: 'com.github.vlsi.checksum-dependency'
+if (hasProperty("isCI") || hasProperty("isLIGI")) {
+   apply plugin: 'com.github.vlsi.checksum-dependency'
+}
