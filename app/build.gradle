@@ -261,7 +261,7 @@ dependencies {
     androidTestImplementation 'com.github.ligi:trulesk:4.0'
     androidTestUtil 'com.linkedin.testbutler:test-butler-app:2.1.1'
 
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation "com.google.truth:truth:$truth"
     testImplementation 'org.threeten:threetenbp:1.5.1'
 
