@@ -3,6 +3,8 @@ package org.walleth.sign
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import kotlinx.android.synthetic.main.activity_sign_text.*
@@ -34,6 +36,15 @@ class SignTextActivity : BaseSubActivity() {
     private val currentAddress by lazy { currentAddressProvider.getCurrentNeverNull() }
     private val appDatabase: AppDatabase by inject()
 
+    private val signWithNFCForResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+        val putExtra = Intent()
+                .putExtra("SIGNATURE", it.data?.getStringExtra("HEX"))
+                .putExtra("ADDRESS", currentAddress.cleanHex)
+        setResult(Activity.RESULT_OK, putExtra)
+
+        finish()
+    }
+
     private val text by lazy {
         HexString(intent.getStringExtra(Intent.EXTRA_TEXT) ?: throw (IllegalStateException("no EXTRA_TEXT passed in SignTextActivity")))
                 .hexToByteArray()
@@ -61,7 +72,7 @@ class SignTextActivity : BaseSubActivity() {
                     ACCOUNT_TYPE_NFC -> {
                         fab.setImageResource(R.drawable.ic_nfc_black)
                         fab.setOnClickListener {
-                            startActivityForResult(getNFCSignTextIntent(text.toHexString(), currentAddress.cleanHex), REQUEST_CODE_NFC)
+                            signWithNFCForResult.launch(getNFCSignTextIntent(text.toHexString(), currentAddress.cleanHex))
                         }
                     }
                     ACCOUNT_TYPE_TREZOR -> alert("signing text not yet supported for TREZOR")
@@ -71,17 +82,6 @@ class SignTextActivity : BaseSubActivity() {
                 }
             }
         }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-
-        val putExtra = Intent()
-                .putExtra("SIGNATURE", data?.getStringExtra("HEX"))
-                .putExtra("ADDRESS", currentAddress.cleanHex)
-        setResult(Activity.RESULT_OK, putExtra)
-
-        finish()
     }
 
     private fun signTextWithPassword(currentAddress: Address, password: String) {
