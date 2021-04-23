@@ -21,6 +21,7 @@
     <trusted-key id='7a01b0f236e5430f' group='com.google.code.gson' />
     <trusted-key id='8e3f0de7ae354651' group='com.google.code.gson' />
     <trusted-key id='296cd27f60eed12c' group='com.google.crypto.tink' />
+    <trusted-key id='1669c4bb543e0445' group='com.google.errorprone' />
     <trusted-key id='912d2c0eccda55c0' group='com.google.errorprone' />
     <trusted-key id='9a259c7ee636c5ed' group='com.google.errorprone' />
     <trusted-key id='bf935c771a8474f8' group='com.google.errorprone' />
@@ -40,6 +41,7 @@
     <trusted-key id='476634a4694e716a' group='com.googlecode.java-diff-utils' />
     <trusted-key id='40a3c4432bd7308c' group='com.googlecode.juniversalchardet' />
     <trusted-key id='44ce7bf2825ea2cd' group='com.ibm.icu' />
+    <trusted-key id='eb380dc13c39f675' group='com.intellij' />
     <trusted-key id='830004571bb06cff' group='com.ionspin.kotlin' />
     <trusted-key id='80c08b1c29100955' group='com.jakewharton' />
     <trusted-key id='e0cb7823cfd00fbf' group='com.jakewharton.android.repackaged' />
@@ -54,6 +56,7 @@
     <trusted-key id='80c08b1c29100955' group='com.squareup' />
     <trusted-key id='8671a8df71296252' group='com.squareup' />
     <trusted-key id='8e3f0de7ae354651' group='com.squareup' />
+    <trusted-key id='bf984b4145ea13f7' group='com.squareup' />
     <trusted-key id='21200d723f53ce38' group='com.squareup.leakcanary' />
     <trusted-key id='28a9fc4431feeee3' group='com.squareup.leakcanary' />
     <trusted-key id='62ba9c275d14234e' group='com.squareup.leakcanary' />
@@ -164,6 +167,9 @@
     </dependency>
     <dependency group='androidx.annotation' module='annotation-experimental' version='1.0.0' extension='aar'>
       <sha512>EA69572A9FCEEB04DBAB708C833B799C1E3A549AA1D3F507F956B6C243CE675F161A43310BD23905B095AF6F686EB6512539228B1150F1D4E26D5AF090F7878E</sha512>
+    </dependency>
+    <dependency group='androidx.annotation' module='annotation-experimental' version='1.1.0'>
+      <sha512>A3C3E3EFC42B8CA5E044D6499AF7F85483E81B67A620F3798F2DFD14E8575DD13447F6F6330633B416D8CB65528F16226FA2FD0EEAE7A0EC9C4C77EC21C34A2E</sha512>
     </dependency>
     <dependency group='androidx.annotation' module='annotation' version='1.0.0'>
       <sha512>4B96C79E3DC883713E2BED7E6C39767672B965B99791671DA5DB3C82A45295A9DD84B6E61BB27137D1837D2595C0D2AE36B5B448F156990462C49D305639CC5C</sha512>
@@ -855,6 +861,12 @@
     <dependency group='androidx.room' module='room-common' version='2.2.6'>
       <sha512>713984E3B539927ECAC59EF6A365ACDA6B3A91F057F4B83584AC22F595148CDF7A5F60F715A9A0D8172E07DCBFBB010C9C6609659DB7A722E87E0B040E4A92FA</sha512>
     </dependency>
+    <dependency group='androidx.room' module='room-common' version='2.3.0'>
+      <sha512>352E27BC800EEAF275F4651FCBEA9D42671ABEB947E328333F817CD5337EE8714B95E341C89309622E56CCEBA7CD6887CC044CEED866EE36AB144234985CCBFA</sha512>
+    </dependency>
+    <dependency group='androidx.room' module='room-compiler-processing' version='2.3.0'>
+      <sha512>B86EF42EAE9F420A36C819E773B7BC2AEBB362505A885836A0518F519FE3480487C82CA65667A523F9090FC642EE88EF502582605CE0B78E4208EDAF6C1DF7D1</sha512>
+    </dependency>
     <dependency group='androidx.room' module='room-compiler' version='2.1.0'>
       <sha512>F33CC5A26075D4E42B9524DA489F8C7D1E8430C672DDF90DA6B69EB39C41446EE62A7C1541D7C23799FBFE5867A222702CF10CD29B7BD9D9EE869A9628AF92A1</sha512>
     </dependency>
@@ -879,6 +891,9 @@
     <dependency group='androidx.room' module='room-compiler' version='2.2.6'>
       <sha512>33048C39C03D96F88B9DED0AD0C471FF6462EB75726772B169B6733F3E181D6237DA75B4B56DB9035D714D15B4D385FE782282588F861899DCBB5104DBCB740C</sha512>
     </dependency>
+    <dependency group='androidx.room' module='room-compiler' version='2.3.0'>
+      <sha512>AC526D0859FFD8A5DE01421FA2C27A1A7D3C00BDE53F19F392AC233B3A175334FBB90C614B31A174CCAD45AE7677B22AF666290F29DC4F9585F512F9DC045396</sha512>
+    </dependency>
     <dependency group='androidx.room' module='room-ktx' version='2.2.1' extension='aar'>
       <sha512>6A4ED1ED5DAE62223C409C5CBE2275BA9409567ED4FBD0F683D6F38B202D5F1EC7310C7EF12E2B19406D17523FE00A09FF94C04D6FA8B66F29E8C95FF2D00A4C</sha512>
     </dependency>
@@ -896,6 +911,9 @@
     </dependency>
     <dependency group='androidx.room' module='room-ktx' version='2.2.6' extension='aar'>
       <sha512>71EC170E8377DF16F54D5940F527EA5B86D7C1DF5111ADC191A8F32C5BD7B353C4C557C0B006FAE6C4031B00E87D91AFBD33E39486544F600FC9AEE536FB39AA</sha512>
+    </dependency>
+    <dependency group='androidx.room' module='room-ktx' version='2.3.0'>
+      <sha512>A8328B2AC8A2CA63208F565F45ED3822B1ECC83B856EA146DEEBEBA146987E8294FF59B0CC03100375EDE718F0D26A87E81EF61CBE5387B1BB9F1E5DA04D5985</sha512>
     </dependency>
     <dependency group='androidx.room' module='room-migration' version='2.1.0'>
       <sha512>958116C30D14271FCB0E3FA0766536BB628DE9014710A1C1F86833EDE476DADAA2B6B19ECF5F8DC8EEAEFCCD978EB263EE3A264C4900D15DDC0FEFB1F30C3C4F</sha512>
@@ -921,6 +939,9 @@
     <dependency group='androidx.room' module='room-migration' version='2.2.6'>
       <sha512>8979611C6286E7645443F833E9B2AB33DA7A1565335F0E17C311AD013847A10691C7726DB198CD43F076670EF0686BF085B9445ECDAF234F892A999E75D971D9</sha512>
     </dependency>
+    <dependency group='androidx.room' module='room-migration' version='2.3.0'>
+      <sha512>4182BBC9662AF4947336A34B917D788B72C2732B168167C7A0EE4CBF70624FBB3EA4E078EA282C32362476E9CE783E966B766CF2EE449487765FE085283817B0</sha512>
+    </dependency>
     <dependency group='androidx.room' module='room-runtime' version='2.1.0' extension='aar'>
       <sha512>9D3BB15962B5ABC7D14C591F9D32FBE13A4E229501080382F92094235BE18A9F7217442C404EF55FF596A09ABEAFC4C52697B8EBD411E31CFF896D6F40892E0C</sha512>
     </dependency>
@@ -944,6 +965,9 @@
     </dependency>
     <dependency group='androidx.room' module='room-runtime' version='2.2.6' extension='aar'>
       <sha512>1683F697F3C8DE4E691A6743BEE9EAA434E6149A1394CE08A4650BC7B103574690925F3D5425FD1A11B214DA2BD3C446E44ABE3B96A2EE0299DC321D6DAA5D35</sha512>
+    </dependency>
+    <dependency group='androidx.room' module='room-runtime' version='2.3.0'>
+      <sha512>6386CD8F7F7BCF59BD5B569EA6F95E121A9E7AF773444A64EAC5FC9430D28BE9342722F7B9EA43664BF31BF807AFA5BA00677B889AF7C4FCFD4924921B7D37E9</sha512>
     </dependency>
     <dependency group='androidx.savedstate' module='savedstate-ktx' version='1.1.0'>
       <sha512>C364FC26EFC0DA8A302AA4DF53AADA3A3D40044C25C7F7ECC4809E0A0BA939FE1FEF012714FF0324A1B391BD21F0E64C45CE4F36E97DEE4BB7D032E0590E1094</sha512>
@@ -6550,6 +6574,9 @@
     </dependency>
     <dependency group='com.google.code.findbugs' module='jsr305' version='1.3.9'>
       <sha512>6DA282CFD8E30D9F8CF17702B8709172B00E22B75A627A1D85F8989615B8A1A401BC25D9AEE7B14AED1D9B5DF73BF2EA8D66F9C8468D9577C29F0CCFA2CC70A</sha512>
+    </dependency>
+    <dependency group='com.google.devtools.ksp' module='symbol-processing-api' version='1.4.30-1.0.0-alpha04'>
+      <sha512>3CA5EEC2B4D56A4306FB15A0349CED3262F50BAE1B5984023E1220B18C37375DCAAD0247297EA24EA72937E0A5E0E7AA42EDAC9FE489D92CED15C42DDA10A9B2</sha512>
     </dependency>
     <dependency group='com.google.test.platform' module='core-proto' version='0.0.2-dev'>
       <sha512>D540A24645A0B7EDBAA222647447493A87CFF9EF19D613053A37F8794DD86DA5ACD86579B4784EBDAC28992AC5DA24A5CD7605A88FD38F5B74A2121E759DD134</sha512>
