@@ -126,7 +126,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private val signTextActionForResult = registerForActivityResult(StartActivityForResult()) {
         if (it.resultCode == Activity.RESULT_OK && it.data?.hasExtra("SIGNATURE") == true) {
-            val result = it.data?.getStringExtra("SIGNATURE")
+            val result = it.data?.getStringExtra("SIGNATURE")?.removePrefix("0x")
             mService?.handler?.session?.approveRequest(currentRequestId!!, "0x$result")
         } else {
             mService?.handler?.session?.rejectRequest(currentRequestId!!, 1L, "user canceled")

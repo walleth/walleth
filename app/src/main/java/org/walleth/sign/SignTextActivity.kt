@@ -26,6 +26,7 @@ import org.walleth.data.*
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.addresses.getSpec
 import org.walleth.nfc.getNFCSignTextIntent
+import org.walleth.trezor.getTrezorSignTextIntent
 import org.walleth.util.security.getPasswordForAccountType
 
 class SignTextActivity : BaseSubActivity() {
@@ -75,9 +76,14 @@ class SignTextActivity : BaseSubActivity() {
                             signWithNFCForResult.launch(getNFCSignTextIntent(text.toHexString(), currentAddress.cleanHex))
                         }
                     }
-                    ACCOUNT_TYPE_TREZOR -> alert("signing text not yet supported for TREZOR")
+                    ACCOUNT_TYPE_TREZOR -> {
+                        signWithNFCForResult.launch(getTrezorSignTextIntent(text.toHexString(), currentAddress))
+                    }
                     ACCOUNT_TYPE_WATCH_ONLY -> fab.setOnClickListener {
                         alert("You have no key to sign with this account")
+                    }
+                    ACCOUNT_TYPE_KEEPKEY -> {
+                        alert("signing text not yet supported for KeepKey")
                     }
                 }
             }

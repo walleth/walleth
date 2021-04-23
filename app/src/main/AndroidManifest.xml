@@ -37,6 +37,7 @@
         <activity android:name="org.walleth.debug.DebugWallethActivity"/>
 
         <activity android:name="org.walleth.trezor.TrezorSignTransactionActivity"/>
+        <activity android:name="org.walleth.trezor.TrezorSignTextActivity"/>
         <activity android:name="org.walleth.trezor.TrezorGetAddressActivity"/>
 
         <activity android:name="org.walleth.nfc.NFCGetAddressActivity"/>

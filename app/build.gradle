@@ -180,7 +180,7 @@ dependencies {
 
     implementation "com.github.komputing:khex:1.1.0"
 
-    implementation "com.github.walleth:KHardWareWallet:0.9.9"
+    implementation "com.github.walleth:KHardWareWallet:1.0.0"
     implementation 'com.squareup.okio:okio:2.5.0'
 
     implementation "com.github.komputing.kethereum:crypto_impl_bouncycastle:$kethereum_version"

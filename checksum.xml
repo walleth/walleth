@@ -61,6 +61,7 @@
     <trusted-key id='8671a8df71296252' group='com.squareup.okhttp3' />
     <trusted-key id='8671a8df71296252' group='com.squareup.okio' />
     <trusted-key id='47586a1b75ef0de5' group='com.squareup.wire' />
+    <trusted-key id='8671a8df71296252' group='com.squareup.wire' />
     <trusted-key id='6425559c47cc79c4' group='com.sun.activation' />
     <trusted-key id='021e3be573f727ed' group='com.sun.istack' />
     <trusted-key id='0315bfb7970a144f' group='com.sun.istack' />
@@ -6229,6 +6230,9 @@
     <dependency group='com.github.walleth.KHardWareWallet' module='keycard' version='071f75923e49f97cef298ef6c480b000c967c198' extension='aar'>
       <sha512>490614E4E0897E3A57125E66619EC24D1D93339DB03E4E0F20F7500C12F512680E61F92235E77B10640249D7FC9FEE7D5DAF6BB89F577BA089B3F939998C41EF</sha512>
     </dependency>
+    <dependency group='com.github.walleth.KHardWareWallet' module='keycard' version='1.0.0' extension='aar'>
+      <sha512>BC141FC667C6624546E0D37EA18FA40289948D0D1FBA1208DBEF8CCA1645C2A85531EF5BEA4357646E49CA1F4B03CD945AE54FE48AC19EF1AD9628D5402BE44A</sha512>
+    </dependency>
     <dependency group='com.github.walleth.KHardWareWallet' module='keycard' version='22bb2f1b2f18601785f05684d33461aa07de0190' extension='aar'>
       <sha512>490614E4E0897E3A57125E66619EC24D1D93339DB03E4E0F20F7500C12F512680E61F92235E77B10640249D7FC9FEE7D5DAF6BB89F577BA089B3F939998C41EF</sha512>
     </dependency>
@@ -6274,6 +6278,9 @@
     <dependency group='com.github.walleth.KHardWareWallet' module='trezor' version='071f75923e49f97cef298ef6c480b000c967c198' extension='aar'>
       <sha512>88C176FA3E2405908FF64A1E7A547B9C610F0170F53D1DA8FC3A913F4EA329251EEFD44C14FBF8A00DF39AD313E4315C878624D943A7B55E0B4E5376879ECC3C</sha512>
     </dependency>
+    <dependency group='com.github.walleth.KHardWareWallet' module='trezor' version='1.0.0' extension='aar'>
+      <sha512>EF5418ED703E40C1FBA45E97459C92225D746C6C33BD046E2CE88DD2143E061EB1EE1F59541DB16486694B51F795C0D61B0B2364965689DD41D76DD4934B6F53</sha512>
+    </dependency>
     <dependency group='com.github.walleth.KHardWareWallet' module='trezor' version='22bb2f1b2f18601785f05684d33461aa07de0190' extension='aar'>
       <sha512>D5BA4BC40449BCF15CE780B970CB4E9946D536DE5B1E0DC473811DB3B46478416020878FD18CA54680021A42B09875B8D427E86F352D9A6E1D53B9200D4ACDB6</sha512>
     </dependency>
@@ -6315,6 +6322,9 @@
     </dependency>
     <dependency group='com.github.walleth.KHardWareWallet' module='trezor_wire' version='0.9.9'>
       <sha512>F5005AF3BA54C7F575080C4E926CAD10B013B9B6144BEA788824DB3A940F9F937AAD46305BDCB602620C64B3096497FDB27EF391C52D3DC7B581FA93FAC1C041</sha512>
+    </dependency>
+    <dependency group='com.github.walleth.KHardWareWallet' module='trezor_wire' version='1.0.0'>
+      <sha512>6F0D3EB98FB1F684F1A2A8F8DED621EBA93A1EDFD37241F272E4BDB47FECC6B7155AE1D57F8D378090B53ABA6BF8F5DD5A3D133A1D6D065484CE10AD711832A9</sha512>
     </dependency>
     <dependency group='com.github.walleth.KHardWareWallet' module='trezor_wire' version='95b58f71e4dfcf15a44a90c51967858834147471'>
       <sha512>563781C32EB07D581326CEB700D94FAC4861C73CB976C91FD3ADC57C94CFB4A85468680188059D6E6BD967A7129B83DCDC9C8F6A2CD8AE4379405C8CF9E23F6E</sha512>
@@ -6462,6 +6472,9 @@
     </dependency>
     <dependency group='com.github.walleth' module='KHardWareWallet' version='071f75923e49f97cef298ef6c480b000c967c198'>
       <sha512>30C244F658F57084660CF073FB8A38AB6302950BACE273D4CAA9922D6E490C18695D8FA4D59733D8286CA381C66A0C92D68A85FF6E16C75191AE4F61C3724C10</sha512>
+    </dependency>
+    <dependency group='com.github.walleth' module='KHardWareWallet' version='1.0.0'>
+      <sha512>CC22A73B89FEFE4CEB9D832FAFED035D498008E3AC58CDEE649DD1756D28AC50B518B79D6FE5391CC525BF92F4E3DA81AA9702823535BEC50DD1AF28F8F4414B</sha512>
     </dependency>
     <dependency group='com.github.walleth' module='KHardWareWallet' version='22bb2f1b2f18601785f05684d33461aa07de0190'>
       <sha512>CC4CD3CD452F9DAD688CC5A38B414628F5BCDAEE9908EA411C25421B0D4DF9B4DFC765D9F027AB61F77D1A9343AC211846CB414F5EFA01BFC76DFC81151DADA4</sha512>
