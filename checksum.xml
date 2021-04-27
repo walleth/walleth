@@ -78,6 +78,7 @@
     <trusted-key id='a41f13c999945293' group='commons-logging' />
     <trusted-key id='6449005f96bc97a3' group='de.undercouch' />
     <trusted-key id='4d176dc503fb4267' group='io.coil-kt' />
+    <trusted-key id='e8ebcfc35df57b34' group='io.insert-koin' />
     <trusted-key id='94b291aef984a085' group='io.reactivex' />
     <trusted-key id='94b291aef984a085' group='io.reactivex.rxjava2' />
     <trusted-key id='5e2f2b3d474efe6b' group='it.unimi.dsi' />
@@ -6892,6 +6893,9 @@
     </dependency>
     <dependency group='io.coil-kt' module='coil' version='1.2.0'>
       <sha512>D4E57259E28FF8D70161B7002E3C3CDF9286D67529D35C2C4BDBCDC3CDE14060B61505339DF94B585DABF2942C40B78298AA5E2A75D4749DF4D43956FFD7BE7E</sha512>
+    </dependency>
+    <dependency group='io.insert-koin' module='koin-android' version='3.0.1'>
+      <sha512>52D1C94C7487A52C46F11A736739EFEDA30A196D999097AB4ACB1462AB40B1DECFE4BCFE3B3F681C8AB4923668388763B60F2A7AFE09DD4D8732238740D67747</sha512>
     </dependency>
     <dependency group='javax.inject' module='javax.inject' version='1'>
       <sha512>E126B7CCF3E42FD1984A0BEEF1004A7269A337C202E59E04E8E2AF714280D2F2D8D2BA5E6F59481B8DCD34AAF35C966A688D0B48EC7E96F102C274DC0D3B381E</sha512>

@@ -10,6 +10,7 @@ buildscript {
         mockito_version = '3.4.6'
         truth = '1.1.2'
         espresso_version = '3.3.0'
+        koin_version = '3.0.1'
     }
 
     repositories {
