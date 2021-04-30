@@ -52,7 +52,6 @@ import org.walleth.transactions.TransactionAdapterDirection.*
 import org.walleth.transactions.TransactionRecyclerAdapter
 import org.walleth.util.copyToClipboard
 import org.walleth.valueview.ValueViewController
-import timber.log.Timber
 import java.math.BigInteger.ZERO
 
 private const val KEY_LAST_PASTED_DATA: String = "LAST_PASTED_DATA"
@@ -213,15 +212,18 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         }
     }
 
+    var refreshActionBarJob: Job? = null
     private fun refreshSubtitle() {
-        appDatabase.addressBook.byAddressLiveData(currentAddressProvider.getCurrentNeverNull()).observe(this, { currentAddress ->
-            currentAddress?.let { entry ->
+        refreshActionBarJob?.cancel()
+        val currentAddress = currentAddressProvider.getCurrentNeverNull()
+        refreshActionBarJob = appDatabase.addressBook.byAddressFlow(currentAddress).onEach { currentEntry ->
+            currentEntry?.let { entry ->
                 lifecycleScope.launch(Dispatchers.Main) {
                     val name = chainInfoProvider.getCurrent().name
                     supportActionBar?.subtitle = entry.name + "@" + name
                 }
             }
-        })
+        }.launchIn(lifecycleScope)
     }
 
     private suspend fun setCurrentBalanceObservers() {
@@ -229,9 +231,7 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
         if (currentAddress != null) {
             balanceFlowCollectorJob?.cancel()
             balanceFlowCollectorJob = lifecycleScope.launch {
-                Timber.i("GOTOKEN  pre ")
                 val tokenAddress = currentTokenProvider.getCurrent().address
-                Timber.i("GOTOKEN  " + tokenAddress)
                 appDatabase.balances.getBalanceLive(currentAddress, tokenAddress, chainInfoProvider.getCurrent().chainId).filterNotNull().collect {
                     if (it.chain == chainInfoProvider.getCurrent().chainId) {
                         amountViewModel.setValue(it.balance, currentTokenProvider.getCurrent())

@@ -5,6 +5,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 import org.kethereum.model.Address
 
 suspend fun AddressBookDAO.resolveNameWithFallback(address: Address, fallback: String = address.hex) = byAddress(address)?.name ?: fallback
@@ -29,6 +30,9 @@ interface AddressBookDAO {
 
     @Query("SELECT * FROM addressbook where address = :address COLLATE NOCASE")
     fun byAddressLiveData(address: Address): LiveData<AddressBookEntry?>
+
+    @Query("SELECT * FROM addressbook where address = :address COLLATE NOCASE")
+    fun byAddressFlow(address: Address): Flow<AddressBookEntry?>
 
     @Query("SELECT * FROM addressbook where address = :address COLLATE NOCASE")
     suspend fun byAddress(address: Address): AddressBookEntry?
