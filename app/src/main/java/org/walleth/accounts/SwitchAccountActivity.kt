@@ -14,6 +14,8 @@ class SwitchAccountActivity : BaseAddressBookActivity() {
         supportActionBar?.subtitle = getString(R.string.nav_drawer_accounts)
     }
 
+    override fun getPostCreateActionLabelResId() = R.string.post_account_create_action_label_switch
+
     override fun onAddressClick(addressEntry: AddressBookEntry) {
         lifecycleScope.launch(Dispatchers.Main) {
             currentAddressProvider.setCurrent(addressEntry.address)

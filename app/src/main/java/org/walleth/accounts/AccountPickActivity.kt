@@ -14,6 +14,8 @@ class AccountPickActivity : BaseAddressBookActivity() {
         supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
     }
 
+    override fun getPostCreateActionLabelResId() = R.string.post_account_create_action_label_pick
+
     override fun onAddressClick(addressEntry: AddressBookEntry) {
         setResult(Activity.RESULT_OK, Intent().apply { putExtra(EXTRA_KEY_ADDRESS, addressEntry.address.hex) })
         finish()

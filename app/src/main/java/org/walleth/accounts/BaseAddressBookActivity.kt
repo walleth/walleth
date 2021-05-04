@@ -1,11 +1,16 @@
 package org.walleth.accounts
 
+import android.app.Activity
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.StringRes
 import androidx.core.content.ContextCompat.getColor
 import androidx.core.widget.ImageViewCompat
 import androidx.lifecycle.lifecycleScope
@@ -13,16 +18,18 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.ItemTouchHelper.LEFT
 import androidx.recyclerview.widget.ItemTouchHelper.RIGHT
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_list_addresses.*
 import kotlinx.android.synthetic.main.item_address_book.view.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.kethereum.keystore.api.KeyStore
+import org.kethereum.model.Address
 import org.koin.android.ext.android.inject
 import org.ligi.kaxt.setVisibility
-import org.ligi.kaxt.startActivityFromClass
 import org.walleth.R
 import org.walleth.base_activities.startAddressReceivingActivity
+import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.addresses.AddressBookEntry
 import org.walleth.data.addresses.CurrentAddressProvider
 import org.walleth.data.addresses.faucet
@@ -59,6 +66,26 @@ abstract class BaseAddressBookActivity : BaseEnhancedListActivity<AddressBookEnt
         }
     }
 
+    @StringRes
+    abstract fun getPostCreateActionLabelResId() : Int
+
+    private val createAccountForResult: ActivityResultLauncher<Intent> = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
+
+        if (result.resultCode == Activity.RESULT_OK) {
+            result.data?.getStringExtra(EXTRA_KEY_ADDRESS)?.let { address ->
+                lifecycleScope.launch {
+                    appDatabase.addressBook.byAddress(Address(address))?.let { entry ->
+                        Snackbar.make(this@BaseAddressBookActivity, fab, "Created " + entry.name, Snackbar.LENGTH_INDEFINITE)
+                                .setAction(getPostCreateActionLabelResId()) {
+                                    onAddressClick(entry)
+                                }
+                                .show()
+                    }
+                }
+            }
+
+        }
+    }
 
     val keyStore: KeyStore by inject()
     val currentAddressProvider: CurrentAddressProvider by inject()
@@ -72,7 +99,7 @@ abstract class BaseAddressBookActivity : BaseEnhancedListActivity<AddressBookEnt
         supportActionBar?.subtitle = getString(R.string.address_book_subtitle)
 
         fab.setOnClickListener {
-            startActivityFromClass(CreateAccountActivity::class.java)
+            createAccountForResult.launch(Intent(this, CreateAccountActivity::class.java))
         }
 
         val simpleItemTouchCallback = object : ItemTouchHelper.SimpleCallback(0, LEFT or RIGHT) {
