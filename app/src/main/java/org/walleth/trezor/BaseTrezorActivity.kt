@@ -42,7 +42,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
     protected var isKeepKeyDevice = false
     protected var currentDeviceName: String? = null
 
-    protected enum class STATES {
+    internal enum class STATES {
         REQUEST_PERMISSION,
         INIT,
         PIN_REQUEST,
@@ -51,10 +51,11 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
         BUTTON_ACK,
         PROCESS_TASK,
         READ_ADDRESS,
+        IDLE,
         CANCEL
     }
 
-    private var state: STATES = INIT
+    internal var state: STATES = INIT
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,30 +65,31 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
         device_status_text.text = HtmlCompat.fromHtml(getString(getConnectMessage()))
         device_status_text.movementMethod = LinkMovementMethod()
 
-        device_connect_indicator.setImageResource(if (isKeepKeyMode)R.drawable.keepkey else R.drawable.trezor_connect)
+        device_connect_indicator.setImageResource(if (isKeepKeyMode) R.drawable.keepkey else R.drawable.trezor_connect)
     }
 
     private fun getConnectMessage() = if (isKeepKeyMode) R.string.connect_keepkey_message else R.string.connect_trezor_message
     private fun getActionMessage() = if (isKeepKeyMode) R.string.interact_keepkey_message else R.string.interact_trezor_message
 
-    protected fun enterNewState(newState: STATES) {
+    internal open fun enterNewState(newState: STATES) {
         state = newState
         connectAndExecute()
     }
 
     fun connectAndExecute() = lifecycleScope.launch(Dispatchers.IO) {
         tryConnectTrezor(this@BaseTrezorActivity,
-                onPermissionDenied = {
-                    finishingAlert("Without you granting permission for this device WallETH is not able to talk to the device")
-                },
-                onDeviceConnected = {
-                    lifecycleScope.launch(Dispatchers.Main) {
-                        val m = getMessageForState()
-                        val result = it.exchangeMessage(m)
+            onPermissionDenied = {
+                finishingAlert("Without you granting permission for this device WallETH is not able to talk to the device")
+            },
+            onDeviceConnected = {
+                lifecycleScope.launch(Dispatchers.Main) {
+                    getMessageForState()?.let { messageForState ->
+                        val result = it.exchangeMessage(messageForState)
                         result?.handleTrezorResult()
                         it.disconnect()
                     }
-                })
+                }
+            })
 
     }
 
@@ -102,16 +104,16 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
 
             when (this@handleTrezorResult) {
                 is PinMatrixRequest -> showPINDialog(
-                        onCancel = {
-                            state = CANCEL
-                            connectAndExecute()
-                        },
-                        onPIN = { pin ->
-                            currentSecret = pin
-                            state = PIN_REQUEST
-                            connectAndExecute()
-                        },
-                        pinPadMapping = KEY_MAP_NUM_PAD
+                    onCancel = {
+                        state = CANCEL
+                        connectAndExecute()
+                    },
+                    onPIN = { pin ->
+                        currentSecret = pin
+                        state = PIN_REQUEST
+                        connectAndExecute()
+                    },
+                    pinPadMapping = KEY_MAP_NUM_PAD
                 )
                 is PassphraseRequest -> if (_on_device == true) {
                     enterNewState(PWD_ON_DEVICE)
@@ -143,11 +145,17 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                     }
                 }
                 is EthereumAddress -> {
-                    handleAddress(Address(if (address != null) {
-                        address.toString().removePrefix("[hex=").removeSuffix("]")
-                    } else {
-                        address_str
-                    }))
+                    handleAddress(
+                        Address(
+                            if (address != null) {
+                                address.toString().removePrefix("[hex=").removeSuffix("]")
+                            } else {
+                                address_str
+                            }
+                        )
+                    )
+
+                    state = IDLE
                 }
                 is Failure -> when (code) {
                     FailureType.Failure_PinInvalid -> alert(R.string.trezor_pin_invalid, R.string.dialog_title_error) { cancel() }
@@ -167,7 +175,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
     }
 
     private fun finishingAlert(message: String) = lifecycleScope.launch(Dispatchers.Main) {
-        alert(message,"Error") {
+        alert(message, "Error") {
             finish()
         }
     }
@@ -177,12 +185,12 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
         finish()
     }
 
-    protected open suspend fun getMessageForState(): Message<*, *> = when (state) {
+    protected open suspend fun getMessageForState(): Message<*, *>? = when (state) {
         INIT, REQUEST_PERMISSION -> Initialize.Builder().build()
         READ_ADDRESS -> {
             EthereumGetAddress.Builder()
-                    .address_n(currentBIP44!!.path.map { it.numberWithHardeningFlag })
-                    .build()
+                .address_n(currentBIP44!!.path.map { it.numberWithHardeningFlag })
+                .build()
         }
         PWD_ON_DEVICE -> PassphraseAck.Builder().build()
         PIN_REQUEST -> PinMatrixAck.Builder().pin(currentSecret).build()
@@ -190,25 +198,26 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
         BUTTON_ACK -> ButtonAck.Builder().build()
         CANCEL -> Cancel.Builder().build()
         PROCESS_TASK -> getTaskSpecificMessage()!!
+        IDLE -> null
     }
 
 
     private fun showPassPhraseDialog() {
         val inputLayout = inflate(R.layout.password_input)
         AlertDialog.Builder(this)
-                .setView(inputLayout)
-                .setTitle(R.string.trezor_please_enter_your_passphrase)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    currentSecret = inputLayout.password_input.text.toString()
-                    state = PWD_REQUEST
-                    connectAndExecute()
-                }
-                .setNegativeButton(android.R.string.cancel) { _, _ ->
-                    state = CANCEL
-                    connectAndExecute()
-                }
-                .setCancelable(false)
-                .show()
+            .setView(inputLayout)
+            .setTitle(R.string.trezor_please_enter_your_passphrase)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                currentSecret = inputLayout.password_input.text.toString()
+                state = PWD_REQUEST
+                connectAndExecute()
+            }
+            .setNegativeButton(android.R.string.cancel) { _, _ ->
+                state = CANCEL
+                connectAndExecute()
+            }
+            .setCancelable(false)
+            .show()
     }
 
 }

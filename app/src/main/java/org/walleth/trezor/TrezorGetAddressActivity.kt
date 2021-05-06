@@ -29,15 +29,35 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
         inflate(R.layout.hd_derivation_select)
     }
 
-    override fun handleAddress(address: Address) {
+    override fun handleAddress(address: Address) = handleNullableAddress(address)
+
+    private fun handleNullableAddress(address: Address?) {
         currentAddress = address
 
         if (!isDerivationDialogShown) {
-            showDerivationDialog()
             isDerivationDialogShown = true
+            showDerivationDialog()
         }
-        currentDerivationDialogView.address.text = if (currentBIP44 != null) address.hex else "?"
 
+        currentDerivationDialogView.address.text = if (currentBIP44 != null && address != null) address.hex else "Waiting for TREZOR to provide Address"
+
+    }
+
+
+    var pendingBIP44: BIP44? = null
+
+    override fun enterNewState(newState: STATES) {
+        super.enterNewState(newState)
+
+        maybeRequestNewAddress(newState)
+    }
+
+    private fun maybeRequestNewAddress(withState: STATES = state) {
+        if (withState == STATES.IDLE) {
+            currentBIP44 = pendingBIP44
+            enterNewState(STATES.READ_ADDRESS)
+            pendingBIP44 = null
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -56,12 +76,13 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
         val radioGroup = currentDerivationDialogView.derivation_radiogroup
 
         currentDerivationDialogView.derivation_text.doAfterEdit {
-            currentBIP44 = try {
+            pendingBIP44 = try {
                 BIP44(currentDerivationDialogView.derivation_text.text.toString())
             } catch (e: IllegalArgumentException) {
                 initialBIP44
             }
-            enterNewState(STATES.READ_ADDRESS)
+            handleNullableAddress(null)
+            maybeRequestNewAddress()
         }
 
         for (i in 1..5) {
@@ -89,27 +110,29 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
         radioGroup.check(radioGroup.getChildAt(0).id)
 
         AlertDialog.Builder(this)
-                .setView(currentDerivationDialogView)
-                .setTitle(R.string.trezor_select_address)
-                .setPositiveButton(android.R.string.ok) { _, _ ->
-                    if (currentBIP44 == null || currentAddress == null) {
-                        alert(R.string.trezor_no_valid_input)
-                    } else {
-                        val resultIntent = Intent()
-                        resultIntent.putExtra(EXTRA_KEY_ADDRESS, currentAddress!!.hex)
-                        resultIntent.putExtra(EXTRA_KEY_ACCOUNTSPEC, AccountKeySpec(
-                                type = getAccountType(),
-                                derivationPath = currentBIP44.toString(),
-                                name = currentDeviceName
-                        ))
-                        setResult(Activity.RESULT_OK, resultIntent)
-                        finish()
-                    }
-                }
-                .setNegativeButton(android.R.string.cancel) { _, _ ->
+            .setView(currentDerivationDialogView)
+            .setTitle(R.string.trezor_select_address)
+            .setPositiveButton(android.R.string.ok) { _, _ ->
+                if (currentBIP44 == null || currentAddress == null) {
+                    alert(R.string.trezor_no_valid_input)
+                } else {
+                    val resultIntent = Intent()
+                    resultIntent.putExtra(EXTRA_KEY_ADDRESS, currentAddress!!.hex)
+                    resultIntent.putExtra(
+                        EXTRA_KEY_ACCOUNTSPEC, AccountKeySpec(
+                            type = getAccountType(),
+                            derivationPath = currentBIP44.toString(),
+                            name = currentDeviceName
+                        )
+                    )
+                    setResult(Activity.RESULT_OK, resultIntent)
                     finish()
                 }
-                .show()
+            }
+            .setNegativeButton(android.R.string.cancel) { _, _ ->
+                finish()
+            }
+            .show()
     }
 
     private fun getAccountType() = if (isKeepKeyDevice) ACCOUNT_TYPE_KEEPKEY else ACCOUNT_TYPE_TREZOR
