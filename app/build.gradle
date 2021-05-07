@@ -132,7 +132,7 @@ dependencies {
 
     withGethImplementation "org.ethereum:geth:1.8.8"
 
-    implementation 'androidx.paging:paging-runtime-ktx:3.0.0-rc01'
+    implementation 'androidx.paging:paging-runtime-ktx:3.0.0'
 
     implementation 'com.jakewharton.timber:timber:4.7.1'
 
