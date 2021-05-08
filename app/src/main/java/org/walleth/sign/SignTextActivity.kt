@@ -111,13 +111,17 @@ class SignTextActivity : BaseSubActivity() {
 
             fab.setOnClickListener {
 
-                val signature = key.signWithEIP191PersonalSign(text)
+                try {
+                    val signature = key.signWithEIP191PersonalSign(text)
 
-                val putExtra = Intent()
+                    val putExtra = Intent()
                         .putExtra("SIGNATURE", signature.toHex())
                         .putExtra("ADDRESS", currentAddress.cleanHex)
-                setResult(Activity.RESULT_OK, putExtra)
-                finish()
+                    setResult(Activity.RESULT_OK, putExtra)
+                    finish()
+                } catch (e: Exception) {
+                    alert("Could not sign. Reason: " + e.message)
+                }
             }
         }
     }
