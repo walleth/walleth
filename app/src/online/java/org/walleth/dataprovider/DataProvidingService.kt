@@ -191,13 +191,14 @@ class DataProvidingService : LifecycleService() {
     private fun sendTransaction(transaction: TransactionEntity) {
 
         val uploadWorkRequest = OneTimeWorkRequestBuilder<RelayTransactionWorker>()
-                .setBackoffCriteria(
-                        BackoffPolicy.LINEAR,
-                        OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
-                        TimeUnit.MILLISECONDS)
-                .addTag("relay")
-                .setInputData(workDataOf(KEY_TX_HASH to transaction.hash))
-                .build()
+            .setBackoffCriteria(
+                BackoffPolicy.LINEAR,
+                OneTimeWorkRequest.MIN_BACKOFF_MILLIS,
+                TimeUnit.MILLISECONDS
+            )
+            .addTag("relay")
+            .setInputData(workDataOf(KEY_TX_HASH to transaction.hash))
+            .build()
 
         WorkManager.getInstance(this).enqueueUniqueWork(transaction.hash, ExistingWorkPolicy.REPLACE, uploadWorkRequest)
     }
@@ -211,39 +212,37 @@ class DataProvidingService : LifecycleService() {
         val currentToken = tokenProvider.getCurrent()
         val currentChainId = chainInfoProvider.getCurrent()?.chainId
         val rpc = rpcProvider.get()
-        when {
-            currentChainId == null -> Timber.e("no current chain is null")
-            rpc == null -> Timber.e("no RPC found")
-            else -> {
-                try {
-                    val blockNumber = rpc.blockNumber()
-                    if (blockNumber != null) {
-                        val blockNumberAsHex = blockNumber.toHexString()
+        if (rpc == null) {
+            Timber.e("no RPC found")
+        } else {
+            try {
+                val blockNumber = rpc.blockNumber()
+                if (blockNumber != null) {
+                    val blockNumberAsHex = blockNumber.toHexString()
 
 
-                        val balance = if (currentToken.isRootToken()) {
-                            rpc.getBalance(address, blockNumberAsHex)
-                        } else {
-                            ERC20RPCConnector(currentToken.address, rpc).balanceOf(address)
-                        }
-                        if (balance != null) {
-                            appDatabase.balances.upsertIfNewerBlock(
-                                    Balance(address = address,
-                                            block = blockNumber.toLong(),
-                                            balance = balance,
-                                            tokenAddress = currentToken.address,
-                                            chain = currentChainId
-                                    )
-                            )
-                        }
+                    val balance = if (currentToken.isRootToken()) {
+                        rpc.getBalance(address, blockNumberAsHex)
+                    } else {
+                        ERC20RPCConnector(currentToken.address, rpc).balanceOf(address)
                     }
-                } catch (rpcException: EthereumRPCException) {
-
-                } catch (e: Exception) {
-                    Timber.e(e, "error when getting balance")
+                    if (balance != null) {
+                        appDatabase.balances.upsertIfNewerBlock(
+                            Balance(
+                                address = address,
+                                block = blockNumber.toLong(),
+                                balance = balance,
+                                tokenAddress = currentToken.address,
+                                chain = currentChainId
+                            )
+                        )
+                    }
                 }
+            } catch (rpcException: EthereumRPCException) {
+                Timber.e(rpcException, "error when getting balance")
+            } catch (e: Exception) {
+                Timber.e(e, "error when getting balance")
             }
         }
     }
-
 }
