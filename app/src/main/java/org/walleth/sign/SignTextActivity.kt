@@ -15,6 +15,7 @@ import org.kethereum.crypto.toHex
 import org.kethereum.eip191.signWithEIP191PersonalSign
 import org.kethereum.keystore.api.KeyStore
 import org.kethereum.model.Address
+import org.kethereum.wallet.model.InvalidPasswordException
 import org.koin.android.ext.android.inject
 import org.komputing.khex.extensions.hexToByteArray
 import org.komputing.khex.extensions.toHexString
@@ -58,8 +59,11 @@ class SignTextActivity : BaseSubActivity() {
 
         textToSign.text = String(text)
 
-        lifecycleScope.launch(Dispatchers.Default) {
+        startSignFlow()
+    }
 
+    private fun startSignFlow() {
+        lifecycleScope.launch(Dispatchers.Default) {
 
             val account = appDatabase.addressBook.byAddress(currentAddress)
 
@@ -91,7 +95,14 @@ class SignTextActivity : BaseSubActivity() {
     }
 
     private fun signTextWithPassword(currentAddress: Address, password: String) {
-        val key = keyStore.getKeyForAddress(currentAddress, password)
+        val key = try {
+            keyStore.getKeyForAddress(currentAddress, password)
+        } catch (e: InvalidPasswordException) {
+            alert("Invalid Password - try again") {
+                startSignFlow()
+            }
+            return
+        }
 
         if (key == null) {
             lifecycleScope.launch(Dispatchers.Main) {
