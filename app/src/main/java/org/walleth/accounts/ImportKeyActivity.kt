@@ -25,7 +25,9 @@ import org.kethereum.bip39.toKey
 import org.kethereum.bip39.validate
 import org.kethereum.bip39.wordlists.WORDLIST_ENGLISH
 import org.kethereum.crypto.toECKeyPair
+import org.kethereum.eip191.signWithEIP191PersonalSign
 import org.kethereum.extensions.toHexString
+import org.kethereum.model.ECKeyPair
 import org.kethereum.model.PrivateKey
 import org.kethereum.wallet.loadKeysFromWalletJsonString
 import org.komputing.khex.extensions.hexToByteArray
@@ -109,6 +111,13 @@ open class ImportKeyActivity : BaseSubActivity() {
         key_container.isCounterEnabled = type_ecdsa_select.isChecked
     }
 
+    fun ECKeyPair.checkIsValid() = try {
+        signWithEIP191PersonalSign("test".toByteArray())
+        true
+    } catch (e:java.lang.Exception) {
+        false
+    }
+
     private fun doImport() = lifecycleScope.launch(Dispatchers.Main) {
         if (importing) {
             return@launch
@@ -150,14 +159,18 @@ open class ImportKeyActivity : BaseSubActivity() {
                 }
 
                 if (importKey != null) {
-                    val initPayload = importKey.privateKey.key.toHexString() + "/" + importKey.publicKey.key.toHexString()
-                    val spec = AccountKeySpec(ACCOUNT_TYPE_IMPORT, initPayload = initPayload)
+                    if (!importKey.checkIsValid()) {
+                        displayError("Key is not valid")
+                    } else {
+                        val initPayload = importKey.privateKey.key.toHexString() + "/" + importKey.publicKey.key.toHexString()
+                        val spec = AccountKeySpec(ACCOUNT_TYPE_IMPORT, initPayload = initPayload)
 
-                    val intent = Intent(this@ImportKeyActivity, ImportAsActivity::class.java).putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
-                    startActivityForResult(intent, REQUEST_CODE_IMPORT_AS)
+                        val intent = Intent(this@ImportKeyActivity, ImportAsActivity::class.java).putExtra(EXTRA_KEY_ACCOUNTSPEC, spec)
+                        startActivityForResult(intent, REQUEST_CODE_IMPORT_AS)
+                    }
+
                 } else {
-                    AlertDialog.Builder(this@ImportKeyActivity).setMessage("Could not import key")
-                            .setTitle(getString(R.string.dialog_title_error)).show()
+                    displayError("Could not import key")
                 }
 
             } catch (e: Exception) {
