@@ -18,6 +18,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.lifecycleScope
+import app.cash.exhaustive.Exhaustive
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_create_transaction.*
 import kotlinx.android.synthetic.main.value.*
@@ -86,7 +87,6 @@ import org.walleth.nfc.startNFCSigningActivity
 import org.walleth.qr.scan.getQRScanActivity
 import org.walleth.sign.ParitySignerQRActivity
 import org.walleth.startup.StartupActivity
-import org.walleth.tmp.Do
 import org.walleth.tokens.SelectTokenActivity
 import org.walleth.trezor.getKeepKeySignIntent
 import org.walleth.trezor.getTrezorSignIntent
@@ -741,7 +741,8 @@ class CreateTransactionActivity : BaseSubActivity() {
                                         if (BuildConfig.FLAVOR_connectivity == "online") {
                                             lifecycleScope.launch(Dispatchers.Main) {
                                                 val res = currentERC681.resolveFunctionUserDoc(ChainId(chainInfoProvider.getCurrent()?.chainId!!), metaDataRepo)
-                                                Do exhaustive when (res) {
+                                                @Exhaustive
+                                                when (res) {
                                                     is UserDocResultContractNotFound -> showWarning(WARNING_USERDOC, "Contact MetaData not found. Please <a href='wallethwarn:contractnotfound||" + currentERC681.address + "'>read here</a> to learn more.")
                                                     is ResolvedUserDocResult -> setUserDoc(res.userDoc)
                                                     is ResolveErrorUserDocResult -> showWarning(WARNING_USERDOC, "Cannot resolve Userdoc. " + res.error)

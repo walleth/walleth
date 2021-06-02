@@ -5,6 +5,7 @@
     <ignored-key id='21200d723f53ce38' />
   </ignored-keys>
   <trusted-keys>
+    <trusted-key id='a6bc6a2c25a6479c' group='app.cash.exhaustive' />
     <trusted-key id='c4c8cb73b1435348' group='com.android.tools.build' />
     <trusted-key id='5ad66315fc018797' group='com.beust' />
     <trusted-key id='24ab323a2c95b019' group='com.getkeepsafe.dexcount' />
