@@ -28,6 +28,8 @@ data class ChainInfo(
         var order: Int? = null,
         var starred: Boolean = false,
 
+        var useEIP1559: Boolean = false,
+
         @ColumnInfo(name = "softDeleted")
         override var deleted: Boolean = false,
 

@@ -12,7 +12,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okio.ByteString.Companion.toByteString
-import org.kethereum.extensions.transactions.encodeRLP
+import org.kethereum.extensions.transactions.encode
 import org.kethereum.keccakshortcut.keccak
 import org.kethereum.model.Address
 import org.kethereum.model.SignatureData
@@ -98,7 +98,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
                     s = BigInteger(res.signature_s.toByteArray()),
                     v = res.signature_v.toBigInteger()
             )
-            transaction.transaction.txHash = transaction.transaction.encodeRLP(signatureData).keccak().toHexString()
+            transaction.transaction.txHash = transaction.transaction.encode(signatureData).keccak().toHexString()
             lifecycleScope.launch(Dispatchers.Main) {
                 withContext(Dispatchers.Default) {
                     appDatabase.runInTransaction {

@@ -3,7 +3,7 @@ package org.walleth.workers
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
-import org.kethereum.extensions.transactions.encodeRLP
+import org.kethereum.extensions.transactions.encode
 import org.kethereum.model.ChainId
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
@@ -42,7 +42,7 @@ class RelayTransactionWorker(appContext: Context, workerParams: WorkerParameters
         }
 
         try {
-            val result = rpc.sendRawTransaction(transaction.transaction.encodeRLP(transaction.signatureData).toHexString())
+            val result = rpc.sendRawTransaction(transaction.transaction.encode(transaction.signatureData).toHexString())
 
             return if (result != null) {
                 transaction.setHash(if (!result.startsWith("0x")) "0x$result" else result)

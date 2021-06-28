@@ -15,7 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import org.ethereum.geth.*
-import org.kethereum.extensions.transactions.encodeRLP
+import org.kethereum.extensions.transactions.encode
 import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.chains.ChainInfoProvider
@@ -220,7 +220,7 @@ class GethLightEthereumService : LifecycleService() {
 
     private fun TransactionEntity.execute(client: EthereumClient, ethereumContext: EthereumContext) {
         try {
-            val rlp = transaction.encodeRLP()
+            val rlp = transaction.encode()
             val transactionWithSignature = Geth.newTransactionFromRLP(rlp)
             client.sendTransaction(ethereumContext, transactionWithSignature)
             transactionState.relayed = "GethLight"

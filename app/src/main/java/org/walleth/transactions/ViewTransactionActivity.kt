@@ -15,10 +15,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.extensions.toHexString
-import org.kethereum.extensions.transactions.encodeRLP
-import org.kethereum.extensions.transactions.getTokenTransferTo
-import org.kethereum.extensions.transactions.getTokenTransferValue
-import org.kethereum.extensions.transactions.isTokenTransfer
+import org.kethereum.extensions.transactions.*
 import org.kethereum.methodsignatures.CachedOnlineMethodSignatureRepository
 import org.koin.android.ext.android.inject
 import org.komputing.khex.extensions.toHexString
@@ -157,7 +154,7 @@ class ViewTransactionActivity : BaseSubActivity() {
                             val content = if (txEntry.signatureData != null) {
                                 rlp_header.setText(R.string.signed_rlp_header_text)
                                 """{
-                            "signedTransactionRLP":"${txEntry.transaction.encodeRLP(txEntry.signatureData).toHexString()}",
+                            "signedTransactionRLP":"${txEntry.transaction.encode(txEntry.signatureData).toHexString()}",
                             "chainId":${txEntry.transaction.chain}
                             }"""
                             } else {

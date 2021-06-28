@@ -591,7 +591,7 @@ class CreateTransactionActivity : BaseSubActivity() {
 
                     currentSignatureData = signatureData
 
-                    currentTxHash = transaction.encodeRLP(signatureData).keccak().toHexString()
+                    currentTxHash = transaction.encode(signatureData).keccak().toHexString()
                     transaction.txHash = currentTxHash
 
 

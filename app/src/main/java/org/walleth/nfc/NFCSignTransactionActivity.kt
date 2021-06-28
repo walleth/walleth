@@ -8,8 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import org.kethereum.crypto.toAddress
-import org.kethereum.extensions.transactions.encodeRLP
+import org.kethereum.extensions.transactions.encode
+import org.kethereum.extensions.transactions.encodeLegacyTxRLP
 import org.kethereum.keccakshortcut.keccak
+import org.kethereum.model.SignedTransaction
 import org.koin.android.ext.android.inject
 import org.komputing.khex.extensions.toHexString
 import org.walleth.data.AppDatabase
@@ -56,12 +58,12 @@ class NFCSignTransactionActivity : NFCBaseActivityWithPINHandling() {
 
                 val oldHash = transaction.transaction.txHash
 
-                val signedTransaction = channel.signTransaction(transaction.transaction)
+                val signedTransaction: SignedTransaction = channel.signTransaction(transaction.transaction)
 
                 setText("signed")
                 lifecycleScope.launch(Dispatchers.Main) {
                     withContext(Dispatchers.Default) {
-                        transaction.transaction.txHash = signedTransaction.encodeRLP().keccak().toHexString()
+                        transaction.transaction.txHash = signedTransaction.encode().keccak().toHexString()
                         appDatabase.runInTransaction {
                             oldHash?.let { appDatabase.transactions.deleteByHash(it) }
                             appDatabase.transactions.upsert(transaction.transaction.toEntity(signedTransaction.signatureData, TransactionState()))

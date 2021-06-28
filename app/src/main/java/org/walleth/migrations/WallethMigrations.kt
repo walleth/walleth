@@ -3,6 +3,14 @@ package org.walleth.migrations
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
+class EIP1559Migration : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE transactions ADD COLUMN maxPriorityFeePerGas BLOB")
+        database.execSQL("ALTER TABLE transactions ADD COLUMN maxFeePerGas BLOB")
+        database.execSQL("ALTER TABLE chains ADD COLUMN useEIP1559 INTEGER NOT NULL DEFAULT(0)")
+    }
+}
+
 class TransactionExtendingMigration : Migration(5, 6) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE transactions ADD COLUMN blockNumber BLOB")
