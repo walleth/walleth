@@ -85,6 +85,7 @@
     <trusted-key id='a41f13c999945293' group='commons-logging' />
     <trusted-key id='6449005f96bc97a3' group='de.undercouch' />
     <trusted-key id='4d176dc503fb4267' group='io.coil-kt' />
+    <trusted-key id='602ec18d20c4661c' group='io.github.x-stream' />
     <trusted-key id='e8ebcfc35df57b34' group='io.insert-koin' />
     <trusted-key id='94b291aef984a085' group='io.reactivex' />
     <trusted-key id='94b291aef984a085' group='io.reactivex.rxjava2' />
@@ -2901,6 +2902,9 @@
     <dependency group='com.github.ben-manes' module='gradle-versions-plugin' version='0.38.0'>
       <sha512>712C046433DF6002A5D5F1C9599EF7D6CE505351F5960357BB42A19E2E5E1F7466585D158FA0634694F380AF85FFDF40472E3119DA4BFF46C5A7C49AF3DBE285</sha512>
       <sha512>C1AB30AA9984AAF40E0DEF6474F535875ABCCA1568E6D495317D1092B782AC39D13505BBBD50877589610A59273AC89ADE0B68EEE0501961C1AF17CA5D509178</sha512>
+    </dependency>
+    <dependency group='com.github.ben-manes' module='gradle-versions-plugin' version='0.39.0'>
+      <sha512>9D2B8E7F26D347B6C7EA42BC50E42BCDCA1CFA3388E160FAB5A0E1A5B6F7C4CAD1920F91A384C0B6145C0FE4B03ADE39C9CDF28145D709CCE763E3BE8188818</sha512>
     </dependency>
     <dependency group='com.github.deano2390' module='MaterialShowcaseView' version='1.3.4' extension='aar'>
       <sha512>885F29E074BCDE94CC345C3E58AFB9B393BA543C9B188982FC1A97A771AF17411E7FDDDBE4511987C450768803BD00DA81451D86DA7D701C737A8FD99E6153A9</sha512>

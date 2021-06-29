@@ -22,7 +22,7 @@ buildscript {
         classpath 'com.android.tools.build:gradle:4.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'de.mobilej.unmock:UnMockPlugin:0.7.6'
-        classpath 'com.github.ben-manes:gradle-versions-plugin:0.38.0'
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.39.0'
         classpath 'com.trevjonez.composer:plugin:1.0.0-rc08'
         classpath "com.jaredsburrows:gradle-license-plugin:0.8.90"
         classpath 'app.cash.exhaustive:exhaustive-gradle:0.1.1'
