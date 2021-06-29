@@ -14,10 +14,6 @@ buildscript {
     }
 
     repositories {
-        jcenter()
-        maven { url "https://jitpack.io" }
-        maven { url "https://kotlin.bintray.com/kotlinx" }
-        maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
         gradlePluginPortal()
         google()
     }
@@ -39,8 +35,8 @@ task clean(type: Delete) {
 
 allprojects {
     repositories {
-        jcenter()
-        maven { url "https://kotlin.bintray.com/kotlinx" }
+        gradlePluginPortal()
+        mavenCentral()
         maven { url 'https://jitpack.io' }
         google()
     }

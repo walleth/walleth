@@ -54,6 +54,8 @@
     <trusted-key id='379ce192d401ab61' group='com.jaredsburrows' />
     <trusted-key id='a50569c7ca7fa1f0' group='com.jcraft' />
     <trusted-key id='379ce192d401ab61' group='com.jraska' />
+    <trusted-key id='dea3d207428ef16d' group='com.linkedin.dexmaker' />
+    <trusted-key id='0ba101288c421685' group='com.linkedin.testbutler' />
     <trusted-key id='56f8d3f66b76de01' group='com.microsoft.thrifty' />
     <trusted-key id='c8828ca990d50409' group='com.payneteasy' />
     <trusted-key id='80c08b1c29100955' group='com.squareup' />
@@ -7149,6 +7151,10 @@
     <dependency group='com.github.ligi' module='tsnackbar' version='android_x_fork_1.0' extension='aar'>
       <sha512>2970D253CE0FABAB17CBF59C32A0EAB7276846BC166B7604F344A77AE0B98B1DAACB1DACAFE9A92D9CEE6D49F98B4BC5BB7A94C6EE2C1B1C79F87CF9BD8EFA55</sha512>
     </dependency>
+    <dependency group='com.github.madrapps' module='pikolo' version='2.0.1' extension='aar'>
+      <sha512>1EF92A9F3DFA68B1BD18C0B18BD710C54CFD95D4C8904A0AEE12D51C619244BEDF514FFFE74A99D160305739C117176A3F5661748639292769DABFF67AAB02EB</sha512>
+      <sha512>F5811A78FCFCA9B067781A79173BCED565BED90C5599AF93DAFBDB36CDC5E521EF879067A327ABE676826FBCB019EC4622FAE511A100E02648EDD2620AEF75C5</sha512>
+    </dependency>
     <dependency group='com.github.plnice' module='canidropjetifier' version='0.4'>
       <sha512>5E9023EB1066816491D851FD794141AA6CC95567D577340E546013B381F7273621D997520B83BAC5F71D653E41A8806E43DB54F89CAFBD1185FCCECDF2BCCADB</sha512>
     </dependency>
@@ -7837,6 +7843,7 @@
       <sha512>5320EA4F5282DC4B4C21684BD5A83F31B402CEACA6EA6C26273F4B91D05504A0BC8B3519054827A9C3C55B6CDD61641884C15F4D84CDC5267D0A76AAD62F0D28</sha512>
     </dependency>
     <dependency group='de.undercouch' module='gradle-download-task' version='4.1.1'>
+      <sha512>65F71CBA209175BB3659564AEAF6028FEE944F7805530B918B6EEDA8727B9BFF331675670E809C6844E7956ACC04FEF99B25D96D1C4D57AD2EFF14ED7F92A113</sha512>
       <sha512>CB2B446A9E193A80FEC9609033763C4D906061FA5064D59435C780B6E17D6250786E5B444B4014EA322CE8735630AEFDECA463C29E4CF20D38162310AD7810B5</sha512>
     </dependency>
     <dependency group='io.coil-kt' module='coil-base' version='0.11.0'>
