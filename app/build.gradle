@@ -206,7 +206,7 @@ dependencies {
     // Do not update to 3.4.0 - breaks old devices: https://github.com/walleth/walleth/issues/382
     implementation 'com.google.zxing:core:3.3.3'
 
-    implementation "io.coil-kt:coil:1.2.1"
+    implementation "io.coil-kt:coil:1.2.2"
     implementation 'com.jakewharton:process-phoenix:2.0.0'
 
     implementation 'com.jakewharton.threetenabp:threetenabp:1.3.1'
