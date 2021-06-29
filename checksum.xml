@@ -47,6 +47,7 @@
     <trusted-key id='eb380dc13c39f675' group='com.intellij' />
     <trusted-key id='830004571bb06cff' group='com.ionspin.kotlin' />
     <trusted-key id='80c08b1c29100955' group='com.jakewharton' />
+    <trusted-key id='e0cb7823cfd00fbf' group='com.jakewharton' />
     <trusted-key id='e0cb7823cfd00fbf' group='com.jakewharton.android.repackaged' />
     <trusted-key id='e0cb7823cfd00fbf' group='com.jakewharton.threetenabp' />
     <trusted-key id='80c08b1c29100955' group='com.jakewharton.timber' />
