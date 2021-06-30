@@ -7,6 +7,7 @@ import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.content.res.Configuration
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -82,6 +83,9 @@ class OverviewActivity : WallethActivity(), OnSharedPreferenceChangeListener, To
     override fun onResume() {
         super.onResume()
 
+        if (Build.VERSION.SDK_INT <21) {
+            alert("Support for devices with an Android version prior to 5 has ended because we want to use jetpack compose. Please export your key(s) and use it in another wallet or fork the wallet to continue support for older Android versions.")
+        }
         if (lastNightMode != null && lastNightMode != settings.getNightMode() ||
                 didToolbarColorChange()) {
             recreate()
