@@ -125,10 +125,10 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                     model != "1" && model != "T" && !model.startsWith("K1") -> {
                         finishingAlert("Only TREZOR model T and ONE supported - but found model: $model")
                     }
-                    model == "T" && !(major_version == 2 && (minor_version == 1 || minor_version == 3)) -> {
-                        finishingAlert("For Trezor model T only Firmware 2.1.X or 2.3.X is supported but found $major_version.$minor_version.$patch_version")
+                    model == "T" && !(major_version == 2 && (minor_version == 1 || (3..4).contains(minor_version))) -> {
+                        finishingAlert("For Trezor model T only Firmware 2.1.X, 2.3.X, 2.4.X is supported but found $major_version.$minor_version.$patch_version")
                     }
-                    model == "1" && !(major_version == 1 && (minor_version == 8 || minor_version == 9)) -> {
+                    model == "1" && !(major_version == 1 && ((8..10).contains(minor_version))) -> {
                         finishingAlert("For Trezor model ONE only Firmware 1.8.X or 1.9.X is supported but found $major_version.$minor_version.$patch_version")
                     }
                     else -> {
