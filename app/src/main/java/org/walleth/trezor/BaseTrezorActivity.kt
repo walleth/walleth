@@ -121,17 +121,12 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                     showPassPhraseDialog()
                 }
                 is ButtonRequest -> enterNewState(BUTTON_ACK)
-                is Features -> when {
-                    model != "1" && model != "T" && !model.startsWith("K1") -> {
-                        finishingAlert("Only TREZOR model T and ONE supported - but found model: $model")
-                    }
-                    model == "T" && !(major_version == 2 && (minor_version == 1 || (3..4).contains(minor_version))) -> {
-                        finishingAlert("For Trezor model T only Firmware 2.1.X, 2.3.X, 2.4.X is supported but found $major_version.$minor_version.$patch_version")
-                    }
-                    model == "1" && !(major_version == 1 && ((8..10).contains(minor_version))) -> {
-                        finishingAlert("For Trezor model ONE only Firmware 1.8.X or 1.9.X is supported but found $major_version.$minor_version.$patch_version")
-                    }
-                    else -> {
+                is Features -> {
+                    val version = KotlinVersion(major_version, minor_version, patch_version)
+                    val potentialError = checkTrezorCompatibility(version, model)
+                    if (potentialError != null) {
+                        finishingAlert(potentialError)
+                    } else {
                         isKeepKeyDevice = model.startsWith("K1")
                         currentDeviceName = label
                         when {

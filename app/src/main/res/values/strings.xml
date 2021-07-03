@@ -291,4 +291,7 @@ Unfortunately there is no faucet for this chain. So if you want to try out thing
     <string name="keep_sync_on_prefer">Might drain battery - but you stay up to date</string>
     <string name="keep_sync_on_title">Keep ETH sync on</string>
 
+    <string name="trezor_invalid_model">Only TREZOR model T and ONE supported - but found model: %s</string>
+    <string name="trezor_t_too_old">Your TREZOR model T firmware version (%s) is too old. Please update your TREZOR. You need at least Version 2.1.0</string>
+    <string name="trezor_too_new">Your TREZOR version (%s) is not yet supported. Please contact walleth@walleth.org</string>
 </resources>
