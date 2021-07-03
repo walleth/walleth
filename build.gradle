@@ -9,6 +9,7 @@ buildscript {
         room_version = '2.3.0'
         mockito_version = '3.4.6'
         truth = '1.1.2'
+        // update to 3.4.0 blocked by https://github.com/android/android-test/issues/861
         espresso_version = '3.3.0'
         koin_version = '3.0.2'
     }
