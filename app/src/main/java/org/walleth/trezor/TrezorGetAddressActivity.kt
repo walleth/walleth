@@ -46,16 +46,16 @@ class TrezorGetAddressActivity : BaseTrezorActivity() {
 
     var pendingBIP44: BIP44? = null
 
-    override fun enterNewState(newState: STATES) {
-        super.enterNewState(newState)
+    override fun enterState(newState: STATES, withConnect: Boolean) {
+        super.enterState(newState, withConnect)
 
         maybeRequestNewAddress(newState)
     }
 
     private fun maybeRequestNewAddress(withState: STATES = state) {
-        if (withState == STATES.IDLE) {
+        if (withState == STATES.IDLE && pendingBIP44 != null) {
             currentBIP44 = pendingBIP44
-            enterNewState(STATES.READ_ADDRESS)
+            enterState(STATES.READ_ADDRESS)
             pendingBIP44 = null
         }
     }

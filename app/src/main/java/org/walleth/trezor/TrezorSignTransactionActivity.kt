@@ -56,7 +56,7 @@ class TrezorSignTransactionActivity : BaseTrezorActivity() {
                 finish()
             }
         } else {
-            enterNewState(STATES.PROCESS_TASK)
+            enterState(STATES.PROCESS_TASK)
         }
     }
 

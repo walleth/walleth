@@ -71,9 +71,11 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
     private fun getConnectMessage() = if (isKeepKeyMode) R.string.connect_keepkey_message else R.string.connect_trezor_message
     private fun getActionMessage() = if (isKeepKeyMode) R.string.interact_keepkey_message else R.string.interact_trezor_message
 
-    internal open fun enterNewState(newState: STATES) {
+    internal open fun enterState(newState: STATES, withConnect: Boolean = true) {
         state = newState
-        connectAndExecute()
+        if (withConnect) {
+            connectAndExecute()
+        }
     }
 
     fun connectAndExecute() = lifecycleScope.launch(Dispatchers.IO) {
@@ -116,11 +118,11 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                     pinPadMapping = KEY_MAP_NUM_PAD
                 )
                 is PassphraseRequest -> if (_on_device == true) {
-                    enterNewState(PWD_ON_DEVICE)
+                    enterState(PWD_ON_DEVICE)
                 } else {
                     showPassPhraseDialog()
                 }
-                is ButtonRequest -> enterNewState(BUTTON_ACK)
+                is ButtonRequest -> enterState(BUTTON_ACK)
                 is Features -> {
                     val version = KotlinVersion(major_version, minor_version, patch_version)
                     val potentialError = checkTrezorCompatibility(version, model)
@@ -134,7 +136,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                             !isKeepKeyDevice && isKeepKeyDevice != isKeepKeyMode -> finishingAlert("this is not a KeepKey - this is a TREZOR")
                             else -> {
                                 device_status_text.text = HtmlCompat.fromHtml(getString(getActionMessage()))
-                                enterNewState(READ_ADDRESS)
+                                enterState(READ_ADDRESS)
                             }
                         }
                     }
@@ -150,7 +152,7 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                         )
                     )
 
-                    state = IDLE
+                    enterState(IDLE, false)
                 }
                 is Failure -> when (code) {
                     FailureType.Failure_PinInvalid -> alert(R.string.trezor_pin_invalid, R.string.dialog_title_error) { cancel() }
