@@ -18,8 +18,8 @@ android {
         minSdkVersion 16
         targetSdkVersion 30
 
-        versionCode 502
-        versionName "0.50.2"
+        versionCode 510
+        versionName "0.51.0"
         archivesBaseName = "WallETH-$versionName"
 
         testInstrumentationRunner "org.walleth.infrastructure.AppReplacingRunner"
