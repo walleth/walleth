@@ -3,6 +3,12 @@ package org.walleth.data.config
 import android.content.SharedPreferences
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+import androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material.darkColors
+import androidx.compose.material.lightColors
+import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
 import com.chibatching.kotpref.KotprefModel
@@ -56,7 +62,6 @@ object KotprefSettings : KotprefModel(), Settings {
         else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
     }
 
-
     override fun isScreenshotsDisabled() = sharedPreferences.getBoolean(context.getString(R.string.key_noscreenshots), false)
     override fun isAdvancedFunctionsEnabled() = sharedPreferences.getBoolean(context.getString(R.string.key_advanced_functions), false)
     override fun isKeepETHSyncEnabledWanted() = sharedPreferences.getBoolean(context.getString(R.string.key_keep_eth_sync_on), false)
@@ -74,4 +79,11 @@ object KotprefSettings : KotprefModel(), Settings {
                 .putString("KEY_GAS_PRICE" + chainId, gasPrice.toString())
                 .apply()
     }
+}
+
+fun getComposeColors(systemInDarkTheme: Boolean) = KotprefSettings.getNightMode().let {
+    if ((it == MODE_NIGHT_FOLLOW_SYSTEM && systemInDarkTheme) || it == MODE_NIGHT_YES)
+        darkColors()
+    else
+        lightColors()
 }

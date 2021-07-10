@@ -12,10 +12,14 @@ apply plugin: 'app.cash.exhaustive'
 android {
     compileSdkVersion 30
 
+    buildFeatures {
+        compose true
+    }
+
     defaultConfig {
         applicationId "org.walleth"
 
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 30
 
         versionCode 510
@@ -115,11 +119,24 @@ android {
         pickFirst 'META-INF/atomicfu.kotlin_module'
         pickFirst 'META-INF/kotlinx-coroutines-io.kotlin_module'
         pickFirst 'META-INF/lib_release.kotlin_module'
+
+        // for JNA and JNA-platform
+        exclude "META-INF/AL2.0"
+        exclude "META-INF/LGPL2.1"
+        // for byte-buddy
+        exclude "META-INF/licenses/ASM"
+        exclude "win32-x86-64/attach_hotspot_windows.dll"
+        exclude "win32-x86/attach_hotspot_windows.dll"
     }
 
     // For Kotlin projects
     kotlinOptions {
         jvmTarget = "1.8"
+    }
+
+    composeOptions {
+        kotlinCompilerVersion "$kotlin_version"
+        kotlinCompilerExtensionVersion '1.0.0-rc01'
     }
 }
 
@@ -130,6 +147,7 @@ dependencies {
     androidTestImplementation 'androidx.multidex:multidex-instrumentation:2.0.0'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
+    kapt "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 
     withGethImplementation "org.ethereum:geth:1.8.8"
 
@@ -270,6 +288,25 @@ dependencies {
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     implementation 'com.squareup.leakcanary:plumber-android:2.7'
+
+    implementation 'androidx.compose.ui:ui:1.0.0-rc01'
+    // Tooling support (Previews, etc.)
+    implementation 'androidx.compose.ui:ui-tooling:1.0.0-beta09'
+    // Foundation (Border, Background, Box, Image, Scroll, shapes, animations, etc.)
+    implementation 'androidx.compose.foundation:foundation:1.0.0-rc01'
+    // Material Design
+    implementation 'androidx.compose.material:material:1.0.0-rc01'
+    // Material design icons
+    //implementation 'androidx.compose.material:material-icons-core:1.0.0-rc01'
+    //implementation 'androidx.compose.material:material-icons-extended:1.0.0-rc01'
+    // Integration with activities
+    implementation 'androidx.activity:activity-compose:1.3.0-rc01'
+    // Integration with ViewModels
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha07'
+    implementation 'com.google.accompanist:accompanist-coil:0.13.0'
+
+    // UI Tests
+    androidTestImplementation 'androidx.compose.ui:ui-test-junit4:1.0.0-rc01'
 
 }
 

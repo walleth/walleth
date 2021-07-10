@@ -3,14 +3,14 @@ package org.walleth
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import org.ligi.kaxt.startActivityFromClass
-import org.walleth.startup.StartupActivity
+import org.walleth.walletconnect.WalletConnectListApps
 
 class DebugTrampolin : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        startActivityFromClass(StartupActivity::class.java)
+        startActivityFromClass(WalletConnectListApps::class.java)
         // w startActivity(Intent().setData(Uri.parse("ethereum:0xf88Feb65eBbe4c32589a4f2da9A1d10CF69594cc@5/store?uint256=2")))
 
         //startActivity(Intent().setData(Uri.parse("ethereum:0x77f833124e5b896FfF8674869A6eA3A8ce7a5012@5")))
