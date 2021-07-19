@@ -40,7 +40,7 @@ Native Android Ethereum wallet.
  * Tokens (your own ERC-20 compatible or predefined like DAI, Unicorn, OMG, SNT, ZRC, GNO, ..) - add your own in the app or on [https://github.com/ethereum-lists/tokens](https://github.com/ethereum-lists/tokens) so everyone can use it
  * display value in fiat like EUR, NZD, USD, .. or MakerDAO DAI
 
-## Standarts
+## Standards
  - ERC-67 / ERC-681 / ERC-1328 URLs (e.g. scanned from QR-Code or via intent)
  - ERC-55 Checksums
  * EIP712 signing
