@@ -17,7 +17,7 @@ fun BigDecimal.toValueString(token: Token?) = applyTokenDecimals(token).let { va
     val format = sixDigitDecimalFormat.format(valueInETH)
 
     val cutFormat = if (format.length > 8 && format.contains('.')) {
-        format.substring(0, Math.max(8, format.lastIndexOf('.') + 1))
+        format.substring(0, 8.coerceAtLeast(format.lastIndexOf('.') + 1))
     } else {
         format
     }
