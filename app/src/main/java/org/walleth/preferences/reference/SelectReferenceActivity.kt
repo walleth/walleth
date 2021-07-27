@@ -12,6 +12,7 @@ import org.koin.android.ext.android.inject
 import org.walleth.R
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.data.exchangerate.ExchangeRateProvider
+import java.util.*
 
 class SelectReferenceActivity : BaseSubActivity() {
 
@@ -37,7 +38,7 @@ class SelectReferenceActivity : BaseSubActivity() {
 
                     .setPositiveButton(android.R.string.ok) { _, _ ->
 
-                        val fiatName = layout.reference_text.text.toString().toUpperCase()
+                        val fiatName = layout.reference_text.text.toString().uppercase(Locale.getDefault())
 
                         exchangeRateProvider.addFiat(fiatName)
 
