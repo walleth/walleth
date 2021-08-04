@@ -175,6 +175,7 @@ class DataProvidingService : LifecycleService() {
             val tx = rpc?.getTransactionByHash(localTx.hash)
             if (tx?.transaction?.blockNumber != null) {
                 localTx.transactionState.isPending = false
+                localTx.transaction = tx.transaction
                 appDatabase.transactions.upsert(localTx)
             }
             localTx.hash
