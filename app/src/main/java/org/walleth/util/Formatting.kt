@@ -10,7 +10,7 @@ fun Token.decimalsAsMultiplicator() = BigDecimal("1" + decimalsInZeroes())
 fun BigInteger.toValueString(token: Token?) = BigDecimal(this).toValueString(token)
 
 fun BigInteger.toFullValueString(token: Token) = BigDecimal(this).toFullValueString(token)
-fun BigDecimal.toFullValueString(token: Token) = applyTokenDecimals(token).toString()
+fun BigDecimal.toFullValueString(token: Token) = applyTokenDecimals(token).toPlainString()
 
 fun BigDecimal.applyTokenDecimals(token: Token?): BigDecimal = divide(BigDecimal("1" + (token?.decimalsInZeroes() ?: ""))).stripTrailingZeros()
 fun BigDecimal.toValueString(token: Token?) = applyTokenDecimals(token).let { valueInETH ->
