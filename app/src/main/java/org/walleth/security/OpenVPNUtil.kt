@@ -3,18 +3,6 @@ package org.walleth.security
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.core.widget.doOnTextChanged
-import androidx.fragment.app.Fragment
-import kotlinx.android.synthetic.main.dappnode_config.*
-import org.koin.android.ext.android.inject
-import org.ligi.kaxtui.alert
-import org.walleth.R
-import org.walleth.data.AppDatabase
-import org.walleth.data.config.DappNodeMode
 import org.walleth.data.config.Settings
 
 fun Context.startOpenVPN(settings: Settings) = startOpenVPN(settings.dappNodeVPNProfile)
@@ -30,7 +18,23 @@ fun Context.startOpenVPN(profileName: String): Boolean {
             startActivity(openVPN)
             return true
         } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
         }
     }
+
+    val openVPNBlinkt = Intent("android.intent.action.MAIN");
+    openVPNBlinkt.setPackage("de.blinkt.openvpn");
+    openVPNBlinkt.setClassName("de.blinkt.openvpn", "de.blinkt.openvpn.api.ConnectVPN");
+    openVPNBlinkt.putExtra("de.blinkt.openvpn.api.profileName", "$profileName");
+    if (packageManager?.let { pm -> openVPNBlinkt.resolveActivity(pm) } != null) {
+        try {
+            startActivity(openVPNBlinkt)
+            return true
+        } catch (e: ActivityNotFoundException) {
+            e.printStackTrace()
+        }
+    }
+
+
     return false
 }
