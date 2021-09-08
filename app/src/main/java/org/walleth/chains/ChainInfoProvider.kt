@@ -83,7 +83,7 @@ class ChainInfoProvider(val settings: Settings,
                         private val assetManager: AssetManager) {
 
     private val flow = GlobalScope.suspendLazy {
-
+        getInitial() // we need to make sure chains are initialized before we init tokens
         initTokens(settings, assetManager, appDatabase)
 
         GlobalScope.launch(Dispatchers.Default) {
