@@ -142,6 +142,8 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                     }
                 }
                 is EthereumAddress -> {
+                    enterState(IDLE, false)
+
                     handleAddress(
                         Address(
                             if (address != null) {
@@ -152,7 +154,6 @@ abstract class BaseTrezorActivity : BaseSubActivity() {
                         )
                     )
 
-                    enterState(IDLE, false)
                 }
                 is Failure -> when (code) {
                     FailureType.Failure_PinInvalid -> alert(R.string.trezor_pin_invalid, R.string.dialog_title_error) { cancel() }
