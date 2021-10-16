@@ -339,7 +339,7 @@ class CreateTransactionActivity : BaseSubActivity() {
         }
 
         gas_station_image.setOnClickListener {
-            startActivityFromURL("https://gasnow.org")
+            startActivityFromURL("https://etherscan.io/gastracker")
         }
 
         show_advanced_button.setOnClickListener {
