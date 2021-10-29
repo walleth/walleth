@@ -109,6 +109,7 @@ open class EditChainActivity : BaseSubActivity() {
                         nativeCurrency = NativeCurrency(nativeCurrencySymbol, newChainNativeCurrencyName.text.toString(), nativeCurrencyDecimals.toInt())
                 ))
 
+                // set result
                 finish()
             }
         }

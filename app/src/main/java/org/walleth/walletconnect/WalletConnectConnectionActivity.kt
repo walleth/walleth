@@ -12,6 +12,7 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts.*
 import androidx.lifecycle.lifecycleScope
 import coil.load
+import com.squareup.moshi.Moshi
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
@@ -33,10 +34,14 @@ import org.walleth.R
 import org.walleth.accounts.AccountPickActivity
 import org.walleth.base_activities.BaseSubActivity
 import org.walleth.chains.ChainInfoProvider
+import org.walleth.chains.EditChainActivity
 import org.walleth.chains.SwitchChainActivity
+import org.walleth.chains.startEditChainActivity
 import org.walleth.data.AppDatabase
 import org.walleth.data.EXTRA_KEY_ADDRESS
 import org.walleth.data.addresses.CurrentAddressProvider
+import org.walleth.data.chaininfo.AddEthereumChainParameter
+import org.walleth.data.chaininfo.ChainInfo
 import org.walleth.sign.SignTextActivity
 import org.walleth.sign.getSignTypedDataIntent
 import org.walleth.transactions.CreateTransactionActivity
@@ -55,7 +60,7 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
 
     private val wcViewModel: WalletConnectViewModel by viewModel()
     private val appDatabase: AppDatabase by inject()
-
+    private val moshi: Moshi by inject()
     private var currentRequestId: Long? = null
 
     private var accounts = listOf<String>()
@@ -185,9 +190,9 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                         currentRequestId = call.id
                         lifecycleScope.launch(Dispatchers.Main) {
                             val url = ERC681(scheme = "ethereum",
-                                    address = call.to,
-                                    value = HexString(call.value).hexToBigInteger(),
-                                    gasLimit = call.gasLimit?.let { HexString(it).hexToBigInteger() }
+                                address = call.to,
+                                value = HexString(call.value).hexToBigInteger(),
+                                gasLimit = call.gasLimit?.let { HexString(it).hexToBigInteger() }
                             ).generateURL()
 
 
@@ -218,6 +223,13 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
                         } else if (call.method == "eth_signTypedData") {
                             val intent = getSignTypedDataIntent(call.params!!.last().toString())
                             signTextActionForResult.launch(intent)
+                        } else if (call.method == "wallet_addEthereumChain") {
+                            // Get chainInfo from params
+                            val chainInfos = AddEthereumChainParameter.fromParams(call.params.toString(), moshi).let { rpcParamChains ->
+                                rpcParamChains.map { ChainInfo.from(it) }
+                            }
+                            val intent = startEditChainActivity(chainInfos.first())
+                            //startForResult
                         } else {
                             alert("The method " + call.method + " is not yet supported. If you think it should - open an issue in on github or write a mail to walleth@walleth.org") {
                                 if (close_after_interactions_checkbox.isChecked) {
