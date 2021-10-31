@@ -14,7 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import coil.load
 import kotlinx.android.synthetic.main.activity_wallet_connect.*
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import org.kethereum.erc681.ERC681
 import org.kethereum.erc681.generateURL
@@ -270,18 +270,18 @@ class WalletConnectConnectionActivity : BaseSubActivity() {
         supportActionBar?.subtitle = getString(R.string.wallet_connect)
 
         lifecycleScope.launch(Dispatchers.Main) {
-            currentNetworkProvider.getFlow().collect {
+            currentNetworkProvider.getFlow().onEach {
                 network_name.text = it.name
-            }
+            }.launchIn(lifecycleScope)
 
-            currentAddressProvider.flow.collect { address ->
+            currentAddressProvider.flow.onEach { address ->
                 address?.let {
                     lifecycleScope.launch {
                         val entry = appDatabase.addressBook.byAddress(address)
                         account_name.text = entry?.name
                     }
                 }
-            }
+            }.launchIn(lifecycleScope)
         }
 
         wc_change_account.setOnClickListener {
