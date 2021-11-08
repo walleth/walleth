@@ -84,8 +84,6 @@ class ChainInfoProvider(val settings: Settings,
 
     private val flow = GlobalScope.suspendLazy {
 
-        initTokens(settings, assetManager, appDatabase)
-
         GlobalScope.launch(Dispatchers.Default) {
             if (settings.dataVersion < 3) {
                 val all = appDatabase.chainInfo.getAll()
@@ -122,6 +120,7 @@ class ChainInfoProvider(val settings: Settings,
             ?: appDatabase.chainInfo.getByChainId(BigInteger.valueOf(5L))
             ?: appDatabase.chainInfo.getAll().firstOrNull()
             ?: appDatabase.chainInfo.upsert(assetManager.loadInitChains(moshi)).let {
+                initTokens(settings, assetManager, appDatabase)
                 getInitial()
             }
 
