@@ -266,7 +266,7 @@ dependencies {
     androidTestImplementation 'com.jraska:falcon:2.2.0'
     testImplementation 'junit:junit:4.13.2'
     testImplementation "com.google.truth:truth:$truth"
-    testImplementation 'org.threeten:threetenbp:1.5.1'
+    testImplementation 'org.threeten:threetenbp:1.5.2'
 
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
     implementation 'com.squareup.leakcanary:plumber-android:2.7'
