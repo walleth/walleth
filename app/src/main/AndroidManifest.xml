@@ -75,7 +75,7 @@
 
         <activity android:name="org.walleth.toolbar.ToolbarSetupActivity" />
 
-        <activity android:name="org.walleth.intents.IntentHandlerActivity">
+        <activity android:name="org.walleth.intents.IntentHandlerActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
@@ -95,7 +95,7 @@
         </activity>
         <activity android:name="org.walleth.overview.OverviewActivity" />
 
-        <activity android:name=".info.OpenSourceLicenseInfoActivity">
+        <activity android:name=".info.OpenSourceLicenseInfoActivity"  android:exported="true">
             <intent-filter>
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.intent.action.VIEW" />
@@ -113,7 +113,7 @@
         <activity android:name="org.walleth.accounts.SwitchAccountActivity" />
         <activity android:name="org.walleth.accounts.ImportKeyActivity" />
 
-        <activity android:name=".startup.StartupActivity">
+        <activity android:name=".startup.StartupActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -127,7 +127,7 @@
                 android:name="org.walleth.nfc.NFCEnterCredentialsActivity"
                 android:windowSoftInputMode="adjustResize" />
 
-        <activity android:name="org.walleth.nfc.NDEFTagHandlingActivity">
+        <activity android:name="org.walleth.nfc.NDEFTagHandlingActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -146,7 +146,7 @@
         <activity android:name="org.walleth.nfc.NFCSignTextActivity" />
         <activity android:name="org.walleth.chains.EditChainActivity" />
         <activity android:name=".security.SecurityActivity" />
-        <activity android:name=".info.WarningActivity">
+        <activity android:name=".info.WarningActivity" android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

@@ -10,13 +10,13 @@ apply plugin: "com.jaredsburrows.license"
 apply plugin: 'app.cash.exhaustive'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId "org.walleth"
 
         minSdkVersion 16
-        targetSdkVersion 30
+        targetSdkVersion 31
 
         versionCode 514
         versionName "0.51.4"
