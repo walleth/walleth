@@ -23,12 +23,14 @@
     <trusted-key id='840b2bf6da8ed8c8' group='com.google.android.apps.common.testing.accessibility.framework' />
     <trusted-key id='d57506cd188fd842' group='com.google.api.grpc' />
     <trusted-key id='5e1f79a7c298661e' group='com.google.auto' />
+    <trusted-key id='c51e6cbc7ff46f0b' group='com.google.auto' />
     <trusted-key id='b0f3710fa64900e7' group='com.google.auto.value' />
     <trusted-key id='59a252fb1199d873' group='com.google.code.findbugs' />
     <trusted-key id='7a01b0f236e5430f' group='com.google.code.gson' />
     <trusted-key id='8e3f0de7ae354651' group='com.google.code.gson' />
     <trusted-key id='296cd27f60eed12c' group='com.google.crypto.tink' />
     <trusted-key id='34918b7d3969d2f5' group='com.google.dagger' />
+    <trusted-key id='d4da5eab3cd7e958' group='com.google.devtools.ksp' />
     <trusted-key id='1669c4bb543e0445' group='com.google.errorprone' />
     <trusted-key id='912d2c0eccda55c0' group='com.google.errorprone' />
     <trusted-key id='9a259c7ee636c5ed' group='com.google.errorprone' />
@@ -68,6 +70,7 @@
     <trusted-key id='8671a8df71296252' group='com.squareup' />
     <trusted-key id='8e3f0de7ae354651' group='com.squareup' />
     <trusted-key id='bf984b4145ea13f7' group='com.squareup' />
+    <trusted-key id='d5f4c07a434ab3da' group='com.squareup' />
     <trusted-key id='21200d723f53ce38' group='com.squareup.leakcanary' />
     <trusted-key id='28a9fc4431feeee3' group='com.squareup.leakcanary' />
     <trusted-key id='62ba9c275d14234e' group='com.squareup.leakcanary' />
@@ -164,6 +167,7 @@
     <trusted-key id='ac5ec74981f9cda6' group='org.testng' />
     <trusted-key id='72385ff0af338d52' group='org.threeten' />
     <trusted-key id='42575e0ccd6ba16a' group='org.xerial' />
+    <trusted-key id='429c8816dea04cdb' group='org.xerial' />
     <trusted-key id='858fc4c4f43856a3' group='xerces' />
     <trusted-key id='86fdc7e2a11262cb' group='xml-apis' />
   </trusted-keys>
@@ -1038,8 +1042,14 @@
     <dependency group='androidx.room' module='room-common' version='2.3.0'>
       <sha512>352E27BC800EEAF275F4651FCBEA9D42671ABEB947E328333F817CD5337EE8714B95E341C89309622E56CCEBA7CD6887CC044CEED866EE36AB144234985CCBFA</sha512>
     </dependency>
+    <dependency group='androidx.room' module='room-common' version='2.4.0'>
+      <sha512>50E9FDF0F246AEF698A288878EBD0C12F4C718451A49CDD1A57D242BB877EA5FB7339231E6EC0DBD9D92ED27316C8CE7A0C829DA78E8E58743D7088AD4238CB7</sha512>
+    </dependency>
     <dependency group='androidx.room' module='room-compiler-processing' version='2.3.0'>
       <sha512>B86EF42EAE9F420A36C819E773B7BC2AEBB362505A885836A0518F519FE3480487C82CA65667A523F9090FC642EE88EF502582605CE0B78E4208EDAF6C1DF7D1</sha512>
+    </dependency>
+    <dependency group='androidx.room' module='room-compiler-processing' version='2.4.0'>
+      <sha512>5A7AEC4CAE28008B5A169EE7C9CD99FB0C0C7DF853EAD2AAB951019D8A097D44D5EE7664C53A36109E387B7ED1553B92C105CEEFF34C8AB87CA614D994C9DBAC</sha512>
     </dependency>
     <dependency group='androidx.room' module='room-compiler' version='2.1.0'>
       <sha512>F33CC5A26075D4E42B9524DA489F8C7D1E8430C672DDF90DA6B69EB39C41446EE62A7C1541D7C23799FBFE5867A222702CF10CD29B7BD9D9EE869A9628AF92A1</sha512>
@@ -1068,6 +1078,9 @@
     <dependency group='androidx.room' module='room-compiler' version='2.3.0'>
       <sha512>AC526D0859FFD8A5DE01421FA2C27A1A7D3C00BDE53F19F392AC233B3A175334FBB90C614B31A174CCAD45AE7677B22AF666290F29DC4F9585F512F9DC045396</sha512>
     </dependency>
+    <dependency group='androidx.room' module='room-compiler' version='2.4.0'>
+      <sha512>5A57D9B76FA25EB6D510B6AF9D204B50A06528C9D8F29062D05D285BE0383137EC72971591E6D084C3659128215FA47F82EA2D20C3636664AC62FB455A6B2EAE</sha512>
+    </dependency>
     <dependency group='androidx.room' module='room-ktx' version='2.2.1' extension='aar'>
       <sha512>6A4ED1ED5DAE62223C409C5CBE2275BA9409567ED4FBD0F683D6F38B202D5F1EC7310C7EF12E2B19406D17523FE00A09FF94C04D6FA8B66F29E8C95FF2D00A4C</sha512>
     </dependency>
@@ -1088,6 +1101,9 @@
     </dependency>
     <dependency group='androidx.room' module='room-ktx' version='2.3.0'>
       <sha512>A8328B2AC8A2CA63208F565F45ED3822B1ECC83B856EA146DEEBEBA146987E8294FF59B0CC03100375EDE718F0D26A87E81EF61CBE5387B1BB9F1E5DA04D5985</sha512>
+    </dependency>
+    <dependency group='androidx.room' module='room-ktx' version='2.4.0'>
+      <sha512>C795E82E9B2CA7A273E10A8DCAAD370DFD8DA57F7821067CBFB6F09BB359BDF4AD8303B4D52F002B9D7FB902772D2D019D816CFF96E086B1EBA260EEB68CC211</sha512>
     </dependency>
     <dependency group='androidx.room' module='room-migration' version='2.1.0'>
       <sha512>958116C30D14271FCB0E3FA0766536BB628DE9014710A1C1F86833EDE476DADAA2B6B19ECF5F8DC8EEAEFCCD978EB263EE3A264C4900D15DDC0FEFB1F30C3C4F</sha512>
@@ -1116,6 +1132,9 @@
     <dependency group='androidx.room' module='room-migration' version='2.3.0'>
       <sha512>4182BBC9662AF4947336A34B917D788B72C2732B168167C7A0EE4CBF70624FBB3EA4E078EA282C32362476E9CE783E966B766CF2EE449487765FE085283817B0</sha512>
     </dependency>
+    <dependency group='androidx.room' module='room-migration' version='2.4.0'>
+      <sha512>F5B1763FC5EE8165C4802514CB97D920DC81B108AE3B958536139EABC7D9119BB6FA0E96A8DC5479F46F9BC546851FF4AC29C19A070E5EB8C22C2A6405633F76</sha512>
+    </dependency>
     <dependency group='androidx.room' module='room-runtime' version='2.1.0' extension='aar'>
       <sha512>9D3BB15962B5ABC7D14C591F9D32FBE13A4E229501080382F92094235BE18A9F7217442C404EF55FF596A09ABEAFC4C52697B8EBD411E31CFF896D6F40892E0C</sha512>
     </dependency>
@@ -1142,6 +1161,9 @@
     </dependency>
     <dependency group='androidx.room' module='room-runtime' version='2.3.0'>
       <sha512>6386CD8F7F7BCF59BD5B569EA6F95E121A9E7AF773444A64EAC5FC9430D28BE9342722F7B9EA43664BF31BF807AFA5BA00677B889AF7C4FCFD4924921B7D37E9</sha512>
+    </dependency>
+    <dependency group='androidx.room' module='room-runtime' version='2.4.0'>
+      <sha512>CCFC5B3CF4CCC06A1D91E373025A2058442C529FD6B8336F65FA370829812D8A4FD0CE9CC70CB8C5B9E88A469685AC69F221BE35DDCE219E929CB2C4060DC6CF</sha512>
     </dependency>
     <dependency group='androidx.savedstate' module='savedstate-ktx' version='1.1.0'>
       <sha512>C364FC26EFC0DA8A302AA4DF53AADA3A3D40044C25C7F7ECC4809E0A0BA939FE1FEF012714FF0324A1B391BD21F0E64C45CE4F36E97DEE4BB7D032E0590E1094</sha512>
@@ -1170,11 +1192,17 @@
     <dependency group='androidx.sqlite' module='sqlite-framework' version='2.1.0' extension='aar'>
       <sha512>7DF429491AE70096B8FFF60DA95AD40305E664D86EA71497B221E6C016388F325EF3D1599ECDFE2392B4CDE81C974D3D1321387F179EABE03B4C9A3FBDB02582</sha512>
     </dependency>
+    <dependency group='androidx.sqlite' module='sqlite-framework' version='2.2.0'>
+      <sha512>B4D1035E396175B571193D1AFCCE2A4AC6AF1DA9F9F33483CF68C1E6AB80EAFAC9E06E5F98CF604D7F094C73AC84F8605FA6BF887D27DCE8A952F6937B91BBB5</sha512>
+    </dependency>
     <dependency group='androidx.sqlite' module='sqlite' version='2.0.1' extension='aar'>
       <sha512>CE5FD3B0052229DA4C3AE7C5F12F40B38986E4044DB076C2A754BF9BC12F923EBD92A5A03A690C84180ABA2F0C2ED8A1B9AC6240171524187AD6FD8B9E2B37BE</sha512>
     </dependency>
     <dependency group='androidx.sqlite' module='sqlite' version='2.1.0' extension='aar'>
       <sha512>2119ABE340A762554361FF4592D4FC5E5AA6606583DFE21322086692684B571B9F147840A611CE5EA0D2B63BDB06A8201B598109E26C12DD490C1E84797E86DA</sha512>
+    </dependency>
+    <dependency group='androidx.sqlite' module='sqlite' version='2.2.0'>
+      <sha512>5C3B99E4B05ACF961959C82EEC221F3F35BBA8B1C692FD1F24983202FCD82830A8CDD937981F6DAACF28435A8539DB83346C1257D5881898B6F7922C4AADAB3B</sha512>
     </dependency>
     <dependency group='androidx.startup' module='startup-runtime' version='1.0.0'>
       <sha512>68CC9D1CF70C0A24D88A2AC1EC5EEC88CFBFE04BBACE6E2A9468F1BF0F7C979812AC7B070722D14FA9C774D82A6CD05D0FCB2EFD459937E4EECDF16C7140E6F4</sha512>
@@ -8527,6 +8555,9 @@
     </dependency>
     <dependency group='org.jetbrains.kotlinx' module='kotlinx-coroutines-core' version='1.5.0'>
       <sha512>AB44E8F30873750EBC2754C928FCDF35E0657B79293488A9F01AF68E617A419860B5360E2B9E8D27D087E11C29CBD263E1D00FDD682B9389EA6904FB9135D6C1</sha512>
+    </dependency>
+    <dependency group='org.jetbrains.kotlinx' module='kotlinx-metadata-jvm' version='0.3.0'>
+      <sha512>AE3ED0DAA53C832D23FE2F7FF051A982F80631C46103EA54882A81C0C251ACA4E41169F0B186B88FC17E78FA55D87B81F72BA454BAB4C1146375C8D9DAA9FF03</sha512>
     </dependency>
     <dependency group='org.jetbrains.trove4j' module='trove4j' version='20160824'>
       <sha512>1CB8EFAC5A9D289447A587D54F610329D6A71BB86A021B305DB7952B2F423EFCAB70A90F54C3E9E43E25D866526F65CE91153486731E542F1A14B5745E1DC5D3</sha512>
